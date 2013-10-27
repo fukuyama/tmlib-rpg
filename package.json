@@ -1,7 +1,7 @@
 {
-  "name": "tmlib-rpg.js",
+  "name": "tmlib-rpg",
   "version": "0.0.1",
-  "description": "tmlib based rpg library",
+  "description": "RPG framework based on tmlib.js",
   "scripts": {
     "preinstall": "npm install -g grunt-cli",
     "test": "grunt test",

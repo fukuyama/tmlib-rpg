@@ -28,13 +28,6 @@ local.properties
 # PDT-specific
 .buildpath
 
-#####
-# My
-node_modules
-target
-sandbox
-
-
 #################
 ## Visual Studio
 #################
@@ -115,7 +108,7 @@ _TeamCity*
 .*crunch*.local.xml
 
 # Installshield output folder
-[Ee]xpress/
+#[Ee]xpress/
 
 # DocProject is a documentation generator add-in
 DocProject/buildhelp/
@@ -219,3 +212,11 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
+
+
+#############
+# My
+#############
+node_modules
+target
+sandbox
