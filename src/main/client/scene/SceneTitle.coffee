@@ -60,8 +60,8 @@ tm.define 'SceneTitle',
     @addChild(@menu_title)
 
   selectMenu: ->
-    if @menu_title.index == 2
-      @menu_title.x += 10
-      return
-    # シーンを切り替える
-    @loadScene @menus[@menu_title.index].next
+    menu = @menus[@menu_title.index]
+    if menu.next? and menu.next.scene != ''
+      console.log menu.next
+      # シーンを切り替える
+      @loadScene menu.next

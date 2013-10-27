@@ -20,6 +20,7 @@ tm.define 'rpg.WindowContent',
     @clearColor('rgba(0,0,0,0)')
 
   drawTo: ->
+    @shape.canvas.clear()
     @shape.canvas.drawImage(
       @canvas,
       @ox, @oy, @innerRect.width, @innerRect.height

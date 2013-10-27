@@ -61,11 +61,11 @@ root.SAMPLE_SYSTEM_LOAD_ASSETS.push
       },{
         name:'Continue'
         next:
-          scene:'SceneLoad'
+          scene:''
       },{
         name:'Exit'
         next:
-          scene:'SceneEnd'
+          scene:''
       }
     ]
   'test':
