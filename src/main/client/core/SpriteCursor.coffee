@@ -38,18 +38,18 @@ tm.define 'rpg.SpriteCursor',
   reset: () ->
     cols = @parent.cols
     rows = @parent.rows
-    w = @parent.innerRect.width / cols
-    h = @parent.innerRect.height / rows | 0
+    w = @parent.menuWidth
+    h = @parent.menuHeight
     @resize(w + @padding, h + @padding)
     @refresh()
     @index_positions = []
     pw = (@parent.width - @parent.innerRect.width) / 2 - @padding / 2
     ph = (@parent.height - @parent.innerRect.height) / 2 - @padding / 2
-    for c in [0..cols]
-      for r in [0..rows]
+    for r in [0...rows]
+      for c in [0...cols]
         @index_positions.push
-          x: c * w + pw
-          y: r * h + ph
+          x: pw + c * w + c * @parent.colPadding
+          y: ph + r * h
     @setIndex()
   
   # カーソル位置設定

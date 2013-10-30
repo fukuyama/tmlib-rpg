@@ -37,7 +37,36 @@ tm.define 'SceneTitle',
     height = rpg.system.screen.height
     
     # タイトルバックグラウンドイメージ
+    @addBackgroundImage(background)
+
+    # タイトルメニューの作成
+    @addTitleMenu()
+
+  # メニュー選択時の処理
+  selectMenu: ->
+    menu = @menus[@menu_title.index]
+    if menu.next? and menu.next.scene != ''
+      # シーンを切り替える
+      @loadScene menu.next
+
+  # タイトルメニューの作成
+  addTitleMenu: ->
+    menu.fn = @selectMenu.bind(@) for menu in @menus
+    @menu_title = rpg.WindowMenu
+      menus: @menus
+      active: true
+      rows: @menus.length
+    @menu_title.x = rpg.system.screen.width / 2 - @menu_title.width / 2
+    @menu_title.y = rpg.system.screen.height / 2
+    @addChild(@menu_title)
+
+  # タイトルバックグラウンドイメージ
+  addBackgroundImage: (background) ->
     if background.image?
+      x = 0
+      y = 0
+      width = rpg.system.screen.width
+      height = rpg.system.screen.height
       image = background.image
       if typeof image is 'string'
         image = tm.asset.AssetManager.get(image)
@@ -46,22 +75,6 @@ tm.define 'SceneTitle',
       bg.canvas.drawTexture(
         image
         0,0,image.width,image.width
-        0,0,width,height
+        x,y,width,height
       )
       @addChild bg
-
-    # タイトルメニューの作成
-    menu.fn = @selectMenu.bind(@) for menu in @menus
-    @menu_title = rpg.WindowMenu
-      menus: @menus
-      active: true
-    @menu_title.x = width / 2 - @menu_title.width / 2
-    @menu_title.y = height / 2
-    @addChild(@menu_title)
-
-  selectMenu: ->
-    menu = @menus[@menu_title.index]
-    if menu.next? and menu.next.scene != ''
-      console.log menu.next
-      # シーンを切り替える
-      @loadScene menu.next

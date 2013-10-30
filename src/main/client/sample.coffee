@@ -13,12 +13,12 @@ root.SYSTEM_ASSETS =
     loadingSceneDefault:
       gauge:
         color: 'rgb(96,96,96)'
-        width: 32 * 10
+        width: 40 * 10
         y: 32 * 10 - 10
     windowDefault:
       windowskin: 'windowskin.config'
     'screen':
-      width: 32 * 10
+      width: 40 * 10
       height: 32 * 10
       background: 'rgb(255,255,255)'
 
@@ -55,17 +55,21 @@ root.SAMPLE_SYSTEM_LOAD_ASSETS.push
     background:
       image: 'scene.title.background.image'
     menus: [{
-        name:'Start'
+        name:'New'
         next:
           scene:'SceneMap'
       },{
-        name:'Continue'
+        name:'Load'
         next:
           scene:''
       },{
         name:'Exit'
         next:
           scene:''
+      },{
+        name:'Test'
+        next:
+          scene:'SceneMain'
       }
     ]
   'test':

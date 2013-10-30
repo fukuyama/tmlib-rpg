@@ -13,7 +13,7 @@
     "RPG"
   ],
   "author": "Yoshihito Fukuyama",
-  "license": "BSD-2-Clause",
+  "license": "MIT",
   "dependencies": {
     "express": "~3.4.0",
     "jade": "*"

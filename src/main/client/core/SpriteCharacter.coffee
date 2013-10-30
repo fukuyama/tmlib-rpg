@@ -6,6 +6,11 @@ tm.define 'rpg.SpriteCharacter',
 
   # 初期化
   init: (@character) ->
+    if typeof @character is 'string'
+      @character = new rpg.Character tm.asset.AssetManager.get(@character)
+    if (not (@character instanceof rpg.Character)) and
+    typeof @character is 'object'
+      @character = new rpg.Character @character
     @superInit(@character.spriteSheet)
     @origin.set(0, 0)
     {

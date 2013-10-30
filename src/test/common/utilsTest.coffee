@@ -10,21 +10,24 @@ require('../../main/common/utils.coffee')
 
 describe 'utils', () ->
   describe '$extendAll', () ->
-    it 'init', ->
+    describe '空のオブジェクトのマージ', ->
       h = {}
       a = {}
       h.$extendAll a
-      c = 0
-      c++ for i of h
-      c.should.equal 0
-    it 'level 1', ->
+      it '結果は空になる', ->
+        c = 0
+        c++ for i of h
+        c.should.equal 0
+    describe 'ネスト１のマージ h={} に a={name:"test"} をマージ', ->
       h = {}
       a = {name:'test'}
       h.$extendAll a
       c = 0
       c++ for i of h
-      c.should.equal 1
-      h.name.should.equal 'test'
+      it 'h のサイズは 1', ->
+        c.should.equal 1
+      it 'h.name は "test" になる', ->
+        h.name.should.equal 'test'
     it 'level 2', ->
       h = {src:{i:11,l:20}}
       a = {name:'test',src:{i:10}}

@@ -1,4 +1,7 @@
-# tmlib-rpg.js
-ほんき？かな～？
+# tmlib-rpg
 
-作るのが楽しいよね…
+RPG framework based on tmlib.js
+
+# License
+
+MIT

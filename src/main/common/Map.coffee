@@ -97,8 +97,25 @@ ASSETS =
     layers: [
       {
         type: 'layer'
-        name: 'l1'
+        name: 'layer1'
         data: data
+      },{
+        type: 'objectgroup'
+        name: 'events'
+        objects: [
+          {
+            type: 'rpg.SpriteCharacter'
+            properties:
+              init: JSON.stringify([
+                  {
+                    mapX: 5
+                    mapY: 5
+                  }
+              ])
+            width: 32
+            height: 32
+          }
+        ]
       }
     ]
 

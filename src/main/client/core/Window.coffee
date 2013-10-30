@@ -92,10 +92,19 @@ tm.define 'rpg.Window',
     @height = height
     @_windowskin.resize(width, height)
     @resizeInnerRect()
+    @resizeContent()
 
   resizeInnerRect: (width = @width, height = @height) ->
     ir = @_calcInnerRect(width, height)
     @innerRect.set.apply(@innerRect, ir.toArray())
+
+  resizeContent: ->
+    w = @innerRect.width
+    h = @innerRect.height
+    @content.resize(w,h)
+    @content.shape.width = w
+    @content.shape.height = h
+    @content.shape.canvas.resize(w,h)
 
   # 更新処理
   update: ->
