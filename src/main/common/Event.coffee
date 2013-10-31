@@ -12,16 +12,18 @@ TRIGGER_TYPE = {
 
 ASSETS =
   'sample.event':
-    name: ''
-    pages: [
-      {
-        name: 'page1'
-        condition: [
-        ]
-        trigger:
-          type: [TRIGGER_TYPE.TALK]
-      }
-    ]
+    type: 'json'
+    src:
+      name: ''
+      pages: [
+        {
+          name: 'page1'
+          condition: [
+          ]
+          trigger:
+            type: [TRIGGER_TYPE.TALK]
+        }
+      ]
 
 # イベント
 class rpg.Event
@@ -35,7 +37,7 @@ class rpg.Event
     {
       @name # イベント名
       pages
-    } = {}.$extendAll(ASSETS['sample.event']).$extendAll(args)
+    } = {}.$extendAll(ASSETS['sample.event'].src).$extendAll(args)
     @pages = new rpg.EventPage(page) for page in pages.reverse()
     @checkPage()
   

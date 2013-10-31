@@ -2,49 +2,51 @@
 ASSETS =
   #'windowskin.vxace': 'img/window.png'
   'windowskin.config.vxace':
-    _type: 'json'
-    image: 'windowskin.vxace'
-    borderWidth: 16
-    borderHeight: 16
-    backgroundPadding: 2
-    backgroundColor: 'rgba(0,0,0,0.9)'
-    spec:
-      backgrounds: [
-        [0,0,64,64]
-        [0,64,64,64]
-      ]
-      topLeft: [64, 0, 16, 16]
-      topRight: [128 - 16, 0, 16, 16]
-      bottomLeft: [64, 64 - 16, 16, 16]
-      bottomRight: [128 - 16, 64 - 16, 16, 16]
-      borderTop: [64 + 16, 0, 16, 16]
-      borderBottom: [64 + 16, 64 - 16, 16, 16]
-      borderLeft: [64, 16, 16, 16]
-      borderRight: [128 - 16, 16, 16, 16]
+    type: 'json'
+    src:
+      image: 'windowskin.vxace'
+      borderWidth: 16
+      borderHeight: 16
+      backgroundPadding: 2
+      backgroundColor: 'rgba(0,0,0,0.9)'
+      spec:
+        backgrounds: [
+          [0,0,64,64]
+          [0,64,64,64]
+        ]
+        topLeft: [64, 0, 16, 16]
+        topRight: [128 - 16, 0, 16, 16]
+        bottomLeft: [64, 64 - 16, 16, 16]
+        bottomRight: [128 - 16, 64 - 16, 16, 16]
+        borderTop: [64 + 16, 0, 16, 16]
+        borderBottom: [64 + 16, 64 - 16, 16, 16]
+        borderLeft: [64, 16, 16, 16]
+        borderRight: [128 - 16, 16, 16, 16]
   'windowskin.hiyoko': 'img/Frame320.png'
   'sample.windowskin.config':
-    _type: 'json'
-    image: 'windowskin.hiyoko'
-    borderWidth: 32
-    borderHeight: 32
-    backgroundPadding: 2
-    backgroundColor: 'rgba(255,255,255,1.0)'
-    spec:
-      backgrounds: [
-        [32,32,64,64]
-      ]
-      topLeft: [0, 0, 32, 32]
-      topRight: [320 - 32, 0, 32, 32]
-      bottomLeft: [0, 320 - 32, 32, 32]
-      bottomRight: [320 - 32, 320 - 32, 32, 32]
-      borderTop: [32, 0, 32, 32]
-      borderBottom: [32, 320 - 32, 32, 32]
-      borderLeft: [0, 32, 32, 32]
-      borderRight: [320 - 32, 32, 32, 32]
+    type: 'json'
+    src:
+      image: 'windowskin.hiyoko'
+      borderWidth: 32
+      borderHeight: 32
+      backgroundPadding: 2
+      backgroundColor: 'rgba(255,255,255,1.0)'
+      spec:
+        backgrounds: [
+          [32,32,64,64]
+        ]
+        topLeft: [0, 0, 32, 32]
+        topRight: [320 - 32, 0, 32, 32]
+        bottomLeft: [0, 320 - 32, 32, 32]
+        bottomRight: [320 - 32, 320 - 32, 32, 32]
+        borderTop: [32, 0, 32, 32]
+        borderBottom: [32, 320 - 32, 32, 32]
+        borderLeft: [0, 32, 32, 32]
+        borderRight: [320 - 32, 32, 32, 32]
 
 # ウィンドウスキンクラス
 tm.define 'rpg.WindowSkin',
-  superClass: tm.app.CanvasElement
+  superClass: tm.display.CanvasElement
 
   # 初期化
   init: (width, height, args = 'sample.windowskin.config') ->
@@ -59,21 +61,21 @@ tm.define 'rpg.WindowSkin',
       @backgroundPadding
       @backgroundColor
       @spec
-    } = {}.$extend(ASSETS['sample.windowskin.config']).$extend(args)
+    } = {}.$extend(ASSETS['sample.windowskin.config'].src).$extend(args)
 
     @texture = tm.asset.AssetManager.get(@image)
 
-    @_background = tm.app.Shape().addChildTo(@)
+    @_background = tm.display.Shape().addChildTo(@)
     @_background.origin.set(0,0)
     @_border = {
-      topLeft: tm.app.Shape().addChildTo(@)
-      topRight: tm.app.Shape().addChildTo(@)
-      bottomLeft: tm.app.Shape().addChildTo(@)
-      bottomRight: tm.app.Shape().addChildTo(@)
-      borderTop: tm.app.Shape().addChildTo(@)
-      borderBottom: tm.app.Shape().addChildTo(@)
-      borderLeft: tm.app.Shape().addChildTo(@)
-      borderRight: tm.app.Shape().addChildTo(@)
+      topLeft: tm.display.Shape().addChildTo(@)
+      topRight: tm.display.Shape().addChildTo(@)
+      bottomLeft: tm.display.Shape().addChildTo(@)
+      bottomRight: tm.display.Shape().addChildTo(@)
+      borderTop: tm.display.Shape().addChildTo(@)
+      borderBottom: tm.display.Shape().addChildTo(@)
+      borderLeft: tm.display.Shape().addChildTo(@)
+      borderRight: tm.display.Shape().addChildTo(@)
     }
     v.origin.set(0,0) for k, v of @_border
 

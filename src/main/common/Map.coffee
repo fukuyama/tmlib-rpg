@@ -54,70 +54,72 @@ for x in [0..29] when x % 2 == 1 and t <= 15
 
 ASSETS =
   'sample.map':
-    _type: 'json'
-    mapSheet: 'sample.mapsheet'
+    type: 'json'
+    src:
+      mapSheet: 'sample.mapsheet'
   'sample.tileset': 'img/test_tileset.png'
   #'sample.autotile': 'img/sample_tileset.png'
   'sample.mapsheet':
-    _type: 'tmx'
-    width: 30
-    height: 30
-    tilewidth: 32
-    tileheight: 32
-    autotilesets: [
-      {
-        image: 'sample.autotile'
-        autoid: 1 # オートタイルにするタイルID
-        tileid: [10,11] # オートタイルの隣接対象になるタイルID
-      }
-    ]
-    tilesets: [
-      {
-        image: 'sample.tileset'
-        restriction: [
-          MOVE_RESTRICTION.ALLOK
-          MOVE_RESTRICTION.ALLNG
-          MOVE_RESTRICTION.UPOK
-          MOVE_RESTRICTION.DOWNOK
-          MOVE_RESTRICTION.LEFTOK
-          MOVE_RESTRICTION.RIGHTOK
-          MOVE_RESTRICTION.HORIZON
-          MOVE_RESTRICTION.VERTICAL
-          MOVE_RESTRICTION.CORNER1
-          MOVE_RESTRICTION.CORNER3
-          MOVE_RESTRICTION.CORNER7
-          MOVE_RESTRICTION.CORNER9
-          MOVE_RESTRICTION.UPNG
-          MOVE_RESTRICTION.DOWNNG
-          MOVE_RESTRICTION.LEFTNG
-          MOVE_RESTRICTION.RIGHTNG
-        ]
-      }
-    ]
-    layers: [
-      {
-        type: 'layer'
-        name: 'layer1'
-        data: data
-      },{
-        type: 'objectgroup'
-        name: 'events'
-        objects: [
-          {
-            type: 'rpg.SpriteCharacter'
-            properties:
-              init: JSON.stringify([
-                  {
-                    mapX: 5
-                    mapY: 5
-                  }
-              ])
-            width: 32
-            height: 32
-          }
-        ]
-      }
-    ]
+    type: 'tmx'
+    src:
+      width: 30
+      height: 30
+      tilewidth: 32
+      tileheight: 32
+      autotilesets: [
+        {
+          image: 'sample.autotile'
+          autoid: 1 # オートタイルにするタイルID
+          tileid: [10,11] # オートタイルの隣接対象になるタイルID
+        }
+      ]
+      tilesets: [
+        {
+          image: 'sample.tileset'
+          restriction: [
+            MOVE_RESTRICTION.ALLOK
+            MOVE_RESTRICTION.ALLNG
+            MOVE_RESTRICTION.UPOK
+            MOVE_RESTRICTION.DOWNOK
+            MOVE_RESTRICTION.LEFTOK
+            MOVE_RESTRICTION.RIGHTOK
+            MOVE_RESTRICTION.HORIZON
+            MOVE_RESTRICTION.VERTICAL
+            MOVE_RESTRICTION.CORNER1
+            MOVE_RESTRICTION.CORNER3
+            MOVE_RESTRICTION.CORNER7
+            MOVE_RESTRICTION.CORNER9
+            MOVE_RESTRICTION.UPNG
+            MOVE_RESTRICTION.DOWNNG
+            MOVE_RESTRICTION.LEFTNG
+            MOVE_RESTRICTION.RIGHTNG
+          ]
+        }
+      ]
+      layers: [
+        {
+          type: 'layer'
+          name: 'layer1'
+          data: data
+        },{
+          type: 'objectgroup'
+          name: 'events'
+          objects: [
+            {
+              type: 'rpg.SpriteCharacter'
+              properties:
+                init: JSON.stringify([
+                    {
+                      mapX: 5
+                      mapY: 5
+                    }
+                ])
+              width: 32
+              height: 32
+            }
+          ]
+        }
+      ]
 
 @SAMPLE_SYSTEM_LOAD_ASSETS = @SAMPLE_SYSTEM_LOAD_ASSETS ? []
 @SAMPLE_SYSTEM_LOAD_ASSETS.push ASSETS
@@ -132,7 +134,7 @@ class rpg.Map
   setup: (args={}) ->
     {
       @mapSheet
-    } = {}.$extendAll(ASSETS['sample.map']).$extendAll(args)
+    } = {}.$extendAll(ASSETS['sample.map'].src).$extendAll(args)
     
     # マップ幅
     Object.defineProperty @, 'width',

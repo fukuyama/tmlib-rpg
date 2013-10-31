@@ -4,7 +4,9 @@ rpg = _g.rpg = _g.rpg ? {}
 
 ASSETS =
   'sample.interpreter':
-    name: ''
+    type: 'json'
+    src:
+      name: ''
 
 # イベントのインタプリタ
 class rpg.Interpreter
@@ -17,7 +19,7 @@ class rpg.Interpreter
   setup: (args={}) ->
     {
       @name
-    } = {}.$extendAll(ASSETS['sample.interpreter']).$extendAll(args)
+    } = {}.$extendAll(ASSETS['sample.interpreter'].src).$extendAll(args)
 
   start: (@events=[]) ->
     

@@ -2,7 +2,7 @@
 # マップクラス
 tm.define 'rpg.SpriteMap',
 
-  superClass: tm.app.MapSprite
+  superClass: tm.display.MapSprite
 
   # 初期化
   # pc: 基準になる rpg.Character （プレイヤー）

@@ -2,7 +2,7 @@
 # スプライトカーソルクラス
 tm.define 'rpg.SpriteCursor',
 
-  superClass: tm.app.Shape
+  superClass: tm.display.Shape
 
   # 初期化
   init: (@parent, args='sample.cursor') ->
@@ -42,12 +42,12 @@ tm.define 'rpg.SpriteCursor',
     h = @parent.menuHeight
     @resize(w + @padding, h + @padding)
     @refresh()
-    @index_positions = []
+    @_indexPositions = []
     pw = (@parent.width - @parent.innerRect.width) / 2 - @padding / 2
     ph = (@parent.height - @parent.innerRect.height) / 2 - @padding / 2
     for r in [0...rows]
       for c in [0...cols]
-        @index_positions.push
+        @_indexPositions.push
           x: pw + c * w + c * @parent.colPadding
           y: ph + r * h
     @setIndex()
@@ -55,4 +55,17 @@ tm.define 'rpg.SpriteCursor',
   # カーソル位置設定
   setIndex: (index = @index) ->
     @index = index
-    {@x, @y} = @index_positions[@index]
+    {@x, @y} = @_indexPositions[@index]
+
+  # カーソル位置設定（ポインティング時）
+  setPointing: (e) ->
+    pt = @parent.globalToLocal(e.pointing)
+    w = @parent.menuWidth
+    h = @parent.menuHeight
+    rect = tm.geom.Rect(0,0,w,h)
+    for ip, i in @_indexPositions
+      rect.move ip.x, ip.y
+      if rect.left < pt.x and pt.x < rect.right and
+      rect.top < pt.y and pt.y < rect.bottom
+        @setIndex(i)
+        break

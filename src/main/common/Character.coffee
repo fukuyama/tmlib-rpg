@@ -28,39 +28,41 @@ MOVE_RUNDOM = [
 
 ASSETS =
   'sample.character':
-    _type: 'json'
-    spriteSheet: 'sample.spritesheet'
-    x: 0
-    y: 0
-    direction:
-      value: 'down'
-      fix: false
-    mapX: 0
-    mapY: 0
-    moveX: 0
-    moveY: 0
-    moveSpeed: 4
-    moveFrequency: 4
-    animation:
-      mode: on  # アニメーションの ON/OFF
-      fix: off  # アニメーションの固定 ON/OFF
-      move: on  # 移動時のアニメーション ON/OFF
-      stop: on  # 歩行後のアニメーションの停止 ON/OFF
-                # 停止時にアニメーションを続ける場合は OFF にする
-      'default': '' # デフォルトのアニメーション
+    type: 'json'
+    src:
+      spriteSheet: 'sample.spritesheet'
+      x: 0
+      y: 0
+      direction:
+        value: 'down'
+        fix: false
+      mapX: 0
+      mapY: 0
+      moveX: 0
+      moveY: 0
+      moveSpeed: 4
+      moveFrequency: 4
+      animation:
+        mode: on  # アニメーションの ON/OFF
+        fix: off  # アニメーションの固定 ON/OFF
+        move: on  # 移動時のアニメーション ON/OFF
+        stop: on  # 歩行後のアニメーションの停止 ON/OFF
+                  # 停止時にアニメーションを続ける場合は OFF にする
+        'default': '' # デフォルトのアニメーション
   'sample.spritesheet.hiyoko': 'img/hiyoco_nomal_full.png'
   'sample.spritesheet':
-    _type: 'tmss'
-    image: 'sample.spritesheet.hiyoko'
-    frame:
-      width: 32
-      height: 32
-      count: 18
-    animations:
-      down: frames: [7,6,7,8], next: 'down', frequency: 4
-      up: frames: [10,9,10,11], next: 'up', frequency: 4
-      left: frames: [13,12,13,14], next: 'left', frequency: 4
-      right: frames: [16,15,16,17], next: 'right', frequency: 4
+    type: 'tmss'
+    src:
+      image: 'sample.spritesheet.hiyoko'
+      frame:
+        width: 32
+        height: 32
+        count: 18
+      animations:
+        down: frames: [7,6,7,8], next: 'down', frequency: 4
+        up: frames: [10,9,10,11], next: 'up', frequency: 4
+        left: frames: [13,12,13,14], next: 'left', frequency: 4
+        right: frames: [16,15,16,17], next: 'right', frequency: 4
 
 @SAMPLE_SYSTEM_LOAD_ASSETS = @SAMPLE_SYSTEM_LOAD_ASSETS ? []
 @SAMPLE_SYSTEM_LOAD_ASSETS.push ASSETS
@@ -100,7 +102,7 @@ class rpg.Character
       moveRouteIndex: 0
       moveRouteForce: false
       stopCount: 0
-    }.$extendAll(ASSETS['sample.character']).$extendAll(args)
+    }.$extendAll(ASSETS['sample.character'].src).$extendAll(args)
 
     @mapChipSize = 32
     @mapFrameLength = 256.0

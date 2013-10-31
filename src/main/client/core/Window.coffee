@@ -4,7 +4,7 @@ DEFAULT_WINDOWSKIN_ASSET = 'windowskin.config'
 # ウィンドウクラス
 tm.define 'rpg.Window',
 
-  superClass: tm.app.CanvasElement
+  superClass: tm.display.CanvasElement
 
   # 初期化
   init: (x, y, width, height, args={}) ->

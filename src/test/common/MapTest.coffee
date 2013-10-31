@@ -6,7 +6,7 @@ MAP = require('../../main/common/Map.coffee')
 
 describe 'rpg.Map', () ->
   debug = (m) ->
-    m.mapSheet = MAP.ASSETS['sample.mapsheet']
+    m.mapSheet = MAP.ASSETS['sample.mapsheet'].src
     m
 
   describe '初期化', ->
@@ -14,7 +14,7 @@ describe 'rpg.Map', () ->
     it 'default の mapSheet 名は、sample.mapsheet', ->
       m.mapSheet.should.equal 'sample.mapsheet'
     it 'sample.mapsheet の設定 debug', ->
-      m.mapSheet = MAP.ASSETS['sample.mapsheet']
+      m.mapSheet = MAP.ASSETS['sample.mapsheet'].src
     it 'sample.mapsheet の width は、30', ->
       m.mapSheet.width.should.equal 30
     it 'sample.mapsheet の height は、30', ->

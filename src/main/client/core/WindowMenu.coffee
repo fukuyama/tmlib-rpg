@@ -43,11 +43,11 @@ tm.define 'rpg.WindowMenu',
     @callMenuHandler = @eventHandler.callMenuHandler
 
     # メニューハンドラ初期化
-    @interactive = true
     @addMenuHandler(m.name, m.fn) for m in @menus
 
-    @addEventListener 'pointingover', (e) ->
-      console.log e
+    @setInteractive(true)
+    @setBoundingType('rect')
+    @addEventListener 'pointingend', @pointing_menu.bind(@)
 
     @resizeAuto()
     @refresh()
@@ -195,5 +195,9 @@ tm.define 'rpg.WindowMenu',
     # TODO: キャンセル処理はどうするか？
     rpg.system.se.menuCancel()
     console.log 'input_escape'
+    
+  # メニュー選択
+  pointing_menu: (e) ->
+    @cursorInstance.setPointing(e)
 
 rpg.WindowMenu.prototype.getter 'pageIndex', -> @cols * @rows

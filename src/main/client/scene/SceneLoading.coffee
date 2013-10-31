@@ -41,7 +41,7 @@ tm.define 'SceneLoading',
     }.$extend(gauge)
 
     # ゲージの作成
-    @gauge = tm.app.Gauge(
+    @gauge = tm.ui.Gauge(
       gauge.width
       gauge.height
       gauge.color

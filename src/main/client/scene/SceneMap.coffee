@@ -1,8 +1,9 @@
 
 ASSETS =
   'sample.scene.map':
-    _type: 'json'
-    mapName: 'sample.map'
+    type: 'json'
+    src:
+      mapName: 'sample.map'
 
 # タイトルシーン
 tm.define 'SceneMap',
@@ -18,7 +19,7 @@ tm.define 'SceneMap',
     args = tm.asset.AssetManager.get(args) if typeof args == 'string'
     {
       @mapName
-    } = {}.$extendAll(ASSETS['sample.scene.map']).$extendAll(args)
+    } = {}.$extendAll(ASSETS['sample.scene.map'].src).$extendAll(args)
 
     # TODO: プレイヤーキャラクターとりあえず版
     @pc = new rpg.Character(tm.asset.AssetManager.get('sample.character.test'))

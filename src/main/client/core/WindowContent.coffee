@@ -6,7 +6,7 @@ tm.define 'rpg.WindowContent',
   # 初期化
   init: (@innerRect) ->
     @superInit()
-    @shape = tm.app.Shape(@innerRect.width,@innerRect.height)
+    @shape = tm.display.Shape(@innerRect.width,@innerRect.height)
     @shape.origin.set(0,0)
     @shape.x = @innerRect.x
     @shape.y = @innerRect.y

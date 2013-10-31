@@ -2,7 +2,7 @@
 # キャラクタースプライトクラス
 tm.define 'rpg.SpriteCharacter',
 
-  superClass: tm.app.AnimationSprite
+  superClass: tm.display.AnimationSprite
 
   # 初期化
   init: (@character) ->

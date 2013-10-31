@@ -7,7 +7,7 @@ MAP = require('../../main/common/Map.coffee')
 
 describe 'rpg.Character', () ->
   map = new rpg.Map()
-  map.mapSheet = MAP.ASSETS['sample.mapsheet']
+  map.mapSheet = MAP.ASSETS['sample.mapsheet'].src
   rpg.system = {
     scene:
       map: map

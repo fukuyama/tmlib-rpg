@@ -12,7 +12,6 @@ module.exports = (grunt) ->
   # クライアントのスクリプト
   client_sections = [
       'sample'
-      'tmlib/AssetManager'
       'tmlib/JsonWrapper'
       'tmlib/CustomizeTexture'
       'core/System'
