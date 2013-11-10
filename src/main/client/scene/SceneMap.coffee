@@ -16,7 +16,7 @@ tm.define 'SceneMap',
     @superInit(name:'SceneMap')
 
     # シーンマップデータ初期化
-    args = tm.asset.AssetManager.get(args) if typeof args == 'string'
+    args = tm.asset.AssetManager.get(args).data if typeof args == 'string'
     {
       @mapName
     } = {}.$extendAll(ASSETS['sample.scene.map'].src).$extendAll(args)
@@ -24,6 +24,7 @@ tm.define 'SceneMap',
     # TODO: プレイヤーキャラクターとりあえず版
     @pc = new rpg.Character(tm.asset.AssetManager.get('sample.character.test'))
     @pc.moveSpeed = 6
+    rpg.system.player = @pc
     
     # TODO: マップデータ読み込みとりあえず版
     @map = new rpg.Map(tm.asset.AssetManager.get(@mapName))

@@ -1,16 +1,16 @@
 
-tm.define 'SceneMain',
+tm.define 'SceneMenuTest1',
   superClass: rpg.SceneBase
 
   # 初期化
   init: ->
     # 親の初期化
-    @superInit(name:'SceneMain')
+    @superInit(name:'SceneMenuTest1')
 
     @window1 = rpg.WindowMenu
-      active: false
+      active: true
       cols: 1
-      rows: 2
+      rows: 3
       menus: [
         {name:'Menu1',fn:-> console.log '1'}
         {name:'Menu2',fn:-> console.log '2'}
@@ -18,7 +18,7 @@ tm.define 'SceneMain',
     @addChild @window1
 
     @window2 = rpg.WindowMenu
-      active: false
+      active: true
       cols: 2
       rows: 1
       x: @window1.right
@@ -29,7 +29,7 @@ tm.define 'SceneMain',
     @addChild @window2
 
     @window3 = rpg.WindowMenu
-      active: false
+      active: true
       cols: 2
       rows: 2
       y: @window1.bottom
@@ -51,15 +51,11 @@ tm.define 'SceneMain',
         {name:'Menu2',fn:-> console.log '2'}
         {name:'Menu3',fn:-> console.log '3'}
         {name:'Menu4',fn:-> console.log '4'}
-        {name:'Menu5',fn:-> console.log '5'}
-        {name:'Menu6',fn:-> console.log '6'}
-        {name:'Menu7',fn:-> console.log '7'}
-        {name:'Menu8',fn:-> console.log '8'}
       ]
     @addChild @window4
 
     @window5 = rpg.WindowMenu
-      active: false
+      active: true
       cols: 3
       rows: 3
       x: @window3.left
@@ -67,8 +63,25 @@ tm.define 'SceneMain',
       menus: [
         {name:'Menu1',fn:-> console.log '1'}
         {name:'Menu2',fn:-> console.log '2'}
-        {name:'Menu1',fn:-> console.log '1'}
-        {name:'Menu2',fn:-> console.log '2'}
-        {name:'Menu2',fn:-> console.log '2'}
+        {name:'Menu3',fn:-> console.log '3'}
+        {name:'Menu4',fn:-> console.log '4'}
+        {name:'Menu5',fn:-> console.log '5'}
       ]
     @addChild @window5
+
+    @window6 = rpg.WindowMenu
+      active: true
+      cols: 3
+      rows: 3
+      x: @window3.left
+      y: @window5.bottom
+      menus: [
+        {name:'Menu1',fn:-> console.log '1'}
+        {name:'Menu2',fn:-> console.log '2'}
+        {name:'Menu3',fn:-> console.log '3'}
+        {name:'Menu1',fn:-> console.log '1'}
+        {name:'Menu2',fn:-> console.log '2'}
+        {name:'Menu3',fn:-> console.log '3'}
+        {name:'Menu4',fn:-> console.log '4'}
+      ]
+    @addChild @window6

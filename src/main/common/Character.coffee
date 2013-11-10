@@ -9,7 +9,7 @@ CHARACTER_DIRECTION =
   4: 'left'
   6: 'right'
   8: 'up'
-CHARACTER_DIRECTION[v] = k | 0 for k,v of CHARACTER_DIRECTION
+CHARACTER_DIRECTION[v] = Math.floor(k) for k,v of CHARACTER_DIRECTION
 
 # 方向を逆にするための定数
 REVERSE_DIRECTION = [8,6,4,2]
@@ -101,9 +101,11 @@ class rpg.Character
       moveRoute: []
       moveRouteIndex: 0
       moveRouteForce: false
+      moveSpeed: 4
+      moveFrequency: 4
       stopCount: 0
     }.$extendAll(ASSETS['sample.character'].src).$extendAll(args)
-
+    
     @mapChipSize = 32
     @mapFrameLength = 256.0
 
@@ -322,9 +324,9 @@ class rpg.Character
     ny = y + Y_ROUTE[di]
     # マップ範囲チェック
     return false if not map.isValid(nx,ny)
-    # 移動可能チェック
-    return false if not map.isPassable(x,y,d)
-    # 向きを逆に
+    # 自分位置の移動可能チェック
+    return false if not map.isPassable(x,y,d,@)
+    # 向きを逆に、移動先の可能チェック
     rd = REVERSE_DIRECTION[di]
     return false if not map.isPassable(nx,ny,rd)
     true

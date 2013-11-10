@@ -1,6 +1,4 @@
 
-DEFAULT_WINDOWSKIN_ASSET = 'windowskin.config'
-
 # ウィンドウクラス
 tm.define 'rpg.Window',
 
@@ -20,7 +18,7 @@ tm.define 'rpg.Window',
     } = {
       active: false
     }.$extend({
-      windowskin: DEFAULT_WINDOWSKIN_ASSET
+      windowskin: 'windowskin.config.default'
       textColor: 'rgb(255,255,255)'
       alpha: 0.9
     }).$extend(rpg.system.windowDefault).$extend args

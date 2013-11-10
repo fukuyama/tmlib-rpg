@@ -18,17 +18,17 @@ class rpg.Flag
     }.$extendAll args
     @values[@url] = {}
     
-  'is': (key) ->
-    0 != @get key
+  'is': (key,url=@url) ->
+    @values[url]? and 0 != @get key, url
 
   'on': (key) ->
-    @values[@url][key] = 1 unless @is key
+    @set(key,1) unless @is key
 
   'off': (key) ->
-    @values[@url][key] = 0
+    @set(key,0)
 
-  get: (key) ->
-    @values[@url][key] ? 0
+  get: (key,url=@url) ->
+    @values[url][key] ? 0
 
   set: (key, val) ->
     @values[@url][key] = val

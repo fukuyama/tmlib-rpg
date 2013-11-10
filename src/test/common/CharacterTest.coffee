@@ -8,6 +8,10 @@ MAP = require('../../main/common/Map.coffee')
 describe 'rpg.Character', () ->
   map = new rpg.Map()
   map.mapSheet = MAP.ASSETS['sample.mapsheet'].src
+  map.events = []
+  for l in map.mapSheet.layers when l.type is 'objectgroup'
+    for obj in l.objects
+      map.events.push JSON.parse(obj.properties.init)[0]
   rpg.system = {
     scene:
       map: map

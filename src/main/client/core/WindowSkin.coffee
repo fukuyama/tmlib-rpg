@@ -1,10 +1,30 @@
 
 ASSETS =
-  #'windowskin.vxace': 'img/window.png'
+  'windowskin.config.original':
+    type: 'json'
+    src:
+      image: 'windowskin.image'
+      borderWidth: 16
+      borderHeight: 16
+      backgroundPadding: 2
+      backgroundColor: 'rgba(0,0,0,0)'
+      spec:
+        backgrounds: [
+          [16,16,32,32]
+        ]
+        topLeft: [0,0,16,16]
+        topRight: [64-16,0,16,16]
+        bottomLeft: [0,64-16,16,16]
+        bottomRight: [64-16,64-16,16,16]
+        borderTop: [16,0,32,16]
+        borderBottom: [16,64-16,32,16]
+        borderLeft: [0,16,16,32]
+        borderRight: [64-16,16,16,32]
+  'windowskin.vxace': 'img/window.png'
   'windowskin.config.vxace':
     type: 'json'
     src:
-      image: 'windowskin.vxace'
+      image: 'windowskin.image'
       borderWidth: 16
       borderHeight: 16
       backgroundPadding: 2
@@ -23,10 +43,10 @@ ASSETS =
         borderLeft: [64, 16, 16, 16]
         borderRight: [128 - 16, 16, 16, 16]
   'windowskin.hiyoko': 'img/Frame320.png'
-  'sample.windowskin.config':
+  'windowskin.config.hiyoko':
     type: 'json'
     src:
-      image: 'windowskin.hiyoko'
+      image: 'windowskin.image'
       borderWidth: 32
       borderHeight: 32
       backgroundPadding: 2
@@ -49,11 +69,11 @@ tm.define 'rpg.WindowSkin',
   superClass: tm.display.CanvasElement
 
   # 初期化
-  init: (width, height, args = 'sample.windowskin.config') ->
+  init: (width, height, args = 'windowskin.config.original') ->
     @superInit()
     @width = width
     @height = height
-    args = tm.asset.AssetManager.get(args) if typeof args == 'string'
+    args = tm.asset.AssetManager.get(args).data if typeof args == 'string'
     {
       @image
       @borderWidth
@@ -61,7 +81,7 @@ tm.define 'rpg.WindowSkin',
       @backgroundPadding
       @backgroundColor
       @spec
-    } = {}.$extend(ASSETS['sample.windowskin.config'].src).$extend(args)
+    } = {}.$extend(ASSETS['windowskin.config.original'].src).$extend(args)
 
     @texture = tm.asset.AssetManager.get(@image)
 

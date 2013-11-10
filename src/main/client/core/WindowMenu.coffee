@@ -79,8 +79,7 @@ tm.define 'rpg.WindowMenu',
 
   # コンテキストのリサイズ
   resizeContent: ->
-    pageMax = 1 # TODO: 計算を
-    w = @innerRect.width * pageMax
+    w = @innerRect.width * @maxPageNum
     h = @innerRect.height
     @content.resize(w,h)
     @content.shape.width = w
@@ -92,9 +91,10 @@ tm.define 'rpg.WindowMenu',
     w = @menuWidth + @colPadding
     h = rpg.system.lineHeight
     for m, i in @menus
-      x = (i % @cols)
-      y = (i / @cols) | 0
-      @drawText(m.name, x * w, y * h)
+      n = Math.floor(i / @maxPageItems)
+      x = (i % @cols) * w + n * @innerRect.width
+      y = Math.floor((i % @maxPageItems)/ @cols) * h
+      @drawText(m.name, x, y)
 
   # Window再更新
   refresh: ->
@@ -104,22 +104,26 @@ tm.define 'rpg.WindowMenu',
   # ----------------------------------------------------
   # 入力処理
   # とりあえず
-  # TODO: cols rows の処理、ページの処理とかとか
-  
+
+  # 決定
+  input_ok: ->
+    # TODO: メニューがあるかどうか
+    rpg.system.se.menuDecision()
+    @callMenuHandler(@menus[@index].name)
+
+  # キャンセル
+  input_cancel: ->
+    rpg.system.se.menuCancel()
+    @close()
+
   # 上
   input_up: ->
-    pageItems = 0
-    if @menus.length < @pageIndex
-      pageItems = @menus.length
-      pageItems = pageItems + @cols - pageItems % @cols
-    else
-      pageItems = @pageIndex
-    if @rows == 1
+    if @rows == 1 and @maxPageNum == 1
       # 行１
       @index -= 1
-    else if @index % @pageIndex < @cols
+    else if @currentIndexRow == 1
       # ページの一番上
-      @index = @index + pageItems - @cols
+      @index = @index + (@currentPageRows - 1) * @cols
     else
       # それ以外
       @index -= @cols
@@ -130,74 +134,108 @@ tm.define 'rpg.WindowMenu',
 
   # 下
   input_down: ->
-    pageItems = 0
-    if @menus.length < @pageIndex
-      pageItems = @menus.length
-      pageItems = pageItems + @cols - pageItems % @cols
-    else
-      pageItems = @pageIndex
-    if @rows == 1
+    if @rows == 1 and @maxPageNum == 1
       # 行１
       @index += 1
-    else if @index % @pageIndex >= pageItems - @cols
+    else if @index % @maxPageItems >= @currentPageItems - @cols
       # ページの一番下
-      @index = @index - pageItems + @cols
+      if @currentIndexRow == @currentPageRows
+        @index = @index - (@currentPageRows - 1) * @cols
+      else
+        @index = @menus.length - 1
     else
       # それ以外
       @index += @cols
-      @index = @menus.length - 1 if @index >= @menus.length
     @index = (@index + @menus.length) % @menus.length
     @cursorInstance.setIndex(@index)
     rpg.system.se.menuCursorMove()
 
   # 左
   input_left: ->
-    if @cols == 1
+    if @currentIndexCols == 1 and @maxPageNum == 1
       # カラム１
       @index -= 1
-    else if @index > @menus.length - @cols
-      # 最後のメニューの場合
-      @index -= 1
-    else if @index % @cols == 0 and @cols != 1
+    else if @currentIndexCol == 1
       # ページの左端の場合
-      @index += @cols - 1
+      if @currentPageNum == 1
+        @index = (@maxPageNum - 1) * @maxPageItems + @index + @cols - 1
+      else
+        @index = @index - @maxPageItems + @cols - 1
+      if @menus.length <= @index
+        @index = @menus.length - 1 - @menus.length % @cols
     else
       @index -= 1
-    @index = (@index + @pageIndex) % @pageIndex
+    @index = (@index + @menus.length) % @menus.length
+    @content.ox = (@currentPageNum - 1) * @innerRect.width
+    @content.drawTo()
     @cursorInstance.setIndex(@index)
     rpg.system.se.menuCursorMove()
 
   # 右
   input_right: ->
-    if @cols == 1
+    if @cols == 1 and @maxPageNum == 1
       # カラム１
       @index += 1
-    else if @index == @menus.length - 1
-      # 最後のメニューの場合
-      @index -= @cols - 1
-    else if @index % @cols == @cols - 1
+    else if @currentIndexCol == @cols or
+    (@index == @menus.length - 1 and @currentIndexRow == 1)
       # ページの右端の場合
-      @index -= @cols - 1
+      if @currentPageNum == @maxPageNum
+        @index = (@currentIndexRow - 1) * @cols
+      else
+        @index = @index + @maxPageItems - @cols + 1
+      if @menus.length <= @index
+        @index = (@maxPageNum - 1) * @maxPageItems +
+        (@currentPageRows - 1) * @cols
+    else if @index == @menus.length - 1
+      @index = @index - @cols + 1
     else
       @index += 1
-    @index = (@index + @pageIndex) % @pageIndex
+    @index = (@index + @menus.length) % @menus.length
+    @content.ox = (@currentPageNum - 1) * @innerRect.width
+    @content.drawTo()
     @cursorInstance.setIndex(@index)
     rpg.system.se.menuCursorMove()
 
-  # 決定
-  input_ok: ->
-    # TODO: メニューがあるかどうか
-    rpg.system.se.menuDecision()
-    @callMenuHandler(@menus[@index].name)
-
-  # キャンセル
-  input_cancel: ->
-    # TODO: キャンセル処理はどうするか？
-    rpg.system.se.menuCancel()
-    console.log 'input_escape'
-    
   # メニュー選択
   pointing_menu: (e) ->
     @cursorInstance.setPointing(e)
 
-rpg.WindowMenu.prototype.getter 'pageIndex', -> @cols * @rows
+# １ページに表示可能な最大数
+rpg.WindowMenu.prototype.getter 'maxPageItems', -> @cols * @rows
+
+# 最大ページ数
+rpg.WindowMenu.prototype.getter 'maxPageNum', ->
+  Math.ceil(@menus.length / @maxPageItems)
+
+# 現在のページ数
+rpg.WindowMenu.prototype.getter 'currentPageNum', ->
+  Math.floor(@index / @maxPageItems) + 1
+
+# 現在のページに表示される数
+rpg.WindowMenu.prototype.getter 'currentPageItems', ->
+  currentPageItems = @maxPageItems
+  if @index + (@menus.length % @maxPageItems) >= @menus.length
+    currentPageItems = @menus.length % @maxPageItems
+  currentPageItems
+
+# 現在のページに表示される行数
+rpg.WindowMenu.prototype.getter 'currentPageRows', ->
+  currentPageRows = @rows
+  if @currentPageItems < @maxPageItems
+    currentPageRows = Math.ceil(@currentPageItems / @cols)
+  currentPageRows
+
+# 現在位置のカラム数
+rpg.WindowMenu.prototype.getter 'currentIndexCols', ->
+  currentIndexCols = @cols
+  if @menus.length - (@menus.length % @cols) <= @index
+    currentIndexCols = @menus.length % @cols + 1
+  currentIndexCols
+
+# 現在位置の行
+rpg.WindowMenu.prototype.getter 'currentIndexRow', ->
+  Math.floor(@index % @maxPageItems / @cols) + 1
+
+# 現在位置のカラム
+rpg.WindowMenu.prototype.getter 'currentIndexCol', ->
+  @index % @cols + 1

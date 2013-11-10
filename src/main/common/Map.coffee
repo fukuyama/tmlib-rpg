@@ -40,6 +40,9 @@ data = (->
 for x in [4..6]
   for y in [4..6]
     data[x+y*30] = 0
+for x in [4..6]
+  for y in [9..11]
+    data[x+y*30] = 0
 for x in [9..11]
   for y in [9..11]
     data[x+y*30] = 1
@@ -111,7 +114,11 @@ ASSETS =
                 init: JSON.stringify([
                     {
                       mapX: 5
-                      mapY: 5
+                      mapY: 10
+                      moveRoute: [
+                        {name: 'moveRundom'}
+                        {name: 'moveLoop'}
+                      ]
                     }
                 ])
               width: 32
@@ -147,16 +154,23 @@ class rpg.Map
   isValid: (x, y) -> 0 <= x and x < @width and 0 <= y and y < @height
 
   # 移動可能判定
-  isPassable: (x, y, d) ->
-    r = @_restriction(x,y)
+  isPassable: (x, y, d, character = null) ->
+    r = @_restriction(x,y,character)
     r[d / 2 - 1]
 
   # 移動制限情報の取得
-  _restriction: (x, y) ->
+  _restriction: (x, y, character = null) ->
+    # プレイヤーの位置確認
+    res = @_restrictionPlayer(x, y, character)
+    return res if res != null
     # TODO: イベントから見つかったらそれを返す
+    res = @_restrictionEvent(x, y, character)
+    return res if res != null
     # TODO: マップ固有情報から見つかったらそれを返す
     # タイルセットから
-    @_restrictionTileset(x, y)
+    res = @_restrictionTileset(x, y)
+    return res if res != null
+    MOVE_RESTRICTION.ALLOK
 
   _restrictionTileset: (x, y) ->
     i = @mapSheet.layers.length - 1
@@ -166,4 +180,18 @@ class rpg.Map
         tileid = layer.data[x + y * @width]
         if tileid >= 0
           return @mapSheet.tilesets[0].restriction[tileid]
-    MOVE_RESTRICTION.PASS
+    null
+
+  _restrictionEvent: (x, y, character = null) ->
+    for event in @events when event isnt character
+      if event.mapX == x and event.mapY == y
+        return MOVE_RESTRICTION.ALLNG
+    null
+
+  _restrictionPlayer: (x, y, character = null) ->
+    pc = rpg.system.player
+    if pc? and
+    pc isnt character and
+    pc.mapX == x and pc.mapY == y
+      return MOVE_RESTRICTION.ALLNG
+    null

@@ -8,11 +8,13 @@ module.exports = (grunt) ->
       'common/utils'
       'common/Character'
       'common/Map'
+      'common/Flag'
+      'common/Event'
+      'common/EventPage'
   ]
   # クライアントのスクリプト
   client_sections = [
       'sample'
-      'tmlib/JsonWrapper'
       'tmlib/CustomizeTexture'
       'core/System'
       'core/SpriteCharacter'
@@ -25,11 +27,14 @@ module.exports = (grunt) ->
       'core/WindowMenu'
       'core/WindowMessage'
       'core/GamePlayer'
+      'core/Interpreter'
       'scene/SceneBase'
       'scene/SceneLoading'
       'scene/SceneMain'
       'scene/SceneTitle'
       'scene/SceneMap'
+      'scene/SceneMenuTest1'
+      'scene/SceneMenuTest2'
       'main'
   ]
 

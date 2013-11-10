@@ -3,11 +3,12 @@ _g = window ? global ? @
 rpg = _g.rpg = _g.rpg ? {}
 
 TRIGGER_TYPE = {
-  TALK: 1
-  CHECK: 2
-  TOUCH: 3
-  AUTO: 4
-  PARALLEL: 5
+  TALK: 'talk'
+  CHECK: 'check'
+  TOUCH: 'touch'
+  TOUCHED: 'touched'
+  AUTO: 'auto'
+  PARALLEL: 'parallel'
 }
 
 ASSETS =
@@ -20,17 +21,26 @@ ASSETS =
           name: 'page1'
           condition: [
           ]
-          trigger:
-            type: [TRIGGER_TYPE.TALK]
+          trigger: [
+            'talk'
+          ]
+          commands: [
+            {
+              type:'message'
+              params:[
+                'TEST'
+              ]
+            }
+          ]
         }
       ]
 
 # イベント
-class rpg.Event
+class rpg.Event extends rpg.Character
 
   # コンストラクタ
   constructor: (args={}) ->
-    @setup(args)
+    super args
 
   # 初期化
   setup: (args={}) ->
@@ -38,36 +48,14 @@ class rpg.Event
       @name # イベント名
       pages
     } = {}.$extendAll(ASSETS['sample.event'].src).$extendAll(args)
-    @pages = new rpg.EventPage(page) for page in pages.reverse()
+    @pages = (new rpg.EventPage(page) for page in pages.reverse())
     @checkPage()
-  
+
+  # 現在のページを確認
   checkPage: ->
+    @currentPage = @pages[0]
     for page in @pages
       if page.checkCondition()
         @currentPage = page
         break
     @currentPage
-
-# イベントページ
-class rpg.EventPage
-
-  # コンストラクタ
-  constructor: (args={}) ->
-    @setup(args)
-    @_conditionFn = [
-      @_checkCondFlag
-      @_checkCondFlagValue
-    ]
-
-  # 初期化
-  setup: (args={}) ->
-    {
-      @name
-      @trigger
-      @condition
-    } = {}.$extendAll(args)
-
-  # 条件チェック
-  checkCondition: () ->
-    for cond in @condition
-      @_conditionFn[cond.type](cond)

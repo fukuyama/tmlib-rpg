@@ -19,6 +19,8 @@ tm.define 'rpg.WindowContent',
     
     @clearColor('rgba(0,0,0,0)')
 
+    @shape.update = @update
+
   drawTo: ->
     @shape.canvas.clear()
     @shape.canvas.drawImage(
@@ -29,6 +31,6 @@ tm.define 'rpg.WindowContent',
 
   update: ->
     if @ox != @_px or @oy != @_py
-      @drawTo
+      @drawTo()
       @_px = @ox
       @_py = @oy

@@ -11,6 +11,7 @@ tm.define 'rpg.SpriteMap',
     cw = ch = rpg.system.mapChipSize
     @superInit(@map.mapSheet, cw, ch)
     @map.mapSheet = @mapSheet
+    @map.events = (e.character for e in @events.children)
 
     @_screenCX = rpg.system.screen.width / 2 - cw / 2
     @_screenCY = rpg.system.screen.height / 2 - ch / 2

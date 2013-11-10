@@ -1,11 +1,11 @@
 
 # CustomizeTexture クラス
 tm.define 'tm.asset.CustomizeTexture',
-  superClass: tm.asset.JsonWrapper
+  superClass: tm.util.File
 
   # 初期化
-  init: (path) ->
-    @superInit(path)
+  init: () ->
+    @superInit()
 
   parse: (args) ->
     {
@@ -22,4 +22,12 @@ tm.define 'tm.asset.CustomizeTexture',
 
 # AssetManager に登録
 tm.asset.AssetManager.register 'texture_',
-  (path) -> tm.asset.CustomizeTexture(path)
+  (path) ->
+    obj = tm.asset.CustomizeTexture()
+    if typeof path is 'string'
+      obj.load
+        url: path,
+        dataType: 'json'
+    else
+      obj.setData path
+    obj

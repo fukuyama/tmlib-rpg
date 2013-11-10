@@ -8,7 +8,7 @@ _extendAll = (a, b) ->
     r = []
     r.push _extendAll(null, v) for v in b
   else if typeof b is 'object'
-    if a?
+    if a? and typeof a is 'object'
       r = a
       r[k] = _extendAll(a[k], b[k]) for k, v of b
     else

@@ -8,6 +8,8 @@ ASSETS =
     type: 'json'
     src:
       title: 'tmlib-rpg'
+      assets: [
+      ]
       main:
         scene: 'SceneTitle'
         param: 'scene.title'
@@ -22,7 +24,7 @@ ASSETS =
           color: 'blue'
           direction: 'left'
       windowDefault:
-        windowskin: 'windowskin.config'
+        windowskin: {} # WindowSkin クラスのデフォルトを使う
         textColor: 'rgb(255,255,255)'
         alpha: 0.9
         cursor:
@@ -46,9 +48,10 @@ tm.define 'rpg.System',
 
   # 初期化
   init: (args = 'system') ->
-    args = tm.asset.AssetManager.get(args) if typeof args == 'string'
+    args = tm.asset.AssetManager.get(args).data if typeof args == 'string'
     {
       @title
+      @assets
       @main
       @canvasId
       @loadingSceneDefault
@@ -58,10 +61,14 @@ tm.define 'rpg.System',
       @screen
       @se
       @mapChipSize
-    } = {}.$extendAll(ASSETS.system.src).$extendAll(args)
+      @temp
+    } = {
+      temp: {}
+    }.$extendAll(ASSETS.system.src).$extendAll(args)
 
     # Audio 関連のメソッド作成
     # menu_decision -> rpg.system.se.menuDecision()
+    # menu_cursor_move -> rpg.system.se.menuCursorMove()
     for k, v of ASSETS.system.src.se
       names = k.split '_'
       nm = names[0]
@@ -85,8 +92,10 @@ tm.define 'rpg.System',
     # APバックグラウンド
     app.background = @screen.background
 
-    # シーンを切り替える
-    @loadScene @main
+    sceneMain = {}.$extendAll(@main)
+    sceneMain.assets = @assets.concat sceneMain.assets
+    # 最初のシーンに切り替える
+    @loadScene sceneMain
 
     # 実行
     app.run()

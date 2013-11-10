@@ -7,7 +7,7 @@ tm.define 'rpg.SpriteCursor',
   # 初期化
   init: (@parent, args='sample.cursor') ->
     @superInit()
-    args = tm.asset.AssetManager.get(args) if typeof args == 'string'
+    args = tm.asset.AssetManager.get(args).data if typeof args == 'string'
     delete args[k] for k, v of args when not v?
     @origin.set(0, 0)
     {
@@ -45,11 +45,12 @@ tm.define 'rpg.SpriteCursor',
     @_indexPositions = []
     pw = (@parent.width - @parent.innerRect.width) / 2 - @padding / 2
     ph = (@parent.height - @parent.innerRect.height) / 2 - @padding / 2
-    for r in [0...rows]
-      for c in [0...cols]
-        @_indexPositions.push
-          x: pw + c * w + c * @parent.colPadding
-          y: ph + r * h
+    for pi in [0..@parent.maxPageNum]
+      for r in [0...rows]
+        for c in [0...cols]
+          @_indexPositions.push
+            x: pw + c * w + c * @parent.colPadding
+            y: ph + r * h
     @setIndex()
   
   # カーソル位置設定

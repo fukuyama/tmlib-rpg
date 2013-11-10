@@ -54,5 +54,22 @@ describe 'rpg.Flag', ->
       flag.off 'test'
       (flag.get 'test').should.equal 0
 
-    # it '他のサイトのフラグを取得 http://hoehoe/ の test'
-    #  flag.on 'test', 'http://hoehoe/'
+    it '他のサイトのフラグを取得 http://hoehoe/ の test を取得 true', ->
+      flag = new rpg.Flag({
+        values: {
+          'http://hoehoe/': {
+            'test': 1
+          }
+        }
+      })
+      (flag.is 'test', 'http://hoehoe/').should.equal true
+    it 'ローカルの test は false', ->
+      (flag.is 'test').should.equal false
+    it '別のサイトの test は false', ->
+      (flag.is 'test','http://err').should.equal false
+    it 'http://hoehoe/ の test1 は false', ->
+      (flag.is 'test1','http://hoehoe/').should.equal false
+    it 'null の url を指定すると、ローカルを取る', ->
+      flag.get('local_flg1').should.equal 0
+      flag.on 'local_flg1'
+      flag.get('local_flg1',null).should.equal 1

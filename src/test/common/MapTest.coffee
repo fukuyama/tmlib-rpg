@@ -7,6 +7,10 @@ MAP = require('../../main/common/Map.coffee')
 describe 'rpg.Map', () ->
   debug = (m) ->
     m.mapSheet = MAP.ASSETS['sample.mapsheet'].src
+    m.events = []
+    for l in m.mapSheet.layers when l.type is 'objectgroup'
+      for obj in l.objects
+        m.events.push JSON.parse(obj.properties.init)[0]
     m
 
   describe '初期化', ->
@@ -66,3 +70,15 @@ describe 'rpg.Map', () ->
       m.isPassable(10,10,6).should.equal false
     it '10,10 から上(8)へ移動不可能(false)', ->
       m.isPassable(10,10,8).should.equal false
+
+  describe 'isPassable サンプルマップの 5, 10' +
+  '、キャラクターがいるので通行不可能', ->
+    m = debug new rpg.Map()
+    it '5,10 から下(2)へ移動不可能(false)', ->
+      m.isPassable(5,10,2).should.equal false
+    it '5,10 から左(4)へ移動不可能(false)', ->
+      m.isPassable(5,10,4).should.equal false
+    it '5,10 から右(6)へ移動不可能(false)', ->
+      m.isPassable(5,10,6).should.equal false
+    it '5,10 から上(8)へ移動不可能(false)', ->
+      m.isPassable(5,10,8).should.equal false

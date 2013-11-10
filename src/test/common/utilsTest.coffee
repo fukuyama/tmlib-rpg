@@ -28,6 +28,13 @@ describe 'utils', () ->
         c.should.equal 1
       it 'h.name は "test" になる', ->
         h.name.should.equal 'test'
+    describe '文字列の属性にオブジェクトをマージすると上書きする', ->
+      h = {param:'test'}
+      a = {param:{name: 'name'}}
+      it 'a を h にマージ', ->
+        h.$extendAll a
+      it '上書きされたか？ h.param がオブジェクトか？', ->
+        h.param.should.be.a 'object'
     it 'level 2', ->
       h = {src:{i:11,l:20}}
       a = {name:'test',src:{i:10}}
