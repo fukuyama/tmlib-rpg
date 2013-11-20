@@ -55,6 +55,8 @@ tm.define 'SceneTitle',
     @menu_title = rpg.WindowMenu
       menus: @menus
       active: true
+      visible: true
+      close: false
       rows: @menus.length
     @menu_title.x = rpg.system.screen.width / 2 - @menu_title.width / 2
     @menu_title.y = rpg.system.screen.height / 2

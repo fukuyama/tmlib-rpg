@@ -1,10 +1,13 @@
 
+# マップメニュー
 tm.define 'rpg.WindowMapMenu',
   superClass: rpg.WindowMenu
 
   # 初期化
   init: (args={}) ->
     args.$extend {
+      active: false
+      visible: false
       x: 16
       y: 16
       cols: 2
@@ -19,3 +22,29 @@ tm.define 'rpg.WindowMapMenu',
       ]
     }
     @superInit(args)
+  
+  menuTalk: ->
+    @close()
+    rpg.system.player.talk()
+    
+  menuSkill: ->
+    console.log 'skill'
+  menuItem: ->
+    console.log 'item'
+  menuCheck: ->
+    console.log 'check'
+  menuStatus: ->
+    console.log 'status'
+  menuOperation: ->
+    console.log 'operation'
+    @close()
+    rpg.system.scene.interpreter.start [
+      {
+        type: 'message'
+        params: ['TEST']
+      },
+      {
+        type: 'message'
+        params: ['TEST']
+      }
+    ]

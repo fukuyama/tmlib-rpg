@@ -7,40 +7,74 @@ tm.define 'rpg.Interpreter',
     {
       @index
       @indent
-      @messageWait
+      @flagWait
     } = {
       index: 0
       indent: 0
-      messageWait: false
+      flagWait: false
     }.$extend args
-    
     @clear()
-    
+
+  # 状態クリア
   clear: ->
     @index = 0
-    @commands = null
-  
+    @commands = []
+    @event = null
 
-  start: (@commands=[]) ->
+  # イベント開始
+  start: (args) ->
+    if args instanceof rpg.Event
+      @event = args
+      @commands = args.commands
+    else
+      @commands = args
     @index = 0
+    
+  # イベント終了
+  end: ->
+    @clear()
 
+  # イベント実行中かどうか
+  isRunning: -> @commands.length isnt 0
+
+  # 更新
   update: ->
-    while @index < @commands.length
-      return if @messageWait
+    while @hasNext()
+      return if @flagWait
       return if @execute()
-      @index += 1
+      @nextCommand()
+    @clear()
 
-  execute: ->
-    if @index < @commands.length
-      @command = @commands[@index]
-      return @['command_' + @command.type].apply(@,@command.params)
-    @commands = null
-    return true
+  # イベント実行
+  execute: (command) ->
+    command = @currentCommand() unless command?
+    @['command_' + command.type].apply(@, command.params)
 
-  command_talk: (msg) ->
-    rpg.system.temp.message = msg
-    @messageWait = true
-    if rpg.system.scene?
-      rpg.system.scene.windowMessage.addEventListener('close',(->
-        @messageWait = false
-      ).bind(@))
+  # 次のコマンドがあるか
+  hasNext: -> @index < @commands.length
+  nextCommand: -> @commands[@index++]
+  currentCommand: -> @commands[@index]
+  
+  #-------------------
+  # イベントコマンド
+
+  # script
+  command_script: (script) ->
+    # TODO: eval は危険かな～？
+  
+  # messge
+  command_message: (msg) ->
+    rpg.system.temp.message = [msg]
+    while @hasNext()
+      command = @nextCommand()
+      if command.type is 'message'
+        rpg.system.temp.message.push command.params[0]
+    rpg.system.temp.messageEndProc = (->
+      @flagWait = false
+    ).bind(@)
+    @flagWait = true
+    false
+
+  # flag
+  command_flag: (key) ->
+    

@@ -8,7 +8,7 @@ root.SYSTEM_ASSETS =
     type: 'json'
     src:
       'screen':
-        width: 32 * 15
+        width: 32 * 25
         height: 32 * 15
         background: 'rgb(255,255,255)'
       main:
@@ -44,7 +44,7 @@ root.SYSTEM_ASSETS =
       loadingSceneDefault:
         gauge:
           color: 'rgb(96,96,96)'
-          width: 32 * 15
+          width: 32 * 25
           y: 32 * 15 - 10
       windowDefault: {}
 

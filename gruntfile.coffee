@@ -26,6 +26,7 @@ module.exports = (grunt) ->
       'core/Window'
       'core/WindowMenu'
       'core/WindowMessage'
+      'core/WindowMapMenu'
       'core/GamePlayer'
       'core/Interpreter'
       'scene/SceneBase'
@@ -41,9 +42,14 @@ module.exports = (grunt) ->
   genPath = 'target/generate/'
   
   coffeeConfig =
-    options: {
+    options:
       bare: false
-    }
+    test_client:
+      expand: true
+      cwd: 'src/test/client/'
+      src: ['**.coffee']
+      dest: 'target/public/client/test/'
+      ext: '.js'
 
   watchConfig =
     express:
@@ -55,9 +61,14 @@ module.exports = (grunt) ->
       files: ['src/**/*.html']
       tasks: ['copy']
     test_scripts:
-      files: ['src/test/**/*.coffee']
+      files: ['src/test/common/**.coffee']
       tasks: [
         'coffeelint', 'simplemocha'
+      ]
+    test_client:
+      files: ['src/test/client/**.coffee']
+      tasks: [
+        'coffee:test_client'
       ]
 
   for f in common_sections
@@ -95,7 +106,7 @@ module.exports = (grunt) ->
         reporter: 'nyan'
         ui: 'bdd'
       all:
-        src: ['src/test/**/*.coffee']
+        src: ['src/test/common/**.coffee']
     coffee: coffeeConfig
     concat:
       options:
@@ -112,17 +123,16 @@ module.exports = (grunt) ->
           'target/public/client/main.min.js': ['target/public/client/main.js']
 
     copy:
-      client:
-        expand: true
-        flatten: false
-        cwd: 'src/main/client/public/'
-        src: ['**']
-        dest: 'target/public/client/'
       express:
         expand: true
         cwd: 'src/main/express/'
         src: ['**']
         dest: 'target/'
+      test_client:
+        expand: true
+        cwd: 'src/test/public/'
+        src: ['**']
+        dest: 'target/public/'
 
     express:
       options:

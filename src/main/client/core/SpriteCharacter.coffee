@@ -11,7 +11,10 @@ tm.define 'rpg.SpriteCharacter',
       @character = new rpg.Character data
     if (not (@character instanceof rpg.Character)) and
     typeof @character is 'object'
-      @character = new rpg.Character @character
+      if @character.pages?
+        @character = new rpg.Event @character
+      else
+        @character = new rpg.Character @character
     @superInit(@character.spriteSheet)
     @origin.set(0, 0)
     {

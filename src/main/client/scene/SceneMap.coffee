@@ -24,37 +24,52 @@ tm.define 'SceneMap',
     # TODO: プレイヤーキャラクターとりあえず版
     @pc = new rpg.Character(tm.asset.AssetManager.get('sample.character.test'))
     @pc.moveSpeed = 6
-    rpg.system.player = @pc
-    
+
     # TODO: マップデータ読み込みとりあえず版
     @map = new rpg.Map(tm.asset.AssetManager.get(@mapName))
 
+    # インタープリター
+    @interpreter = rpg.Interpreter()
+
     # メッセージウィンドウ
     @windowMessage = rpg.WindowMessage()
+    # マップコマンド
+    @windowMapMenu = rpg.WindowMapMenu()
 
     # プレイヤー
-    @player = rpg.GamePlayer(@pc)
-    
-    @windowMessage.addEventListener('close',(->
+    @player = rpg.system.player = rpg.GamePlayer(@pc)
+
+    playerActive = (->
       @player.active = true
-    ).bind(@))
-    @player.addEventListener('input_ok',(->
+      rpg.system.app.keyboard.clear()
+    ).bind(@)
+    @windowMapMenu.addEventListener('close',playerActive)
+    @windowMessage.addEventListener('close',playerActive)
+    
+    openMapMenu = (->
       @player.active = false
-      @windowMessage.setMessage('ほえほえ')
-    ).bind(@))
+      rpg.system.app.keyboard.clear()
+      @windowMapMenu.open()
+    ).bind(@)
+    @player.addEventListener('input_ok',openMapMenu)
+    @player.addEventListener('input_cancel',openMapMenu)
 
     @spriteMap = rpg.SpriteMap(@pc, @map)
     @spriteMap.addChild(rpg.SpriteCharacter(@pc))
+
     @addChild(@spriteMap)
     
     dummy = tm.app.CanvasElement()
-    dummy.update = @spriteMap.updatePosition.bind(@spriteMap)
+    dummy.update = (->
+      unless @windowMessage.active
+        @interpreter.update()
+        @player.update()
+        @spriteMap.updatePosition()
+    ).bind(@)
     @addChild(dummy)
 
+    @addChild(@windowMapMenu)
     @addChild(@windowMessage)
-  
-  update: (app) ->
-    @player.update()
 
 SceneMap.assets = [].concat ASSETS
 SceneMap.assets = SceneMap.assets.concat rpg.SpriteMap.assets

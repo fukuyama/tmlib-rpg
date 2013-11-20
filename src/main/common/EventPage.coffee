@@ -3,15 +3,6 @@
 _g = window ? global ? @
 rpg = _g.rpg = _g.rpg ? {}
 
-TRIGGER_TYPE = {
-  TALK: 'talk'
-  CHECK: 'check'
-  TOUCH: 'touch'
-  TOUCHED: 'touched'
-  AUTO: 'auto'
-  PARALLEL: 'parallel'
-}
-
 # イベントページ
 class rpg.EventPage
 
@@ -28,7 +19,7 @@ class rpg.EventPage
       for t in @trigger when t is key
         return true
       return false
-    for k, v of TRIGGER_TYPE
+    for k, v of rpg.EventPage.TRIGGER_TYPE
       f = v.charAt(0).toUpperCase() + v.slice(1)
       @['trigger'+f] = triggerFunc.bind(@, v)
 
@@ -70,3 +61,12 @@ class rpg.EventPage
 
   _checkCondFlagValueEqual:   (key, val, url) ->
     @_flag.get(key, url) == val
+
+rpg.EventPage.TRIGGER_TYPE = {
+  TALK: 'talk'
+  CHECK: 'check'
+  TOUCH: 'touch'
+  TOUCHED: 'touched'
+  AUTO: 'auto'
+  PARALLEL: 'parallel'
+}

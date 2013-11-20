@@ -247,3 +247,19 @@ describe 'rpg.EventPage', () ->
         page.triggerTouch().should.equal false
         page.triggerTouched().should.equal false
         page.triggerAuto().should.equal false
+    describe '話すとしらべる', ->
+      page = new rpg.EventPage
+        name: 'page2'
+        trigger: [
+          'talk'
+          'check'
+        ]
+      it '話された場合 true', ->
+        page.triggerTalk().should.equal true
+      it 'しらべられた場合 true', ->
+        page.triggerCheck().should.equal true
+      it 'その他は false', ->
+        page.triggerTouch().should.equal false
+        page.triggerTouched().should.equal false
+        page.triggerAuto().should.equal false
+        page.triggerParallel().should.equal false

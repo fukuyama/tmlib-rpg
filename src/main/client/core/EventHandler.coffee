@@ -7,6 +7,19 @@ DEFAULT_EVENT_KEY_ALIAS = [
   {name: 'cancel', keys: ['escape','x']}
 ]
 
+DEFAULT_EVENT_UPKEYS = ['enter','escape','c','x']
+DEFAULT_EVENT_UPKEY_ALIAS = [
+  {name: 'decision', keys: ['enter','c']}
+  {name: 'ok', keys: ['enter','c']}
+  {name: 'cancel', keys: ['escape','x']}
+]
+
+tm.input.Keyboard.prototype.clear = ->
+  @press  = {}
+  @down   = {}
+  @up     = {}
+  @last   = {}
+
 # イベントハンドラ
 tm.define 'rpg.EventHandler',
 
@@ -17,6 +30,8 @@ tm.define 'rpg.EventHandler',
       repeatHandlers
       @eventKeys
       @aliasKeys
+      @eventUpKeys
+      @aliasUpKeys
       @active
       # カウントで大丈夫かな～？
       @repeatDelay
@@ -26,6 +41,8 @@ tm.define 'rpg.EventHandler',
       repeatHandlers: {}
       eventKeys: DEFAULT_EVENT_KEYS
       aliasKeys: DEFAULT_EVENT_KEY_ALIAS
+      eventUpKeys: DEFAULT_EVENT_UPKEYS
+      aliasUpKeys: DEFAULT_EVENT_UPKEY_ALIAS
       active: false
       repeatDelay: 10
       repeatIntarval: 0
@@ -46,6 +63,7 @@ tm.define 'rpg.EventHandler',
     dispatcher = tm.event.EventDispatcher()
     @["add#{name}Handler"] = @addHandler.bind(@, dispatcher)
     @["call#{name}Handler"] = @callHandler.bind(@, dispatcher)
+    @["remove#{name}Handler"] = @removeHandler.bind(@, dispatcher)
 
   # ハンドラ追加
   addHandler: (dispatcher, key, fn) ->
@@ -59,16 +77,29 @@ tm.define 'rpg.EventHandler',
     if dispatcher.hasEventListener key
       dispatcher.dispatchEvent(tm.event.Event key)
 
+  # ハンドラ削除
+  removeHandler: (dispatcher, key, fn) ->
+    if typeof key is 'string'
+      dispatcher.removeEventListener(key, fn)
+    else
+      dispatcher.removeEventListener(k, f) for k, f of key
+
   # ハンドラセットアップ
   # receiver のメソッド名から、自動的にハンドラを設定する
   # ex) input_up() repeat_down() など
   setupHandler: (receiver) ->
     _setupHandler = ((rec,addHandler,prefix) ->
-      for key in @eventKeys when typeof rec[prefix + key] is 'function'
+      _isFunc = (k) -> typeof rec[prefix + k] is 'function'
+      for key in @eventKeys when _isFunc key
         addHandler key, rec[prefix + key].bind(rec)
-      for a in @aliasKeys when typeof rec[prefix + a.name] is 'function'
+      for a in @aliasKeys when _isFunc a.name
         for key in a.keys
           addHandler key, rec[prefix + a.name].bind(rec)
+      for key in @eventUpKeys when _isFunc(key + '_up')
+        addHandler key + '_up', rec[prefix + key + '_up'].bind(rec)
+      for a in @aliasUpKeys when _isFunc(a.name + '_up')
+        for key in a.keys
+          addHandler key + '_up', rec[prefix + a.name + '_up'].bind(rec)
       ).bind(@, receiver)
     _setupHandler @addInputHandler, 'input_'
     _setupHandler @addRepeatHandler, 'repeat_'
@@ -87,3 +118,6 @@ tm.define 'rpg.EventHandler',
         if @repeatDelay < @repeatCount++
           @callRepeatHandler key
           @repeatCount -= @repeatIntarval
+
+      for key in @eventUpKeys when kb.getKeyUp(key)
+        @callInputHandler key + '_up'

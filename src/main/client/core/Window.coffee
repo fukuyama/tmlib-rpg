@@ -12,16 +12,21 @@ tm.define 'rpg.Window',
     @height = height
     {
       @active     # アクティブフラグ
+      @visible    # 表示状態
       @textColor  # テキスト描画時のカラー
       @alpha
       @windowskin
     } = {
       active: false
+      visible: true
     }.$extend({
       windowskin: 'windowskin.config.default'
       textColor: 'rgb(255,255,255)'
       alpha: 0.9
     }).$extend(rpg.system.windowDefault).$extend args
+
+    @_openDuring = false
+    @_closeDuring = false
 
     @origin.set(0, 0)
     @x = x
@@ -107,16 +112,24 @@ tm.define 'rpg.Window',
   # 更新処理
   update: ->
     @eventHandler.updateInput() if @active
+    if @_openDuring
+      @_openDuring = false
+      @visible = true
+      @active = true
+      @dispatchEvent rpg.Window.EVENT_OPEN
+    if @_closeDuring
+      @_closeDuring = false
+      @visible = false
+      @active = false
+      @dispatchEvent rpg.Window.EVENT_CLOSE
 
+  # 開く
   open: ->
-    @visible = true
-    @active = true
-    @dispatchEvent rpg.Window.EVENT_OPEN
+    @_openDuring = true
 
+  # 閉じる
   close: ->
-    @visible = false
-    @active = false
-    @dispatchEvent rpg.Window.EVENT_CLOSE
+    @_closeDuring = true
 
 rpg.Window.EVENT_OPEN = tm.event.Event "open"
 rpg.Window.EVENT_CLOSE = tm.event.Event "close"

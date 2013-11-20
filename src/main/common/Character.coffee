@@ -97,6 +97,7 @@ class rpg.Character
       @moveRouteIndex # 移動ルートのインデックス
       @moveRouteForce
       @stopCount
+      @lock
     } = {
       moveRoute: []
       moveRouteIndex: 0
@@ -104,6 +105,9 @@ class rpg.Character
       moveSpeed: 4
       moveFrequency: 4
       stopCount: 0
+      lock: {
+        stopCount: false
+      }
     }.$extendAll(ASSETS['sample.character'].src).$extendAll(args)
     
     @mapChipSize = 32
@@ -201,13 +205,21 @@ class rpg.Character
   # 更新処理
   update: ->
     @updatePosition()
+    # 強制移動の場合
     if @moveRouteForce
       @updateMoveRoute()
+      return
+    # 強制移動では無く移動ルートが設定されてる場合
+    if @moveRoute.length > 0
+      @updateDefaultMoveRoute()
+      return
+
+  # 通常時の移動ルート更新
+  updateDefaultMoveRoute: ->
     if @stopCount > @moveFrameFrequency
       @updateMoveRoute()
       @stopCount = 0
-
-    @stopCount++ if not @isMove()
+    @stopCount++ unless @isMove() or @lock.stopCount
 
   # 位置の更新
   updatePosition: ->
@@ -253,14 +265,25 @@ class rpg.Character
 
   # 移動ルート強制
   forceMoveRoute: (moveRoute) ->
+    @moveRouteOriginal = @moveRoute unless @moveRouteOriginal?
     @moveRoute = moveRoute
     @moveRouteIndex = 0
     @moveRouteForce = true
 
   # 移動ルート設定
   defaultMoveRoute: (moveRoute) ->
+    @moveRouteOriginal = moveRoute
     @moveRoute = moveRoute
     @moveRouteIndex = 0
+
+  # 移動ルート終了
+  endMoveRoute: () ->
+    if @moveRouteOriginal?
+      @moveRoute = @moveRouteOriginal
+    else
+      @moveRoute.length = 0
+    @moveRouteIndex = 0
+    @moveRouteForce = false
 
   # スクリーン座標計算 x
   _calcScreenX: () ->
@@ -310,23 +333,44 @@ class rpg.Character
     name = MOVE_RUNDOM[Math.floor(Math.random() * MOVE_RUNDOM.length)]
     @applyMoveMethod name
 
-  # 移動可能判定
-  #　TODO: ななめどしよ
-  isPassable: (x, y, d) ->
-    # マップの取得
-    map = rpg.system.scene.map
+  # 向き設定インデックスの計算 2,4,6,8 と言うのを、0,1,2,3 に
+  directionIndex: (d) ->
+    d / 2 - 1
+  
+  # 逆向きの計算
+  reverseDirection: (d=@directionNum) ->
     # 向き指定が文字列の場合は、数値に
     d = CHARACTER_DIRECTION[d] if typeof d is 'string'
-    # 向き設定インデックスの計算 2,4,6,8 と言うのを、0,1,2,3 に
-    di = d / 2 - 1
+    # 逆向きの計算
+    REVERSE_DIRECTION[@directionIndex(d)]
+
+  # 目の前の座標
+  frontPosition: (x=@mapX, y=@mapY, d=@directionNum) ->
+    d = CHARACTER_DIRECTION[d] if typeof d is 'string'
+    # 向き設定インデックス
+    di = @directionIndex(d)
     # 移動先座標の計算
-    nx = x + X_ROUTE[di]
-    ny = y + Y_ROUTE[di]
+    [x + X_ROUTE[di], y + Y_ROUTE[di]]
+
+  # 移動可能判定
+  #　TODO: ななめどしよ
+  isPassable: (x=@mapX, y=@mapY, d=@directionNum) ->
+    d = CHARACTER_DIRECTION[d] if typeof d is 'string'
+    # 移動先座標の取得
+    [nx,ny] = @frontPosition(x, y, d)
+    # マップの取得
+    map = rpg.system.scene.map
     # マップ範囲チェック
-    return false if not map.isValid(nx,ny)
+    return false if not map.isValid(nx, ny)
     # 自分位置の移動可能チェック
-    return false if not map.isPassable(x,y,d,@)
+    return false if not map.isPassable(x, y, d, @)
     # 向きを逆に、移動先の可能チェック
-    rd = REVERSE_DIRECTION[di]
-    return false if not map.isPassable(nx,ny,rd)
+    return false if not map.isPassable(nx, ny, @reverseDirection(d))
     true
+
+  # 目の前のキャラクターを取得
+  findFrontCharacter: ->
+    # 目の前の座標
+    [nx,ny] = @frontPosition()
+    # マップ情報から検索
+    rpg.system.scene.map.findCharacter(nx,ny,@)

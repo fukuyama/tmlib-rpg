@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>tmlib-rpg Mocha Testcase</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="mocha.css" />
+    <script src="lib/develop/tmlib.js"></script>
+    <script src="main.js"></script>
+  </head>
+  <body onkeydown="return ctl">
+    <div id="mocha"></div>
+    <canvas id="game_screen" onmouseover="ctl=false" onmouseout="ctl=true"></canvas>
+    <script src="mocha.js"></script>
+    <script src="chai.js"></script>
+    <script>
+      ctl = true;
+      rpg.mocha = true;
+      mocha.setup('bdd');
+      chai.should();
+    </script>
+    <script src="test/InterpreterTest.js"></script>
+    <script>
+      mocha.run();
+    </script>
+  </body>
+</html>

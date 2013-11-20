@@ -47,11 +47,21 @@ tm.define 'rpg.GamePlayer',
       @character.moveRight()
 
   # 決定処理
-  input_ok: ->
+  input_ok_up: ->
     @dispatchEvent rpg.GamePlayer.EVENT_INPUT_OK
 
-  # 決定処理
-  input_cancel: ->
-    console.log 'cancel'
+  # キャンセル処理
+  input_cancel_up: ->
+    @dispatchEvent rpg.GamePlayer.EVENT_INPUT_CANCEL
+
+  # はなすイベント処理
+  talk: ->
+    # 目の前のキャラクターを探す
+    c = @character.findFrontCharacter()
+    # いたら話しかける
+    if c? and c.triggerTalk? and c.triggerTalk()
+      # 反応がある場合はイベントを実行
+      c.start()
 
 rpg.GamePlayer.EVENT_INPUT_OK = tm.event.Event "input_ok"
+rpg.GamePlayer.EVENT_INPUT_CANCEL = tm.event.Event "input_cancel"

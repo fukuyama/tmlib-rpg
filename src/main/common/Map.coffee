@@ -123,6 +123,47 @@ ASSETS =
                 ])
               width: 32
               height: 32
+            },
+            {
+              type: 'rpg.SpriteCharacter'
+              name: 'Event001'
+              properties:
+                init: JSON.stringify([
+                    {
+                      mapX: 7
+                      mapY: 10
+                      moveRoute: [
+                        {name: 'moveRundom'}
+                        {name: 'moveLoop'}
+                      ]
+                      pages: [
+                        {
+                          name: 'page1'
+                          condition: [
+                          ]
+                          trigger: [
+                            'talk'
+                          ]
+                          commands: [
+                            {
+                              type:'message'
+                              params:[
+                                'TEST1'
+                              ]
+                            },
+                            {
+                              type:'message'
+                              params:[
+                                'TEST2'
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                ])
+              width: 32
+              height: 32
             }
           ]
         }
@@ -162,14 +203,15 @@ class rpg.Map
   _restriction: (x, y, character = null) ->
     # プレイヤーの位置確認
     res = @_restrictionPlayer(x, y, character)
-    return res if res != null
-    # TODO: イベントから見つかったらそれを返す
+    return res if res isnt null
+    # イベントから見つかったらそれを返す
     res = @_restrictionEvent(x, y, character)
-    return res if res != null
+    return res if res isnt null
     # TODO: マップ固有情報から見つかったらそれを返す
+
     # タイルセットから
     res = @_restrictionTileset(x, y)
-    return res if res != null
+    return res if res isnt null
     MOVE_RESTRICTION.ALLOK
 
   _restrictionTileset: (x, y) ->
@@ -183,15 +225,32 @@ class rpg.Map
     null
 
   _restrictionEvent: (x, y, character = null) ->
-    for event in @events when event isnt character
-      if event.mapX == x and event.mapY == y
-        return MOVE_RESTRICTION.ALLNG
-    null
+    event = @findCharacter(x, y, character)
+    if event isnt null then MOVE_RESTRICTION.ALLNG else null
 
   _restrictionPlayer: (x, y, character = null) ->
-    pc = rpg.system.player
+    pc = @findPlayer(x, y, character)
+    if pc isnt null then MOVE_RESTRICTION.ALLNG else null
+
+  # 座標位置のプレイヤーを検索
+  # character: 検索を行ったキャラクター
+  findPlayer: (x, y, character = null) ->
+    pc = rpg.system.player.character
     if pc? and
     pc isnt character and
     pc.mapX == x and pc.mapY == y
-      return MOVE_RESTRICTION.ALLNG
+      pc
+    else
+      null
+
+  # 座標位置のキャラクターを検索
+  # character: 検索を行ったキャラクター
+  findCharacter: (x, y, character = null) ->
+    # プレイヤー位置確認
+    pc = @findPlayer(x, y, character)
+    return pc if pc isnt null
+    # イベント位置確認
+    for event in @events when event isnt character
+      if event.mapX == x and event.mapY == y
+        return event
     null

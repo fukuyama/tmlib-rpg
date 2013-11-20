@@ -79,7 +79,60 @@ tm.define 'rpg.System',
     Object.defineProperty @, 'scene',
       get: -> @app.currentScene
 
-  run: ->
+  # テスト実行
+  runMocha: ->
+    console.log 'mocha mode.'
+    # アプリケーション作成
+    app = @app = tm.display.CanvasApp '#' + @canvasId
+
+    # リサイズ
+    app.resize @screen.width, @screen.height
+
+    # 自動フィット
+    app.fitDebugWindow = ->
+      _fitFunc = (->
+        e = @element
+        s = e.style
+        
+        s.position = 'fixed'
+        s.margin = '0'
+        #s.left = '0px'
+        s.top  = '55px'
+        #s.bottom = '0px'
+        s.right = '10px'
+        s.zIndex = 10
+
+        rateWidth = e.width / window.innerWidth
+        rateHeight= e.height / window.innerHeight
+        rate = e.height / e.width
+
+        if (rateWidth > rateHeight)
+          s.width  = innerWidth / 2 + 'px'
+          s.height = innerWidth / 2 * rate + 'px'
+        else
+          s.width  = innerHeight / 2 / rate + 'px'
+          s.height = innerHeight / 2 + 'px'
+      ).bind(@)
+
+      # 一度実行しておく
+      _fitFunc()
+      # リサイズ時のリスナとして登録しておく
+      window.addEventListener('resize', _fitFunc, false)
+    app.fitDebugWindow()
+    
+    # APバックグラウンド
+    app.background = @screen.background
+
+    sceneMain = {}.$extendAll(@main)
+    sceneMain.assets = @assets.concat sceneMain.assets
+    # 最初のシーンに切り替える
+    @loadScene sceneMain
+
+    # 実行
+    app.run()
+
+  # 通常実行
+  runNomal: ->
     # アプリケーション作成
     app = @app = tm.display.CanvasApp '#' + @canvasId
 
@@ -99,6 +152,17 @@ tm.define 'rpg.System',
 
     # 実行
     app.run()
+
+  # 実行
+  run: ->
+    # キャンバス確認
+    unless document.querySelector('#' + @canvasId)?
+      console.log 'アプリケーション なし'
+      return
+    if rpg.mocha
+      @runMocha()
+    else
+      @runNomal()
   
   loadScene: (args={}) ->
     args = {}.$extend(@loadingSceneDefault).$extend(args)

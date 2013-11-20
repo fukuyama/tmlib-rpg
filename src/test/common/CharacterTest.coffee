@@ -12,11 +12,16 @@ describe 'rpg.Character', () ->
   for l in map.mapSheet.layers when l.type is 'objectgroup'
     for obj in l.objects
       map.events.push JSON.parse(obj.properties.init)[0]
-  rpg.system = {
-    scene:
-      map: map
+  rpg.system = rpg.system ? {}
+  rpg.system.scene = {
+    map: map
   }
-  
+  rpg.system.player = {}
+  rpg.system.player.character = new rpg.Character({
+    mapX: 0
+    mapY: 0
+  })
+
   describe 'init', ->
     it 'default', ->
       c = new rpg.Character()
@@ -458,3 +463,79 @@ describe 'rpg.Character', () ->
       c.mapY.should.equal 9
     it 'direction2', ->
       c.direction.should.equal 'down'
+
+  describe 'frontPosition', ->
+    c = new rpg.Character()
+    it '5,5,2の場合 5, 6になる', ->
+      [x,y]=c.frontPosition(5,5,2)
+      x.should.equal 5
+      y.should.equal 6
+    it '5,5,4の場合 4, 5になる', ->
+      [x,y]=c.frontPosition(5,5,4)
+      x.should.equal 4
+      y.should.equal 5
+    it '5,5,6の場合 6, 5になる', ->
+      [x,y]=c.frontPosition(5,5,6)
+      x.should.equal 6
+      y.should.equal 5
+    it '5,5,8の場合 5, 4になる', ->
+      [x,y]=c.frontPosition(5,5,8)
+      x.should.equal 5
+      y.should.equal 4
+
+  describe '逆向き計算 reverseDirection', ->
+    c = new rpg.Character()
+    it '2の場合8', ->
+      c.reverseDirection(2).should.equal 8
+    it '4の場合6', ->
+      c.reverseDirection(4).should.equal 6
+    it '6の場合4', ->
+      c.reverseDirection(6).should.equal 4
+    it '8の場合2', ->
+      c.reverseDirection(8).should.equal 2
+
+  # TODO: もっとかこー
+  describe '目の前のキャラクターを検索 findFrontCharacter 5, 10 に居る場合', ->
+    c = new rpg.Character()
+    c.mapX = 5
+    c.mapY = 10
+    it '場所確認', ->
+      event = map.findCharacter(5,10)
+      event.mapX.should.equal 5
+      event.mapY.should.equal 10
+    it '引数なし場所は、5 9 向き下', ->
+      pc = rpg.system.player.character
+      pc.mapX = 0
+      pc.mapY = 0
+      c.mapX = 5
+      c.mapY = 9
+      c.direction = 2
+      event = c.findFrontCharacter()
+      event.mapX.should.equal 5
+      event.mapY.should.equal 10
+
+  describe 'プレイヤーで移動確認', ->
+    it '0,0 から右に移動可能(true)', ->
+      pc = rpg.system.player.character
+      pc.mapX = 0
+      pc.mapY = 0
+      pc.direction = 'right'
+      pc.isPassable().should.equal true
+    it '0,0 から右に移動可能(true)', ->
+      pc = rpg.system.player.character
+      pc.mapX = 1
+      pc.mapY = 1
+      pc.direction = 'up'
+      pc.isPassable(0,0,'right').should.equal true
+    it '1,0 から左に移動可能(true)', ->
+      pc = rpg.system.player.character
+      pc.isPassable(1,0,'left').should.equal true
+    it '1,0 から上に移動不可能(false)', ->
+      pc = rpg.system.player.character
+      pc.isPassable(1,0,'up').should.equal false
+    it '0,0 から下に移動可能(true)', ->
+      pc = rpg.system.player.character
+      pc.isPassable(0,0,'down').should.equal true
+    it '1,1 から左に移動不可能(false)', ->
+      pc = rpg.system.player.character
+      pc.isPassable(1,1,'left').should.equal false

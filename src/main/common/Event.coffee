@@ -2,15 +2,6 @@
 _g = window ? global ? @
 rpg = _g.rpg = _g.rpg ? {}
 
-TRIGGER_TYPE = {
-  TALK: 'talk'
-  CHECK: 'check'
-  TOUCH: 'touch'
-  TOUCHED: 'touched'
-  AUTO: 'auto'
-  PARALLEL: 'parallel'
-}
-
 ASSETS =
   'sample.event':
     type: 'json'
@@ -44,12 +35,23 @@ class rpg.Event extends rpg.Character
 
   # 初期化
   setup: (args={}) ->
+    super args
     {
       @name # イベント名
       pages
     } = {}.$extendAll(ASSETS['sample.event'].src).$extendAll(args)
     @pages = (new rpg.EventPage(page) for page in pages.reverse())
     @checkPage()
+
+    # trigger メソッド作成
+    for k, v of rpg.EventPage.TRIGGER_TYPE
+      f = 'trigger' + v.charAt(0).toUpperCase() + v.slice(1)
+      @[f] = ((m) -> @currentPage[m]()).bind(@,f)
+
+    # getter メソッド作成
+    Object.defineProperty @, 'commands',
+      enumerable: true
+      get: -> @currentPage.commands
 
   # 現在のページを確認
   checkPage: ->
@@ -59,3 +61,8 @@ class rpg.Event extends rpg.Character
         @currentPage = page
         break
     @currentPage
+
+  # イベント開始
+  start: ->
+    @lock.stopCount = false
+    rpg.system.scene.interpreter.start @commands

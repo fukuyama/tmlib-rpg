@@ -12,6 +12,12 @@ describe 'rpg.Map', () ->
       for obj in l.objects
         m.events.push JSON.parse(obj.properties.init)[0]
     m
+  rpg.system = rpg.system ? {}
+  rpg.system.player = {}
+  rpg.system.player.character = new rpg.Character({
+    mapX: 0
+    mapY: 0
+  })
 
   describe '初期化', ->
     m = new rpg.Map()
@@ -50,6 +56,9 @@ describe 'rpg.Map', () ->
   describe 'isPassable サンプルマップの 5, 5' +
   '、タイルＩＤが全て 0 で、全方向移動可能な場合', ->
     m = debug new rpg.Map()
+    it 'プレイヤー位置設定', ->
+      rpg.system.player.character.mapX = 0
+      rpg.system.player.character.mapY = 0
     it '5,5 から下(2)へ移動可能(true)', ->
       m.isPassable(5,5,2).should.equal true
     it '5,5 から左(4)へ移動可能(true)', ->
@@ -82,3 +91,18 @@ describe 'rpg.Map', () ->
       m.isPassable(5,10,6).should.equal false
     it '5,10 から上(8)へ移動不可能(false)', ->
       m.isPassable(5,10,8).should.equal false
+
+  describe 'isPassable サンプルマップの 5, 5' +
+  'にプレイヤーがいる', ->
+    m = debug new rpg.Map()
+    it 'プレイヤー位置設定', ->
+      rpg.system.player.character.mapX = 5
+      rpg.system.player.character.mapY = 5
+    it '5,5 から下(2)へ移動不可能(false)', ->
+      m.isPassable(5,5,2).should.equal false
+    it '5,5 から左(4)へ移動不可能(false)', ->
+      m.isPassable(5,5,4).should.equal false
+    it '5,5 から右(6)へ移動不可能(false)', ->
+      m.isPassable(5,5,6).should.equal false
+    it '5,5 から上(8)へ移動不可能(false)', ->
+      m.isPassable(5,5,8).should.equal false

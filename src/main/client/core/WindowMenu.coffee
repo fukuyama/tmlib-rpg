@@ -17,6 +17,7 @@ tm.define 'rpg.WindowMenu',
       @rows
       @cursor
       @colPadding
+      close
     } = {
       menus: [] # {name:'name',fn:menuFunc} の配列
       index: 0
@@ -24,7 +25,10 @@ tm.define 'rpg.WindowMenu',
       rows: 2
       cursor: DEFAULT_CURSOR_ASSET
       colPadding: 4
+      close: true
     }.$extend(rpg.system.windowDefault).$extend args
+    
+    @closeEvent = close
 
     # カーソル作成
     @cursorInstance = @createCursor(@cursor)
@@ -106,15 +110,16 @@ tm.define 'rpg.WindowMenu',
   # とりあえず
 
   # 決定
-  input_ok: ->
+  input_ok_up: ->
     # TODO: メニューがあるかどうか
     rpg.system.se.menuDecision()
     @callMenuHandler(@menus[@index].name)
 
   # キャンセル
-  input_cancel: ->
-    rpg.system.se.menuCancel()
-    @close()
+  input_cancel_up: ->
+    if @closeEvent
+      rpg.system.se.menuCancel()
+      @close()
 
   # 上
   input_up: ->
