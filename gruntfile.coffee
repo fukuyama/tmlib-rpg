@@ -6,11 +6,13 @@ module.exports = (grunt) ->
   # 共通系のスクリプト(tmlib.js 非依存のつもり)
   common_sections = [
       'common/utils'
+      'common/constants'
       'common/Character'
       'common/Map'
       'common/Flag'
       'common/Event'
       'common/EventPage'
+      'common/MarkupText'
   ]
   # クライアントのスクリプト
   client_sections = [
@@ -30,7 +32,7 @@ module.exports = (grunt) ->
       'core/GamePlayer'
       'core/Interpreter'
       'scene/SceneBase'
-      'scene/SceneLoading'
+      'scene/SceneLoading2'
       'scene/SceneMain'
       'scene/SceneTitle'
       'scene/SceneMap'
@@ -41,13 +43,21 @@ module.exports = (grunt) ->
 
   genPath = 'target/generate/'
   
+  coffeelintConfig =
+    all:
+      files:
+        src: [
+          'gruntfile.coffee'
+          'src/**/*.coffee'
+        ]
+
   coffeeConfig =
     options:
       bare: false
-    test_client:
+    client_test:
       expand: true
       cwd: 'src/test/client/'
-      src: ['**.coffee']
+      src: ['**/*.coffee']
       dest: 'target/public/client/test/'
       ext: '.js'
 
@@ -60,26 +70,32 @@ module.exports = (grunt) ->
     public:
       files: ['src/**/*.html']
       tasks: ['copy']
-    test_scripts:
-      files: ['src/test/common/**.coffee']
-      tasks: [
-        'coffeelint', 'simplemocha'
-      ]
-    test_client:
+    client_test:
       files: ['src/test/client/**.coffee']
       tasks: [
-        'coffee:test_client'
+        'coffee:client_test'
       ]
+
+  simplemochaConfig =
+    options:
+      reporter: 'nyan'
+      ui: 'bdd'
+    all:
+      src: ['src/test/common/**.coffee']
 
   for f in common_sections
     js = "#{genPath}#{f}.js"
     coffee = "src/main/#{f}.coffee"
+    testcase = "src/test/#{f}Test.coffee"
     coffeeConfig[f] = {}
     coffeeConfig[f].files = {}
     coffeeConfig[f].files[js] = coffee
     watchConfig[f] = {
-      files: [coffee]
-      tasks: ['coffeelint',"coffee:#{f}",'simplemocha','concat','uglify']
+      files: [coffee,testcase]
+      tasks: ['coffeelint',"coffee:#{f}","simplemocha:#{f}",'concat','uglify']
+    }
+    simplemochaConfig[f] = {
+      src: [testcase]
     }
 
   for f in client_sections
@@ -90,24 +106,14 @@ module.exports = (grunt) ->
     coffeeConfig[f].files[js] = coffee
     watchConfig[f] = {
       files: [coffee]
-      tasks: ['coffeelint',"coffee:#{f}",'simplemocha','concat','uglify']
+      tasks: ['coffeelint',"coffee:#{f}",'concat','uglify']
     }
 
   grunt.initConfig
-    coffeelint:
-      all:
-        files:
-          src: [
-            'gruntfile.coffee'
-            'src/**/*.coffee'
-          ]
-    simplemocha:
-      options:
-        reporter: 'nyan'
-        ui: 'bdd'
-      all:
-        src: ['src/test/common/**.coffee']
+    coffeelint: coffeelintConfig
+    simplemocha: simplemochaConfig
     coffee: coffeeConfig
+    watch: watchConfig
     concat:
       options:
         separator: ';'
@@ -128,7 +134,7 @@ module.exports = (grunt) ->
         cwd: 'src/main/express/'
         src: ['**']
         dest: 'target/'
-      test_client:
+      client_test:
         expand: true
         cwd: 'src/test/public/'
         src: ['**']
@@ -144,14 +150,23 @@ module.exports = (grunt) ->
     clean:
       target: ['target']
 
-    watch: watchConfig
+    execute:
+      call_sampe:
+        call: (grunt, op) ->
+          grunt.log.writeln('Hello!')
+
+    exec:
+      create_sample:
+        cmd: 'coffee src/main/client/sample/sample.coffee'
+
 
   for o of pkg.devDependencies
     grunt.loadNpmTasks o if /grunt-/.test o
   
   grunt.registerTask 'server', ['express:dev', 'watch']
-  grunt.registerTask 'test', ['coffeelint','simplemocha']
+  grunt.registerTask 'test', ['coffeelint','simplemocha:all']
+  grunt.registerTask 'sample', ['exec:create_sample']
   grunt.registerTask 'default', [
-    'coffeelint','coffee', 'simplemocha'
-    'concat', 'uglify', 'copy'
+    'coffeelint','coffee', 'simplemocha:all'
+    'concat', 'uglify', 'copy', 'exec:create_sample'
   ]

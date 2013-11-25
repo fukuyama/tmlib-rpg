@@ -30,6 +30,8 @@
     "grunt-express-server": "~0.4.3",
     "grunt-simple-mocha": "~0.4.0",
     "grunt-coffeelint": "0.0.7",
-    "chai": "~1.8.1"
+    "chai": "~1.8.1",
+    "grunt-execute": "~0.1.5",
+    "grunt-exec": "~0.4.2"
   }
 }

@@ -13,7 +13,8 @@ root.SYSTEM_ASSETS =
         background: 'rgb(255,255,255)'
       main:
         scene: 'SceneTitle'
-        param: {
+        key: 'scene.title'
+        src: {
           background:
             image: 'scene.title.background.image'
           menus: [
@@ -29,6 +30,8 @@ root.SYSTEM_ASSETS =
               name:'Map'
               next:
                 scene:'SceneMap'
+                param:
+                  mapName: '001'
             }
           ]
         }

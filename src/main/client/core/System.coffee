@@ -12,8 +12,8 @@ ASSETS =
       ]
       main:
         scene: 'SceneTitle'
-        param: 'scene.title'
-        assets: []
+        key: 'scene.title'
+        src: {}
       canvasId: 'game_screen'
       loadingSceneDefault:
         gauge:

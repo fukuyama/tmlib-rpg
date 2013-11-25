@@ -12,6 +12,8 @@ tm.define 'SceneMap',
 
   # 初期化
   init: (args='sample.scene.map') ->
+    console.log 'SceneMap'
+    console.log args
     # 親の初期化
     @superInit(name:'SceneMap')
 
@@ -26,7 +28,7 @@ tm.define 'SceneMap',
     @pc.moveSpeed = 6
 
     # TODO: マップデータ読み込みとりあえず版
-    @map = new rpg.Map(tm.asset.AssetManager.get(@mapName))
+    @map = new rpg.Map(tm.asset.AssetManager.get('map.' + @mapName).data)
 
     # インタープリター
     @interpreter = rpg.Interpreter()
@@ -71,5 +73,17 @@ tm.define 'SceneMap',
     @addChild(@windowMapMenu)
     @addChild(@windowMessage)
 
-SceneMap.assets = [].concat ASSETS
-SceneMap.assets = SceneMap.assets.concat rpg.SpriteMap.assets
+SceneMap.preload = (loader, json) ->
+  console.log 'SceneMap.preload'
+  key = 'map.' + json.mapName
+  mapSheetKey = 'map.sheet.' + json.mapName
+  mapJsonKey = 'map.json.' + json.mapName
+  src = {
+    mapSheet: mapSheetKey
+  }
+  loader.preload(key, src, 'json')
+
+  src = 'data/map/' + json.mapName + '.json'
+  loader.preload(mapJsonKey, src, 'json', (loader, json) ->
+    tm.asset.AssetManager.load(mapSheetKey, json, 'tmx')
+  )

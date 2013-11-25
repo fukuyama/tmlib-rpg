@@ -4,6 +4,7 @@ tm.define 'SceneMenuTest1',
 
   # 初期化
   init: ->
+    console.log 'SceneMenuTest1#init'
     # 親の初期化
     @superInit(name:'SceneMenuTest1')
 

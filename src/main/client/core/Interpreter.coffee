@@ -39,21 +39,34 @@ tm.define 'rpg.Interpreter',
 
   # 更新
   update: ->
-    while @hasNext()
+    while not @isEnd()
       return if @flagWait
       return if @execute()
-      @nextCommand()
+      @next()
     @clear()
 
   # イベント実行
   execute: (command) ->
-    command = @currentCommand() unless command?
+    command = @command() unless command?
     @['command_' + command.type].apply(@, command.params)
 
-  # 次のコマンドがあるか
-  hasNext: -> @index < @commands.length
-  nextCommand: -> @commands[@index++]
-  currentCommand: -> @commands[@index]
+  # 終わりかどうか
+  isEnd: ->
+    @index >= @commands.length
+  # 次があるかどうか
+  hasNext: ->
+    @index + 1 < @commands.length
+  # 次へ
+  next: ->
+    @index++
+    @
+  # 今のコマンド
+  command: ->
+    @commands[@index]
+
+  # 次のコマンド
+  nextCommand: ->
+    @commands[@index + 1]
   
   #-------------------
   # イベントコマンド
@@ -67,8 +80,10 @@ tm.define 'rpg.Interpreter',
     rpg.system.temp.message = [msg]
     while @hasNext()
       command = @nextCommand()
-      if command.type is 'message'
-        rpg.system.temp.message.push command.params[0]
+      return if command.type isnt 'message'
+      rpg.system.temp.message.push command.params[0]
+      @next()
+
     rpg.system.temp.messageEndProc = (->
       @flagWait = false
     ).bind(@)

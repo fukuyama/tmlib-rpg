@@ -19,6 +19,8 @@ tm.define 'rpg.WindowMessage',
       active: false
     }.$extend(args)
     
+    @markup = new rpg.MarkupText()
+    
     @addEventListener 'close',@clear.bind(@)
 
     @clear()
@@ -28,7 +30,7 @@ tm.define 'rpg.WindowMessage',
     @_messages = []
     @_message = null
     @_dx = @_dy = 0
-    @_currentIndex = 0
+    @_messageIndex = 0
     @_waitCount = 0
     @speed = 15
     @content.clear()
@@ -38,12 +40,12 @@ tm.define 'rpg.WindowMessage',
     @open()
     @_messages = if msg instanceof Array then [].concat(msg) else [msg]
     @_message = @_messages.shift()
-    @_currentIndex = 0
+    @_messageIndex = 0
     @_dx = @_dy = 0
     @
 
   # ポーズ状態かどうか
-  isPause: -> @_message is null
+  isPause: -> @_message is null or @_message.length <= @_messageIndex
   
   # 表示するメッセージが無い場合 true
   isEmpty: -> @_messages.length == 0
@@ -52,13 +54,6 @@ tm.define 'rpg.WindowMessage',
   countDrawTiming: ->
     @_waitCount = @_waitCount++ % @speed
     @_waitCount != 0
-
-  # 描画する文字の取得
-  nextDrawMessage: ->
-    m = @_message[@_currentIndex++]
-    if @_message.length <= @_currentIndex
-      @_message = null
-    m
 
   # メッセージを描画する
   drawMessage: (msg) ->
@@ -87,9 +82,17 @@ tm.define 'rpg.WindowMessage',
   update: ->
     rpg.Window.prototype.update.apply(@)
     @checkTempMessage()
+    return unless @visible
     return if @isPause()
     return if @countDrawTiming()
-    @drawMessage @nextDrawMessage()
+    return if @processMarkup()
+    @drawMessage @_message[@_messageIndex++]
+
+  # マークアップ処理
+  processMarkup: ->
+    [@_dx, @_dy, @_messageIndex] =
+    @markup.draw(@, @_dx, @_dy, @_message, @_messageIndex)
+    false
 
   input_ok_up: ->
     return unless @isPause()
@@ -98,7 +101,7 @@ tm.define 'rpg.WindowMessage',
       @close()
     else
       @_dx = @_dy = 0
-      @_currentIndex = 0
+      @_messageIndex = 0
       @_waitCount = 0
       @speed = 15
       @content.clear()

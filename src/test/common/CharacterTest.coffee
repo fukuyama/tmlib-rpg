@@ -2,6 +2,7 @@
 require('chai').should()
 
 require('../../main/common/utils.coffee')
+require('../../main/common/constants.coffee')
 require('../../main/common/Character.coffee')
 MAP = require('../../main/common/Map.coffee')
 

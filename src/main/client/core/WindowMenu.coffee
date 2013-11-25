@@ -13,6 +13,7 @@ tm.define 'rpg.WindowMenu',
     {
       @menus
       @index
+      saveIndex
       @cols
       @rows
       @cursor
@@ -21,6 +22,7 @@ tm.define 'rpg.WindowMenu',
     } = {
       menus: [] # {name:'name',fn:menuFunc} の配列
       index: 0
+      saveIndex: false # カーソル位置の保存フラグ true だと保存する
       cols: 1
       rows: 2
       cursor: DEFAULT_CURSOR_ASSET
@@ -48,17 +50,28 @@ tm.define 'rpg.WindowMenu',
 
     # メニューハンドラ初期化
     @addMenuHandler(m.name, m.fn) for m in @menus
+    
+    # イベントリスナー
+    @addEventListener 'open', ->
+      # カーソル位置を保存しない場合は、開くときに index を初期化
+      @setIndex(0) unless saveIndex
 
+    # ポインティング対応
     @setInteractive(true)
     @setBoundingType('rect')
     @addEventListener 'pointingend', @pointing_menu.bind(@)
 
+    # リサイズ、初期更新
     @resizeAuto()
     @refresh()
 
   # カーソルの作成
   createCursor: (param = DEFAULT_CURSOR_ASSET) ->
     rpg.SpriteCursor(@, param)
+
+  # カーソルインデックス設定
+  setIndex: (@index) ->
+    @cursorInstance.setIndex(@index)
 
   # メニューの追加
   addMenu: (name, fn) ->
@@ -133,8 +146,7 @@ tm.define 'rpg.WindowMenu',
       # それ以外
       @index -= @cols
     @index = @menus.length - 1 if @index >= @menus.length
-    @index = (@index + @menus.length) % @menus.length
-    @cursorInstance.setIndex(@index)
+    @setIndex (@index + @menus.length) % @menus.length
     rpg.system.se.menuCursorMove()
 
   # 下
@@ -151,8 +163,7 @@ tm.define 'rpg.WindowMenu',
     else
       # それ以外
       @index += @cols
-    @index = (@index + @menus.length) % @menus.length
-    @cursorInstance.setIndex(@index)
+    @setIndex (@index + @menus.length) % @menus.length
     rpg.system.se.menuCursorMove()
 
   # 左
@@ -170,10 +181,9 @@ tm.define 'rpg.WindowMenu',
         @index = @menus.length - 1 - @menus.length % @cols
     else
       @index -= 1
-    @index = (@index + @menus.length) % @menus.length
+    @setIndex (@index + @menus.length) % @menus.length
     @content.ox = (@currentPageNum - 1) * @innerRect.width
     @content.drawTo()
-    @cursorInstance.setIndex(@index)
     rpg.system.se.menuCursorMove()
 
   # 右
@@ -195,10 +205,9 @@ tm.define 'rpg.WindowMenu',
       @index = @index - @cols + 1
     else
       @index += 1
-    @index = (@index + @menus.length) % @menus.length
+    @setIndex (@index + @menus.length) % @menus.length
     @content.ox = (@currentPageNum - 1) * @innerRect.width
     @content.drawTo()
-    @cursorInstance.setIndex(@index)
     rpg.system.se.menuCursorMove()
 
   # メニュー選択
