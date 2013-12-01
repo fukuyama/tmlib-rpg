@@ -35,14 +35,25 @@ tm.define 'rpg.WindowMapMenu',
     console.log 'check'
   menuStatus: ->
     console.log 'status'
-  menuOperation: ->
-    console.log 'operation'
     @close()
     rpg.system.scene.interpreter.start [
       {
         type: 'message'
         params: ['TEST']
-      },
+      },{
+        type: 'message'
+        params: ['TEST11111111']
+      }
+    ]
+    rpg.system.scene.interpreter.update()
+    rpg.system.temp.select = ['Yes','No']
+    rpg.system.temp.selectOptions = {}
+    rpg.system.temp.selectEndProc = (i) ->
+      console.log 'select end = ' + i
+  menuOperation: ->
+    console.log 'operation'
+    @close()
+    rpg.system.scene.interpreter.start [
       {
         type: 'message'
         params: ['TEST']

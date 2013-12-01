@@ -9,10 +9,7 @@ tm.define 'rpg.SpriteMap',
   # map: マップの基本データ rpg.Map
   init: (@pc, @map) ->
     cw = ch = rpg.system.mapChipSize
-    console.log @map.mapSheet
     @superInit(@map.mapSheet, cw, ch)
-    console.log @mapSheet
-    @map.mapSheet = @mapSheet
     if @events?
       @map.events = (e.character for e in @events.children)
     else

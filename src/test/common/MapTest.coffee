@@ -3,11 +3,14 @@ require('chai').should()
 
 require('../../main/common/utils.coffee')
 require('../../main/common/constants.coffee')
-MAP = require('../../main/common/Map.coffee')
+require('../../main/common/Character.coffee')
+require('../../main/common/Map.coffee')
 
-describe 'rpg.Map', () ->
+mapSheet = require('./MapTestData.coffee')
+
+describe 'rpg.Mapの仕様', () ->
   debug = (m) ->
-    m.mapSheet = MAP.ASSETS['sample.mapsheet'].src
+    m.mapSheet = mapSheet
     m.events = []
     for l in m.mapSheet.layers when l.type is 'objectgroup'
       for obj in l.objects
@@ -22,10 +25,8 @@ describe 'rpg.Map', () ->
 
   describe '初期化', ->
     m = new rpg.Map()
-    it 'default の mapSheet 名は、sample.mapsheet', ->
-      m.mapSheet.should.equal 'sample.mapsheet'
     it 'sample.mapsheet の設定 debug', ->
-      m.mapSheet = MAP.ASSETS['sample.mapsheet'].src
+      m.mapSheet = mapSheet
     it 'sample.mapsheet の width は、30', ->
       m.mapSheet.width.should.equal 30
     it 'sample.mapsheet の height は、30', ->

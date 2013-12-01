@@ -131,6 +131,36 @@ tm.define 'rpg.Window',
   close: ->
     @_closeDuring = true
 
+  # open 確認
+  isOpen: ->
+    @visible
+
+  # close 確認
+  isClose: ->
+    not @visible
+
+  # 表示位置調整
+  centering: (param) ->
+    w = rpg.system.screen.width
+    h = rpg.system.screen.height
+    @x = (w - @width) / 2 if param is 'horizon' or not param?
+    @h = (h - @height) / 2 if param is 'vertical' or not param?
+
+  addOpenListener: (fn) ->
+    @addEventListener('open',fn)
+    @
+  addCloseListener: (fn) ->
+    @addEventListener('close',fn)
+    @
+
+  onceCloseListener: (fn) ->
+    _callback = (->
+      fn()
+      @removeEventListener('close',_callback)
+    ).bind(@)
+    @addEventListener('close',_callback)
+    @
+  
 rpg.Window.EVENT_OPEN = tm.event.Event "open"
 rpg.Window.EVENT_CLOSE = tm.event.Event "close"
 

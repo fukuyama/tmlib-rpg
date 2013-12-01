@@ -39,7 +39,6 @@ tm.define 'SceneLoading',
     @_count += 1
     if @_count == @_endCount
       console.log 'loadend'
-      console.log @param
       @replaceScene
         scene: @scene
         param: @param
@@ -54,7 +53,11 @@ tm.define 'SceneLoading',
           @preload(k, v['src'], v['type'])
 
     if key?
-      @preload(key, src, type, @scene.preload)
+      scene = tm.global[@scene] if typeof @scene is 'string'
+      if scene? and scene.preload?
+        @preload(key, src, type, scene.preload)
+      else
+        @preload(key, src, type)
       @param = tm.asset.AssetManager.get(key).data
     else if typeof @scene is 'string'
       scene = tm.global[@scene]
@@ -70,10 +73,10 @@ tm.define 'SceneLoading',
     am.load(key, src, type)
     obj = am.get(key)
     if obj.loaded
-      callback(@, obj.data) if callback?
+      callback(@, obj.data, obj) if callback?
       @loaded()
     else
       obj.addEventListener 'load', (->
-        callback(@, obj.data) if callback?
+        callback(@, obj.data, obj) if callback?
         @loaded()
       ).bind(@)

@@ -54,6 +54,35 @@ describe 'rpg.Flag', ->
       flag.off 'test'
       (flag.get 'test').should.equal 0
 
+    it 'test に 10 を足す', ->
+      (flag.get 'test').should.equal 0
+      flag.plus 'test', 10
+      (flag.get 'test').should.equal 10
+    it 'test に 11 を足す', ->
+      flag.plus 'test', 11
+      (flag.get 'test').should.equal 21
+    it 'test から 5 を引く', ->
+      flag.minus 'test', 5
+      (flag.get 'test').should.equal 16
+    it 'test を 3 倍にする', ->
+      flag.multi 'test', 3
+      (flag.get 'test').should.equal 16 * 3
+    it 'test を 2 で割る', ->
+      flag.div 'test', 2
+      (flag.get 'test').should.equal 16 * 3 / 2
+    it 'test を 0 で割る、値は変わらない', ->
+      flag.div 'test', 0
+      (flag.get 'test').should.equal 16 * 3 / 2
+    it 'test に"TEST"を設定 -> error になる', ->
+      test = false
+      flag.set 'test', 0
+      try
+        flag.set 'test', 'TEST'
+      catch error
+        error.name.should.equal 'Error'
+        test = true
+      test.should.equal true
+
     it '他のサイトのフラグを取得 http://hoehoe/ の test を取得 true', ->
       flag = new rpg.Flag({
         values: {

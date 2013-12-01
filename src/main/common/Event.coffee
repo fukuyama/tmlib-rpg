@@ -63,6 +63,11 @@ class rpg.Event extends rpg.Character
     @currentPage
 
   # イベント開始
-  start: ->
+  start: (@trigger) ->
+    @lock.stopCount = true
+    rpg.system.scene.interpreter.start @
+
+  # イベント終了
+  end: ->
+    @trigger = null
     @lock.stopCount = false
-    rpg.system.scene.interpreter.start @commands

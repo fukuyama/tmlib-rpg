@@ -4,6 +4,10 @@ root = window ? global ? @
 root.SAMPLE_SYSTEM_LOAD_ASSETS = root.SAMPLE_SYSTEM_LOAD_ASSETS ? []
 
 root.SYSTEM_ASSETS =
+  'system.se.menu_decision': 'audio/se/fin.mp3'
+  'system.se.menu_cursor_move': 'audio/se/fon.mp3'
+  'windowskin.image': 'img/test_windowskin.png'
+  'scene.title.background.image': 'img/test_001.png'
   system:
     type: 'json'
     src:
@@ -36,14 +40,10 @@ root.SYSTEM_ASSETS =
           ]
         }
         assets: root.SAMPLE_SYSTEM_LOAD_ASSETS
-      assets: [
-        {
-          'system.se.menu_decision': 'audio/se/fin.mp3'
-          'system.se.menu_cursor_move': 'audio/se/fon.mp3'
-          'windowskin.image': 'img/test_windowskin.png'
-          'scene.title.background.image': 'img/test_001.png'
-        }
-      ]
+      assets: {
+        'sample.tileset': 'img/test_tileset.png'
+        'map.001': 'data/map/001.json'
+      }
       loadingSceneDefault:
         gauge:
           color: 'rgb(96,96,96)'

@@ -1,27 +1,20 @@
 
-ASSETS =
-  'sample.scene.map':
-    type: 'json'
-    src:
-      mapName: 'sample.map'
-
 # タイトルシーン
 tm.define 'SceneMap',
 
   superClass: rpg.SceneBase
 
   # 初期化
-  init: (args='sample.scene.map') ->
-    console.log 'SceneMap'
-    console.log args
+  init: (args={}) ->
     # 親の初期化
     @superInit(name:'SceneMap')
 
     # シーンマップデータ初期化
-    args = tm.asset.AssetManager.get(args).data if typeof args == 'string'
     {
       @mapName
-    } = {}.$extendAll(ASSETS['sample.scene.map'].src).$extendAll(args)
+    } = {
+      mapName: 'sample'
+    }.$extendAll(args)
 
     # TODO: プレイヤーキャラクターとりあえず版
     @pc = new rpg.Character(tm.asset.AssetManager.get('sample.character.test'))
@@ -63,8 +56,9 @@ tm.define 'SceneMap',
     
     dummy = tm.app.CanvasElement()
     dummy.update = (->
-      unless @windowMessage.active
+      if @interpreter.isRunning()
         @interpreter.update()
+      else
         @player.update()
         @spriteMap.updatePosition()
     ).bind(@)
@@ -73,17 +67,8 @@ tm.define 'SceneMap',
     @addChild(@windowMapMenu)
     @addChild(@windowMessage)
 
-SceneMap.preload = (loader, json) ->
+SceneMap.preload = (loader, param) ->
   console.log 'SceneMap.preload'
-  key = 'map.' + json.mapName
-  mapSheetKey = 'map.sheet.' + json.mapName
-  mapJsonKey = 'map.json.' + json.mapName
-  src = {
-    mapSheet: mapSheetKey
-  }
-  loader.preload(key, src, 'json')
-
-  src = 'data/map/' + json.mapName + '.json'
-  loader.preload(mapJsonKey, src, 'json', (loader, json) ->
-    tm.asset.AssetManager.load(mapSheetKey, json, 'tmx')
-  )
+  key = 'map.' + param.mapName
+  src = rpg.system.assets[key]
+  loader.preload(key, src, 'json', rpg.Map.preload)

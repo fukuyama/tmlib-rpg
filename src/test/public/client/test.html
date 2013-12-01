@@ -14,14 +14,15 @@
     <script src="mocha.js"></script>
     <script src="chai.js"></script>
     <script>
+      chai.should();
+      mocha.setup('bdd');
       ctl = true;
       rpg.mocha = true;
-      mocha.setup('bdd');
-      chai.should();
+      rpg.mocha_run = function() {
+        console.log('* mocha_run *');
+        mocha.run();
+      }
     </script>
     <script src="test/InterpreterTest.js"></script>
-    <script>
-      mocha.run();
-    </script>
   </body>
 </html>

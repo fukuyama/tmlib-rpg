@@ -4,11 +4,13 @@ require('chai').should()
 require('../../main/common/utils.coffee')
 require('../../main/common/constants.coffee')
 require('../../main/common/Character.coffee')
-MAP = require('../../main/common/Map.coffee')
+require('../../main/common/Map.coffee')
+
+mapSheet = require('./MapTestData.coffee')
 
 describe 'rpg.Character', () ->
   map = new rpg.Map()
-  map.mapSheet = MAP.ASSETS['sample.mapsheet'].src
+  map.mapSheet = mapSheet
   map.events = []
   for l in map.mapSheet.layers when l.type is 'objectgroup'
     for obj in l.objects
@@ -214,6 +216,73 @@ describe 'rpg.Character', () ->
         c.direction = 'left'
         c.directionFix.should.equal true
         c.direction.should.equal 'up'
+    describe '特定の座標方向を見る', ->
+      c = new rpg.Character()
+      it '位置設定', ->
+        c.moveTo(5,5)
+        c.mapX.should.equal 5
+        c.mapY.should.equal 5
+      it '0,5 を見ると、左を向く', ->
+        c.directionTo(0,5)
+        c.direction.should.equal 'left'
+      it '10,5 を見ると、右を向く', ->
+        c.directionTo(10,5)
+        c.direction.should.equal 'right'
+      it '5,0 を見ると、上を向く', ->
+        c.directionTo(5,0)
+        c.direction.should.equal 'up'
+      it '5,10 を見ると、下を向く', ->
+        c.directionTo(5,10)
+        c.direction.should.equal 'down'
+      it '4,5 を見ると、左を向く', ->
+        c.directionTo(4,5)
+        c.direction.should.equal 'left'
+      it '6,5 を見ると、右を向く', ->
+        c.directionTo(6,5)
+        c.direction.should.equal 'right'
+      it '5,4 を見ると、上を向く', ->
+        c.directionTo(5,4)
+        c.direction.should.equal 'up'
+      it '5,6 を見ると、下を向く', ->
+        c.directionTo(5,6)
+        c.direction.should.equal 'down'
+
+      it '4,4 を見ると、左を向く', ->
+        c.directionTo(4,4)
+        c.direction.should.equal 'left'
+      it '6,6 を見ると、右を向く', ->
+        c.directionTo(6,6)
+        c.direction.should.equal 'right'
+      it '6,4 を見ると、右を向く', ->
+        c.directionTo(6,4)
+        c.direction.should.equal 'right'
+      it '4,6 を見ると、左を向く', ->
+        c.directionTo(4,6)
+        c.direction.should.equal 'left'
+
+    describe 'キャラクターを見る', ->
+      c = new rpg.Character()
+      ct = new rpg.Character()
+      it '位置設定', ->
+        c.moveTo(5,5)
+        c.mapX.should.equal 5
+        c.mapY.should.equal 5
+      it '0,5 を見ると、左を向く', ->
+        ct.moveTo(0,5)
+        c.directionTo(ct)
+        c.direction.should.equal 'left'
+      it '10,5 を見ると、右を向く', ->
+        ct.moveTo(10,5)
+        c.directionTo(ct)
+        c.direction.should.equal 'right'
+      it '5,0 を見ると、上を向く', ->
+        ct.moveTo(5,0)
+        c.directionTo(ct)
+        c.direction.should.equal 'up'
+      it '5,10 を見ると、下を向く', ->
+        ct.moveTo(5,10)
+        c.directionTo(ct)
+        c.direction.should.equal 'down'
       
   describe 'move', ->
     c = new rpg.Character()

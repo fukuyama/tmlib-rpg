@@ -58,10 +58,13 @@ tm.define 'rpg.GamePlayer',
   talk: ->
     # 目の前のキャラクターを探す
     c = @character.findFrontCharacter()
-    # いたら話しかける
+    # TODO: 壁越し判定とかカウンターテーブル判定とかどしよ
+    # 目の前にキャラクターがいる場合、話しかけられるなら、話しかける
     if c? and c.triggerTalk? and c.triggerTalk()
+      # プレイヤーの方を向く
+      c.directionTo(@character)
       # 反応がある場合はイベントを実行
-      c.start()
+      c.start('talk')
 
 rpg.GamePlayer.EVENT_INPUT_OK = tm.event.Event "input_ok"
 rpg.GamePlayer.EVENT_INPUT_CANCEL = tm.event.Event "input_cancel"

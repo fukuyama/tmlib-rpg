@@ -6,32 +6,38 @@ tm.define 'rpg.Interpreter',
   init: (args={}) ->
     {
       @index
-      @indent
-      @flagWait
+      @blocks
+      @waitFlag
+      @waitCount
     } = {
       index: 0
-      indent: 0
-      flagWait: false
+      blocks: []
+      waitFlag: false
+      waitCount: 0
     }.$extend args
     @clear()
 
   # 状態クリア
   clear: ->
     @index = 0
+    @blocks = []
     @commands = []
     @event = null
+    @waitFlag = false
+    @waitCount = 0
 
   # イベント開始
   start: (args) ->
     if args instanceof rpg.Event
       @event = args
-      @commands = args.commands
+      @commands = [].concat args.commands
     else
-      @commands = args
+      @commands = [].concat args
     @index = 0
     
   # イベント終了
   end: ->
+    @event.end() if @event? and @event.end?
     @clear()
 
   # イベント実行中かどうか
@@ -39,20 +45,29 @@ tm.define 'rpg.Interpreter',
 
   # 更新
   update: ->
+    return unless @isRunning()
+    return if @waitFlag
+    if @isEnd()
+      @end()
+      return
     while not @isEnd()
-      return if @flagWait
+      return if @waitFlag
       return if @execute()
       @next()
-    @clear()
 
   # イベント実行
   execute: (command) ->
     command = @command() unless command?
+    #console.log "index=#{@index}"+
+    #" comannds.length=#{@commands.length}"+
+    #" blocks.length=#{@blocks.length}"
+    #console.log command
+    #console.log 'command:' + command.type
     @['command_' + command.type].apply(@, command.params)
 
   # 終わりかどうか
   isEnd: ->
-    @index >= @commands.length
+    @index >= @commands.length and @blocks.length is 0
   # 次があるかどうか
   hasNext: ->
     @index + 1 < @commands.length
@@ -60,13 +75,16 @@ tm.define 'rpg.Interpreter',
   next: ->
     @index++
     @
-  # 今のコマンド
-  command: ->
-    @commands[@index]
+
+  # コマンドの取得
+  command: (i=@index) ->
+    c = @commands[i]
+    c.params = [] unless c.params?
+    c
 
   # 次のコマンド
   nextCommand: ->
-    @commands[@index + 1]
+    @command(@index + 1)
   
   #-------------------
   # イベントコマンド
@@ -75,21 +93,126 @@ tm.define 'rpg.Interpreter',
   command_script: (script) ->
     # TODO: eval は危険かな～？
   
-  # messge
+  # 文章表示
   command_message: (msg) ->
     rpg.system.temp.message = [msg]
     while @hasNext()
       command = @nextCommand()
-      return if command.type isnt 'message'
+      break if command.type isnt 'message'
       rpg.system.temp.message.push command.params[0]
       @next()
 
     rpg.system.temp.messageEndProc = (->
-      @flagWait = false
+      @waitFlag = false
     ).bind(@)
-    @flagWait = true
+    @waitFlag = true
     false
 
-  # flag
-  command_flag: (key) ->
-    
+  # フラグ操作
+  command_flag: (flag, value1, value2) ->
+    rsf = rpg.system.flag
+    if typeof value1 is 'boolean'
+      if value1
+        rsf.on flag
+      else
+        rsf.off flag
+    else if typeof value1 is 'string'
+      value2 = rsf.get(value2) if typeof value2 is 'string'
+      switch value1
+        when '=' then rsf.set flag, value2
+        when '+' then rsf.plus flag, value2
+        when '-' then rsf.minus flag, value2
+        when '*' then rsf.multi flag, value2
+        when '/' then rsf.div flag, value2
+    false
+
+  # ブロック
+  command_block: ->
+    # 今の状態を保存
+    @blocks.push [@indent,@index,@commands]
+    # ブロックをコピー（先頭は実行されない）
+    @commands = [{type:'block_start'}].concat @command().params
+    # ブロック終了コマンドを追加
+    @commands.push {type:'block_end'}
+    # ブロックを最初から実行
+    @index = 0
+    false
+
+  # ブロック終了(内部用)
+  command_block_end: ->
+    [@indent,@index,@commands] = @blocks.pop()
+    false
+
+  # 条件分岐
+  command_if: (type) ->
+    # 条件の結果
+    result = false
+    switch type
+      when 'flag' # フラグによる分岐 type is 'flag'
+        rsf = rpg.system.flag
+        if arguments.length == 3
+          flag = arguments[1]
+          value = arguments[2]
+          result = rsf.is(flag) is value
+        if arguments.length == 4
+          flag = arguments[1]
+          ope = arguments[2]
+          value = arguments[3]
+          fvalue = rsf.get(flag)
+          switch ope
+            when '==' then result = fvalue == value
+            when '!=' then result = fvalue != value
+            when '<'  then result = fvalue < value
+            when '>'  then result = fvalue > value
+            when '<=' then result = fvalue <= value
+            when '>=' then result = fvalue >= value
+
+    # else ブロックがある場合 結果を保存
+    if @command(@index + 2).type is 'else'
+      @command(@index + 2).params[0] = result
+    # 結果が false の場合
+    unless result
+      # 次のブロックを飛ばす
+      @next()
+    false
+
+  # 分岐条件に合わない場合
+  # result: if コマンドで保存された結果
+  command_else: (result) ->
+    # 条件分岐の結果が true の場合
+    if result
+      # 次のブロックを飛ばす
+      @next()
+    false
+
+  # 構造終了(条件/ループ等)
+  command_end: () ->
+    # ループ end の場合
+    if @command(@index - 2).type is 'loop'
+      # index を戻す
+      @index -= 2
+    false
+
+  # ループ
+  command_loop: () ->
+    false
+
+  # ループブレイク
+  command_break: () ->
+    # ブロックがある間ループ
+    while @blocks.length > 0
+      # 今のブロックを抜ける
+      @command_block_end()
+      # ループブロックの場合終わり
+      if @command(@index - 1).type is 'loop'
+        break
+    # 次に進む
+    @next()
+    false
+
+  # ウェイト
+  command_wait: (n) ->
+    @waitCount += 1
+    return true if @waitCount < n
+    @waitCount = 0
+    false

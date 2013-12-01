@@ -292,6 +292,24 @@ class rpg.Character
   _calcScreenY: () ->
     @moveY * @mapChipSize
 
+  # 指定位置への向き変更
+  directionTo: (x, y) ->
+    return if @directionFix
+    if x instanceof rpg.Character
+      chara = x
+      x = chara.mapX
+      y = chara.mapY
+    if Math.abs(@mapX - x) < Math.abs(@mapY - y)
+      if @mapY < y
+        @direction = 'down'
+      else
+        @direction = 'up'
+    else
+      if @mapX < x
+        @direction = 'right'
+      else
+        @direction = 'left'
+
   # 指定位置に変更
   moveTo: (x, y) ->
     @moveX = @mapX = x

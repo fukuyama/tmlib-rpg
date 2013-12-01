@@ -8,8 +8,7 @@ ASSETS =
     type: 'json'
     src:
       title: 'tmlib-rpg'
-      assets: [
-      ]
+      assets: {}
       main:
         scene: 'SceneTitle'
         key: 'scene.title'
@@ -63,8 +62,12 @@ tm.define 'rpg.System',
       @mapChipSize
       @temp
     } = {
-      temp: {}
+      temp: {
+        message: null
+        messageEndProc: null
+      }
     }.$extendAll(ASSETS.system.src).$extendAll(args)
+    @flag = new rpg.Flag()
 
     # Audio 関連のメソッド作成
     # menu_decision -> rpg.system.se.menuDecision()
@@ -81,7 +84,7 @@ tm.define 'rpg.System',
 
   # テスト実行
   runMocha: ->
-    console.log 'mocha mode.'
+    console.log '* mocha mode *'
     # アプリケーション作成
     app = @app = tm.display.CanvasApp '#' + @canvasId
 
@@ -118,18 +121,21 @@ tm.define 'rpg.System',
       _fitFunc()
       # リサイズ時のリスナとして登録しておく
       window.addEventListener('resize', _fitFunc, false)
+
     app.fitDebugWindow()
     
     # APバックグラウンド
     app.background = @screen.background
 
     sceneMain = {}.$extendAll(@main)
-    sceneMain.assets = @assets.concat sceneMain.assets
     # 最初のシーンに切り替える
     @loadScene sceneMain
 
     # 実行
     app.run()
+
+    # mocha 実行
+    rpg.mocha_run()
 
   # 通常実行
   runNomal: ->
@@ -146,7 +152,6 @@ tm.define 'rpg.System',
     app.background = @screen.background
 
     sceneMain = {}.$extendAll(@main)
-    sceneMain.assets = @assets.concat sceneMain.assets
     # 最初のシーンに切り替える
     @loadScene sceneMain
 
