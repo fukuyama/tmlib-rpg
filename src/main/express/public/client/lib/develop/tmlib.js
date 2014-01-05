@@ -7932,7 +7932,7 @@ tm.input = tm.input || {};
             if (typeof(key) == "string") {
                 key = KEY_CODE[key];
             }
-            return this.press[key] = flag;
+            return this.key[key] = flag;
         },
 
         /**

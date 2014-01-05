@@ -18,12 +18,14 @@ tm.define 'SceneLoading',
     {
       @scene
       @param
+      @callback
       key
       src
       type
       assets
     } = {
       param: {}
+      callback: null
       key: null
       src: {}
       type: 'json'
@@ -42,6 +44,7 @@ tm.define 'SceneLoading',
       @replaceScene
         scene: @scene
         param: @param
+      @callback() if @callback?
 
   run: (key,src,type,assets) ->
 

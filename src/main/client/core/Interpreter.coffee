@@ -95,17 +95,22 @@ tm.define 'rpg.Interpreter',
   
   # 文章表示
   command_message: (msg) ->
-    rpg.system.temp.message = [msg]
+    tmp = rpg.system.temp
+    tmp.message = [msg]
+    # 文章が続く場合まとめて表示する。
     while @hasNext()
       command = @nextCommand()
       break if command.type isnt 'message'
-      rpg.system.temp.message.push command.params[0]
+      tmp.message.push command.params[0]
       @next()
-
-    rpg.system.temp.messageEndProc = (->
+    # 文章表示終了処理
+    tmp.messageEndProc = (->
       @waitFlag = false
     ).bind(@)
     @waitFlag = true
+    # 次のコマンドがセレクトの場合続けて処理する
+    if @hasNext() and @nextCommand().type is 'select'
+      @next().execute()
     false
 
   # フラグ操作
@@ -128,6 +133,9 @@ tm.define 'rpg.Interpreter',
 
   # ブロック
   command_block: ->
+    command = @command()
+    # 選択肢表示で選択されたブロックでは無い場合は飛ばす
+    return false if command.select? and command.select is false
     # 今の状態を保存
     @blocks.push [@indent,@index,@commands]
     # ブロックをコピー（先頭は実行されない）
@@ -215,4 +223,36 @@ tm.define 'rpg.Interpreter',
     @waitCount += 1
     return true if @waitCount < n
     @waitCount = 0
+    false
+
+  # 選択肢表示
+  command_select: (menus, options) ->
+    rpg.system.temp.selectArgs = {
+      menus: [].concat menus
+      options: {}.$extend options
+      callback: ((select) ->
+        base = @index
+        i = 0
+        # 選択したブロックに情報を設定する
+        while @command(base + i).type is 'block'
+          c = @command(base + i)
+          c.select = select == i
+          i++
+        @waitFlag = false
+      ).bind(@)
+    }
+    @waitFlag = true
+    false
+
+  # 数値入力
+  command_input_num: (flag, options) ->
+    rpg.system.temp.inputNumArgs = {
+      flag: flag
+      options: {}.$extend options
+      callback: ((num) ->
+        rpg.system.flag.set(flag, num)
+        @waitFlag = false
+      ).bind(@)
+    }
+    @waitFlag = true
     false

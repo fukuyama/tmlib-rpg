@@ -12,6 +12,15 @@ tm.define 'rpg.SceneBase',
       name: ''
     }.$extendAll args
 
+    # Mocha Mode の場合、n キーでデバック用のコールバックを呼ぶ
+    if rpg.mocha
+      sys = rpg.system
+      @addEventListener('enterframe',->
+        if sys.app.keyboard.getKeyUp('n') and sys.temp.callback?
+          sys.temp.callback()
+          sys.temp.callback = null
+      )
+
   replaceScene: (args={}) ->
     rpg.system.replaceScene args
 

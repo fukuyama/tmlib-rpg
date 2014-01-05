@@ -13,28 +13,38 @@ tm.define 'rpg.WindowMessage',
   # 初期化
   init: (args={}) ->
     delete args[k] for k, v of args when not v?
-    @superInit(
-      0, 0
-      Math.min(rpg.system.screen.width,640 - 32),
-      rpg.system.lineHeight * 4
-      args
-    )
-
+    @superInit(0,0,0,0,args)
+    # args からのインスタンス変数初期化
     {
       @visible
       @active
+      @messageSpeed
+      @scrollSpeed
+      @maxLine
       @options
     } = {
       visible: false
       active: false
+      messageSpeed: 15 # メッセージスピード
+      scrollSpeed: 5 # スクロールスピード
+      maxLine: 3
       options:
         message:
           position: MSG_BOTTOM # メッセージウィンドウ位置
         select:
           position: SEL_RIGHT # 選択肢ウィンドウ位置
     }.$extend(args)
-    
+
+    # リサイズ
+    @resize(
+      Math.min(rpg.system.screen.width,640 - 32)
+      rpg.system.lineHeight * @maxLine + @borderHeight * 2)
+    @resizeContent(
+      @innerRect.width
+      @innerRect.height * 2)
+
     @markup = new rpg.MarkupText()
+    @markup.add(rpg.MarkupText.MARKUP_NEW_LINE)
     
     @addOpenListener((->
       @setDisplayPosition()
@@ -51,10 +61,12 @@ tm.define 'rpg.WindowMessage',
   clear: ->
     @_messages = []
     @_message = null
-    @_dx = @_dy = 0
     @_messageIndex = 0
-    @_waitCount = 0
-    @speed = 15
+    @_dx = @_dy = 0 # 描画座標
+    @_sy = 0 # スクロール用
+    @_py = 0 # ポーズ時座標
+    @_ay = 0 # スクロール差分用座標
+    @_waitCount = 0 # 描画時のウェイトカウント
     @content.clear()
 
   # メッセージを設定
@@ -63,7 +75,7 @@ tm.define 'rpg.WindowMessage',
     @_messages = if msg instanceof Array then [].concat(msg) else [msg]
     @_message = @_messages.shift()
     @_messageIndex = 0
-    @_dx = @_dy = 0
+    @_sy = @_dx = @_dy = 0
     @
 
   # 表示位置設定
@@ -97,9 +109,12 @@ tm.define 'rpg.WindowMessage',
   # 選択肢表示中の場合 true
   isSelect: -> @windowMenu?
 
+  # 入力ウィンドウ表示中の場合 true
+  isInput: -> @windowInputNum?
+
   # 描画タイミングの計算
   countDrawTiming: ->
-    @_waitCount = @_waitCount++ % @speed
+    @_waitCount = @_waitCount++ % @messageSpeed
     @_waitCount != 0
 
   # メッセージを描画する
@@ -111,33 +126,52 @@ tm.define 'rpg.WindowMessage',
   # 選択肢ウィンドウの作成
   createSelectWindow: (args={}) ->
     {
-      select
+      menus
       options
       callback
     } = args
 
     _menuFunc = ->
-      callback(@windowMenu.index) if callback?
       @windowMenu.close()
       @pauseCancel()
-    menus = ({name:name,fn:_menuFunc.bind(@)} for name in select)
+    menuAndFuncs = ({name:name,fn:_menuFunc.bind(@)} for name in menus)
 
     @windowMenu = rpg.WindowMenu({
       visible: false
       active: false
-      menus: menus
-    }.$extend options)
-    @windowMenu.addCloseListener((->
-      @windowMenu.remove()
+      cols: 1
+      rows: menuAndFuncs.length
+      menus: menuAndFuncs
+    }.$extend options).addCloseListener((->
+      callback(@windowMenu.index) if callback?
+      @removeWindow(@windowMenu)
       @windowMenu = null
       @active = true
-    ).bind(@))
-    @windowMenu.open()
-    @parent.addChild(@windowMenu)
+    ).bind(@)).open()
+    @addWindow(@windowMenu)
     @active = false
     @setDisplayPosition()
 
-  # TEMPメッセージの確認
+  # 数値入力ウィンドウの作成
+  createInputNumWindow: (args={}) ->
+    {
+      flag
+      options
+      callback
+    } = args
+    
+    @windowInputNum = rpg.WindowInputNum(options)
+    @windowInputNum.addCloseListener((->
+      callback(@windowInputNum.value) if callback?
+      @removeWindow(@windowInputNum)
+      @windowInputNum = null
+      @active = true
+    ).bind(@)).open()
+    @addWindow(@windowInputNum)
+    @active = false
+    @setDisplayPosition()
+
+  # メッセージの確認
   checkTempMessage: ->
     return unless rpg.system.temp.message?
 
@@ -151,24 +185,60 @@ tm.define 'rpg.WindowMessage',
 
   # 選択肢の確認
   checkTempSelect: ->
-    return unless rpg.system.temp.select?
+    return unless rpg.system.temp.selectArgs?
     return unless @isPause() and @isEmpty()
-    @createSelectWindow(
-      select: rpg.system.temp.select
-      options: rpg.system.temp.selectOptions
-      callback: rpg.system.temp.selectEndProc
-    )
-    rpg.system.temp.select = null
-    rpg.system.temp.selectOptions = null
-    rpg.system.temp.selectEndProc = null
+    @createSelectWindow rpg.system.temp.selectArgs
+    rpg.system.temp.selectArgs = null
+    @
+  
+  # 数値入力の確認
+  checkTempInputNum: ->
+    return unless rpg.system.temp.inputNumArgs?
+    return unless @isPause() and @isEmpty()
+    @createInputNumWindow rpg.system.temp.inputNumArgs
+    rpg.system.temp.inputNumArgs = null
+    @
+
+  # スクロール処理
+  scroll: ->
+    # スクロール処理
+    if @_sy > 0
+      n = Math.pow(2, @scrollSpeed) / 256.0 * rpg.system.lineHeight
+      @content.oy += n
+      @_sy -= n
+      return true
+    # ポーズしててページ位置までスクロールしてなかったらスクロールさせる
+    if @isPause() and @_py > @content.oy
+      @_sy = @_py - @content.oy
+      return true
+    # ポーズしてて表示がずれている場合は位置調整（@content初期化）
+    if @isPause() and @content.oy > 0
+      @_ay = @_dy -= @content.oy # 描画位置を、現在の表示位置分戻して
+      @content.oy = @_py = @_sy = 0 # 初期化
+      @content.clear()
+      @content.drawImage(
+        @content.shape.canvas.canvas
+        0, 0, @innerRect.width, @innerRect.height
+        0, 0, @innerRect.width, @innerRect.height
+      )
+      return false
+    # 描画位置が範囲を超えたら
+    if @_ay != @_dy and @_dy >= rpg.system.lineHeight * @maxLine
+      @_sy = rpg.system.lineHeight
+      @_ay = @_dy
+      return true
+    return false
 
   # 更新処理
   update: ->
     rpg.Window.prototype.update.apply(@)
+    return if @scroll()
     @checkTempMessage()
     @checkTempSelect()
+    @checkTempInputNum()
     return if @isClose()
     return if @isSelect()
+    return if @isInput()
     return if @isPause()
     return if @countDrawTiming()
     return if @processMarkup()
@@ -177,19 +247,21 @@ tm.define 'rpg.WindowMessage',
   # マークアップ処理
   processMarkup: ->
     [@_dx, @_dy, @_messageIndex] =
-    @markup.draw(@, @_dx, @_dy, @_message, @_messageIndex)
-    false
+      @markup.draw(@, @_dx, @_dy, @_message, @_messageIndex)
+    @markup.matched
 
+  # ポーズ解除
   pauseCancel: ->
     if @isEmpty()
       rpg.system.app.keyboard.clear()
       @close()
     else
-      @_dx = @_dy = 0
+      if @_dx != 0
+        @_dx = 0
+        @_dy += rpg.system.lineHeight
+      @_py = @_dy
       @_messageIndex = 0
       @_waitCount = 0
-      @speed = 15
-      @content.clear()
       @_message = @_messages.shift()
   
   input_ok_up: ->

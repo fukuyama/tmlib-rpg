@@ -47,7 +47,7 @@ module.exports = {
   ]
   tilesets: [
     {
-      image: 'sample.tileset'
+      image: 'img/test_tileset.png'
       restriction: [
         MOVE_RESTRICTION.ALLOK
         MOVE_RESTRICTION.ALLNG
@@ -81,14 +81,14 @@ module.exports = {
           type: 'rpg.SpriteCharacter'
           properties:
             init: JSON.stringify([
-                {
-                  mapX: 5
-                  mapY: 10
-                  moveRoute: [
-                    {name: 'moveRundom'}
-                    {name: 'moveLoop'}
-                  ]
-                }
+              {
+                mapX: 5
+                mapY: 10
+                moveRoute: [
+                  {name: 'moveRundom'}
+                  {name: 'moveLoop'}
+                ]
+              }
             ])
           width: 32
           height: 32
@@ -98,41 +98,68 @@ module.exports = {
           name: 'Event001'
           properties:
             init: JSON.stringify([
-                {
-                  mapX: 7
-                  mapY: 10
-                  moveRoute: [
-                    {name: 'moveRundom'}
-                    {name: 'moveLoop'}
-                  ]
-                  pages: [
-                    {
-                      name: 'page1'
-                      condition: [
-                      ]
-                      trigger: [
-                        'talk'
-                      ]
-                      commands: [
-                        {
-                          type:'message'
-                          params:[
-                            'TEST1'
-                          ]
-                        },
-                        {
-                          type:'message'
-                          params:[
-                            'ほえほえ'
-                          ]
-                        }
-                      ]
-                    }
-                  ]
-                }
+              {
+                mapX: 7
+                mapY: 10
+                moveRoute: [
+                  {name: 'moveRundom'}
+                  {name: 'moveLoop'}
+                ]
+                pages: [
+                  {
+                    name: 'page1'
+                    condition: [
+                    ]
+                    trigger: [
+                      'talk'
+                    ]
+                    commands: [
+                      {
+                        type:'message'
+                        params:[
+                          'TEST1'
+                        ]
+                      },
+                      {
+                        type:'message'
+                        params:[
+                          'ほえほえ'
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
             ])
           width: 32
           height: 32
+        },
+        {
+          type: 'rpg.SpriteCharacter'
+          name: 'Event002'
+          width: 32
+          height: 32
+          properties:
+            init: JSON.stringify([
+              {
+                mapX: 4
+                mapY: 4
+                pages: [
+                  {
+                    name: 'page1'
+                    trigger: ['talk']
+                    commands: [
+                      {
+                        type:'message'
+                        params: [
+                          'ほえほえ'
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ])
         }
       ]
     }

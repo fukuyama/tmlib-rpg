@@ -38,9 +38,9 @@ tm.define 'SceneMap',
       @player.active = true
       rpg.system.app.keyboard.clear()
     ).bind(@)
-    @windowMapMenu.addEventListener('close',playerActive)
-    @windowMessage.addEventListener('close',playerActive)
-    
+    @windowMapMenu.addCloseListener(playerActive)
+    @windowMessage.addCloseListener(playerActive)
+
     openMapMenu = (->
       @player.active = false
       rpg.system.app.keyboard.clear()
@@ -71,4 +71,5 @@ SceneMap.preload = (loader, param) ->
   console.log 'SceneMap.preload'
   key = 'map.' + param.mapName
   src = rpg.system.assets[key]
+  src = param.mapData unless src?
   loader.preload(key, src, 'json', rpg.Map.preload)

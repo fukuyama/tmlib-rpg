@@ -24,7 +24,7 @@ tm.define 'rpg.WindowContent',
   drawTo: ->
     @shape.canvas.clear()
     @shape.canvas.drawImage(
-      @canvas,
+      @canvas
       @ox, @oy, @innerRect.width, @innerRect.height
       0, 0, @innerRect.width, @innerRect.height
     )

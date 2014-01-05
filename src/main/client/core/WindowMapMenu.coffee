@@ -33,6 +33,13 @@ tm.define 'rpg.WindowMapMenu',
     console.log 'item'
   menuCheck: ->
     console.log 'check'
+    @close()
+    rpg.system.scene.interpreter.start [
+      {
+        type: 'message'
+        params: ['TEST']
+      }
+    ]
   menuStatus: ->
     console.log 'status'
     @close()
@@ -52,10 +59,13 @@ tm.define 'rpg.WindowMapMenu',
       console.log 'select end = ' + i
   menuOperation: ->
     console.log 'operation'
-    @close()
-    rpg.system.scene.interpreter.start [
-      {
-        type: 'message'
-        params: ['TEST']
-      }
-    ]
+    @addWindow(
+      rpg.WindowOperation(
+        x: @right
+        y: @top
+      ).addCloseListener(((e) ->
+        @removeWindow(e.target)
+        @active = true
+      ).bind(@)).open()
+    )
+    @active = false

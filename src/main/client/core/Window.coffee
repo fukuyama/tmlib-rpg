@@ -8,17 +8,17 @@ tm.define 'rpg.Window',
   init: (x, y, width, height, args={}) ->
     delete args[k] for k, v of args when not v?
     @superInit()
-    @width = width
-    @height = height
     {
       @active     # アクティブフラグ
       @visible    # 表示状態
       @textColor  # テキスト描画時のカラー
       @alpha
       @windowskin
+      @windows    # 関連するウィンドウのインスタンス add/remove でつかう。
     } = {
       active: false
       visible: true
+      windows: []
     }.$extend({
       windowskin: 'windowskin.config.default'
       textColor: 'rgb(255,255,255)'
@@ -31,6 +31,8 @@ tm.define 'rpg.Window',
     @origin.set(0, 0)
     @x = x
     @y = y
+    @width = width
+    @height = height
 
     # ウィンドウスキン
     @_windowskin = @createWindowSken(@windowskin)
@@ -43,7 +45,7 @@ tm.define 'rpg.Window',
     @addChild @content.shape
 
     # 最初の更新（自分のだけ呼ぶ…OOP的にどなんだろ）
-    rpg.Window.prototype.refresh.apply(@, arguments)
+    rpg.Window.prototype.refresh.apply(@, [])
 
     # イベントハンドラ用メソッド
     @eventHandler = rpg.EventHandler({active:true})
@@ -65,7 +67,7 @@ tm.define 'rpg.Window',
   # 再更新
   refresh: ->
     @content.drawTo()
-  
+
   # テキスト描画
   drawText: (text, x, y) ->
     # TODO: フォントとかカラーを変更できるようにする
@@ -81,9 +83,9 @@ tm.define 'rpg.Window',
     @content.context.save()
     @content.context.font = '24px sans-serif'
     @content.textBaseline = 'top'
-    ret = @content.context.measureText(text)
+    rect = @content.context.measureText(text)
     @content.context.restore()
-    ret
+    rect
   
   # リサイズ
   resize: (width, height) ->
@@ -101,9 +103,7 @@ tm.define 'rpg.Window',
     ir = @_calcInnerRect(width, height)
     @innerRect.set.apply(@innerRect, ir.toArray())
 
-  resizeContent: ->
-    w = @innerRect.width
-    h = @innerRect.height
+  resizeContent: (w = @innerRect.width,h = @innerRect.height)->
     @content.resize(w,h)
     @content.shape.width = w
     @content.shape.height = h
@@ -122,22 +122,7 @@ tm.define 'rpg.Window',
       @visible = false
       @active = false
       @dispatchEvent rpg.Window.EVENT_CLOSE
-
-  # 開く
-  open: ->
-    @_openDuring = true
-
-  # 閉じる
-  close: ->
-    @_closeDuring = true
-
-  # open 確認
-  isOpen: ->
-    @visible
-
-  # close 確認
-  isClose: ->
-    not @visible
+    @content.update()
 
   # 表示位置調整
   centering: (param) ->
@@ -145,14 +130,45 @@ tm.define 'rpg.Window',
     h = rpg.system.screen.height
     @x = (w - @width) / 2 if param is 'horizon' or not param?
     @h = (h - @height) / 2 if param is 'vertical' or not param?
+    @
 
+  # 開く
+  open: ->
+    @_openDuring = true
+    @
+  # 閉じる
+  close: ->
+    @_closeDuring = true
+    @
+  # 全てのウィンドウを閉じる
+  closeAll: ->
+    win.closeAll() for win in @windows
+    @close()
+    @
+  # open 確認
+  isOpen: ->
+    @visible
+  # close 確認
+  isClose: ->
+    not @visible
+
+  addWindow: (w) ->
+    w.parentWindow = @
+    @windows.push w
+    @parent.addChild(w)
+    @
+  removeWindow: (w) ->
+    w.parentWindow = null
+    w.remove()
+    index = @windows.indexOf(w)
+    @windows.splice(index,1) if 0 <= index
+    @
   addOpenListener: (fn) ->
     @addEventListener('open',fn)
     @
   addCloseListener: (fn) ->
     @addEventListener('close',fn)
     @
-
   onceCloseListener: (fn) ->
     _callback = (->
       fn()
@@ -160,7 +176,12 @@ tm.define 'rpg.Window',
     ).bind(@)
     @addEventListener('close',_callback)
     @
-  
+  # ツリー構造のウィンドウで一番上のウィンドウを探す
+  findTopWindow: ->
+    if @parentWindow instanceof rpg.Window
+      return @parentWindow.findTopWindow()
+    @
+
 rpg.Window.EVENT_OPEN = tm.event.Event "open"
 rpg.Window.EVENT_CLOSE = tm.event.Event "close"
 

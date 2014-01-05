@@ -23,6 +23,10 @@ root.SYSTEM_ASSETS =
             image: 'scene.title.background.image'
           menus: [
             {
+              name:'Test0'
+              next:
+                scene:'SceneMy'
+            },{
               name:'Test1'
               next:
                 scene:'SceneMenuTest1'
@@ -36,14 +40,12 @@ root.SYSTEM_ASSETS =
                 scene:'SceneMap'
                 param:
                   mapName: '001'
+                  mapData: 'data/map/001.json'
             }
           ]
         }
         assets: root.SAMPLE_SYSTEM_LOAD_ASSETS
-      assets: {
-        'sample.tileset': 'img/test_tileset.png'
-        'map.001': 'data/map/001.json'
-      }
+      assets: {}
       loadingSceneDefault:
         gauge:
           color: 'rgb(96,96,96)'

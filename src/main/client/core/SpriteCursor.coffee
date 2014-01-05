@@ -45,7 +45,9 @@ tm.define 'rpg.SpriteCursor',
     @_indexPositions = []
     pw = (@parent.width - @parent.innerRect.width) / 2 - @padding / 2
     ph = (@parent.height - @parent.innerRect.height) / 2 - @padding / 2
-    for pi in [0..@parent.maxPageNum]
+    max = @parent.maxPageNum
+    max = 1 unless @parent.maxPageNum?
+    for pi in [0..max]
       for r in [0...rows]
         for c in [0...cols]
           @_indexPositions.push
@@ -55,8 +57,15 @@ tm.define 'rpg.SpriteCursor',
   
   # カーソル位置設定
   setIndex: (index = @index) ->
-    @index = index
-    {@x, @y} = @_indexPositions[@index]
+    # 範囲チェック
+    if 0 <= index and index < @_indexPositions.length
+      @index = index
+      {@x, @y} = @_indexPositions[@index]
+      @visible = true
+    else
+      # 範囲外の場合は、カーソルを消す
+      @visible = false
+    @
 
   # カーソル位置設定（ポインティング時）
   setPointing: (e) ->

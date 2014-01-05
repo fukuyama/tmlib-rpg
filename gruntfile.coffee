@@ -27,8 +27,10 @@ module.exports = (grunt) ->
       'core/WindowContent'
       'core/Window'
       'core/WindowMenu'
+      'core/WindowInputNum'
       'core/WindowMessage'
       'core/WindowMapMenu'
+      'core/WindowOperation'
       'core/GamePlayer'
       'core/Interpreter'
       'scene/SceneBase'
@@ -36,6 +38,7 @@ module.exports = (grunt) ->
       'scene/SceneMain'
       'scene/SceneTitle'
       'scene/SceneMap'
+      'scene/SceneMy'
       'scene/SceneMenuTest1'
       'scene/SceneMenuTest2'
       'main'
@@ -66,7 +69,7 @@ module.exports = (grunt) ->
       files: ['target/**']
       tasks: ['express:dev']
       options:
-        spawn: false
+        spawn: true
     public:
       files: ['src/**/*.html']
       tasks: ['copy']

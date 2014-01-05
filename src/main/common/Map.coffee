@@ -81,8 +81,9 @@ class rpg.Map
         return event
     null
 
-rpg.Map.preload = (loader, json, asset) ->
-  for tile in json.tilesets
+rpg.Map.preload = (loader, param, asset) ->
+  for tile in param.tilesets
     key = tile.image
     src = rpg.system.assets[key]
+    src = key unless src?
     loader.preload(key, src)

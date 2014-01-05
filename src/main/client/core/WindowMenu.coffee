@@ -12,8 +12,9 @@ tm.define 'rpg.WindowMenu',
     @superInit(args.x ? 0, args.y ? 0, 128, 128, args)
     {
       @menus
-      @index
+      index
       saveIndex
+      @cancel
       @cols
       @rows
       @cursor
@@ -23,13 +24,14 @@ tm.define 'rpg.WindowMenu',
       menus: [] # {name:'name',fn:menuFunc} の配列
       index: 0
       saveIndex: false # カーソル位置の保存フラグ true だと保存する
+      cancel: -1 # キャンセル時のインデックス
       cols: 1
       rows: 2
       cursor: DEFAULT_CURSOR_ASSET
       colPadding: 4
       close: true
     }.$extend(rpg.system.windowDefault).$extend args
-    
+    @index = index
     @closeEvent = close
 
     # カーソル作成
@@ -52,9 +54,9 @@ tm.define 'rpg.WindowMenu',
     @addMenuHandler(m.name, m.fn) for m in @menus
     
     # イベントリスナー
-    @addEventListener 'open', ->
+    @addOpenListener ->
       # カーソル位置を保存しない場合は、開くときに index を初期化
-      @setIndex(0) unless saveIndex
+      @setIndex(index) unless saveIndex
 
     # ポインティング対応
     @setInteractive(true)
@@ -116,7 +118,7 @@ tm.define 'rpg.WindowMenu',
   # Window再更新
   refresh: ->
     @refreshMenu()
-    rpg.Window.prototype.refresh.apply(@, arguments)
+    rpg.Window.prototype.refresh.call(@)
 
   # ----------------------------------------------------
   # 入力処理
@@ -124,14 +126,17 @@ tm.define 'rpg.WindowMenu',
 
   # 決定
   input_ok_up: ->
-    # TODO: メニューがあるかどうか
-    rpg.system.se.menuDecision()
-    @callMenuHandler(@menus[@index].name)
+    # メニューがあるかどうか
+    if 0 <= @index and @index < @menus.length
+      rpg.system.se.menuDecision()
+      @callMenuHandler(@menus[@index].name)
+    # TODO:ミスの場合 SE 鳴らす？
 
   # キャンセル
   input_cancel_up: ->
     if @closeEvent
       rpg.system.se.menuCancel()
+      @index = @cancel
       @close()
 
   # 上
@@ -213,6 +218,7 @@ tm.define 'rpg.WindowMenu',
   # メニュー選択
   pointing_menu: (e) ->
     @cursorInstance.setPointing(e)
+    @setIndex @cursorInstance.index
 
 # １ページに表示可能な最大数
 rpg.WindowMenu.prototype.getter 'maxPageItems', -> @cols * @rows
