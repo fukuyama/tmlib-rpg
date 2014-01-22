@@ -36,6 +36,7 @@ root.SYSTEM_ASSETS =
                 scene:'SceneMenuTest2'
             },{
               name:'Map'
+              action: 'NewGame'
               next:
                 scene:'SceneMap'
                 param:

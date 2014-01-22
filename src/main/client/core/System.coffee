@@ -1,4 +1,11 @@
 
+#
+# システムクラス
+#
+# rpg.system は、ゲーム全体を通して利用するデータを管理
+# rpg.game は、１つのゲームのデータを管理
+#
+
 # システムデータとして先読みする場合の data asset
 # rpg.System.assets でアクセス
 # （coffee スクリプトだとこの書き方ではグローバルにならないのでこのままでＯＫ。
@@ -60,14 +67,10 @@ tm.define 'rpg.System',
       @screen
       @se
       @mapChipSize
-      @temp
     } = {
-      temp: {
-        message: null
-        messageEndProc: null
-      }
     }.$extendAll(ASSETS.system.src).$extendAll(args)
-    @flag = new rpg.Flag()
+    @clearTemp()
+    @player = rpg.GamePlayer()
 
     # Audio 関連のメソッド作成
     # menu_decision -> rpg.system.se.menuDecision()
@@ -99,9 +102,7 @@ tm.define 'rpg.System',
         
         s.position = 'fixed'
         s.margin = '0'
-        #s.left = '0px'
         s.top  = '55px'
-        #s.bottom = '0px'
         s.right = '10px'
         s.zIndex = 10
 
@@ -168,11 +169,13 @@ tm.define 'rpg.System',
       @runMocha()
     else
       @runNomal()
-  
+
+  # シーンロード
   loadScene: (args={}) ->
     args = {}.$extend(@loadingSceneDefault).$extend(args)
     rpg.system.app.replaceScene SceneLoading(args)
 
+  # シーン変更
   replaceScene: (args={}) ->
     {
       scene
@@ -181,8 +184,35 @@ tm.define 'rpg.System',
     scene = tm.global[scene] if typeof scene is 'string'
     rpg.system.app.replaceScene scene(param)
 
+  # SEの演奏
   playSe: (name) ->
     if tm.asset.AssetManager.contains name
       audio = tm.asset.AssetManager.get(name)
       audio.play()
       audio.stop(1)
+   
+  clearTemp: ->
+    @temp = {
+      message: null
+      messageEndProc: null
+    }
+
+  # 新しいゲームを開始
+  newGame: () ->
+    console.log 'NewGame start.'
+    @clearTemp()
+    game = rpg.game = {}
+    game.flag = new rpg.Flag()
+    # TODO: プレイヤーキャラクターとりあえず版
+    o = tm.asset.AssetManager.get('sample.character.test')
+    game.pc = new rpg.Character(o)
+    
+    # パーティ編成
+    game.party = new rpg.Party()
+    
+    # TODO: アクターデータ
+    a = new rpg.Actor()
+    game.party.add(a)
+    game.actors = []
+    game.actors.push a
+

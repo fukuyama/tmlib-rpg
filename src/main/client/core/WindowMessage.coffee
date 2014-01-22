@@ -7,6 +7,10 @@ SEL_LEFT = 1
 SEL_CENTER = 2
 SEL_RIGHT = 3
 
+NUM_LEFT = 1
+NUM_CENTER = 2
+NUM_RIGHT = 3
+
 tm.define 'rpg.WindowMessage',
   superClass: rpg.Window
 
@@ -33,6 +37,8 @@ tm.define 'rpg.WindowMessage',
           position: MSG_BOTTOM # メッセージウィンドウ位置
         select:
           position: SEL_RIGHT # 選択肢ウィンドウ位置
+        input_num:
+          position: NUM_RIGHT # 数値入力ウィンドウ位置
     }.$extend(args)
 
     # リサイズ
@@ -80,24 +86,45 @@ tm.define 'rpg.WindowMessage',
 
   # 表示位置設定
   setDisplayPosition: (options=@options) ->
-    msgop = options.message
     # x座標は真ん中
     @centering('horizon')
-    # y座標は上中下
-    switch msgop.position
+    # y座標は上中下のいずれか
+    switch options.message.position
       when MSG_TOP then @y = 0
       when MSG_CENTER then @centering('vertical')
       when MSG_BOTTOM then @y = rpg.system.screen.height - @height
+    @setDisplayPositionMenu options
+    @setDisplayPositionInputNum options
+    @
+
+  # 選択肢表示位置
+  setDisplayPositionMenu: (options=@options) ->
     if @windowMenu?
-      # 選択肢表示位置
+      # 左右位置
       switch options.select.position
         when SEL_LEFT then @windowMenu.x = @left
         when SEL_CENTER then @windowMenu.center()
         when SEL_RIGHT then @windowMenu.x = @right - @windowMenu.width
-      if msgop.position is MSG_TOP
+      # 上下位置
+      if options.message.position is MSG_TOP
         @windowMenu.y = @bottom
       else
         @windowMenu.y = @top - @windowMenu.height
+    @
+
+  # 数値入力ウィンドウ表示位置
+  setDisplayPositionInputNum: (options=@options) ->
+    if @windowInputNum?
+      # 左右位置
+      switch options.input_num.position
+        when NUM_LEFT then @windowInputNum.x = @left
+        when NUM_CENTER then @windowInputNum.center()
+        when NUM_RIGHT then @windowInputNum.x = @right - @windowInputNum.width
+      # 上下位置
+      if options.message.position is MSG_TOP
+        @windowInputNum.y = @bottom
+      else
+        @windowInputNum.y = @top - @windowInputNum.height
     @
 
   # ポーズ状態の場合 true
@@ -131,10 +158,8 @@ tm.define 'rpg.WindowMessage',
       callback
     } = args
 
-    _menuFunc = ->
-      @windowMenu.close()
-      @pauseCancel()
-    menuAndFuncs = ({name:name,fn:_menuFunc.bind(@)} for name in menus)
+    fn = -> @windowMenu.close()
+    menuAndFuncs = ({name:name,fn:fn.bind(@)} for name in menus)
 
     @windowMenu = rpg.WindowMenu({
       visible: false
@@ -147,6 +172,7 @@ tm.define 'rpg.WindowMessage',
       @removeWindow(@windowMenu)
       @windowMenu = null
       @active = true
+      @pauseCancel()
     ).bind(@)).open()
     @addWindow(@windowMenu)
     @active = false
@@ -166,6 +192,7 @@ tm.define 'rpg.WindowMessage',
       @removeWindow(@windowInputNum)
       @windowInputNum = null
       @active = true
+      @pauseCancel()
     ).bind(@)).open()
     @addWindow(@windowInputNum)
     @active = false
@@ -197,6 +224,13 @@ tm.define 'rpg.WindowMessage',
     return unless @isPause() and @isEmpty()
     @createInputNumWindow rpg.system.temp.inputNumArgs
     rpg.system.temp.inputNumArgs = null
+    @
+
+  # オプションの確認
+  checkTempOption: ->
+    return unless rpg.system.temp.options?
+    @options = @options.$extendAll rpg.system.temp.options
+    rpg.system.temp.options = null
     @
 
   # スクロール処理
@@ -233,6 +267,7 @@ tm.define 'rpg.WindowMessage',
   update: ->
     rpg.Window.prototype.update.apply(@)
     return if @scroll()
+    @checkTempOption()
     @checkTempMessage()
     @checkTempSelect()
     @checkTempInputNum()

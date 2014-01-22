@@ -92,7 +92,13 @@ tm.define 'rpg.Interpreter',
   # script
   command_script: (script) ->
     # TODO: eval は危険かな～？
-  
+
+  # オプション
+  command_option: (options) ->
+    # temp にオプションを渡す
+    rpg.system.temp.options = options
+    false
+    
   # 文章表示
   command_message: (msg) ->
     tmp = rpg.system.temp
@@ -108,14 +114,15 @@ tm.define 'rpg.Interpreter',
       @waitFlag = false
     ).bind(@)
     @waitFlag = true
-    # 次のコマンドがセレクトの場合続けて処理する
-    if @hasNext() and @nextCommand().type is 'select'
+    # 次のコマンドが選択肢か数値入力の場合続けて処理する
+    if @hasNext() and
+    (@nextCommand().type is 'select' or @nextCommand().type is 'input_num')
       @next().execute()
     false
 
   # フラグ操作
   command_flag: (flag, value1, value2) ->
-    rsf = rpg.system.flag
+    rsf = rpg.game.flag
     if typeof value1 is 'boolean'
       if value1
         rsf.on flag
@@ -157,7 +164,7 @@ tm.define 'rpg.Interpreter',
     result = false
     switch type
       when 'flag' # フラグによる分岐 type is 'flag'
-        rsf = rpg.system.flag
+        rsf = rpg.game.flag
         if arguments.length == 3
           flag = arguments[1]
           value = arguments[2]
@@ -250,7 +257,7 @@ tm.define 'rpg.Interpreter',
       flag: flag
       options: {}.$extend options
       callback: ((num) ->
-        rpg.system.flag.set(flag, num)
+        rpg.game.flag.set(flag, num)
         @waitFlag = false
       ).bind(@)
     }

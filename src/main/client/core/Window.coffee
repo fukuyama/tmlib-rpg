@@ -1,7 +1,6 @@
 
 # ウィンドウクラス
 tm.define 'rpg.Window',
-
   superClass: tm.display.CanvasElement
 
   # 初期化
@@ -129,7 +128,7 @@ tm.define 'rpg.Window',
     w = rpg.system.screen.width
     h = rpg.system.screen.height
     @x = (w - @width) / 2 if param is 'horizon' or not param?
-    @h = (h - @height) / 2 if param is 'vertical' or not param?
+    @y = (h - @height) / 2 if param is 'vertical' or not param?
     @
 
   # 開く

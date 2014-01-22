@@ -5,7 +5,7 @@ tm.define 'rpg.GamePlayer',
   superClass: tm.app.Element
 
   # 初期化
-  init: (@character) ->
+  init: () ->
     @superInit()
 
     @eventHandler = rpg.EventHandler(active:true,repeatDelay:0)
@@ -21,6 +21,9 @@ tm.define 'rpg.GamePlayer',
       enumerable: true
       get: -> @eventHandler.active
       set: (b) -> @eventHandler.active = b if typeof b is 'boolean'
+    Object.defineProperty @, 'character',
+      enumerable: true
+      get: -> rpg.game.pc
  
   # 更新
   update: ->

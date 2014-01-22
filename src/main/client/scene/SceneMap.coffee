@@ -16,23 +16,17 @@ tm.define 'SceneMap',
       mapName: 'sample'
     }.$extendAll(args)
 
-    # TODO: プレイヤーキャラクターとりあえず版
-    @pc = new rpg.Character(tm.asset.AssetManager.get('sample.character.test'))
-    @pc.moveSpeed = 6
-
     # TODO: マップデータ読み込みとりあえず版
     @map = new rpg.Map(tm.asset.AssetManager.get('map.' + @mapName).data)
 
     # インタープリター
     @interpreter = rpg.Interpreter()
-
     # メッセージウィンドウ
     @windowMessage = rpg.WindowMessage()
-    # マップコマンド
+    # マップメインメニュー
     @windowMapMenu = rpg.WindowMapMenu()
-
     # プレイヤー
-    @player = rpg.system.player = rpg.GamePlayer(@pc)
+    @player = rpg.system.player
 
     playerActive = (->
       @player.active = true
@@ -49,8 +43,8 @@ tm.define 'SceneMap',
     @player.addEventListener('input_ok',openMapMenu)
     @player.addEventListener('input_cancel',openMapMenu)
 
-    @spriteMap = rpg.SpriteMap(@pc, @map)
-    @spriteMap.addChild(rpg.SpriteCharacter(@pc))
+    @spriteMap = rpg.SpriteMap(@player.character, @map)
+    @spriteMap.addChild(rpg.SpriteCharacter(@player.character))
 
     @addChild(@spriteMap)
     

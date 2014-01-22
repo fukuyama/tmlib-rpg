@@ -5,7 +5,7 @@ _g.message_clear = ->
   rpg.system.temp.message = null
   if rpg.system.temp.messageEndProc?
     rpg.system.temp.messageEndProc()
-    rpg.system.temp.messageEndProc = null
+  rpg.system.temp.messageEndProc = null
 
 # キー操作エミュレーション
 _g.emulate_key = (key,callback) ->
@@ -18,8 +18,14 @@ _g.emulate_key = (key,callback) ->
   setTimeout(->
     callback()
   400)
+loadFlg = false
 # テスト用マップロード
 _g.loadTestMap = (done) ->
+  if loadFlg
+    done()
+    return
+  loadFlg = true
+  rpg.system.newGame()
   rpg.system.loadScene {
     scene:'SceneMap'
     param:

@@ -8,6 +8,9 @@ module.exports = (grunt) ->
       'common/utils'
       'common/constants'
       'common/Character'
+      'common/Battler'
+      'common/Actor'
+      'common/Party'
       'common/Map'
       'common/Flag'
       'common/Event'
@@ -69,7 +72,7 @@ module.exports = (grunt) ->
       files: ['target/**']
       tasks: ['express:dev']
       options:
-        spawn: true
+        nospawn: true
     public:
       files: ['src/**/*.html']
       tasks: ['copy']

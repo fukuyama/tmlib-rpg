@@ -7,6 +7,7 @@ ASSETS =
       color: 'rgb(0,0,0)'
     menus: [{
         name:'はじめる'
+        action: 'NewGame'
         next:
           scene:''
       },{
@@ -42,9 +43,15 @@ tm.define 'SceneTitle',
     # タイトルメニューの作成
     @addTitleMenu()
 
+  # ニューゲームアクション
+  actionNewGame: ->
+    rpg.system.newGame()
+
   # メニュー選択時の処理
   selectMenu: ->
     menu = @menus[@menu_title.index]
+    if menu.action
+      @['action' + menu.action].apply(@,[])
     if menu.next? and menu.next.scene != ''
       # シーンを切り替える
       @loadScene menu.next
