@@ -11,12 +11,14 @@ tm.define 'rpg.Window',
       @active     # アクティブフラグ
       @visible    # 表示状態
       @textColor  # テキスト描画時のカラー
+      title       # タイトル
       @alpha
       @windowskin
       @windows    # 関連するウィンドウのインスタンス add/remove でつかう。
     } = {
       active: false
       visible: true
+      title: null
       windows: []
     }.$extend({
       windowskin: 'windowskin.config.default'
@@ -34,14 +36,17 @@ tm.define 'rpg.Window',
     @height = height
 
     # ウィンドウスキン
-    @_windowskin = @createWindowSken(@windowskin)
+    @_windowskin = @createWindowSkin(@windowskin)
     @_windowskin.backgroundAlpha = @alpha
     @addChild @_windowskin
 
     # ウィンドウコンテンツ
     @content = rpg.WindowContent(@_calcInnerRect())
-    @content.alpha = 1.0
     @addChild @content.shape
+
+    # タイトル
+    if title?
+      @setTitle(title)
 
     # 最初の更新（自分のだけ呼ぶ…OOP的にどなんだろ）
     rpg.Window.prototype.refresh.apply(@, [])
@@ -54,18 +59,43 @@ tm.define 'rpg.Window',
     @setupHandler()
 
   # ウィンドウスキンの作成
-  createWindowSken: (skin = DEFAULT_WINDOWSKIN_ASSET) ->
+  createWindowSkin: (skin = DEFAULT_WINDOWSKIN_ASSET) ->
     rpg.WindowSkin(@width, @height, skin)
+
+  # タイトル
+  setTitle: (title) ->
+    @titleText = title
+    unless @titleContent?
+      @titleContent = rpg.WindowContent(@_calcInnerTitleRect())
+      @addChild @titleContent.shape
+      @_windowskin.title = true
+      @height += @titleHeight
+      @resizeWindow(@width,@height)
+    @titleContent.context.save()
+    @titleContent.context.font = '24px sans-serif'
+    @titleContent.textBaseline = 'top'
+    @titleContent.setFillStyle(@textColor)
+    @titleContent.fillText(@titleText, 0, 3) # TODO: textBaseline ちょい下で良いかな？
+    @titleContent.context.restore()
+
+  # タイトル描画範囲（ウィンドウの内側の領域サイズ）計算
+  _calcInnerTitleRect: (width = @width, height = @height)->
+    bw = @borderWidth
+    bh = @borderHeight
+    tm.geom.Rect(bw, bh, width - bw * 2, rpg.system.lineHeight)
 
   # コンテンツ描画範囲（ウィンドウの内側の領域サイズ）計算 コンテンツサイズとは別
   _calcInnerRect: (width = @width, height = @height)->
     bw = @borderWidth
     bh = @borderHeight
-    tm.geom.Rect(bw, bh, width - bw * 2, height - bh * 2)
+    w = width - bw * 2
+    h = height - bh * 2
+    tm.geom.Rect(bw, bh + @titleHeight, w, h - @titleHeight)
 
   # 再更新
   refresh: ->
-    @content.drawTo()
+    @titleContent.drawTo() if @titleContent
+    @content.drawTo() if @content
 
   # テキスト描画
   drawText: (text, x, y) ->
@@ -135,14 +165,10 @@ tm.define 'rpg.Window',
   open: ->
     @_openDuring = true
     @
-  # 閉じる
+  # 閉じる（treeにあるのは全部閉じる）
   close: ->
+    win.close() for win in @windows
     @_closeDuring = true
-    @
-  # 全てのウィンドウを閉じる
-  closeAll: ->
-    win.closeAll() for win in @windows
-    @close()
     @
   # open 確認
   isOpen: ->
@@ -164,6 +190,13 @@ tm.define 'rpg.Window',
     @
   addOpenListener: (fn) ->
     @addEventListener('open',fn)
+    @
+  onceOpenListener: (fn) ->
+    _callback = (->
+      fn()
+      @removeEventListener('open',_callback)
+    ).bind(@)
+    @addEventListener('open',_callback)
     @
   addCloseListener: (fn) ->
     @addEventListener('close',fn)
@@ -187,3 +220,4 @@ rpg.Window.EVENT_CLOSE = tm.event.Event "close"
 rpg.Window.prototype.getter 'innerRect', -> @content.innerRect
 rpg.Window.prototype.getter 'borderWidth', -> @_windowskin.borderWidth
 rpg.Window.prototype.getter 'borderHeight', -> @_windowskin.borderHeight
+rpg.Window.prototype.getter 'titleHeight', -> @_windowskin.titleHeight

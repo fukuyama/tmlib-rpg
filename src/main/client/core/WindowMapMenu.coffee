@@ -26,39 +26,30 @@ tm.define 'rpg.WindowMapMenu',
   menuTalk: ->
     @close()
     rpg.system.player.talk()
-    
+    @
   menuSkill: ->
     console.log 'skill'
+    @
   menuItem: ->
     console.log 'item'
+    @
   menuCheck: ->
     console.log 'check'
-    @close()
-    rpg.system.scene.interpreter.start [
-      {
-        type: 'message'
-        params: ['TEST']
-      }
-    ]
+    @
   menuStatus: ->
-    console.log 'status'
-    @close()
-    rpg.system.scene.interpreter.start [
-      {
-        type: 'message'
-        params: ['TEST']
-      },{
-        type: 'message'
-        params: ['TEST11111111']
-      }
-    ]
-    rpg.system.scene.interpreter.update()
-    rpg.system.temp.select = ['Yes','No']
-    rpg.system.temp.selectOptions = {}
-    rpg.system.temp.selectEndProc = (i) ->
-      console.log 'select end = ' + i
+    [x,y] = @calcMenuPosition(@index)
+    @addWindow(
+      rpg.WindowStatusActorList(
+        x: @left + x
+        y: @top + y
+      ).addCloseListener(((e) ->
+        @removeWindow(e.target)
+        @active = true
+      ).bind(@)).open()
+    )
+    @active = false
+    @
   menuOperation: ->
-    console.log 'operation'
     @addWindow(
       rpg.WindowOperation(
         x: @right
@@ -69,3 +60,4 @@ tm.define 'rpg.WindowMapMenu',
       ).bind(@)).open()
     )
     @active = false
+    @

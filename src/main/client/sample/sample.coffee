@@ -1,5 +1,6 @@
 sample_files = [
   'map/001'
+  'item/001'
 ]
 
 target = 'target'
@@ -13,9 +14,9 @@ fs   = require 'fs'
 jc.base = path.dirname fs.realpathSync(__filename)
 
 outputDir = path.join(target, 'public/client/data')
-mapDir = path.join(outputDir,'map')
-
-fs.exists path.join(mapDir), (exists) -> fs.mkdirSync(mapDir) unless exists
+for i in ['map','item']
+  dirnm = path.join(outputDir,i)
+  fs.mkdirSync(dirnm) unless fs.existsSync(dirnm)
 
 for name in sample_files
   file = path.join(outputDir, name + '.json')

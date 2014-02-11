@@ -3,6 +3,7 @@ ASSETS =
   'windowskin.config.original':
     type: 'json'
     src:
+      title: false
       image: 'windowskin.image'
       borderWidth: 16
       borderHeight: 16
@@ -75,6 +76,7 @@ tm.define 'rpg.WindowSkin',
     @height = height
     args = tm.asset.AssetManager.get(args).data if typeof args == 'string'
     {
+      @title
       @image
       @borderWidth
       @borderHeight
@@ -151,3 +153,10 @@ tm.define 'rpg.WindowSkin',
 rpg.WindowSkin.prototype.accessor 'backgroundAlpha',
     get: -> @_background.alpha
     set: (v) -> @_background.alpha = v
+
+rpg.WindowSkin.prototype.accessor 'titleHeight',
+    get: ->
+      if @title
+        return rpg.system.lineHeight * 1.5
+      else
+        return 0

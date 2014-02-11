@@ -111,8 +111,8 @@ tm.define 'rpg.EventHandler',
     if @active
       kb = rpg.system.app.keyboard
       for key in @eventKeys when kb.getKeyDown(key)
-        @callInputHandler key
         @repeatCount = 0
+        @callInputHandler key
 
       for key in @eventKeys when kb.getKey(key)
         if @repeatDelay < @repeatCount++
@@ -120,4 +120,5 @@ tm.define 'rpg.EventHandler',
           @repeatCount -= @repeatIntarval
 
       for key in @eventUpKeys when kb.getKeyUp(key)
+        @repeatCount = 0
         @callInputHandler key + '_up'

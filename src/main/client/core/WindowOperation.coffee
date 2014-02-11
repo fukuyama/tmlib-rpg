@@ -11,7 +11,7 @@ tm.define 'rpg.WindowOperation',
       rows: 5
       menus: [
         {name:'まんたん',fn:@menuCuraAll.bind(@)}
-        {name:'テスト再開',fn:@menuTest.bind(@)}
+        {name:'TEST',fn:@menuTest001.bind(@)}
       ]
     }
     @superInit(args)
@@ -20,6 +20,7 @@ tm.define 'rpg.WindowOperation',
     console.log 'menuCuraAll'
     w = @findTopWindow()
     console.log w
-  menuTest: ->
-    console.log 'menuTest'
-    @findTopWindow().closeAll()
+  menuTest001: ->
+    console.log 'menuTest001'
+    rpg.system.loadAsset(['data/item/001.json'])
+    

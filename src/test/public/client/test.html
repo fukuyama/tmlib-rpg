@@ -26,7 +26,6 @@
 	</style>
   </head>
   <body onkeydown="checkKeyEvent(event)">
-    <div id="mocha"></div>
     <canvas id="game_screen"></canvas>
 	<label id="scrollLockLabel">
 	Keyboard Event Lock
@@ -41,12 +40,16 @@
       rpg.mocha = true;
       rpg.mocha_run = function() {
         console.log('* mocha_run *');
-        mocha.run();
+        runner = mocha.run();
+		runner.on('test',function(){
+			window.scrollBy(0,1000);
+		});
       }
     </script>
     <script src="test/TestUtils.js"></script>
     <script src="test/InterpreterTest.js"></script>
     <script src="test/WindowMessageTest.js"></script>
     <script src="test/WindowInputNumTest.js"></script>
+    <div id="mocha"></div>
   </body>
 </html>

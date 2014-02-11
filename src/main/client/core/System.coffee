@@ -170,6 +170,12 @@ tm.define 'rpg.System',
     else
       @runNomal()
 
+  # Assetロード
+  loadAsset: (assets) ->
+    @loadScene
+      scene: rpg.system.scene
+      assets: assets
+  
   # シーンロード
   loadScene: (args={}) ->
     args = {}.$extend(@loadingSceneDefault).$extend(args)
@@ -181,8 +187,11 @@ tm.define 'rpg.System',
       scene
       param
     } = args
-    scene = tm.global[scene] if typeof scene is 'string'
-    rpg.system.app.replaceScene scene(param)
+    if typeof scene is 'string'
+      scene = tm.global[scene]
+    if typeof scene is 'function'
+      scene = scene(param)
+    rpg.system.app.replaceScene scene
 
   # SEの演奏
   playSe: (name) ->
@@ -195,24 +204,31 @@ tm.define 'rpg.System',
     @temp = {
       message: null
       messageEndProc: null
+      select: null
+      selectOptions: null
+      selectEndProc: null
     }
 
   # 新しいゲームを開始
   newGame: () ->
-    console.log 'NewGame start.'
     @clearTemp()
     game = rpg.game = {}
     game.flag = new rpg.Flag()
     # TODO: プレイヤーキャラクターとりあえず版
     o = tm.asset.AssetManager.get('sample.character.test')
     game.pc = new rpg.Character(o)
+    game.pc.moveSpeed = 6
     
     # パーティ編成
     game.party = new rpg.Party()
     
     # TODO: アクターデータ
-    a = new rpg.Actor()
-    game.party.add(a)
     game.actors = []
+    
+    # DUMMY
+    a = new rpg.Actor(name: 'ああああ')
+    game.party.add(a)
     game.actors.push a
-
+    a = new rpg.Actor(name: 'あああい')
+    game.party.add(a)
+    game.actors.push a

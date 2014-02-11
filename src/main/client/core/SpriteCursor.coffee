@@ -44,7 +44,8 @@ tm.define 'rpg.SpriteCursor',
     @refresh()
     @_indexPositions = []
     pw = (@parent.width - @parent.innerRect.width) / 2 - @padding / 2
-    ph = (@parent.height - @parent.innerRect.height) / 2 - @padding / 2
+    ph = (@parent.height - @parent.titleHeight - @parent.innerRect.height)
+    ph = ph / 2 - @padding / 2 + @parent.titleHeight
     max = @parent.maxPageNum
     max = 1 unless @parent.maxPageNum?
     for pi in [0..max]
@@ -54,7 +55,7 @@ tm.define 'rpg.SpriteCursor',
             x: pw + c * w + c * @parent.colPadding
             y: ph + r * h
     @setIndex()
-  
+
   # カーソル位置設定
   setIndex: (index = @index) ->
     # 範囲チェック

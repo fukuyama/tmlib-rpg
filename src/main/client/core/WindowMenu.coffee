@@ -8,6 +8,7 @@ tm.define 'rpg.WindowMenu',
   # 初期化
   init: (args={}) ->
     delete args[k] for k, v of args when not v?
+    @menus = []
     # width と height はダミー すぐに resizeAuto する
     @superInit(args.x ? 0, args.y ? 0, 128, 128, args)
     {
@@ -19,6 +20,8 @@ tm.define 'rpg.WindowMenu',
       @rows
       @cursor
       @colPadding
+      @menuWidthFix
+      @menuHeightFix
       close
     } = {
       menus: [] # {name:'name',fn:menuFunc} の配列
@@ -30,8 +33,10 @@ tm.define 'rpg.WindowMenu',
       cursor: DEFAULT_CURSOR_ASSET
       colPadding: 4
       close: true
+      menuWidthFix: null
+      menuHeightFix: null
     }.$extend(rpg.system.windowDefault).$extend args
-    @index = index
+    @index = index # インデックスの初期化関連でローカル変数も使う
     @closeEvent = close
 
     # カーソル作成
@@ -49,10 +54,15 @@ tm.define 'rpg.WindowMenu',
     @eventHandler.create('Menu')
     @addMenuHandler = @eventHandler.addMenuHandler
     @callMenuHandler = @eventHandler.callMenuHandler
+    @eventHandler.create('Change')
+    @addChangeHandler = @eventHandler.addChangeHandler
+    @callChangeHandler = @eventHandler.callChangeHandler
 
     # メニューハンドラ初期化
     @addMenuHandler(m.name, m.fn) for m in @menus
-    
+    if @change_index
+      @addChangeHandler('index',@change_index.bind(@))
+
     # イベントリスナー
     @addOpenListener ->
       # カーソル位置を保存しない場合は、開くときに index を初期化
@@ -74,6 +84,7 @@ tm.define 'rpg.WindowMenu',
   # カーソルインデックス設定
   setIndex: (@index) ->
     @cursorInstance.setIndex(@index)
+    @callChangeHandler('index')
 
   # メニューの追加
   addMenu: (name, fn) ->
@@ -85,14 +96,23 @@ tm.define 'rpg.WindowMenu',
 
   # 自動リサイズ
   resizeAuto: ->
-    width = 0
-    for m in @menus
-      w = @measureText(m.name).width
-      width = w if width < w
-    @menuWidth = width
-    @menuHeight = rpg.system.lineHeight
+    return if @menus.length == 0
+    if @menuWidthFix?
+      @menuWidth = @menuWidthFix
+    else
+      width = 0
+      if @titleText
+        width = @measureText(@titleText).width
+      for m in @menus
+        w = @measureText(m.name).width
+        width = w if width < w
+      @menuWidth = width
+    if @menuHeightFix?
+      @menuHeight = @menuHeightFix
+    else
+      @menuHeight = rpg.system.lineHeight
     width  = @menuWidth * @cols + (@cols - 1) * @colPadding
-    height = @menuHeight * @rows
+    height = @menuHeight * @rows + @titleHeight
     @resize(width + @borderWidth * 2, height + @borderHeight * 2)
     @cursorInstance.reset()
 
@@ -107,13 +127,18 @@ tm.define 'rpg.WindowMenu',
 
   # メニュー再更新
   refreshMenu: ->
+    for m, i in @menus
+      [x,y] = @calcMenuPosition(i)
+      @drawText(m.name, x, y)
+
+  # メニュー描画位置
+  calcMenuPosition: (i) ->
     w = @menuWidth + @colPadding
     h = rpg.system.lineHeight
-    for m, i in @menus
-      n = Math.floor(i / @maxPageItems)
-      x = (i % @cols) * w + n * @innerRect.width
-      y = Math.floor((i % @maxPageItems)/ @cols) * h
-      @drawText(m.name, x, y)
+    n = Math.floor(i / @maxPageItems)
+    x = (i % @cols) * w + n * @innerRect.width
+    y = Math.floor((i % @maxPageItems)/ @cols) * h
+    [x,y]
 
   # Window再更新
   refresh: ->
@@ -183,7 +208,12 @@ tm.define 'rpg.WindowMenu',
       else
         @index = @index - @maxPageItems + @cols - 1
       if @menus.length <= @index
-        @index = @menus.length - 1 - @menus.length % @cols
+        n = @menus.length - (@maxPageNum - 1) * @maxPageItems
+        @index = n - 1 - n % @cols
+        if @index > 0
+          @index += (@maxPageNum - 1) * @maxPageItems
+        else
+          @index = @menus.length - 1
     else
       @index -= 1
     @setIndex (@index + @menus.length) % @menus.length
@@ -225,6 +255,7 @@ rpg.WindowMenu.prototype.getter 'maxPageItems', -> @cols * @rows
 
 # 最大ページ数
 rpg.WindowMenu.prototype.getter 'maxPageNum', ->
+  return 1 if @menus.length == 0
   Math.ceil(@menus.length / @maxPageItems)
 
 # 現在のページ数

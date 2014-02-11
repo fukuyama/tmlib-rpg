@@ -24,12 +24,14 @@ _g.loadTestMap = (done) ->
   if loadFlg
     done()
     return
-  loadFlg = true
-  rpg.system.newGame()
-  rpg.system.loadScene {
-    scene:'SceneMap'
-    param:
-      mapName: '001'
-      mapData: 'data/map/001.json'
-    callback: -> done()
-  }
+  setTimeout(->
+    loadFlg = true
+    rpg.system.newGame()
+    rpg.system.loadScene {
+      scene:'SceneMap'
+      param:
+        mapName: '001'
+        mapData: 'data/map/001.json'
+      callback: -> done()
+    }
+  100)

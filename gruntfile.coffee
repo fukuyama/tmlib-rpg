@@ -15,6 +15,7 @@ module.exports = (grunt) ->
       'common/Flag'
       'common/Event'
       'common/EventPage'
+      'common/Item'
       'common/MarkupText'
   ]
   # クライアントのスクリプト
@@ -34,6 +35,9 @@ module.exports = (grunt) ->
       'core/WindowMessage'
       'core/WindowMapMenu'
       'core/WindowOperation'
+      'core/WindowMemberBase'
+      'core/WindowStatusActorList'
+      'core/WindowStatusInfo'
       'core/GamePlayer'
       'core/Interpreter'
       'scene/SceneBase'

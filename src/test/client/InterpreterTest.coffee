@@ -6,26 +6,14 @@ describe 'rpg.Interpreter', () ->
       interpreter = rpg.Interpreter()
       interpreter.should.be.a 'object'
 
-  describe '文章表示', ->
-    interpreter = rpg.Interpreter()
-    it 'message start', ->
-      (rpg.system.temp.message is null).should.equal true
-      interpreter.start [
-        {type:'message',params:['TEST1']}
-        {type:'message',params:['TEST2']}
-      ]
-    it 'message update', ->
-      interpreter.update()
-      rpg.system.temp.message.should.deep.equal [
-        'TEST1','TEST2'
-      ]
-      message_clear()
-      interpreter.update()
-
   describe 'フラグ操作', ->
-    rpg.system.newGame()
-    interpreter = rpg.Interpreter()
+    interpreter = null
+    it 'マップシーンへ移動', (done) ->
+      loadTestMap(done)
+    it 'インタープリタ取得', ->
+      interpreter = rpg.system.scene.interpreter
     it 'flag1 を off -> off', ->
+      interpreter = rpg.system.scene.interpreter
       rpg.game.flag.is('flag1').should.equal off
       interpreter.start [
         {type:'flag',params:['flag1',off]}
@@ -84,8 +72,12 @@ describe 'rpg.Interpreter', () ->
       rpg.game.flag.is('flag2').should.equal on
 
   describe '文章表示とフラグの組み合わせ', ->
-    rpg.system.newGame()
-    interpreter = rpg.Interpreter()
+    interpreter = null
+    it 'マップシーンへ移動', (done) ->
+      rpg.system.newGame()
+      loadTestMap(done)
+    it 'インタープリタ取得', ->
+      interpreter = rpg.system.scene.interpreter
     it 'message の間にフラグがある場合は、update が2回必要', ->
       message_clear()
       (rpg.system.temp.message is null).should.equal true
@@ -109,8 +101,12 @@ describe 'rpg.Interpreter', () ->
       interpreter.update()
 
   describe 'フラグ操作(数値)', ->
-    rpg.system.newGame()
-    interpreter = rpg.Interpreter()
+    interpreter = null
+    it 'マップシーンへ移動', (done) ->
+      rpg.system.newGame()
+      loadTestMap(done)
+    it 'インタープリタ取得', ->
+      interpreter = rpg.system.scene.interpreter
     it 'flag10 に 100 を設定', ->
       rpg.game.flag.clear()
       rpg.game.flag.get('flag10').should.equal 0
@@ -160,8 +156,6 @@ describe 'rpg.Interpreter', () ->
   describe '条件分岐', ->
     describe 'フラグNO/OFFによる分岐', ->
       describe 'フラグがNO場合に分岐する(else なし)', ->
-        rpg.system.newGame()
-        interpreter = rpg.Interpreter()
         commands = [
           {type:'if',params:['flag','flag1',on]}
           {type:'block',params:[
@@ -169,6 +163,12 @@ describe 'rpg.Interpreter', () ->
           ]}
           {type:'end'}
         ]
+        interpreter = null
+        it 'マップシーンへ移動', (done) ->
+          rpg.system.newGame()
+          loadTestMap(done)
+        it 'インタープリタ取得', ->
+          interpreter = rpg.system.scene.interpreter
         it 'flag1をonにする', ->
           message_clear()
           (rpg.system.temp.message is null).should.equal true
@@ -195,8 +195,6 @@ describe 'rpg.Interpreter', () ->
           message_clear()
           interpreter.update()
       describe 'フラグがNO場合に分岐する(else あり)', ->
-        rpg.system.newGame()
-        interpreter = rpg.Interpreter()
         commands = [
           {type:'if',params:['flag','flag1',on]}
           {type:'block',params:[
@@ -208,6 +206,12 @@ describe 'rpg.Interpreter', () ->
           ]}
           {type:'end'}
         ]
+        interpreter = null
+        it 'マップシーンへ移動', (done) ->
+          rpg.system.newGame()
+          loadTestMap(done)
+        it 'インタープリタ取得', ->
+          interpreter = rpg.system.scene.interpreter
         it 'flag1をonにする', ->
           message_clear()
           (rpg.system.temp.message is null).should.equal true
@@ -236,7 +240,6 @@ describe 'rpg.Interpreter', () ->
           interpreter.update()
     describe 'フラグ値による分岐', ->
       describe 'flag20 が等しい(222)場合に分岐する', ->
-        interpreter = rpg.Interpreter()
         commands = [
             {type:'if',params:['flag','flag20','==',222]}
             {type:'block',params:[
@@ -248,6 +251,12 @@ describe 'rpg.Interpreter', () ->
             ]}
             {type:'end'}
         ]
+        interpreter = null
+        it 'マップシーンへ移動', (done) ->
+          rpg.system.newGame()
+          loadTestMap(done)
+        it 'インタープリタ取得', ->
+          interpreter = rpg.system.scene.interpreter
         it 'flag20 を 222 にする', ->
           message_clear()
           rpg.game.flag.set 'flag20', 222
@@ -273,7 +282,6 @@ describe 'rpg.Interpreter', () ->
           message_clear()
           interpreter.update()
       describe 'flag20 が等しくない(!223)場合に分岐する', ->
-        interpreter = rpg.Interpreter()
         commands = [
           {type:'if',params:['flag','flag20','!=',223]}
           {type:'block',params:[
@@ -285,6 +293,12 @@ describe 'rpg.Interpreter', () ->
           ]}
           {type:'end'}
         ]
+        interpreter = null
+        it 'マップシーンへ移動', (done) ->
+          rpg.system.newGame()
+          loadTestMap(done)
+        it 'インタープリタ取得', ->
+          interpreter = rpg.system.scene.interpreter
         it 'flag20 を 222 にする', ->
           message_clear()
           rpg.game.flag.set 'flag20', 222
@@ -311,7 +325,6 @@ describe 'rpg.Interpreter', () ->
           interpreter.update()
     describe 'ネストされた条件分岐', ->
       describe 'flag20 == 322 and flag21 == 232', ->
-        interpreter = rpg.Interpreter()
         commands = [
             {type:'if',params:['flag','flag20','==',322]}
             {type:'block',params:[
@@ -323,6 +336,12 @@ describe 'rpg.Interpreter', () ->
             ]}
             {type:'end'}
         ]
+        interpreter = null
+        it 'マップシーンへ移動', (done) ->
+          rpg.system.newGame()
+          loadTestMap(done)
+        it 'インタープリタ取得', ->
+          interpreter = rpg.system.scene.interpreter
         it 'flag20 に 322 で、flag21 に 232', ->
           rpg.game.flag.set 'flag20', 322
           rpg.game.flag.set 'flag21', 232
@@ -354,7 +373,6 @@ describe 'rpg.Interpreter', () ->
   describe 'ループ制御', ->
     describe '基本ループ（フラグ利用）', ->
       describe 'flag30 が on の間ループする', ->
-        interpreter = rpg.Interpreter()
         commands = [
           {type:'loop'}
           {type:'block',params:[
@@ -367,6 +385,12 @@ describe 'rpg.Interpreter', () ->
           ]}
           {type:'end'}
         ]
+        interpreter = null
+        it 'マップシーンへ移動', (done) ->
+          rpg.system.newGame()
+          loadTestMap(done)
+        it 'インタープリタ取得', ->
+          interpreter = rpg.system.scene.interpreter
         it 'flag30 を on にする', ->
           message_clear()
           rpg.game.flag.on 'flag30'
@@ -394,7 +418,6 @@ describe 'rpg.Interpreter', () ->
         it 'message が null になる', ->
           (rpg.system.temp.message is null).should.equal true
       describe 'ループ 3回', ->
-        interpreter = rpg.Interpreter()
         commands = [
           {type:'flag',params:['flag30','=',0]}
           {type:'loop'}
@@ -409,6 +432,12 @@ describe 'rpg.Interpreter', () ->
           ]}
           {type:'end'}
         ]
+        interpreter = null
+        it 'マップシーンへ移動', (done) ->
+          rpg.system.newGame()
+          loadTestMap(done)
+        it 'インタープリタ取得', ->
+          interpreter = rpg.system.scene.interpreter
         it 'interpreter を実行する1', ->
           interpreter.start commands
           message_clear()
@@ -440,13 +469,18 @@ describe 'rpg.Interpreter', () ->
 
   describe 'ウェイト', ->
     describe '指定したフレーム数分処理を止める', ->
-      interpreter = rpg.Interpreter()
       commands = [
         {type:'wait',params:[5]}
         {type:'message',params:['TEST1']}
         {type:'wait',params:[5]}
         {type:'message',params:['TEST2']}
       ]
+      interpreter = null
+      it 'マップシーンへ移動', (done) ->
+        rpg.system.newGame()
+        loadTestMap(done)
+      it 'インタープリタ取得', ->
+        interpreter = rpg.system.scene.interpreter
       it 'interpreter を開始', ->
         message_clear()
         interpreter.start commands
@@ -476,7 +510,6 @@ describe 'rpg.Interpreter', () ->
 
   describe '選択肢分岐', ->
     describe 'はい／いいえの分岐', ->
-      interpreter = null
       commands = [
         {type:'select',params:[['はい','いいえ'],{index:0,cancel:0}]}
         {type:'block',params:[
@@ -487,6 +520,12 @@ describe 'rpg.Interpreter', () ->
         ]}
         {type:'end'}
       ]
+      interpreter = null
+      it 'マップシーンへ移動', (done) ->
+        rpg.system.newGame()
+        loadTestMap(done)
+      it 'インタープリタ取得', ->
+        interpreter = rpg.system.scene.interpreter
       it 'flag10はoff', ->
         rpg.game.flag.off 'flag10'
         rpg.game.flag.is('flag10').should.equal off
@@ -523,7 +562,6 @@ describe 'rpg.Interpreter', () ->
       it 'flag20はonになる', ->
         rpg.game.flag.is('flag20').should.equal on
     describe 'ABCの分岐（メッセージあり）', ->
-      interpreter = null
       commands = [
         {type:'message',params:['選択してください。']}
         {type:'select',params:[['A','B','C'],{index:1,cancel:0}]}
@@ -538,6 +576,12 @@ describe 'rpg.Interpreter', () ->
         ]}
         {type:'end'}
       ]
+      interpreter = null
+      it 'マップシーンへ移動', (done) ->
+        rpg.system.newGame()
+        loadTestMap(done)
+      it 'インタープリタ取得', ->
+        interpreter = rpg.system.scene.interpreter
       it 'flag10をoff', ->
         rpg.game.flag.off 'flag10'
         rpg.game.flag.is('flag10').should.equal off
@@ -562,7 +606,6 @@ describe 'rpg.Interpreter', () ->
       it 'flag30は off になる', ->
         rpg.game.flag.is('flag30').should.equal off
     describe 'デフォルトで選択肢を選択しない', ->
-      interpreter = null
       commands = [
         {type:'select',params:[['はい','いいえ'],{index:-1,cancel:0}]}
         {type:'block',params:[
@@ -573,6 +616,12 @@ describe 'rpg.Interpreter', () ->
         ]}
         {type:'end'}
       ]
+      interpreter = null
+      it 'マップシーンへ移動', (done) ->
+        rpg.system.newGame()
+        loadTestMap(done)
+      it 'インタープリタ取得', ->
+        interpreter = rpg.system.scene.interpreter
       it 'flag10はoff', ->
         rpg.game.flag.off 'flag10'
         rpg.game.flag.is('flag10').should.equal off
@@ -593,7 +642,6 @@ describe 'rpg.Interpreter', () ->
       it 'flag20はoffになる', ->
         rpg.game.flag.is('flag20').should.equal off
     describe 'キャンセルした場合の選択肢を設定', ->
-      interpreter = null
       commands = [
         {type:'select',params:[['はい','いいえ'],{index:0,cancel:2}]}
         {type:'block',params:[
@@ -607,6 +655,12 @@ describe 'rpg.Interpreter', () ->
         ]}
         {type:'end'}
       ]
+      interpreter = null
+      it 'マップシーンへ移動', (done) ->
+        rpg.system.newGame()
+        loadTestMap(done)
+      it 'インタープリタ取得', ->
+        interpreter = rpg.system.scene.interpreter
       it 'flag10はoff', ->
         rpg.game.flag.off 'flag10'
         rpg.game.flag.is('flag10').should.equal off
@@ -630,7 +684,6 @@ describe 'rpg.Interpreter', () ->
       it 'flag30はonになる', ->
         rpg.game.flag.is('flag30').should.equal on
     describe 'キャンセルした場合に「いいえ」になる', ->
-      rpg.system.newGame()
       interpreter = null
       commands = [
         {type:'select',params:[['はい','いいえ'],{index:0,cancel:1}]}
@@ -642,6 +695,12 @@ describe 'rpg.Interpreter', () ->
         ]}
         {type:'end'}
       ]
+      interpreter = null
+      it 'マップシーンへ移動', (done) ->
+        rpg.system.newGame()
+        loadTestMap(done)
+      it 'インタープリタ取得', ->
+        interpreter = rpg.system.scene.interpreter
       it 'flag10はoff', ->
         rpg.game.flag.off 'flag10'
         rpg.game.flag.is('flag10').should.equal off
@@ -651,7 +710,6 @@ describe 'rpg.Interpreter', () ->
       it 'マップシーンへ移動', (done) ->
         loadTestMap(done)
       it 'キャンセルしてください', ->
-        interpreter = rpg.system.scene.interpreter
         interpreter.start commands
       it '実行中', (done) ->
         emulate_key('escape',done)

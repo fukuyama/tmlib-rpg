@@ -23,25 +23,18 @@ root.SYSTEM_ASSETS =
             image: 'scene.title.background.image'
           menus: [
             {
-              name:'Test0'
-              next:
-                scene:'SceneMy'
-            },{
-              name:'Test1'
-              next:
-                scene:'SceneMenuTest1'
-            },{
-              name:'Test2'
-              next:
-                scene:'SceneMenuTest2'
-            },{
-              name:'Map'
+              name:'NewGame'
               action: 'NewGame'
               next:
                 scene:'SceneMap'
                 param:
                   mapName: '001'
                   mapData: 'data/map/001.json'
+            }
+            {
+              name:'Test'
+              next:
+                scene:'SceneMy'
             }
           ]
         }

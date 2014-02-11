@@ -29,11 +29,17 @@ tm.define 'SceneLoading',
       key: null
       src: {}
       type: 'json'
-      assets: {}
+      assets: []
     }.$extend args
     @_count = 0
     @_endCount = 1
-    setTimeout(@run.bind(@,key,src,type,assets),100)
+    @runUpdate = @run.bind(@,key,src,type,assets)
+
+  update: (app) ->
+    if @runUpdate?
+      console.log 'update'
+      @runUpdate()
+      @runUpdate = null
 
   addEndCount: -> @_endCount++
   
@@ -47,8 +53,10 @@ tm.define 'SceneLoading',
       @callback() if @callback?
 
   run: (key,src,type,assets) ->
-
     for asset in assets
+      if typeof asset is 'string'
+        @preload(asset, asset)
+        continue
       for k, v of asset
         if typeof v is 'string'
           @preload(k, v)

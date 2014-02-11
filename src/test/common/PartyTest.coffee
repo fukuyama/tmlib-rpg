@@ -44,5 +44,4 @@ describe 'rpg.Party', () ->
       party.getAt(0).name.should.equal 'test1'
       party.getAt(1).name.should.equal 'test3'
     it '範囲外はnullを返す', ->
-      console.log party.getAt(10)
       (typeof party.getAt(10)).should.equal 'undefined'
