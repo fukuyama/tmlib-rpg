@@ -23,6 +23,12 @@ class rpg.Item
       equip: false  # 装備できるかどうか
       stack: false  # スタック可能かどうか
     }.$extendAll args
-    Object.defineProperty @, 'usable', get: -> usable
+    if typeof usable is 'string'
+      Object.defineProperty @, 'usable', get: -> @['usable_'+usable].call(@)
+    else
+      Object.defineProperty @, 'usable', get: -> usable
     Object.defineProperty @, 'equip', get: -> equip
     Object.defineProperty @, 'stack', get: -> stack
+
+  # 戦闘中のみ使えるかどうか。戦闘中だと true
+  usable_battle: -> rpg.system.temp.battle

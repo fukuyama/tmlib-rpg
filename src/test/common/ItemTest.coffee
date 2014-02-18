@@ -6,6 +6,9 @@ require('../../main/common/constants.coffee')
 require('../../main/common/Item.coffee')
 
 describe 'rpg.Item', ->
+  rpg.system = rpg.system ? {}
+  rpg.system.temp = rpg.system.temp ? {}
+
   describe '基本属性', ->
     item = null
     it 'アイテムの初期化', ->
@@ -37,6 +40,15 @@ describe 'rpg.Item', ->
       try
         item.usable = true
         item.usable.should.equal true
+      item.usable.should.equal false
+    it '戦闘中に使えるかどうか？', ->
+      # 文字列を設定すると判定時にそのメソッドを使う
+      item = new rpg.Item({usable: 'battle'})
+    it '戦闘中は、true', ->
+      rpg.system.temp.battle = true
+      item.usable.should.equal true
+    it 'それ以外は、false', ->
+      rpg.system.temp.battle = false
       item.usable.should.equal false
   describe '装備できるかどうか調べる', ->
     item = null

@@ -15,7 +15,9 @@ module.exports = (grunt) ->
       'common/Flag'
       'common/Event'
       'common/EventPage'
+      'common/ItemContainer'
       'common/Item'
+      'common/UsableItem'
       'common/MarkupText'
   ]
   # クライアントのスクリプト

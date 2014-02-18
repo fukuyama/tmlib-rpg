@@ -136,7 +136,9 @@ tm.define 'rpg.System',
     app.run()
 
     # mocha 実行
-    rpg.mocha_run()
+    setTimeout(->
+      rpg.mocha_run()
+    100)
 
   # 通常実行
   runNomal: ->
