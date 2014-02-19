@@ -5,8 +5,9 @@
 _g = window ? global ? @
 rpg = _g.rpg = _g.rpg ? {}
 
-ITEM_CONTAINER = {}
-  
+# コンテナ制約クラスの管理用
+ITEM_RESTRICTION = {}
+
 # アイテムコンテナクラス
 class rpg.ItemContainer
 
@@ -22,7 +23,7 @@ class rpg.ItemContainer
     @items = [] # アイテム配列
     @stack_items = {} # スタックアイテム格納用ハッシュ
     @itemCount = 0
-    @container = new ITEM_CONTAINER[@containerType](args)
+    @restriction = new ITEM_RESTRICTION[@containerType](args)
 
     Object.defineProperty @, 'itemlistCount',
       get: -> @items.length
@@ -37,7 +38,7 @@ class rpg.ItemContainer
 
   # 追加確認
   # return: 追加可能なら true
-  addCheck: (item) -> @container.addCheck(@,item)
+  addCheck: (item) -> @restriction.addCheck(@,item)
 
   # 追加
   add: (item) ->
@@ -50,14 +51,26 @@ class rpg.ItemContainer
       @stack_items[item.name].push item
       # まだ入ってなければ、追加
       @items.push item unless @contains(item)
+      # スタック数確認
+      if item.maxStack > 0
+        n1 = Math.ceil(@stack_items[item.name].length / item.maxStack)
+        n2 = (i for i in @items when i.name is item.name).length
+        if n1 > n2
+          @items.push item
     else
       # スタックできない場合は追加するだけ
       @items.push item
     @itemCount += 1
     true
 
+  # 削除確認
+  # return: 削除可能なら true
+  removeCheck: (item) -> @restriction.removeCheck(@,item)
+
   # 削除
   remove: (item) ->
+    # 削除確認
+    return false unless @removeCheck(item)
     # なかったら消さない
     return false unless @contains(item)
     if @stack and item.stack
@@ -97,6 +110,7 @@ class rpg.ItemContainer
     return null if typeof @items[index] is 'undefined'
     return @items[index]
 
+# コンテナ制約クラス（個数バージョン）
 class MaxCount
   # コンストラクタ
   constructor: (args={})->
@@ -114,4 +128,8 @@ class MaxCount
     count = if c.stack then c.itemlistCount else c.itemCount
     count < @max
 
-ITEM_CONTAINER.maxCount = MaxCount
+  # 削除確認
+  # return: 削除可能なら true
+  removeCheck: (c,item) -> true
+
+ITEM_RESTRICTION.maxCount = MaxCount

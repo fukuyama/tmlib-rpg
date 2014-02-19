@@ -4,6 +4,7 @@ require('chai').should()
 require('../../main/common/utils.coffee')
 require('../../main/common/constants.coffee')
 require('../../main/common/Item.coffee')
+require('../../main/common/ItemContainer.coffee')
 
 describe 'rpg.Item', ->
   rpg.system = rpg.system ? {}
@@ -80,3 +81,50 @@ describe 'rpg.Item', ->
         item.stack = true
         item.stack.should.equal true
       item.stack.should.equal false
+  describe 'コンテナ化（アイテムにアイテムを入れられるようにする機能）', ->
+    describe '基本機能', ->
+      item = null
+      it '初期化', ->
+        item = new rpg.Item({name:'Item01',container:{}})
+        (item is null).should.equal false
+        item.name.should.equal 'Item01'
+      it 'アイテム追加', ->
+        item.addItem(new rpg.Item({name:'Item02'}))
+      it 'アイテム取得', ->
+        item.getItem(0).name.should.equal 'Item02'
+      it 'アイテム数確認', ->
+        item.itemCount.should.equal 1
+      it 'アイテム削除', ->
+        item.removeItem(item.getItem(0))
+        item.itemCount.should.equal 0
+    describe 'コンテナタイプを指定する', ->
+      item = null
+      it '初期化（デフォルトがmaxCountのコンテナなので入れられる最大値のみを設定する）', ->
+        item = new rpg.Item({name:'Item01',container:{max:2}})
+        item.itemCount.should.equal 0
+      it 'アイテム追加', ->
+        item.addItem(new rpg.Item({name:'Item02'}))
+        item.itemCount.should.equal 1
+      it 'アイテム追加', ->
+        item.addItem(new rpg.Item({name:'Item02'}))
+        item.itemCount.should.equal 2
+      it 'アイテム追加', ->
+        item.addItem(new rpg.Item({name:'Item02'}))
+        item.itemCount.should.equal 2
+      it 'アイテム追加確認', ->
+        r = item.container.addCheck(new rpg.Item({name:'Item02'}))
+        r.should.equal false
+    describe 'スタックアイテム', ->
+      c = null
+      it '５種類入るスタックコンテナに', ->
+        c = new rpg.Item({name:'コンテナアイテム',container:{max:5,stack:true}})
+        c.itemCount.should.equal 0
+      it '同名のスタック５アイテムを６個追加する', ->
+        c.addItem new rpg.Item(name:'Item01',stack:true,maxStack:5)
+        c.addItem new rpg.Item(name:'Item01',stack:true,maxStack:5)
+        c.addItem new rpg.Item(name:'Item01',stack:true,maxStack:5)
+        c.addItem new rpg.Item(name:'Item01',stack:true,maxStack:5)
+        c.addItem new rpg.Item(name:'Item01',stack:true,maxStack:5)
+        c.addItem new rpg.Item(name:'Item01',stack:true,maxStack:5)
+      it 'アイテムリストは２つになる', ->
+        c.itemlistCount.should.equal 2

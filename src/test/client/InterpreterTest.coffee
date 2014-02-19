@@ -12,6 +12,7 @@ describe 'rpg.Interpreter', () ->
       loadTestMap(done)
     it 'インタープリタ取得', ->
       interpreter = rpg.system.scene.interpreter
+      rpg.system.scene.interpreterUpdate = off
     it 'flag1 を off -> off', ->
       interpreter = rpg.system.scene.interpreter
       rpg.game.flag.is('flag1').should.equal off
@@ -78,6 +79,7 @@ describe 'rpg.Interpreter', () ->
       loadTestMap(done)
     it 'インタープリタ取得', ->
       interpreter = rpg.system.scene.interpreter
+      rpg.system.scene.interpreterUpdate = off
     it 'message の間にフラグがある場合は、update が2回必要', ->
       message_clear()
       (rpg.system.temp.message is null).should.equal true
@@ -107,6 +109,7 @@ describe 'rpg.Interpreter', () ->
       loadTestMap(done)
     it 'インタープリタ取得', ->
       interpreter = rpg.system.scene.interpreter
+      rpg.system.scene.interpreterUpdate = off
     it 'flag10 に 100 を設定', ->
       rpg.game.flag.clear()
       rpg.game.flag.get('flag10').should.equal 0
@@ -169,6 +172,7 @@ describe 'rpg.Interpreter', () ->
           loadTestMap(done)
         it 'インタープリタ取得', ->
           interpreter = rpg.system.scene.interpreter
+          rpg.system.scene.interpreterUpdate = off
         it 'flag1をonにする', ->
           message_clear()
           (rpg.system.temp.message is null).should.equal true
@@ -212,6 +216,7 @@ describe 'rpg.Interpreter', () ->
           loadTestMap(done)
         it 'インタープリタ取得', ->
           interpreter = rpg.system.scene.interpreter
+          rpg.system.scene.interpreterUpdate = off
         it 'flag1をonにする', ->
           message_clear()
           (rpg.system.temp.message is null).should.equal true
@@ -257,6 +262,7 @@ describe 'rpg.Interpreter', () ->
           loadTestMap(done)
         it 'インタープリタ取得', ->
           interpreter = rpg.system.scene.interpreter
+          rpg.system.scene.interpreterUpdate = off
         it 'flag20 を 222 にする', ->
           message_clear()
           rpg.game.flag.set 'flag20', 222
@@ -299,6 +305,7 @@ describe 'rpg.Interpreter', () ->
           loadTestMap(done)
         it 'インタープリタ取得', ->
           interpreter = rpg.system.scene.interpreter
+          rpg.system.scene.interpreterUpdate = off
         it 'flag20 を 222 にする', ->
           message_clear()
           rpg.game.flag.set 'flag20', 222
@@ -342,6 +349,7 @@ describe 'rpg.Interpreter', () ->
           loadTestMap(done)
         it 'インタープリタ取得', ->
           interpreter = rpg.system.scene.interpreter
+          rpg.system.scene.interpreterUpdate = off
         it 'flag20 に 322 で、flag21 に 232', ->
           rpg.game.flag.set 'flag20', 322
           rpg.game.flag.set 'flag21', 232
@@ -391,6 +399,7 @@ describe 'rpg.Interpreter', () ->
           loadTestMap(done)
         it 'インタープリタ取得', ->
           interpreter = rpg.system.scene.interpreter
+          rpg.system.scene.interpreterUpdate = off
         it 'flag30 を on にする', ->
           message_clear()
           rpg.game.flag.on 'flag30'
@@ -438,6 +447,7 @@ describe 'rpg.Interpreter', () ->
           loadTestMap(done)
         it 'インタープリタ取得', ->
           interpreter = rpg.system.scene.interpreter
+          rpg.system.scene.interpreter = off
         it 'interpreter を実行する1', ->
           interpreter.start commands
           message_clear()
@@ -481,12 +491,13 @@ describe 'rpg.Interpreter', () ->
         loadTestMap(done)
       it 'インタープリタ取得', ->
         interpreter = rpg.system.scene.interpreter
+        rpg.system.scene.interpreterUpdate = off
       it 'interpreter を開始', ->
         message_clear()
+      it 'message は null', ->
+        (rpg.system.temp.message is null).should.equal true
         interpreter.start commands
       for i in [1 .. 5]
-        it 'message は null', ->
-          (rpg.system.temp.message is null).should.equal true
         it 'interpreter を更新 '+i+'フレーム', ->
           interpreter.isRunning().should.equal true
           interpreter.update()
@@ -507,6 +518,7 @@ describe 'rpg.Interpreter', () ->
       it 'クリア', ->
         interpreter.update()
         interpreter.isRunning().should.equal false
+        rpg.system.scene.interpreterUpdate = on
 
   describe '選択肢分岐', ->
     describe 'はい／いいえの分岐', ->

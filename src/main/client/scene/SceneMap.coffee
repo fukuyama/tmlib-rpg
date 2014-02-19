@@ -12,8 +12,10 @@ tm.define 'SceneMap',
     # シーンマップデータ初期化
     {
       @mapName
+      @interpreterUpdate
     } = {
       mapName: 'sample'
+      interpreterUpdate: true # デバック用
     }.$extendAll(args)
 
     # TODO: マップデータ読み込みとりあえず版
@@ -51,7 +53,7 @@ tm.define 'SceneMap',
     dummy = tm.app.CanvasElement()
     dummy.update = (->
       if @interpreter.isRunning()
-        @interpreter.update()
+        @interpreter.update() if @interpreterUpdate
       else
         @player.update()
         @spriteMap.updatePosition()

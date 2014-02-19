@@ -67,7 +67,11 @@ tm.define 'rpg.System',
       @screen
       @se
       @mapChipSize
+      @setting
     } = {
+      setting: {
+        se: false
+      }
     }.$extendAll(ASSETS.system.src).$extendAll(args)
     @clearTemp()
     @player = rpg.GamePlayer()
@@ -138,7 +142,7 @@ tm.define 'rpg.System',
     # mocha 実行
     setTimeout(->
       rpg.mocha_run()
-    100)
+    5000)
 
   # 通常実行
   runNomal: ->
@@ -197,6 +201,7 @@ tm.define 'rpg.System',
 
   # SEの演奏
   playSe: (name) ->
+    return unless @setting.se
     if tm.asset.AssetManager.contains name
       audio = tm.asset.AssetManager.get(name)
       audio.play()
