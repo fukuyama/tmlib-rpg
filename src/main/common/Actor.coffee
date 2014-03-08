@@ -12,20 +12,23 @@ class rpg.Actor extends rpg.Battler
 
   # 初期化
   constructor: (args={}) ->
-    {
-      @properties
-    } = {
-      properties: {}
-    }.$extendAll args
-    @setup(args)
+    super(args)
     @addProperties('job', '（なし）')
     @addProperties('subjob', '（なし）')
     @addProperties('sex', '？？？')
+    {
+      @job
+      @subjob
+      @sex
+      backpack
+    } = {
+      backpack: {max:8}
+    }.$extendAll args
+    # バックパック作成
+    @backpack = new rpg.Item(name:'バックパック',container:backpack)
 
-  addProperties: (name,defaultval) ->
-    get = -> if @properties[name]? then @properties[name] else defaultval
-    set = (v) -> @properties[name] = v
-    Object.defineProperty @,name,
-      enumerable: true
-      get: get.bind @
-      set: set.bind @
+  # 使う
+  useItem: (item, target) ->
+    item.use @, target
+    if item.isLost()
+      @backpack.removeItem item

@@ -15,4 +15,9 @@ class JsonCompiler
   compileJson: (output, obj) ->
     fs.writeFile output, @compile(obj), (err) -> throw err if err?
 
+  compileJsonArray: (outputDir, array, key) ->
+    for i in array
+      fs.writeFile path.join(outputDir,i[key] + '.json'), @compile(i),
+        (err) -> throw err if err?
+
 module.exports = new JsonCompiler()

@@ -66,7 +66,7 @@ tm.define 'rpg.WindowMessage',
   # 状態クリア
   clear: ->
     @_messages = []
-    @_message = null
+    @_message = ''
     @_messageIndex = 0
     @_dx = @_dy = 0 # 描画座標
     @_sy = 0 # スクロール用
@@ -128,7 +128,7 @@ tm.define 'rpg.WindowMessage',
     @
 
   # ポーズ状態の場合 true
-  isPause: -> @_message is null or @_message.length <= @_messageIndex
+  isPause: -> @_message.length <= @_messageIndex
   
   # 表示するメッセージが無い場合 true
   isEmpty: -> @_messages.length == 0
@@ -302,3 +302,6 @@ tm.define 'rpg.WindowMessage',
   input_ok_up: ->
     if @isPause()
       @pauseCancel()
+
+Object.defineProperty rpg.WindowMessage.prototype, 'currentMessage',
+  enumerable: true, get: -> @_message

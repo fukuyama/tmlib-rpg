@@ -22,5 +22,8 @@ tm.define 'rpg.WindowOperation',
     console.log w
   menuTest001: ->
     console.log 'menuTest001'
-    rpg.system.loadAsset(['data/item/001.json'])
-    
+    # 現在のシーンをキャプチャー
+    rpg.system.captureScreenBitmap()
+    rpg.system.db.item(['001','002'],(items)->
+      console.log items
+    )

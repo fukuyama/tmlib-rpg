@@ -6,7 +6,10 @@ require('../../main/common/constants.coffee')
 require('../../main/common/Battler.coffee')
 require('../../main/common/Actor.coffee')
 require('../../main/common/Item.coffee')
+require('../../main/common/ItemContainer.coffee')
 require('../../main/common/UsableItem.coffee')
+
+ITEM_SCOPE = rpg.constants.ITEM_SCOPE
 
 describe 'rpg.UsableItem', ->
   rpg.system = rpg.system ? {}
@@ -31,11 +34,14 @@ describe 'rpg.UsableItem', ->
       item.price.should.equal 100
   describe 'アイテムを使う', ->
     item = null
-    it 'アイテムの初期化', ->
-      item = new rpg.UsableItem(lost:'count',lostParams:1)
+    it '１回使用するとなくなるアイテム', ->
+      item = new rpg.UsableItem(lost:{max:1})
       item.effect = () -> true
-    it '使う', ->
+      item.isLost().should.equal false
+    it 'アイテムを使用する', ->
       user = new rpg.Actor()
       target = new rpg.Actor()
-      # Actor,Actor
-      item.use user, target
+      r = item.use user, target
+      r.should.equal true
+    it 'アイテムがロスト', ->
+      item.isLost().should.equal true

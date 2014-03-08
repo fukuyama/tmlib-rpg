@@ -53,6 +53,8 @@ tm.define 'SceneTitle',
     if menu.action
       @['action' + menu.action].apply(@,[])
     if menu.next? and menu.next.scene != ''
+      # 現在のシーンをキャプチャー
+      rpg.system.captureScreenBitmap()
       # シーンを切り替える
       @loadScene menu.next
 

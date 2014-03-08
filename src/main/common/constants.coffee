@@ -26,3 +26,13 @@ c.MOVE_RESTRICTION = {
   LEFTNG: [true,false,true,true]
   RIGHTNG: [true,true,false,true]
 }
+
+# [味方、敵][単体、複数]
+c.ITEM_SCOPE = {
+  TYPE:
+    ACTOR: 1
+    ENEMY: 2
+  COUNT:
+    ONE: 1
+    MULTI: 2
+}

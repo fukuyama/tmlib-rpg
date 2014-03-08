@@ -25,11 +25,6 @@ root.SYSTEM_ASSETS =
             {
               name:'NewGame'
               action: 'NewGame'
-              next:
-                scene:'SceneMap'
-                param:
-                  mapName: '001'
-                  mapData: 'data/map/001.json'
             }
             {
               name:'Test'

@@ -21,3 +21,10 @@ for i in ['map','item']
 for name in sample_files
   file = path.join(outputDir, name + '.json')
   jc.compileFile file, name
+
+# itemlist
+jc.compileJsonArray(
+  path.join(outputDir,'item')
+  require path.join(jc.base,'itemlist')
+  'item'
+)

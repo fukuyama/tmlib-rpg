@@ -75,6 +75,7 @@ tm.define 'rpg.System',
     }.$extendAll(ASSETS.system.src).$extendAll(args)
     @clearTemp()
     @player = rpg.GamePlayer()
+    @db = rpg.DataBase()
 
     # Audio 関連のメソッド作成
     # menu_decision -> rpg.system.se.menuDecision()
@@ -87,6 +88,7 @@ tm.define 'rpg.System',
 
     # カレントシーンの取得
     Object.defineProperty @, 'scene',
+      enumerable: true
       get: -> @app.currentScene
 
   # テスト実行
@@ -142,7 +144,7 @@ tm.define 'rpg.System',
     # mocha 実行
     setTimeout(->
       rpg.mocha_run()
-    5000)
+    1000)
 
   # 通常実行
   runNomal: ->
@@ -177,14 +179,17 @@ tm.define 'rpg.System',
       @runNomal()
 
   # Assetロード
-  loadAsset: (assets) ->
+  loadAsset: (assets, callback=null) ->
     @loadScene
       scene: rpg.system.scene
       assets: assets
+      callback: callback
   
   # シーンロード
   loadScene: (args={}) ->
-    args = {}.$extend(@loadingSceneDefault).$extend(args)
+    args = {
+      bitmap: @temp.screenBitmap
+    }.$extend(@loadingSceneDefault).$extend(args)
     rpg.system.app.replaceScene SceneLoading(args)
 
   # シーン変更
@@ -198,6 +203,10 @@ tm.define 'rpg.System',
     if typeof scene is 'function'
       scene = scene(param)
     rpg.system.app.replaceScene scene
+  
+  # スクリーンビットマップ保存
+  captureScreenBitmap: () ->
+    @temp.screenBitmap = @app.canvas.getBitmap()
 
   # SEの演奏
   playSe: (name) ->
@@ -206,7 +215,8 @@ tm.define 'rpg.System',
       audio = tm.asset.AssetManager.get(name)
       audio.play()
       audio.stop(1)
-   
+
+  # テンポラリ削除
   clearTemp: ->
     @temp = {
       message: null
@@ -214,6 +224,7 @@ tm.define 'rpg.System',
       select: null
       selectOptions: null
       selectEndProc: null
+      screenBitmap: null
     }
 
   # 新しいゲームを開始
@@ -231,7 +242,7 @@ tm.define 'rpg.System',
     
     # TODO: アクターデータ
     game.actors = []
-    
+
     # DUMMY
     a = new rpg.Actor(name: 'ああああ')
     game.party.add(a)
@@ -239,3 +250,12 @@ tm.define 'rpg.System',
     a = new rpg.Actor(name: 'あああい')
     game.party.add(a)
     game.actors.push a
+
+    @loadMap(1)
+
+  # マップのロード
+  loadMap: (mapid) ->
+    # 現在のシーンをキャプチャー
+    @captureScreenBitmap()
+    # マップのロードと切替
+    @db.map mapid, ((map) -> @replaceScene scene: SceneMap(map: map)).bind @

@@ -25,3 +25,6 @@ Object.defineProperty Object.prototype, '$extendAll',
     _extendAll(@,src)
   enumerable: false
   writable: true
+
+Number.prototype.formatString = (fmt) ->
+  fmt.substring(0, fmt.length - @.toString().length) + @

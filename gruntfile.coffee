@@ -24,6 +24,7 @@ module.exports = (grunt) ->
   client_sections = [
       'sample'
       'tmlib/CustomizeTexture'
+      'core/DataBase'
       'core/System'
       'core/SpriteCharacter'
       'core/SpriteCursor'

@@ -11,15 +11,11 @@ tm.define 'SceneMap',
 
     # シーンマップデータ初期化
     {
-      @mapName
+      @map
       @interpreterUpdate
     } = {
-      mapName: 'sample'
       interpreterUpdate: true # デバック用
     }.$extendAll(args)
-
-    # TODO: マップデータ読み込みとりあえず版
-    @map = new rpg.Map(tm.asset.AssetManager.get('map.' + @mapName).data)
 
     # インタープリター
     @interpreter = rpg.Interpreter()
@@ -62,10 +58,3 @@ tm.define 'SceneMap',
 
     @addChild(@windowMapMenu)
     @addChild(@windowMessage)
-
-SceneMap.preload = (loader, param) ->
-  console.log 'SceneMap.preload'
-  key = 'map.' + param.mapName
-  src = rpg.system.assets[key]
-  src = param.mapData unless src?
-  loader.preload(key, src, 'json', rpg.Map.preload)

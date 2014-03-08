@@ -11,6 +11,8 @@ class rpg.Item
   # コンストラクタ
   constructor: (args={}) ->
     {
+      @item
+      @type
       @name
       @price
       usable
@@ -19,6 +21,7 @@ class rpg.Item
       maxStack
       container
     } = {
+      item: ''      # ID(URL)
       name: ''      # 名前
       price: 1      # 価格
       usable: false # 使えるかどうか
@@ -49,6 +52,10 @@ class rpg.Item
   addItem: (item) ->
     return unless @container?
     @container.add item
+
+  hasItem: (item) ->
+    return unless @container?
+    @container.contains item
 
   getItem: (index) ->
     return unless @container?

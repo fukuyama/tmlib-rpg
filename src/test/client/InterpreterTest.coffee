@@ -7,60 +7,65 @@ describe 'rpg.Interpreter', () ->
       interpreter.should.be.a 'object'
 
   describe 'フラグ操作', ->
+    @timeout(10000)
     interpreter = null
     it 'マップシーンへ移動', (done) ->
       loadTestMap(done)
     it 'インタープリタ取得', ->
       interpreter = rpg.system.scene.interpreter
-      rpg.system.scene.interpreterUpdate = off
-    it 'flag1 を off -> off', ->
-      interpreter = rpg.system.scene.interpreter
+    it 'flag1 を off　にするコマンドを実行', (done) ->
       rpg.game.flag.is('flag1').should.equal off
       interpreter.start [
         {type:'flag',params:['flag1',off]}
       ]
-      interpreter.update()
+      setTimeout(done,200)
+    it 'flag1 が off になっている', ->
       rpg.game.flag.is('flag1').should.equal off
-    it 'flag1 を off -> on', ->
+    it 'flag1 を on　にするコマンドを実行', (done) ->
       rpg.game.flag.is('flag1').should.equal off
       interpreter.start [
         {type:'flag',params:['flag1',on]}
       ]
-      interpreter.update()
+      setTimeout(done,200)
+    it 'flag1 が on になっている', ->
       rpg.game.flag.is('flag1').should.equal on
-    it 'flag1 を on -> on', ->
+    it 'flag1 を on　にするコマンドを実行', (done) ->
       rpg.game.flag.is('flag1').should.equal on
       interpreter.start [
         {type:'flag',params:['flag1',on]}
       ]
-      interpreter.update()
+      setTimeout(done,200)
+    it 'flag1 が on になっている', ->
       rpg.game.flag.is('flag1').should.equal on
-    it 'flag1 を on -> off', ->
+    it 'flag1 を off　にするコマンドを実行', (done) ->
       rpg.game.flag.is('flag1').should.equal on
       interpreter.start [
         {type:'flag',params:['flag1',off]}
       ]
-      interpreter.update()
+      setTimeout(done,200)
+    it 'flag1 が off になっている', ->
       rpg.game.flag.is('flag1').should.equal off
-    it 'flag1 を off, flag2 を on', ->
+    it 'flag2 を on にするコマンドを実行', (done)->
       rpg.game.flag.is('flag1').should.equal off
       rpg.game.flag.is('flag2').should.equal off
       interpreter.start [
         {type:'flag',params:['flag2',on]}
       ]
-      interpreter.update()
+      setTimeout(done,200)
+    it 'flag1 が off, flag2 が on になっている', ->
       rpg.game.flag.is('flag1').should.equal off
       rpg.game.flag.is('flag2').should.equal on
-    it 'flag1 を on, flag2 は on のまま', ->
+    it 'flag1 を on にするコマンドを実行', (done)->
       rpg.game.flag.is('flag1').should.equal off
       rpg.game.flag.is('flag2').should.equal on
       interpreter.start [
         {type:'flag',params:['flag1',on]}
       ]
-      interpreter.update()
+      setTimeout(done,200)
+    it 'flag1 が on, flag2 が on になっている', ->
       rpg.game.flag.is('flag1').should.equal on
       rpg.game.flag.is('flag2').should.equal on
-    it 'flag1 の値を flag2 に設定', ->
+    it 'flag1 の値を flag2 に設定するコマンドを実行', (done)->
       rpg.game.flag.clear()
       rpg.game.flag.is('flag1').should.equal off
       rpg.game.flag.is('flag2').should.equal off
@@ -68,7 +73,8 @@ describe 'rpg.Interpreter', () ->
         {type:'flag',params:['flag1',on]}
         {type:'flag',params:['flag2','=','flag1']}
       ]
-      interpreter.update()
+      setTimeout(done,200)
+    it 'flag1 が on, flag2 が on になっている', ->
       rpg.game.flag.is('flag1').should.equal on
       rpg.game.flag.is('flag2').should.equal on
 
@@ -79,7 +85,6 @@ describe 'rpg.Interpreter', () ->
       loadTestMap(done)
     it 'インタープリタ取得', ->
       interpreter = rpg.system.scene.interpreter
-      rpg.system.scene.interpreterUpdate = off
     it 'message の間にフラグがある場合は、update が2回必要', ->
       message_clear()
       (rpg.system.temp.message is null).should.equal true
@@ -109,7 +114,6 @@ describe 'rpg.Interpreter', () ->
       loadTestMap(done)
     it 'インタープリタ取得', ->
       interpreter = rpg.system.scene.interpreter
-      rpg.system.scene.interpreterUpdate = off
     it 'flag10 に 100 を設定', ->
       rpg.game.flag.clear()
       rpg.game.flag.get('flag10').should.equal 0
@@ -172,7 +176,6 @@ describe 'rpg.Interpreter', () ->
           loadTestMap(done)
         it 'インタープリタ取得', ->
           interpreter = rpg.system.scene.interpreter
-          rpg.system.scene.interpreterUpdate = off
         it 'flag1をonにする', ->
           message_clear()
           (rpg.system.temp.message is null).should.equal true
@@ -216,7 +219,6 @@ describe 'rpg.Interpreter', () ->
           loadTestMap(done)
         it 'インタープリタ取得', ->
           interpreter = rpg.system.scene.interpreter
-          rpg.system.scene.interpreterUpdate = off
         it 'flag1をonにする', ->
           message_clear()
           (rpg.system.temp.message is null).should.equal true
@@ -262,7 +264,6 @@ describe 'rpg.Interpreter', () ->
           loadTestMap(done)
         it 'インタープリタ取得', ->
           interpreter = rpg.system.scene.interpreter
-          rpg.system.scene.interpreterUpdate = off
         it 'flag20 を 222 にする', ->
           message_clear()
           rpg.game.flag.set 'flag20', 222
@@ -305,7 +306,6 @@ describe 'rpg.Interpreter', () ->
           loadTestMap(done)
         it 'インタープリタ取得', ->
           interpreter = rpg.system.scene.interpreter
-          rpg.system.scene.interpreterUpdate = off
         it 'flag20 を 222 にする', ->
           message_clear()
           rpg.game.flag.set 'flag20', 222
@@ -349,7 +349,6 @@ describe 'rpg.Interpreter', () ->
           loadTestMap(done)
         it 'インタープリタ取得', ->
           interpreter = rpg.system.scene.interpreter
-          rpg.system.scene.interpreterUpdate = off
         it 'flag20 に 322 で、flag21 に 232', ->
           rpg.game.flag.set 'flag20', 322
           rpg.game.flag.set 'flag21', 232
@@ -395,37 +394,36 @@ describe 'rpg.Interpreter', () ->
         ]
         interpreter = null
         it 'マップシーンへ移動', (done) ->
+          message_clear()
           rpg.system.newGame()
           loadTestMap(done)
         it 'インタープリタ取得', ->
           interpreter = rpg.system.scene.interpreter
-          rpg.system.scene.interpreterUpdate = off
         it 'flag30 を on にする', ->
-          message_clear()
           rpg.game.flag.on 'flag30'
-        it 'interpreter を開始する', ->
+        it 'interpreter を開始する', (done)->
           interpreter.start commands
-          (rpg.system.temp.message is null).should.equal true
-        it 'interpreter を実行する', ->
-          interpreter.update()
+          setTimeout(done,200)
         it 'message が "TEST1" になる', ->
-          (rpg.system.temp.message isnt null).should.equal true
-          rpg.system.temp.message.should.deep.equal ['TEST1']
-        it 'クリア', ->
-          message_clear()
-          (rpg.system.temp.message is null).should.equal true
-        it 'interpreter を実行する', ->
-          interpreter.update()
+          m = rpg.system.scene.windowMessage.currentMessage
+          m.should.equal 'TEST1'
+        it '次のメッセージ表示', (done) ->
+          emulate_key('enter',done)
+        it 'ループまち', (done)->
+          setTimeout(done,200)
         it 'message が "TEST1" になる', ->
-          (rpg.system.temp.message isnt null).should.equal true
-          rpg.system.temp.message.should.deep.equal ['TEST1']
-          message_clear()
-        it 'flag30 を off にする', ->
+          m = rpg.system.scene.windowMessage.currentMessage
+          m.should.equal 'TEST1'
+        it 'flag30 を off にする', (done)->
           rpg.game.flag.off 'flag30'
-        it 'interpreter を実行する', ->
-          interpreter.update()
-        it 'message が null になる', ->
-          (rpg.system.temp.message is null).should.equal true
+          setTimeout(done,200)
+        it '次のメッセージ表示', (done) ->
+          emulate_key('enter',done)
+        it 'ループまち', (done)->
+          setTimeout(done,200)
+        it 'message が "" になる', ->
+          m = rpg.system.scene.windowMessage.currentMessage
+          m.should.equal ''
       describe 'ループ 3回', ->
         commands = [
           {type:'flag',params:['flag30','=',0]}
@@ -447,35 +445,39 @@ describe 'rpg.Interpreter', () ->
           loadTestMap(done)
         it 'インタープリタ取得', ->
           interpreter = rpg.system.scene.interpreter
-          rpg.system.scene.interpreter = off
-        it 'interpreter を実行する1', ->
+        it 'interpreter を実行する1', (done) ->
           interpreter.start commands
-          message_clear()
-          (rpg.system.temp.message is null).should.equal true
-          interpreter.update()
-          (rpg.system.temp.message isnt null).should.equal true
-          rpg.system.temp.message.should.deep.equal ['TEST1']
+          setTimeout(done,200)
+        it 'message が "TEST1" になる', ->
+          m = rpg.system.scene.windowMessage.currentMessage
+          m.should.equal 'TEST1'
+        it 'flag30は、1になる', ->
           rpg.game.flag.get('flag30').should.equal 1
-        it 'interpreter を実行する2', ->
-          message_clear()
-          (rpg.system.temp.message is null).should.equal true
-          interpreter.update()
-          (rpg.system.temp.message isnt null).should.equal true
-          rpg.system.temp.message.should.deep.equal ['TEST1']
+        it '次のメッセージ表示', (done) ->
+          emulate_key('enter',done)
+        it 'ループまち', (done)->
+          setTimeout(done,200)
+        it 'message が "TEST1" になる', ->
+          m = rpg.system.scene.windowMessage.currentMessage
+          m.should.equal 'TEST1'
+        it 'flag30は、2になる', ->
           rpg.game.flag.get('flag30').should.equal 2
-        it 'interpreter を実行する3', ->
-          message_clear()
-          (rpg.system.temp.message is null).should.equal true
-          interpreter.update()
-          (rpg.system.temp.message isnt null).should.equal true
-          rpg.system.temp.message.should.deep.equal ['TEST1']
+        it '次のメッセージ表示', (done) ->
+          emulate_key('enter',done)
+        it 'ループまち', (done)->
+          setTimeout(done,200)
+        it 'message が "TEST1" になる', ->
+          m = rpg.system.scene.windowMessage.currentMessage
+          m.should.equal 'TEST1'
+        it 'flag30は、3になる', ->
           rpg.game.flag.get('flag30').should.equal 3
-        it 'interpreter を実行する4', ->
-          message_clear()
-          (rpg.system.temp.message is null).should.equal true
-          interpreter.update()
-          (rpg.system.temp.message is null).should.equal true
-
+        it '次のメッセージ表示', (done) ->
+          emulate_key('enter',done)
+        it 'ループまち', (done)->
+          setTimeout(done,200)
+        it 'message が "" になる', ->
+          m = rpg.system.scene.windowMessage.currentMessage
+          m.should.equal ''
 
   describe 'ウェイト', ->
     describe '指定したフレーム数分処理を止める', ->

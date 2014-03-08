@@ -26,10 +26,9 @@ _g.loadTestMap = (done) ->
     return
   loadFlg = true
   rpg.system.newGame()
-  rpg.system.loadScene {
-    scene:'SceneMap'
-    param:
-      mapName: '001'
-      mapData: 'data/map/001.json'
-    callback: -> done()
-  }
+  check = ->
+    unless rpg.system.scene.name == 'SceneMap'
+      setTimeout(check,100)
+    else
+      done()
+  check()

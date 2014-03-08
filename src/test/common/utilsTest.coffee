@@ -9,6 +9,16 @@ require('chai').should()
 require('../../main/common/utils.coffee')
 
 describe 'utils', () ->
+  describe 'string format', () ->
+    it '文字列でマージする感じ', ->
+      1.formatString('0000').should.equal '0001'
+      10.formatString('0000').should.equal '0010'
+      55.formatString('0000').should.equal '0055'
+      105.formatString('0000').should.equal '0105'
+      9999.formatString('0000').should.equal '9999'
+      2.formatString('1000').should.equal '1002'
+      10000.formatString('99').should.equal '10000'
+
   describe '$extendAll', () ->
     describe '空のオブジェクトのマージ', ->
       h = {}

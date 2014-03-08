@@ -7,18 +7,12 @@ MOVE_RESTRICTION = rpg.constants.MOVE_RESTRICTION
 class rpg.Map
 
   constructor: (args={}) ->
-    @setup(args)
-
-  setup: (@mapSheet={}) ->
-    # マップ幅
-    Object.defineProperty @, 'width',
-      get: -> @mapSheet.width
-    # マップ高さ
-    Object.defineProperty @, 'height',
-      get: -> @mapSheet.height
+    @map = args.map
+    @mapSheet = args
 
   #　マップ範囲内かどうか
-  isValid: (x, y) -> 0 <= x and x < @width and 0 <= y and y < @height
+  isValid: (x, y) ->
+    0 <= x and x < @width and 0 <= y and y < @height
 
   # 移動可能判定
   isPassable: (x, y, d, character = null) ->
@@ -81,9 +75,11 @@ class rpg.Map
         return event
     null
 
-rpg.Map.preload = (loader, param, asset) ->
-  for tile in param.tilesets
-    key = tile.image
-    src = rpg.system.assets[key]
-    src = key unless src?
-    loader.preload(key, src)
+# マップ幅
+Object.defineProperty rpg.Map.prototype, 'width',
+  enumerable: true
+  get: -> @mapSheet.width
+# マップ高さ
+Object.defineProperty rpg.Map.prototype, 'height',
+  enumerable: true
+  get: -> @mapSheet.height
