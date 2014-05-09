@@ -7,11 +7,11 @@ require('../../main/common/Item.coffee')
 require('../../main/common/ItemContainer.coffee')
 
 describe 'rpg.Item', ->
+  item = null
   rpg.system = rpg.system ? {}
   rpg.system.temp = rpg.system.temp ? {}
 
   describe '基本属性', ->
-    item = null
     it 'アイテムの初期化', ->
       item = new rpg.Item()
     it '名前がある', ->
@@ -27,8 +27,12 @@ describe 'rpg.Item', ->
     it '価格を設定', ->
       item.price = 100
       item.price.should.equal 100
+    it 'セーブロード', ->
+      json = rpg.utils.createJsonData(item)
+      item = rpg.utils.createRpgObject(json)
+      item.name.should.equal 'Name00'
+      item.price.should.equal 100
   describe '使えるかどうか調べる', ->
-    item = null
     it 'アイテムの初期化', ->
       item = new rpg.Item({usable: true})
     it '使える場合 true', ->
@@ -52,7 +56,6 @@ describe 'rpg.Item', ->
       rpg.system.temp.battle = false
       item.usable.should.equal false
   describe '装備できるかどうか調べる', ->
-    item = null
     it 'アイテムの初期化', ->
       item = new rpg.Item({equip: true})
     it '装備できる場合 true', ->
@@ -67,7 +70,6 @@ describe 'rpg.Item', ->
         item.equip.should.equal true
       item.equip.should.equal false
   describe 'スタックできるかどうか調べる', ->
-    item = null
     it 'アイテムの初期化', ->
       item = new rpg.Item({stack: true})
     it '装備できる場合 true', ->
@@ -83,7 +85,6 @@ describe 'rpg.Item', ->
       item.stack.should.equal false
   describe 'コンテナ化（アイテムにアイテムを入れられるようにする機能）', ->
     describe '基本機能', ->
-      item = null
       it '初期化', ->
         item = new rpg.Item({name:'Item01',container:{}})
         (item is null).should.equal false
@@ -92,13 +93,14 @@ describe 'rpg.Item', ->
         item.addItem(new rpg.Item({name:'Item02'}))
       it 'アイテム取得', ->
         item.getItem(0).name.should.equal 'Item02'
+      it 'アイテム名で取得', ->
+        item.getItem('Item02').name.should.equal 'Item02'
       it 'アイテム数確認', ->
         item.itemCount.should.equal 1
       it 'アイテム削除', ->
         item.removeItem(item.getItem(0))
         item.itemCount.should.equal 0
     describe 'コンテナタイプを指定する', ->
-      item = null
       it '初期化（デフォルトがmaxCountのコンテナなので入れられる最大値のみを設定する）', ->
         item = new rpg.Item({name:'Item01',container:{max:2}})
         item.itemCount.should.equal 0
@@ -112,8 +114,14 @@ describe 'rpg.Item', ->
         item.addItem(new rpg.Item({name:'Item02'}))
         item.itemCount.should.equal 2
       it 'アイテム追加確認', ->
-        r = item.container.addCheck(new rpg.Item({name:'Item02'}))
+        r = item._container.addCheck(new rpg.Item({name:'Item02'}))
         r.should.equal false
+      it 'セーブロード', ->
+        json = rpg.utils.createJsonData(item)
+        item = rpg.utils.createRpgObject(json)
+        r = item._container.addCheck(new rpg.Item({name:'Item02'}))
+        r.should.equal false
+        item.itemCount.should.equal 2
     describe 'スタックアイテム', ->
       c = null
       it '５種類入るスタックコンテナに', ->
@@ -121,10 +129,29 @@ describe 'rpg.Item', ->
         c.itemCount.should.equal 0
       it '同名のスタック５アイテムを６個追加する', ->
         c.addItem new rpg.Item(name:'Item01',stack:true,maxStack:5)
+        c.itemlistCount.should.equal 1
         c.addItem new rpg.Item(name:'Item01',stack:true,maxStack:5)
         c.addItem new rpg.Item(name:'Item01',stack:true,maxStack:5)
+        c.itemlistCount.should.equal 1
         c.addItem new rpg.Item(name:'Item01',stack:true,maxStack:5)
         c.addItem new rpg.Item(name:'Item01',stack:true,maxStack:5)
+        c.itemlistCount.should.equal 1
         c.addItem new rpg.Item(name:'Item01',stack:true,maxStack:5)
+        c.itemCount.should.equal 6
       it 'アイテムリストは２つになる', ->
         c.itemlistCount.should.equal 2
+      it 'アイテム１つ削除するとアイテムリストは１つになる', ->
+        c.removeItem(c.getItem(0))
+        c.itemCount.should.equal 5
+        c.itemlistCount.should.equal 1
+      it 'アイテム１つ追加アイテムリストは２つになる', ->
+        c.addItem new rpg.Item(name:'Item01',stack:true,maxStack:5)
+        c.itemlistCount.should.equal 2
+      it '中身チェック', ->
+        c._container.items[0].constructor.name.should.equal 'Item'
+        c.getItem('Item01').name.should.equal 'Item01'
+      it 'セーブロード', ->
+        json = rpg.utils.createJsonData(c)
+        t = rpg.utils.createRpgObject(json)
+        t.itemCount.should.equal 6
+        t.itemlistCount.should.equal 2

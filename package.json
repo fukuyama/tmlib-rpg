@@ -15,23 +15,23 @@
   "author": "Yoshihito Fukuyama",
   "license": "MIT",
   "dependencies": {
-    "express": "~3.4.0",
+    "express": "3.x",
     "jade": "*"
   },
   "devDependencies": {
-    "coffee-script": "~1.6.3",
-    "grunt": "~0.4.1",
-    "grunt-contrib-coffee": "~0.7.0",
-    "grunt-contrib-uglify": "~0.2.4",
-    "grunt-contrib-concat": "~0.3.0",
-    "grunt-contrib-watch": "~0.5.3",
-    "grunt-contrib-copy": "~0.4.1",
+    "coffee-script": "~1.7.1",
+    "grunt": "~0.4.4",
+    "grunt-contrib-coffee": "~0.10.1",
+    "grunt-contrib-uglify": "~0.4.0",
+    "grunt-contrib-concat": "~0.4.0",
+    "grunt-contrib-watch": "~0.6.1",
+    "grunt-contrib-copy": "~0.5.0",
     "grunt-contrib-clean": "~0.5.0",
-    "grunt-express-server": "~0.4.10",
+    "grunt-express-server": "~0.4.17",
     "grunt-simple-mocha": "~0.4.0",
-    "grunt-coffeelint": "0.0.7",
-    "chai": "~1.8.1",
-    "grunt-execute": "~0.1.5",
-    "grunt-exec": "~0.4.2"
+    "grunt-coffeelint": "0.0.10",
+    "chai": "~1.9.1",
+    "grunt-execute": "~0.2.1",
+    "grunt-exec": "~0.4.5"
   }
 }

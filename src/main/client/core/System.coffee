@@ -179,7 +179,7 @@ tm.define 'rpg.System',
       @runNomal()
 
   # Assetロード
-  loadAsset: (assets, callback=null) ->
+  loadAssets: (assets, callback=null) ->
     @loadScene
       scene: rpg.system.scene
       assets: assets

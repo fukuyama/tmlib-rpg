@@ -18,6 +18,7 @@ module.exports = (grunt) ->
       'common/ItemContainer'
       'common/Item'
       'common/UsableItem'
+      'common/State'
       'common/MarkupText'
   ]
   # クライアントのスクリプト

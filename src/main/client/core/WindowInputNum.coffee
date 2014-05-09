@@ -33,7 +33,7 @@ tm.define 'rpg.WindowInputNum',
     @menuWidth = @measureText('9').width
     @colPadding = 0
     # ステップ
-    @steps = (parseInt(i) for i in (step + '').split(//))
+    @steps = (parseInt(i) for i in (step + '').split(''))
     if @steps.length < @cols
       @steps.unshift(1) for i in [0...(@cols - @steps.length)]
     # リサイズ
@@ -73,7 +73,7 @@ tm.define 'rpg.WindowInputNum',
 
   setValue: (v) ->
     @value = v
-    vs = (@value + '').split(//)
+    vs = (@value + '').split('')
     @values = ('0' for i in [0...(@cols - vs.length)]).concat vs
     @refresh()
     @

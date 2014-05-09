@@ -30,9 +30,10 @@ c.MOVE_RESTRICTION = {
 # [味方、敵][単体、複数]
 c.ITEM_SCOPE = {
   TYPE:
-    ACTOR: 1
+    ALL: 0
+    FRIEND: 1
     ENEMY: 2
-  COUNT:
+  RANGE:
     ONE: 1
     MULTI: 2
 }

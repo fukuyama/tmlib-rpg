@@ -63,7 +63,9 @@ tm.define 'rpg.Interpreter',
     #" blocks.length=#{@blocks.length}"
     #console.log command
     #console.log 'command:' + command.type
-    @['command_' + command.type].apply(@, command.params)
+    f = @['command_' + command.type]
+    if f?
+      f.apply(@, command.params)
 
   # 終わりかどうか
   isEnd: ->

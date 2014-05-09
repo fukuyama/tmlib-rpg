@@ -22,13 +22,16 @@ class rpg.Actor extends rpg.Battler
       @sex
       backpack
     } = {
-      backpack: {max:8}
-    }.$extendAll args
+      backpack: {
+        max:8
+        stack:on
+      }
+    }.$extendAll(@properties).$extendAll(args)
     # バックパック作成
     @backpack = new rpg.Item(name:'バックパック',container:backpack)
 
   # 使う
   useItem: (item, target) ->
-    item.use @, target
+    super(item, target)
     if item.isLost()
       @backpack.removeItem item

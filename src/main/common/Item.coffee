@@ -20,6 +20,7 @@ class rpg.Item
       stack
       maxStack
       container
+      @_container
     } = {
       item: ''      # ID(URL)
       name: ''      # 名前
@@ -29,38 +30,55 @@ class rpg.Item
       stack: false  # スタック可能かどうか
       maxStack: 99  # スタック可能な場合のスタック数
       container: null
+      _container: null
     }.$extendAll args
     # コンテナがある場合設定
-    unless container is null
-      @container = new rpg.ItemContainer(container)
+    if container? and not @_container?
+      if container.constructor.name == 'Object'
+        @_container = new rpg.ItemContainer(container)
+    if @_container?
       Object.defineProperty @, 'itemCount',
-        get: (-> @container.itemCount).bind(@)
+        get: (-> @_container.itemCount).bind(@)
       Object.defineProperty @, 'itemlistCount',
-        get: (-> @container.itemlistCount).bind(@)
+        get: (-> @_container.itemlistCount).bind(@)
 
     if typeof usable is 'string'
-      Object.defineProperty @, 'usable', get: -> @['usable_'+usable].call(@)
+      Object.defineProperty @, 'usable',
+        enumerable: true
+        get: -> @['usable_'+usable].call(@)
     else
-      Object.defineProperty @, 'usable', get: -> usable
-    Object.defineProperty @, 'equip', get: -> equip
-    Object.defineProperty @, 'stack', get: -> stack
-    Object.defineProperty @, 'maxStack', get: -> maxStack
+      Object.defineProperty @, 'usable',
+        enumerable: true
+        get: -> usable
+    Object.defineProperty @, 'equip',
+      enumerable: true
+      get: -> equip
+    Object.defineProperty @, 'stack',
+      enumerable: true
+      get: -> stack
+    Object.defineProperty @, 'maxStack',
+      enumerable: true
+      get: -> maxStack
 
   # 戦闘中のみ使えるかどうか。戦闘中だと true
   usable_battle: -> rpg.system.temp.battle
 
   addItem: (item) ->
-    return unless @container?
-    @container.add item
+    return unless @_container?
+    @_container.add item
 
   hasItem: (item) ->
-    return unless @container?
-    @container.contains item
+    return unless @_container?
+    @_container.contains item
 
-  getItem: (index) ->
-    return unless @container?
-    @container.getAt index
+  getItem: (args) ->
+    return unless @_container?
+    if typeof args is 'number'
+      return @_container.getAt args
+    if typeof args is 'string'
+      return @_container.find args
+    return
 
   removeItem: (item) ->
-    return unless @container?
-    @container.remove item
+    return unless @_container?
+    @_container.remove item

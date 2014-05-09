@@ -8,70 +8,102 @@ tm.define 'rpg.DataBase',
     i = href.lastIndexOf('/')
     {
       @baseUrl
-      @dataPath
       @idformat
-      # アイテム
-      @itemPath
-      @items
-      # マップ
-      @mapPath
-      @maps
-
+      dataPath # データパス
+      itemPath   # アイテムパス
+      mapPath    # マップパス
+      statePath  # ステートパス
     } = {
       baseUrl: href.substr(0,i) + '/'
-      dataPath: 'data/'
       idformat: '000'
+      dataPath: 'data/'
       itemPath: 'item/'
-      items: {}
       mapPath: 'map/'
-      maps: {}
+      statePath: 'state/'
     }.$extend args
     
-  loadAssets: (assets,onload) ->
-    setTimeout(
-      (->rpg.system.loadAsset(assets, onload)).bind @
-      100
-    )
+    # アイテムURL
+    @itemUrl = @dataUrl.bind(@,dataPath + itemPath)
+    # マップURL
+    @mapUrl = @dataUrl.bind(@,dataPath + mapPath)
+    # ステートURL
+    @stateUrl = @dataUrl.bind(@,dataPath + statePath)
+    @states = {}
 
   filename: (val) ->
     if typeof val is 'number'
       val = val.formatString @idformat
     val
 
-  # アイテムURL
-  itemUrl: (item) ->
-    @baseUrl + @dataPath + @itemPath + @filename(item) + '.json'
+  # dataURL
+  dataUrl: (path, id) ->
+    @baseUrl + path + @filename(id) + '.json'
+
+  # アイテム作成
+  createItem: (data) ->
+    type = data.type ? 'Item'
+    return new rpg[type](data)
 
   # アイテムデータ
-  item: (items,func) ->
-    assets = (@itemUrl(item) for item in items)
+  item: (ids,func) ->
+    mgr = tm.asset.Manager
+    assets = (@itemUrl(id) for id in ids)
+    items = (@createItem(mgr.get(a).data) for a in assets when mgr.get(a)?)
+    if items.length == ids.length
+      func(items)
+      return
     onload = () ->
       items = []
       for asset in assets
-        data = tm.asset.AssetManager.get(asset).data
+        data = mgr.get(asset).data
         data.item = asset
-        @items[data.item] = data
-        type = data.type ? 'Item'
-        items.push new rpg[type](data) if rpg[type]?
+        items.push @createItem(data)
       func(items)
-    @loadAssets assets, onload.bind @
-
-  # マップURL
-  mapUrl: (map) ->
-    @baseUrl + @dataPath + @mapPath + @filename(map) + '.json'
+    rpg.system.loadAssets assets, onload.bind @
 
   #　マップデータ
-  map: (map,func) ->
-    url = @mapUrl(map)
-    if @maps[url]?
-      func(new rpg.Map @maps[url])
+  map: (mapid,func) ->
+    mgr = tm.asset.Manager
+    url = @mapUrl(mapid)
+    if mgr.get(mapid)?
+      func(new rpg.Map(mgr.get(mapid).data))
       return
     onload = () ->
-      data = tm.asset.AssetManager.get(url).data
+      data = mgr.get(url).data
       data.map = url
-      @maps[data.map] = data
-      @loadAssets(
+      rpg.system.loadAssets(
         (tile.image for tile in data.tilesets)
         (->func(new rpg.Map(data))).bind @
       )
-    @loadAssets [url], onload.bind @
+    rpg.system.loadAssets [url], onload.bind @
+
+  # ステート作成
+  createState: (data) ->
+    type = data.type ? 'State'
+    return new rpg[type](data)
+
+  # ステートデータ
+  state: (ids,func) ->
+    mgr = tm.asset.Manager
+    if typeof ids is 'string'
+      if func?
+        return func [@createState(mgr.get(@states[ids]).data)]
+      else
+        return @createState(mgr.get(@states[ids]).data)
+    else if typeof ids is 'number'
+      ids = [ids]
+    assets = (@stateUrl(id) for id in ids)
+    states = (@createState(mgr.get(a).data) for a in assets when mgr.get(a)?)
+    if states.length == ids.length
+      func(states)
+      return
+    onload = () ->
+      states = []
+      for asset in assets
+        data = mgr.get(asset).data
+        data.state = asset
+        states.push @createState(data)
+        unless @states[data.name]?
+          @states[data.name] = data.state
+      func(states)
+    rpg.system.loadAssets assets, onload.bind @

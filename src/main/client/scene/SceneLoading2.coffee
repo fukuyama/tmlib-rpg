@@ -13,6 +13,8 @@ tm.define 'SceneLoading',
   # 初期化
   init: (args={}) ->
     delete args[k] for k, v of args when not v?
+    # ローダーインスタンス化
+    @_loader = tm.asset.Loader()
     # 親の初期化
     @superInit(name:'SceneLoading')
     {
@@ -118,9 +120,8 @@ tm.define 'SceneLoading',
   preload: (key, src, type, callback) ->
     console.log "preload #{key}, #{src}, #{type}"
     @addEndCount()
-    am = tm.asset.AssetManager
-    am.load(key, src, type)
-    obj = am.get(key)
+    @_loader.load(key, src, type)
+    obj = tm.asset.Manager.get(key)
     if obj.loaded
       callback(@, obj.data, obj) if callback?
       @loaded()

@@ -1,6 +1,6 @@
 # 価値は何か，誰にとっての価値か，実際の機能は何か
 describe 'rpg.Interpreter', () ->
-
+  interpreter = null
   describe '初期化', ->
     it '引数なし', ->
       interpreter = rpg.Interpreter()
@@ -8,7 +8,6 @@ describe 'rpg.Interpreter', () ->
 
   describe 'フラグ操作', ->
     @timeout(10000)
-    interpreter = null
     it 'マップシーンへ移動', (done) ->
       loadTestMap(done)
     it 'インタープリタ取得', ->
@@ -79,11 +78,10 @@ describe 'rpg.Interpreter', () ->
       rpg.game.flag.is('flag2').should.equal on
 
   describe '文章表示とフラグの組み合わせ', ->
-    interpreter = null
     it 'マップシーンへ移動', (done) ->
-      rpg.system.newGame()
       loadTestMap(done)
     it 'インタープリタ取得', ->
+      rpg.system.scene.name.should.equal 'SceneMap'
       interpreter = rpg.system.scene.interpreter
     it 'message の間にフラグがある場合は、update が2回必要', ->
       message_clear()
@@ -108,9 +106,7 @@ describe 'rpg.Interpreter', () ->
       interpreter.update()
 
   describe 'フラグ操作(数値)', ->
-    interpreter = null
     it 'マップシーンへ移動', (done) ->
-      rpg.system.newGame()
       loadTestMap(done)
     it 'インタープリタ取得', ->
       interpreter = rpg.system.scene.interpreter
@@ -170,9 +166,7 @@ describe 'rpg.Interpreter', () ->
           ]}
           {type:'end'}
         ]
-        interpreter = null
         it 'マップシーンへ移動', (done) ->
-          rpg.system.newGame()
           loadTestMap(done)
         it 'インタープリタ取得', ->
           interpreter = rpg.system.scene.interpreter
@@ -213,9 +207,7 @@ describe 'rpg.Interpreter', () ->
           ]}
           {type:'end'}
         ]
-        interpreter = null
         it 'マップシーンへ移動', (done) ->
-          rpg.system.newGame()
           loadTestMap(done)
         it 'インタープリタ取得', ->
           interpreter = rpg.system.scene.interpreter
@@ -258,9 +250,7 @@ describe 'rpg.Interpreter', () ->
             ]}
             {type:'end'}
         ]
-        interpreter = null
         it 'マップシーンへ移動', (done) ->
-          rpg.system.newGame()
           loadTestMap(done)
         it 'インタープリタ取得', ->
           interpreter = rpg.system.scene.interpreter
@@ -300,11 +290,10 @@ describe 'rpg.Interpreter', () ->
           ]}
           {type:'end'}
         ]
-        interpreter = null
         it 'マップシーンへ移動', (done) ->
-          rpg.system.newGame()
           loadTestMap(done)
         it 'インタープリタ取得', ->
+          rpg.system.scene.name.should.equal 'SceneMap'
           interpreter = rpg.system.scene.interpreter
         it 'flag20 を 222 にする', ->
           message_clear()
@@ -343,9 +332,7 @@ describe 'rpg.Interpreter', () ->
             ]}
             {type:'end'}
         ]
-        interpreter = null
         it 'マップシーンへ移動', (done) ->
-          rpg.system.newGame()
           loadTestMap(done)
         it 'インタープリタ取得', ->
           interpreter = rpg.system.scene.interpreter
@@ -392,10 +379,8 @@ describe 'rpg.Interpreter', () ->
           ]}
           {type:'end'}
         ]
-        interpreter = null
         it 'マップシーンへ移動', (done) ->
           message_clear()
-          rpg.system.newGame()
           loadTestMap(done)
         it 'インタープリタ取得', ->
           interpreter = rpg.system.scene.interpreter
@@ -439,9 +424,7 @@ describe 'rpg.Interpreter', () ->
           ]}
           {type:'end'}
         ]
-        interpreter = null
         it 'マップシーンへ移動', (done) ->
-          rpg.system.newGame()
           loadTestMap(done)
         it 'インタープリタ取得', ->
           interpreter = rpg.system.scene.interpreter
@@ -487,9 +470,7 @@ describe 'rpg.Interpreter', () ->
         {type:'wait',params:[5]}
         {type:'message',params:['TEST2']}
       ]
-      interpreter = null
       it 'マップシーンへ移動', (done) ->
-        rpg.system.newGame()
         loadTestMap(done)
       it 'インタープリタ取得', ->
         interpreter = rpg.system.scene.interpreter
@@ -534,9 +515,7 @@ describe 'rpg.Interpreter', () ->
         ]}
         {type:'end'}
       ]
-      interpreter = null
       it 'マップシーンへ移動', (done) ->
-        rpg.system.newGame()
         loadTestMap(done)
       it 'インタープリタ取得', ->
         interpreter = rpg.system.scene.interpreter
@@ -590,9 +569,7 @@ describe 'rpg.Interpreter', () ->
         ]}
         {type:'end'}
       ]
-      interpreter = null
       it 'マップシーンへ移動', (done) ->
-        rpg.system.newGame()
         loadTestMap(done)
       it 'インタープリタ取得', ->
         interpreter = rpg.system.scene.interpreter
@@ -630,9 +607,7 @@ describe 'rpg.Interpreter', () ->
         ]}
         {type:'end'}
       ]
-      interpreter = null
       it 'マップシーンへ移動', (done) ->
-        rpg.system.newGame()
         loadTestMap(done)
       it 'インタープリタ取得', ->
         interpreter = rpg.system.scene.interpreter
@@ -669,9 +644,7 @@ describe 'rpg.Interpreter', () ->
         ]}
         {type:'end'}
       ]
-      interpreter = null
       it 'マップシーンへ移動', (done) ->
-        rpg.system.newGame()
         loadTestMap(done)
       it 'インタープリタ取得', ->
         interpreter = rpg.system.scene.interpreter
@@ -698,7 +671,6 @@ describe 'rpg.Interpreter', () ->
       it 'flag30はonになる', ->
         rpg.game.flag.is('flag30').should.equal on
     describe 'キャンセルした場合に「いいえ」になる', ->
-      interpreter = null
       commands = [
         {type:'select',params:[['はい','いいえ'],{index:0,cancel:1}]}
         {type:'block',params:[
@@ -709,9 +681,7 @@ describe 'rpg.Interpreter', () ->
         ]}
         {type:'end'}
       ]
-      interpreter = null
       it 'マップシーンへ移動', (done) ->
-        rpg.system.newGame()
         loadTestMap(done)
       it 'インタープリタ取得', ->
         interpreter = rpg.system.scene.interpreter
