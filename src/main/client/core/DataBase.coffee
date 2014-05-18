@@ -9,7 +9,7 @@ tm.define 'rpg.DataBase',
     {
       @baseUrl
       @idformat
-      dataPath # データパス
+      dataPath   # データパス
       itemPath   # アイテムパス
       mapPath    # マップパス
       statePath  # ステートパス
@@ -17,9 +17,9 @@ tm.define 'rpg.DataBase',
       baseUrl: href.substr(0,i) + '/'
       idformat: '000'
       dataPath: 'data/'
-      itemPath: 'item/'
-      mapPath: 'map/'
-      statePath: 'state/'
+      itemPath: 'item'
+      mapPath: 'map'
+      statePath: 'state'
     }.$extend args
     
     # アイテムURL
@@ -37,12 +37,24 @@ tm.define 'rpg.DataBase',
 
   # dataURL
   dataUrl: (path, id) ->
-    @baseUrl + path + @filename(id) + '.json'
+    if id?
+      @baseUrl + path + '/' + @filename(id) + '.json'
+    else
+      @baseUrl + path + '.json'
 
   # アイテム作成
   createItem: (data) ->
     type = data.type ? 'Item'
     return new rpg[type](data)
+
+  # アイテム一覧
+  # TODO:いらないかも、全部取るのは難しい
+  itemlist: (func) ->
+    assets = [@itemUrl()]
+    onload = () ->
+      items = mgr.get(assets[0]).data
+      func(items)
+    rpg.system.loadAssets assets, onload.bind @
 
   # アイテムデータ
   item: (ids,func) ->

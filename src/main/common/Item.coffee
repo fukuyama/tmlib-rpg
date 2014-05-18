@@ -64,11 +64,11 @@ class rpg.Item
   usable_battle: -> rpg.system.temp.battle
 
   addItem: (item) ->
-    return unless @_container?
+    return false unless @_container?
     @_container.add item
 
   hasItem: (item) ->
-    return unless @_container?
+    return false unless @_container?
     @_container.contains item
 
   getItem: (args) ->
@@ -80,5 +80,5 @@ class rpg.Item
     return
 
   removeItem: (item) ->
-    return unless @_container?
+    return false unless @_container?
     @_container.remove item

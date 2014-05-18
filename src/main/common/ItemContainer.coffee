@@ -31,12 +31,6 @@ class rpg.ItemContainer
 
     unless @restriction?
       @restriction = ITEM_RESTRICTION[@containerType](args)
-    # アイテムがある場合(セーブロードに対応するために参照の張替が必要)
-    if @items.length > 0 and @stack
-      # スタックの調整
-      for i,ii in @items
-        if @stack_items[i.name]? and @stack_items[i.name].length > 0
-          @items[ii] = @stack_items[i.name][0]
 
     Object.defineProperty @, 'itemlistCount',
       enumerable: false
@@ -85,9 +79,12 @@ class rpg.ItemContainer
   remove: (item) ->
     # 削除確認
     return false unless @removeCheck(item)
-    # なかったら消さない
+    # なかったら消さない(名前で確認)
     return false unless @contains(item)
     if @stack and item.stack
+      # インスタンスが無かったら削除しない
+      if @items.indexOf(item) < 0
+        return false
       # スタックから削除
       @stack_items[item.name] -= 1
       # スタックが無かったら
@@ -111,9 +108,11 @@ class rpg.ItemContainer
         item.reuse()
     else
       # アイテムから削除
-      # TODO: この場合、同じインスタンスじゃないと削除できないのはどうなんだろう？
       i = @items.indexOf(item)
-      @items.splice(i,1) if i >= 0
+      if i >= 0
+        @items.splice(i,1)
+      else
+        return false # インスタンスがなかったら削除失敗
     @itemCount -= 1
     true
 
@@ -125,11 +124,11 @@ class rpg.ItemContainer
   find: (name) ->
     for v,i in @items when v.name is name
       return v
-    return null
+    return
 
   # インデックスで取得
+  # 無い場合は、undefined
   getAt: (index) ->
-    return null unless @items[index]?
     return @items[index]
 
 # コンテナ制約クラス（個数バージョン）
@@ -139,13 +138,13 @@ class rpg.MaxCountItemContainer
     {
       @max
     } = {
-      max: 0
+      max: -1 # マイナスだと無限
     }.$extendAll args
 
   # 追加確認
   # return: 追加可能なら true
   addCheck: (c,item) ->
-    return true if @max == 0
+    return true if @max < 0
     #if c.stack
     #  return c.itemlistCount < @max
     #else

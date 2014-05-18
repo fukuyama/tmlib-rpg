@@ -33,6 +33,8 @@ tm.define 'rpg.Interpreter',
       @commands = [].concat args.commands
     else
       @commands = [].concat args
+    # console.log "event start"
+    # console.log @commands
     @index = 0
     
   # イベント終了
@@ -58,6 +60,7 @@ tm.define 'rpg.Interpreter',
   # イベント実行
   execute: (command) ->
     command = @command() unless command?
+    # DEBUG
     #console.log "index=#{@index}"+
     #" comannds.length=#{@commands.length}"+
     #" blocks.length=#{@blocks.length}"
@@ -264,4 +267,27 @@ tm.define 'rpg.Interpreter',
       ).bind(@)
     }
     @waitFlag = true
+    false
+
+  # アイテム操作関連
+  command_item: (cmd, item, num = 1) ->
+    switch cmd
+      when 'add'
+        @waitFlag = true
+        rpg.system.db.item([item],((items) ->
+          for n in [0 ... num]
+            rpg.game.party.addItem(i) for i in items
+          @waitFlag = false
+          ).bind(@)
+        )
+      when 'remove'
+        @waitFlag = true
+        rpg.system.db.item([item],((items) ->
+          for n in [0 ... num]
+            for i in items
+              i = rpg.game.party.getItem(i.name)
+              rpg.game.party.removeItem(i) if i?
+          @waitFlag = false
+          ).bind(@)
+        )
     false

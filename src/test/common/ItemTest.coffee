@@ -87,7 +87,7 @@ describe 'rpg.Item', ->
     describe '基本機能', ->
       it '初期化', ->
         item = new rpg.Item({name:'Item01',container:{}})
-        (item is null).should.equal false
+        (item is undefined).should.equal false
         item.name.should.equal 'Item01'
       it 'アイテム追加', ->
         item.addItem(new rpg.Item({name:'Item02'}))
@@ -97,8 +97,21 @@ describe 'rpg.Item', ->
         item.getItem('Item02').name.should.equal 'Item02'
       it 'アイテム数確認', ->
         item.itemCount.should.equal 1
+      it 'アイテム取得失敗', ->
+        (item.getItem(1) is undefined).should.equal true
+      it 'アイテム名で取得失敗', ->
+        (item.getItem('xxxx') is undefined).should.equal true
+      it '関係ないアイテム削除は失敗', ->
+        r = item.removeItem(new rpg.Item(name:'Item02'))
+        r.should.equal false
+        item.itemCount.should.equal 1
       it 'アイテム削除', ->
-        item.removeItem(item.getItem(0))
+        r = item.removeItem(item.getItem(0))
+        r.should.equal true
+        item.itemCount.should.equal 0
+      it 'さらにアイテム削除は失敗', ->
+        r = item.removeItem(item)
+        r.should.equal false
         item.itemCount.should.equal 0
     describe 'コンテナタイプを指定する', ->
       it '初期化（デフォルトがmaxCountのコンテナなので入れられる最大値のみを設定する）', ->

@@ -32,7 +32,12 @@ describe 'rpg.ItemContainer', ->
       item = c.itemlist()[0]
       c.contains(item).should.equal true
       c.itemCount.should.equal 1
-      c.remove item
+      r = c.remove item
+      r.should.equal true
+      c.itemCount.should.equal 0
+      c.contains(item).should.equal false
+      r = c.remove item
+      r.should.equal false
       c.itemCount.should.equal 0
       c.contains(item).should.equal false
     it '２種類追加', ->
@@ -53,16 +58,16 @@ describe 'rpg.ItemContainer', ->
       item.name.should.equal 'Item02'
       item = c.find 'Item01'
       item.name.should.equal 'Item01'
-    it '名前で取得、無い場合はnull', ->
+    it '名前で取得、無い場合は undefined', ->
       item = c.find 'Item03'
-      (item is null).should.equal true
-    it 'インデックスで取得、無い場合はnull', ->
+      (item is undefined).should.equal true
+    it 'インデックスで取得、無い場合は undefined', ->
       item = c.getAt 1
       item.name.should.equal 'Item02'
       item = c.getAt 0
       item.name.should.equal 'Item01'
       item = c.getAt 3
-      (item is null).should.equal true
+      (item is undefined).should.equal true
       c.itemCount.should.equal 2
       c.itemlistCount.should.equal 2
     it '２種類削除', ->
@@ -83,6 +88,16 @@ describe 'rpg.ItemContainer', ->
       c.itemCount.should.equal 2
       c.itemlistCount.should.equal 2
       c.contains(new rpg.Item(name:'Item03')).should.equal true
+    it '同名アイテムの別インスタンスで削除はできない', ->
+      item1 = new rpg.Item(name:'Item03')
+      c.itemCount.should.equal 2
+      c.remove item1
+      c.itemCount.should.equal 2
+    it '別名アイテムの別インスタンスで削除はできない', ->
+      item1 = new rpg.Item(name:'NG')
+      c.itemCount.should.equal 2
+      c.remove item1
+      c.itemCount.should.equal 2
     it '同種２つ削除', ->
       item1 = c.find 'Item03'
       c.itemCount.should.equal 2
@@ -113,14 +128,14 @@ describe 'rpg.ItemContainer', ->
             t.itemlistCount.should.equal 1
           it '削除可能', ->
             item = c.getAt 0
-            (item is null).should.equal false
+            (item is undefined).should.equal false
             item.name.should.equal 'Item01'
             r = c.remove item
             r.should.equal true
             c.itemCount.should.equal 1
             c.itemlistCount.should.equal 1
             item = c.getAt 0
-            (item is null).should.equal false
+            (item is undefined).should.equal false
             item.name.should.equal 'Item01'
             c.remove item
             r.should.equal true
@@ -140,6 +155,14 @@ describe 'rpg.ItemContainer', ->
             c.add new rpg.Item(name:'Item01',stack:true,maxStack:5)
             c.itemlistCount.should.equal 1
             c.add new rpg.Item(name:'Item01',stack:true,maxStack:5)
+            c.itemCount.should.equal 6
+            c.itemlistCount.should.equal 2
+          it '同名アイテムの別インスタンスでは削除できない', ->
+            c.remove(new rpg.Item(name:'Item01',stack:true,maxStack:5))
+            c.itemCount.should.equal 6
+            c.itemlistCount.should.equal 2
+          it '別名アイテムの別インスタンスでは削除できない', ->
+            c.remove(new rpg.Item(name:'NG',stack:true,maxStack:5))
             c.itemCount.should.equal 6
             c.itemlistCount.should.equal 2
           it 'アイテム１つ削除するとアイテムリストは１つになる', ->
@@ -174,7 +197,7 @@ describe 'rpg.ItemContainer', ->
             c.itemlistCount.should.equal 2
           it '削除可能', ->
             item = c.getAt 0
-            (item is null).should.equal false
+            (item is undefined).should.equal false
             item.name.should.equal 'Item01'
             item.stack.should.equal true
             r = c.remove item
@@ -182,7 +205,7 @@ describe 'rpg.ItemContainer', ->
             c.itemCount.should.equal 1
             c.itemlistCount.should.equal 1
             item = c.getAt 0
-            (item is null).should.equal false
+            (item is undefined).should.equal false
             item.name.should.equal 'Item02'
             item.stack.should.equal true
             r = c.remove item
@@ -250,7 +273,7 @@ describe 'rpg.ItemContainer', ->
             c.itemlistCount.should.equal 2
           it '削除可能', ->
             item = c.getAt 0
-            (item is null).should.equal false
+            (item is undefined).should.equal false
             item.name.should.equal 'Item01'
             item.stack.should.equal false
             r = c.remove item
@@ -258,7 +281,7 @@ describe 'rpg.ItemContainer', ->
             c.itemCount.should.equal 1
             c.itemlistCount.should.equal 1
             item = c.getAt 0
-            (item is null).should.equal false
+            (item is undefined).should.equal false
             item.name.should.equal 'Item01'
             item.stack.should.equal false
             r = c.remove item
@@ -278,7 +301,7 @@ describe 'rpg.ItemContainer', ->
             c.itemlistCount.should.equal 2
           it '削除可能', ->
             item = c.getAt 0
-            (item is null).should.equal false
+            (item is undefined).should.equal false
             item.name.should.equal 'Item01'
             item.stack.should.equal false
             r = c.remove item
@@ -286,7 +309,7 @@ describe 'rpg.ItemContainer', ->
             c.itemCount.should.equal 1
             c.itemlistCount.should.equal 1
             item = c.getAt 0
-            (item is null).should.equal false
+            (item is undefined).should.equal false
             item.name.should.equal 'Item02'
             item.stack.should.equal false
             r = c.remove item
@@ -313,7 +336,7 @@ describe 'rpg.ItemContainer', ->
             t.itemlistCount.should.equal 2
           it '削除可能', ->
             item = c.getAt 0
-            (item is null).should.equal false
+            (item is undefined).should.equal false
             item.name.should.equal 'Item01'
             item.stack.should.equal true
             r = c.remove item
@@ -321,7 +344,7 @@ describe 'rpg.ItemContainer', ->
             c.itemCount.should.equal 1
             c.itemlistCount.should.equal 1
             item = c.getAt 0
-            (item is null).should.equal false
+            (item is undefined).should.equal false
             item.name.should.equal 'Item01'
             item.stack.should.equal true
             r = c.remove item
@@ -341,7 +364,7 @@ describe 'rpg.ItemContainer', ->
             c.itemlistCount.should.equal 2
           it '削除可能', ->
             item = c.getAt 0
-            (item is null).should.equal false
+            (item is undefined).should.equal false
             item.name.should.equal 'Item01'
             item.stack.should.equal true
             r = c.remove item
@@ -349,7 +372,7 @@ describe 'rpg.ItemContainer', ->
             c.itemCount.should.equal 1
             c.itemlistCount.should.equal 1
             item = c.getAt 0
-            (item is null).should.equal false
+            (item is undefined).should.equal false
             item.name.should.equal 'Item02'
             item.stack.should.equal true
             r = c.remove item
@@ -371,7 +394,7 @@ describe 'rpg.ItemContainer', ->
             c.itemlistCount.should.equal 2
           it '削除可能', ->
             item = c.getAt 0
-            (item is null).should.equal false
+            (item is undefined).should.equal false
             item.name.should.equal 'Item01'
             item.stack.should.equal false
             r = c.remove item
@@ -379,7 +402,7 @@ describe 'rpg.ItemContainer', ->
             c.itemCount.should.equal 1
             c.itemlistCount.should.equal 1
             item = c.getAt 0
-            (item is null).should.equal false
+            (item is undefined).should.equal false
             item.name.should.equal 'Item01'
             item.stack.should.equal false
             r = c.remove item
@@ -399,7 +422,7 @@ describe 'rpg.ItemContainer', ->
             c.itemlistCount.should.equal 2
           it '削除可能', ->
             item = c.getAt 0
-            (item is null).should.equal false
+            (item is undefined).should.equal false
             item.name.should.equal 'Item01'
             item.stack.should.equal false
             r = c.remove item
@@ -407,7 +430,7 @@ describe 'rpg.ItemContainer', ->
             c.itemCount.should.equal 1
             c.itemlistCount.should.equal 1
             item = c.getAt 0
-            (item is null).should.equal false
+            (item is undefined).should.equal false
             item.name.should.equal 'Item02'
             item.stack.should.equal false
             r = c.remove item

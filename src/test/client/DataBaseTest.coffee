@@ -20,6 +20,13 @@ describe 'rpg.DataBase', ->
         db.itemUrl(1).should.
           equal 'http://localhost:3000/client/data/item/001.json'
 
+    describe.skip 'アイテムの一覧', ->
+      it 'アイテムの一覧を取得する', (done) ->
+        db.itemlist((items)->
+          items[0].item.should.
+            equal 'http://localhost:3000/client/data/item/001.json'
+          done()
+        )
     describe 'アイテムのロード', ->
       it 'アイテムを取得する場合は、取得した後に呼ぶ関数を指定する', (done) ->
         db.item([2,1],(items) ->
