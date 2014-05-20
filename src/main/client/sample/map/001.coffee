@@ -92,7 +92,7 @@ module.exports = {
             ])
           width: 32
           height: 32
-        },
+        }
         {
           type: 'rpg.SpriteCharacter'
           name: 'Event001'
@@ -133,7 +133,7 @@ module.exports = {
             ])
           width: 32
           height: 32
-        },
+        }
         {
           type: 'rpg.SpriteCharacter'
           name: 'Event002'
@@ -155,6 +155,29 @@ module.exports = {
                           'ほえほえ'
                         ]
                       }
+                    ]
+                  }
+                ]
+              }
+            ])
+        }
+        {
+          type: 'rpg.SpriteCharacter'
+          name: 'Event003'
+          width: 32
+          height: 32
+          properties:
+            init: JSON.stringify([
+              {
+                mapX: 5
+                mapY: 4
+                pages: [
+                  {
+                    name: 'page1'
+                    trigger: ['talk']
+                    commands: [
+                      {type:'message',params: ['アイテム操作']}
+                      {type:'gain_item',params: [1]}
                     ]
                   }
                 ]

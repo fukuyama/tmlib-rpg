@@ -29,7 +29,7 @@ describe 'rpg.ItemContainer', ->
       c.itemCount.should.equal 1
       c.contains(item).should.equal true
     it 'アイテムを削除すると個数が減る', ->
-      item = c.itemlist()[0]
+      item = c.getAt(0)
       c.contains(item).should.equal true
       c.itemCount.should.equal 1
       r = c.remove item
@@ -107,6 +107,14 @@ describe 'rpg.ItemContainer', ->
       c.remove item2
       c.itemCount.should.equal 0
       c.contains(item2).should.equal false
+    it '全削除', ->
+      c.itemCount.should.equal 0
+      c.add new rpg.Item(name:'Item03')
+      c.itemCount.should.equal 1
+      c.add new rpg.Item(name:'Item04')
+      c.itemCount.should.equal 2
+      c.clear()
+      c.itemCount.should.equal 0
   describe 'スタックアイテム', ->
     c = null
     describe 'スタックコンテナ', ->

@@ -181,3 +181,11 @@ describe 'rpg.Party', () ->
       party.getAt(0).backpack.itemlistCount.should.equal 2
       party.getAt(1).backpack.itemCount.should.equal 3
       party.backpack.itemCount.should.equal 1
+    it 'アイテムをすべて削除', ->
+      party.getAt(0).backpack.itemCount.should.equal 2
+      party.getAt(1).backpack.itemCount.should.equal 3
+      party.backpack.itemCount.should.equal 1
+      party.clearItem()
+      party.getAt(0).backpack.itemCount.should.equal 0
+      party.getAt(1).backpack.itemCount.should.equal 0
+      party.backpack.itemCount.should.equal 0

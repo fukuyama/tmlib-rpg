@@ -36,6 +36,7 @@ tm.define 'rpg.WindowMenu',
       menuWidthFix: null
       menuHeightFix: null
     }.$extend(rpg.system.windowDefault).$extend args
+    index = -1 if @menus.length == 0
     @index = index # インデックスの初期化関連でローカル変数も使う
     @closeEvent = close
 
@@ -54,13 +55,15 @@ tm.define 'rpg.WindowMenu',
     @eventHandler.create('Menu')
     @addMenuHandler = @eventHandler.addMenuHandler
     @callMenuHandler = @eventHandler.callMenuHandler
+    @clearMenuHandler = @eventHandler.clearMenuHandler
     @eventHandler.create('Change')
     @addChangeHandler = @eventHandler.addChangeHandler
     @callChangeHandler = @eventHandler.callChangeHandler
+    @clearChangeHandler = @eventHandler.clearChangeHandler
 
     # メニューハンドラ初期化
     @addMenuHandler(m.name, m.fn) for m in @menus
-    if @change_index
+    if @change_index?
       @addChangeHandler('index',@change_index.bind(@))
 
     # イベントリスナー
@@ -94,9 +97,15 @@ tm.define 'rpg.WindowMenu',
     else
       @addMenu(m.name, m.fn) for m in name
 
+  # メニューのクリア
+  clearMenu: () ->
+    @content.clear()
+    @menus = []
+    @clearMenuHandler.call(@)
+
   # 自動リサイズ
   resizeAuto: ->
-    return if @menus.length == 0
+    #return if @menus.length == 0
     if @menuWidthFix?
       @menuWidth = @menuWidthFix
     else
@@ -127,6 +136,7 @@ tm.define 'rpg.WindowMenu',
 
   # メニュー再更新
   refreshMenu: ->
+    @content.clear()
     for m, i in @menus
       [x,y] = @calcMenuPosition(i)
       @drawText(m.name, x, y)

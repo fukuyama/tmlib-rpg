@@ -64,6 +64,7 @@ tm.define 'rpg.EventHandler',
     @["add#{name}Handler"] = @addHandler.bind(@, dispatcher)
     @["call#{name}Handler"] = @callHandler.bind(@, dispatcher)
     @["remove#{name}Handler"] = @removeHandler.bind(@, dispatcher)
+    @["clear#{name}Handler"] = @clearHandler.bind(@, dispatcher)
 
   # ハンドラ追加
   addHandler: (dispatcher, key, fn) ->
@@ -83,6 +84,10 @@ tm.define 'rpg.EventHandler',
       dispatcher.removeEventListener(key, fn)
     else
       dispatcher.removeEventListener(k, f) for k, f of key
+
+  # ハンドラ全削除
+  clearHandler: (dispatcher) ->
+    dispatcher.clearEventListener()
 
   # ハンドラセットアップ
   # receiver のメソッド名から、自動的にハンドラを設定する

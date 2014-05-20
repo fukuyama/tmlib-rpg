@@ -1,6 +1,6 @@
 sample_files = [
   'map/001'
-  'item/001'
+  'item/test'
   'state/001'
 ]
 

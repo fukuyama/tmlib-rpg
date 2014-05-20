@@ -53,6 +53,15 @@ describe 'rpg.DataBase', ->
           item.type.should.equal 'UsableItem'
           done()
         )
+      it '文字列指定でロード', (done) ->
+        db.item(['test'],(items) ->
+          item = items[0]
+          item.item.should.
+            equal 'http://localhost:3000/client/data/item/test.json'
+          item.name.should.equal 'Test Item'
+          done()
+        )
+        
 
   describe 'マップデータ', ->
     describe 'mapUrl', ->

@@ -1,5 +1,5 @@
 
-# メンバーリストウィンドウ基本クラス
+# ステータス表示用メンバーリストウィンドウ
 tm.define 'rpg.WindowStatusActorList',
   superClass: rpg.WindowMemberBase
 

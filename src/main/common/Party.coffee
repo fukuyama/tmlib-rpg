@@ -66,3 +66,9 @@ class rpg.Party
       return item if item?
     # だれも持ってない場合は、パーティ用バックパックから取得
     @backpack.getItem(nameOrId)
+
+  # パーティのアイテム全削除
+  clearItem: () ->
+    for a in @_members
+      a.backpack.clearItem()
+    @backpack.clearItem()

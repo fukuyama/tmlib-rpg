@@ -93,6 +93,9 @@ describe 'rpg.Item', ->
         item.addItem(new rpg.Item({name:'Item02'}))
       it 'アイテム取得', ->
         item.getItem(0).name.should.equal 'Item02'
+      it 'アイテム取得全部', ->
+        item.eachItem (item) ->
+          item.name.should.equal 'Item02'
       it 'アイテム名で取得', ->
         item.getItem('Item02').name.should.equal 'Item02'
       it 'アイテム数確認', ->
@@ -135,6 +138,10 @@ describe 'rpg.Item', ->
         r = item._container.addCheck(new rpg.Item({name:'Item02'}))
         r.should.equal false
         item.itemCount.should.equal 2
+      it 'アイテムクリア', ->
+        item.itemCount.should.equal 2
+        item.clearItem()
+        item.itemCount.should.equal 0
     describe 'スタックアイテム', ->
       c = null
       it '５種類入るスタックコンテナに', ->

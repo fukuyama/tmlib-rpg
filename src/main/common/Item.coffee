@@ -79,6 +79,14 @@ class rpg.Item
       return @_container.find args
     return
 
+  eachItem: (f) ->
+    return unless @_container?
+    @_container.each f
+
   removeItem: (item) ->
     return false unless @_container?
     @_container.remove item
+
+  clearItem: () ->
+    return false unless @_container?
+    @_container.clear()

@@ -35,6 +35,13 @@ class rpg.ItemContainer
     Object.defineProperty @, 'itemlistCount',
       enumerable: false
       get: -> @items.length
+  
+  # クリア
+  clear: () ->
+    @items = []
+    @stack_items = {}
+    @itemCount = 0
+    true
 
   # 入ってるかどうか
   contains: (item) ->
@@ -116,10 +123,10 @@ class rpg.ItemContainer
     @itemCount -= 1
     true
 
-  # 取得（コピーした配列）
-  itemlist: () ->
-    [].concat @items
-  
+  # リスト処理
+  each: (f) ->
+    f.call(null,i) for i in @items
+
   # 名前で取得
   find: (name) ->
     for v,i in @items when v.name is name

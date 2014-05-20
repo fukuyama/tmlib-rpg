@@ -68,7 +68,10 @@ tm.define 'rpg.Interpreter',
     #console.log 'command:' + command.type
     f = @['command_' + command.type]
     if f?
-      f.apply(@, command.params)
+      return f.apply(@, command.params)
+    else
+      console.error 'command not found. ' + command.type
+      false
 
   # 終わりかどうか
   isEnd: ->
@@ -93,6 +96,12 @@ tm.define 'rpg.Interpreter',
   
   #-------------------
   # イベントコマンド
+
+  # 関数実行
+  # 本当は、function は params に入らないのでスクリプトとかデバック用
+  command_function: (f) ->
+    f.call()
+    false
 
   # script
   command_script: (script) ->
@@ -270,24 +279,60 @@ tm.define 'rpg.Interpreter',
     false
 
   # アイテム操作関連
-  command_item: (cmd, item, num = 1) ->
-    switch cmd
-      when 'add'
-        @waitFlag = true
-        rpg.system.db.item([item],((items) ->
-          for n in [0 ... num]
-            rpg.game.party.addItem(i) for i in items
-          @waitFlag = false
-          ).bind(@)
-        )
-      when 'remove'
-        @waitFlag = true
-        rpg.system.db.item([item],((items) ->
-          for n in [0 ... num]
-            for i in items
-              i = rpg.game.party.getItem(i.name)
-              rpg.game.party.removeItem(i) if i?
-          @waitFlag = false
-          ).bind(@)
-        )
+  
+  # アイテムを増やす
+  command_gain_item: (item, num = 1, actor = null) ->
+    if item.item?
+      {item,num,actor,backpack} = {num: 1}.$extend item
+    @waitFlag = true
+    # 現在のシーンをキャプチャー
+    rpg.system.captureScreenBitmap()
+    rpg.system.db.item([item],((items) ->
+      # 誰かのアイテム
+      target = rpg.game.party
+      if actor?
+        # アクターのアイテム
+        actor = rpg.game.party.getAt(actor)
+        target = actor.backpack if actor?
+      else if backpack?
+        # バックパックのアイテム
+        target = rpg.game.party.backpack
+      # 対象のアイテムを増やす
+      for n in [0 ... num]
+        target.addItem(i) for i in items
+      @waitFlag = false
+      ).bind(@)
+    )
+    false
+
+  # アイテムを減らす
+  command_lost_item: (item, num = 1, actor = null) ->
+    if item.item?
+      {item,num,actor,backpack} = {num: 1}.$extend item
+    @waitFlag = true
+    # 現在のシーンをキャプチャー
+    rpg.system.captureScreenBitmap()
+    rpg.system.db.item([item],((items) ->
+      # 誰かのアイテム
+      target = rpg.game.party
+      if actor?
+        # アクターのアイテム
+        actor = rpg.game.party.getAt(actor)
+        target = actor.backpack if actor?
+      else if backpack?
+        # バックパックのアイテム
+        target = rpg.game.party.backpack
+      # 対象のアイテムを捨てる
+      for n in [0 ... num]
+        for i in items
+          i = target.getItem(i.name)
+          target.removeItem(i) if i?
+      @waitFlag = false
+      ).bind(@)
+    )
+    false
+
+  # アイテムをすべて捨てる
+  command_clear_item: () ->
+    rpg.game.party.clearItem()
     false

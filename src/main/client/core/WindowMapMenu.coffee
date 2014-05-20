@@ -31,7 +31,16 @@ tm.define 'rpg.WindowMapMenu',
     console.log 'skill'
     @
   menuItem: ->
-    console.log 'item'
+    @addWindow(
+      rpg.WindowItemActorList(
+        x: @left
+        y: @bottom
+      ).addCloseListener(((e) ->
+        @removeWindow(e.target)
+        @active = true
+      ).bind(@)).open()
+    )
+    @active = false
     @
   menuCheck: ->
     console.log 'check'
