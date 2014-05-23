@@ -46,6 +46,13 @@ module.exports = (grunt) ->
       'core/WindowItemActorList'
       'core/GamePlayer'
       'core/Interpreter'
+      'event_command/Message'
+      'event_command/Flag'
+      'event_command/Block'
+      'event_command/IfElse'
+      'event_command/Loop'
+      'event_command/End'
+      'event_command/Item'
       'scene/SceneBase'
       'scene/SceneLoading2'
       'scene/SceneMain'
@@ -167,7 +174,7 @@ module.exports = (grunt) ->
       target: ['target']
 
     execute:
-      call_sampe:
+      call_sample:
         call: (grunt, op) ->
           grunt.log.writeln('Hello!')
 
