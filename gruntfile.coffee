@@ -46,7 +46,13 @@ module.exports = (grunt) ->
       'core/WindowItemActorList'
       'core/GamePlayer'
       'core/Interpreter'
+      'event_command/Function'
+      'event_command/Script'
+      'event_command/Wait'
       'event_command/Message'
+      'event_command/Option'
+      'event_command/Select'
+      'event_command/InputNum'
       'event_command/Flag'
       'event_command/Block'
       'event_command/IfElse'
@@ -115,7 +121,8 @@ module.exports = (grunt) ->
     coffeeConfig[f].files[js] = coffee
     watchConfig[f] = {
       files: [coffee,testcase]
-      tasks: ['coffeelint',"coffee:#{f}","simplemocha:#{f}",'concat','uglify']
+      tasks: ['coffeelint',"coffee:#{f}","simplemocha:#{f}",
+        'concat','uglify','jsdoc']
     }
     simplemochaConfig[f] = {
       src: [testcase]
@@ -129,7 +136,8 @@ module.exports = (grunt) ->
     coffeeConfig[f].files[js] = coffee
     watchConfig[f] = {
       files: [coffee]
-      tasks: ['coffeelint',"coffee:#{f}",'concat','uglify']
+      tasks: ['coffeelint',"coffee:#{f}",
+        'concat','uglify','jsdoc']
     }
 
   grunt.initConfig
@@ -150,7 +158,15 @@ module.exports = (grunt) ->
       client_scripts:
         files:
           'target/public/client/main.min.js': ['target/public/client/main.js']
-
+    jsdoc:
+      dist:
+        src: [
+          (genPath + sec + '.js' for sec in common_sections)
+          (genPath + 'client/' + sec + '.js' for sec in client_sections)
+        ]
+        options:
+          destination: 'doc'
+          configure: 'jsdoc.json'
     copy:
       express:
         expand: true
@@ -171,7 +187,7 @@ module.exports = (grunt) ->
           script: 'target/app.js'
 
     clean:
-      target: ['target']
+      target: ['target','doc']
 
     execute:
       call_sample:
@@ -191,5 +207,5 @@ module.exports = (grunt) ->
   grunt.registerTask 'sample', ['exec:create_sample']
   grunt.registerTask 'default', [
     'coffeelint','coffee', 'simplemocha:all'
-    'concat', 'uglify', 'copy', 'exec:create_sample'
+    'concat', 'uglify', 'copy', 'exec:create_sample', 'jsdoc'
   ]

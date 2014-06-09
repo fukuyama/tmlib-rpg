@@ -1,11 +1,11 @@
-
-# ステートクラス
-#
+###*
+* @file State.coffee
+* ステートクラス
+###
 
 # node.js と ブラウザでの this.rpg を同じインスタンスにする
 _g = window ? global ? @
 rpg = _g.rpg = _g.rpg ? {}
-
 
 # ステートクラス
 class rpg.State

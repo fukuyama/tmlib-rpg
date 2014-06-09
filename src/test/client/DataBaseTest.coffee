@@ -29,7 +29,7 @@ describe 'rpg.DataBase', ->
         )
     describe 'アイテムのロード', ->
       it 'アイテムを取得する場合は、取得した後に呼ぶ関数を指定する', (done) ->
-        db.item([2,1],(items) ->
+        db.preloadItem([2,1],(items) ->
           # ID は、item プロパティに、url が入る
           items[0].item.should.
             equal 'http://localhost:3000/client/data/item/002.json'
@@ -38,7 +38,7 @@ describe 'rpg.DataBase', ->
           done()
         )
       it '通常アイテムをロード', (done) ->
-        db.item([3],(items) ->
+        db.preloadItem([3],(items) ->
           item = items[0]
           item.item.should.
             equal 'http://localhost:3000/client/data/item/003.json'
@@ -46,7 +46,7 @@ describe 'rpg.DataBase', ->
           done()
         )
       it '回復アイテムをロード', (done) ->
-        db.item([4],(items) ->
+        db.preloadItem([4],(items) ->
           item = items[0]
           item.item.should.
             equal 'http://localhost:3000/client/data/item/004.json'
@@ -54,7 +54,7 @@ describe 'rpg.DataBase', ->
           done()
         )
       it '文字列指定でロード', (done) ->
-        db.item(['test'],(items) ->
+        db.preloadItem(['test'],(items) ->
           item = items[0]
           item.item.should.
             equal 'http://localhost:3000/client/data/item/test.json'
@@ -74,7 +74,7 @@ describe 'rpg.DataBase', ->
 
     describe 'マップのロード', ->
       it 'マップを取得する場合は、取得した後に呼ぶ関数を指定する', (done) ->
-        db.map(1,(map) ->
+        db.preloadMap(1,(map) ->
           # ID は、map プロパティに、url が入る
           map.map.should.
             equal 'http://localhost:3000/client/data/map/001.json'
@@ -87,7 +87,7 @@ describe 'rpg.DataBase', ->
     describe '基本ステート', ->
       # 基本ステートはあらかじめ読むしかない…感じ？
       it '読み込み', (done) ->
-        db.state([1,2,3], (states) ->
+        db.preloadStates([1,2,3], (states) ->
           states[0].state.should.
             equal 'http://localhost:3000/client/data/state/001.json'
           states[0].name.should.
@@ -104,20 +104,20 @@ describe 'rpg.DataBase', ->
         )
       it '番号で取得、読み込まれてるから同期実行', ->
         state = null
-        db.state(1,(states) -> state = states[0])
+        state = db.state 1
         state.state.should.
           equal 'http://localhost:3000/client/data/state/001.json'
         state.name.should.
           equal 'State01'
       it '名前で取得、読み込まれてるから同期実行', ->
         state = null
-        db.state('State02',(states) -> state = states[0])
+        state = db.state 'State02'
         state.state.should.
           equal 'http://localhost:3000/client/data/state/002.json'
         state.name.should.
           equal 'State02'
       it '名前で取得、戻り値を使う', ->
-        state = db.state('State03')
+        state = db.state 'State03'
         state.state.should.
           equal 'http://localhost:3000/client/data/state/003.json'
         state.name.should.

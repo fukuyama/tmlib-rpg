@@ -152,6 +152,36 @@ describe 'rpg.Battler', () ->
         battler.states.length.should.equal 1
         battler.removeState name:'State1'
         battler.states.length.should.equal 0
+      it '追加 state2', ->
+        battler.states.length.should.equal 0
+        battler.addState new rpg.State(name:'State2')
+        battler.states.length.should.equal 1
+      it '削除 state2', ->
+        battler.states.length.should.equal 1
+        battler.removeState 'State2'
+        battler.states.length.should.equal 0
+      it '複数追加', ->
+        battler.states.length.should.equal 0
+        battler.addState new rpg.State(name:'State1')
+        battler.addState new rpg.State(name:'State2')
+        battler.addState new rpg.State(name:'State3')
+        battler.states.length.should.equal 3
+      it '複数削除', ->
+        t = [
+          new rpg.State(name:'State1')
+          new rpg.State(name:'State3')
+        ]
+        battler.removeState t
+        battler.states.length.should.equal 1
+      it '複数追加2', ->
+        battler.states.length.should.equal 1
+        battler.addState new rpg.State(name:'State4')
+        battler.addState new rpg.State(name:'State5')
+        battler.addState new rpg.State(name:'State6')
+        battler.states.length.should.equal 4
+      it '複数削除2', ->
+        battler.removeState ["State1","State2","State5"]
+        battler.states.length.should.equal 2
       it '能力変化ステート', ->
         battler = new rpg.Battler()
         battler.str.should.equal 10

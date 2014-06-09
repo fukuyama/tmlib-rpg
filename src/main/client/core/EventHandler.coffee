@@ -1,3 +1,7 @@
+###*
+* @file EventHandler.coffee
+* イベントハンドラ
+###
 
 # イベントで拾うキーの一覧（デフォルト）
 DEFAULT_EVENT_KEYS = ['up','down','left','right','enter','escape','c','x']

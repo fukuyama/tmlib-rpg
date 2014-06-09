@@ -11,7 +11,7 @@ tm.define 'rpg.event_command.GainItem',
     @waitFlag = true
     # 現在のシーンをキャプチャー
     rpg.system.captureScreenBitmap()
-    rpg.system.db.item([item],((items) ->
+    rpg.system.db.preloadItem([item],((items) ->
       # 誰かのアイテム
       target = rpg.game.party
       if actor?
@@ -39,7 +39,7 @@ tm.define 'rpg.event_command.LostItem',
     @waitFlag = true
     # 現在のシーンをキャプチャー
     rpg.system.captureScreenBitmap()
-    rpg.system.db.item([item],((items) ->
+    rpg.system.db.preloadItem([item],((items) ->
       # 誰かのアイテム
       target = rpg.game.party
       if actor?

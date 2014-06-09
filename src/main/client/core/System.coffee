@@ -258,4 +258,6 @@ tm.define 'rpg.System',
     # 現在のシーンをキャプチャー
     @captureScreenBitmap()
     # マップのロードと切替
-    @db.map mapid, ((map) -> @replaceScene scene: SceneMap(map: map)).bind @
+    @db.preloadMap mapid, ((map) ->
+      @replaceScene scene: SceneMap(map: map)
+    ).bind @

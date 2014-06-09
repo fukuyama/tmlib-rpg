@@ -29,7 +29,8 @@
     "grunt-contrib-clean": "~0.5.0",
     "grunt-express-server": "~0.4.17",
     "grunt-simple-mocha": "~0.4.0",
-    "grunt-coffeelint": "0.0.10",
+    "grunt-coffeelint": "~0.0.10",
+	"grunt-jsdoc": "~0.5.4",
     "chai": "~1.9.1",
     "grunt-execute": "~0.2.1",
     "grunt-exec": "~0.4.5"

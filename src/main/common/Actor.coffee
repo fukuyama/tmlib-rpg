@@ -1,6 +1,7 @@
-
-# アクタークラス
-#
+###*
+* @file Actor.coffee
+* アクタークラス
+###
 
 # node.js と ブラウザでの this.rpg を同じインスタンスにする
 _g = window ? global ? @
@@ -9,8 +10,26 @@ rpg = _g.rpg = _g.rpg ? {}
 
 # アクタークラス
 class rpg.Actor extends rpg.Battler
+  ###* 職業
+  * @var {String} rpg.Actor#job
+  ###
+  ###* サブ職業
+  * @var {String} rpg.Actor#subjob
+  ###
+  ###* 性別
+  * @var {String} rpg.Actor#sex
+  ###
+  ###* バックパック
+  * @var {rpg.Item} rpg.Actor#backpack
+  ###
 
-  # 初期化
+  ###*
+  * コンストラクタ
+  * @classdesc アクタークラス
+  * @constructor rpg.Actor
+  * @extends rpg.Battler
+  * @param {Object} args
+  ###
   constructor: (args={}) ->
     super(args)
     @addProperties('job', '（なし）')
@@ -30,7 +49,11 @@ class rpg.Actor extends rpg.Battler
     # バックパック作成
     @backpack = new rpg.Item(name:'バックパック',container:backpack)
 
-  # 使う
+  ###* アイテムを使う
+  * @method rpg.Actor#useItem
+  * @param {rpg.Item} item 使用するアイテム
+  * @param {rpg.Battler} [target] 使用する対象
+  ###
   useItem: (item, target) ->
     super(item, target)
     if item.isLost()

@@ -1,10 +1,7 @@
-
-# バトラークラス
-#
-#　ゲーム内に現れるキャラクターデータのクラス（アクターとエネミーの基底クラス）
-#　各キャラクター（アクターとエネミー含む）の基本的な能力を提供する。
-#　ゲーム初期状態でのデータは、json で管理（読み込みは外部で…）
-#
+###*
+* @file Battler.coffee
+* バトラークラス
+###
 
 # node.js と ブラウザでの this.rpg を同じインスタンスにする
 _g = window ? global ? @
@@ -14,6 +11,25 @@ rpg = _g.rpg = _g.rpg ? {}
 # バトラークラス
 class rpg.Battler
 
+  ###*
+  * コンストラクタ
+  * @classdesc バトラークラス
+  *　ゲーム内に現れるキャラクターデータのクラス（アクターとエネミーの基底クラス）
+  *　各キャラクター（アクターとエネミー含む）の基本的な能力を提供する。
+  *　ゲーム初期状態でのデータは、json で管理（読み込みは外部で…）
+  * @constructor rpg.Battler
+  * @param {Object} args
+  ###
+  constructor: (args={}) ->
+    @setup(args)
+
+  ###* プロパティ追加用内部メソッド
+  * @method rpg.Battler#_addProperties
+  * @param {Object} p getter/setter用プロパティ
+  * @param {String} name プロパティ名
+  * @param {Any} defaultval プロパティのデフォルト値
+  * @private
+  ###
   _addProperties: (p,name,defaultval) ->
     get = -> if p[name]? then p[name] else defaultval
     set = (v) -> p[name] = v
@@ -22,9 +38,10 @@ class rpg.Battler
       get: get.bind @
       set: set.bind @
 
-  constructor: (args={}) ->
-    @setup(args)
-
+  ###* args を使って初期化する
+  * @method rpg.Battler#setup
+  * @param {Object} args
+  ###
   setup: (args={}) ->
     {
       _base
@@ -115,7 +132,11 @@ class rpg.Battler
       get: -> states
       set: (s) -> states = s
 
-  # ステート追加
+  ###* ステート追加
+  * @method rpg.Battler#addState
+  * @param {rpg.State} args
+  * @return this
+  ###
   addState: (state) ->
     # 追加確認
     if state.checkAddTo @states
@@ -124,35 +145,48 @@ class rpg.Battler
       # 相殺確認
       r = state.findCancels @states
       if r.length > 0
-        @removeState states:r
+        @removeState r
     @
 
-  # ステート削除
-  removeState: (param={}) ->
-    {name,states}=param
+  ###* ステート削除
+  * @method rpg.Battler#removeState
+  * @param {String|Array|rpg.State} args ステート(名)かステート(名)のリスト
+  * @return this
+  ###
+  removeState: (args) ->
+    name = args if typeof args is 'string'
+    name = args.name if typeof args is 'object'
     if name?
-      t = []
-      for s in @states when s.name != name
-        t.push s
-      @states = t
+      @states = (s for s in @states when s.name != name)
+    else if args instanceof Array
+      @removeState a for a in args
     @
 
-  # 敵味方識別
-  # 味方だと true を返す
-  # チームが違うと敵
-  # IFFは、思いをくまない。呪文とかの対象になるかどうかなので実際につかうかどうかはプレイヤー判断。
-  # かけたくない相手でも、状況的にかかる相手ならかかる。
+  ###* 敵味方識別
+  * 味方だと true を返す
+  * チームが違うと敵
+  * IFFは、思いをくまない。呪文とかの対象になるかどうかなので実際につかうかどうかはプレイヤー判断。
+  * かけたくない相手でも、状況的にかかる相手ならかかる。
+  * @method rpg.Battler#iff
+  * @param {rpg.Battler} battler 識別対象バトラー
+  ###
   iff: (battler) ->
     r = false
     r = battler.team == @team unless r
     # 混乱していると敵？魅了された場合は？
     r
 
-  # １ターンもしくは、１歩ごとに実行される処理
+  ###* １ターンもしくは、１歩ごとに実行される処理
+  * @method rpg.Battler#apply
+  ###
   apply: () ->
     s.apply(target:@) for s in @states
     @
 
-  # アイテムを使う
+  ###* アイテムを使う
+  * @method rpg.Battler#useItem
+  * @param {rpg.Item} 使用するアイテム
+  * @param {rpg.Battler|Array} アイテムを使用する対象
+  ###
   useItem: (item, target) ->
     item.use @, target

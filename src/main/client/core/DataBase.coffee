@@ -1,8 +1,22 @@
+###*
+* @file DataBase.coffee
+* データベース
+* 今は、json を取るだけだけど、ＤＢ関連をまとめる？
+###
 
-# データベースクラス
 tm.define 'rpg.DataBase',
+  ###* ベースURL
+  * @var {String} rpg.DataBase#baseUrl
+  ###
+  ###* IDフォーマット
+  * @var {String} rpg.DataBase#idformat
+  ###
 
-  # 初期化
+  ###* コンストラクタ
+  * @classdesc データベースクラス
+  * @constructor rpg.DataBase
+  * @param {Object} args
+  ###
   init: (args={}) ->
     href = document.location.href
     i = href.lastIndexOf('/')
@@ -22,42 +36,50 @@ tm.define 'rpg.DataBase',
       statePath: 'state'
     }.$extend args
     
-    # アイテムURL
-    @itemUrl = @dataUrl.bind(@,dataPath + itemPath)
-    # マップURL
-    @mapUrl = @dataUrl.bind(@,dataPath + mapPath)
-    # ステートURL
-    @stateUrl = @dataUrl.bind(@,dataPath + statePath)
-    @states = {}
+    @itemUrl = @_dataUrl.bind(@,dataPath + itemPath)
+    @mapUrl = @_dataUrl.bind(@,dataPath + mapPath)
+    @stateUrl = @_dataUrl.bind(@,dataPath + statePath)
+    @_states = {}
 
-  filename: (val) ->
+  ###* ファイル名の作成
+  * @memberof rpg.DataBase#
+  * @param {String|Number} val
+  * @return {String} データのファイル名
+  * @private
+  ###
+  _filename: (val) ->
     if typeof val is 'number'
       val = val.formatString @idformat
     val
 
-  # dataURL
-  dataUrl: (path, id) ->
+  ###* データ読み込み用URLの作成
+  * @memberof rpg.DataBase#
+  * @param {String} path
+  * @param {String|Number} [id]
+  * @return {String} データをロードするためのURL
+  * @private
+  ###
+  _dataUrl: (path, id) ->
     if id?
-      @baseUrl + path + '/' + @filename(id) + '.json'
+      @baseUrl + path + '/' + @_filename(id) + '.json'
     else
       @baseUrl + path + '.json'
 
-  # アイテム作成
+  ###* アイテムデータの作成
+  * @memberof rpg.DataBase#
+  * @param {Object} data アイテム初期化用Object
+  * @return {rpg.State} アイテムオブジェクト
+  ###
   createItem: (data) ->
     type = data.type ? 'Item'
     return new rpg[type](data)
 
-  # アイテム一覧
-  # TODO:いらないかも、全部取るのは難しい
-  itemlist: (func) ->
-    assets = [@itemUrl()]
-    onload = () ->
-      items = mgr.get(assets[0]).data
-      func(items)
-    rpg.system.loadAssets assets, onload.bind @
-
-  # アイテムデータ
-  item: (ids,func) ->
+  ###* アイテムデータの読み込み
+  * @memberof rpg.DataBase#
+  * @param {Array} ids アイテムデータのID / ファイル名の配列
+  * @param {rpg.DataBase~itemcallback} func 読み込み後のコールバック関数
+  ###
+  preloadItem: (ids,func) ->
     mgr = tm.asset.Manager
     assets = (@itemUrl(id) for id in ids)
     items = (@createItem(mgr.get(a).data) for a in assets when mgr.get(a)?)
@@ -72,9 +94,14 @@ tm.define 'rpg.DataBase',
         items.push @createItem(data)
       func(items)
     rpg.system.loadAssets assets, onload.bind @
+    return
 
-  #　マップデータ
-  map: (mapid,func) ->
+  ###* マップデータの読み込み
+  * @memberof rpg.DataBase#
+  * @param {Number|String} mapid マップID か ファイル名
+  * @param {rpg.DataBase~mapcallback} func 読み込み後のコールバック関数
+  ###
+  preloadMap: (mapid,func) ->
     mgr = tm.asset.Manager
     url = @mapUrl(mapid)
     if mgr.get(mapid)?
@@ -89,21 +116,33 @@ tm.define 'rpg.DataBase',
       )
     rpg.system.loadAssets [url], onload.bind @
 
-  # ステート作成
+  ###* ステートを作成
+  * @memberof rpg.DataBase#
+  * @param {Object} data ステート初期化用Object
+  * @return {rpg.State}　ステートオブジェクト
+  ###
   createState: (data) ->
     type = data.type ? 'State'
     return new rpg[type](data)
 
-  # ステートデータ
-  state: (ids,func) ->
+  ###* ステートの取得
+  * @memberof rpg.DataBase#
+  * @param {String|Number} name ステート名かID
+  * @return {rpg.State} ステートオブジェクト
+  ###
+  state: (name) ->
+    if typeof name is 'number'
+      @createState(tm.asset.Manager.get(@stateUrl(name)).data)
+    else
+      @createState(tm.asset.Manager.get(@_states[name]).data)
+
+  ###* ステートの読み込み
+  * @memberof rpg.DataBase#
+  * @param {Array} ids ステートデータのID / ファイル名の配列
+  * @param {rpg.DataBase~statecallback} func 読み込み後のコールバック関数
+  ###
+  preloadStates: (ids,func) ->
     mgr = tm.asset.Manager
-    if typeof ids is 'string'
-      if func?
-        return func [@createState(mgr.get(@states[ids]).data)]
-      else
-        return @createState(mgr.get(@states[ids]).data)
-    else if typeof ids is 'number'
-      ids = [ids]
     assets = (@stateUrl(id) for id in ids)
     states = (@createState(mgr.get(a).data) for a in assets when mgr.get(a)?)
     if states.length == ids.length
@@ -115,7 +154,23 @@ tm.define 'rpg.DataBase',
         data = mgr.get(asset).data
         data.state = asset
         states.push @createState(data)
-        unless @states[data.name]?
-          @states[data.name] = data.state
+        unless @_states[data.name]?
+          @_states[data.name] = data.state
       func(states)
     rpg.system.loadAssets assets, onload.bind @
+    return
+
+###* ステート読み込み時のコールバック関数
+* @callback rpg.DataBase~statecallback
+* @param {Array} states 読み込んだステートデータ(json)
+###
+
+###* マップ読み込み時のコールバック関数
+* @callback rpg.DataBase~mapcallback
+* @param {rpg.Map} map 読み込んだマップデータ(json)
+###
+
+###* アイテム読み込み時のコールバック関数
+* @callback rpg.DataBase~itemcallback
+* @param {Array} items 読み込んだアイテムデータ(json)
+###
