@@ -23,7 +23,7 @@ describe 'rpg.DataBase', ->
     describe.skip 'アイテムの一覧', ->
       it 'アイテムの一覧を取得する', (done) ->
         db.itemlist((items)->
-          items[0].item.should.
+          items[0].url.should.
             equal 'http://localhost:3000/client/data/item/001.json'
           done()
         )
@@ -31,16 +31,16 @@ describe 'rpg.DataBase', ->
       it 'アイテムを取得する場合は、取得した後に呼ぶ関数を指定する', (done) ->
         db.preloadItem([2,1],(items) ->
           # ID は、item プロパティに、url が入る
-          items[0].item.should.
+          items[0].url.should.
             equal 'http://localhost:3000/client/data/item/002.json'
-          items[1].item.should.
+          items[1].url.should.
             equal 'http://localhost:3000/client/data/item/001.json'
           done()
         )
       it '通常アイテムをロード', (done) ->
         db.preloadItem([3],(items) ->
           item = items[0]
-          item.item.should.
+          item.url.should.
             equal 'http://localhost:3000/client/data/item/003.json'
           item.type.should.equal 'Item'
           done()
@@ -48,7 +48,7 @@ describe 'rpg.DataBase', ->
       it '回復アイテムをロード', (done) ->
         db.preloadItem([4],(items) ->
           item = items[0]
-          item.item.should.
+          item.url.should.
             equal 'http://localhost:3000/client/data/item/004.json'
           item.type.should.equal 'UsableItem'
           done()
@@ -56,7 +56,7 @@ describe 'rpg.DataBase', ->
       it '文字列指定でロード', (done) ->
         db.preloadItem(['test'],(items) ->
           item = items[0]
-          item.item.should.
+          item.url.should.
             equal 'http://localhost:3000/client/data/item/test.json'
           item.name.should.equal 'Test Item'
           done()
@@ -76,7 +76,7 @@ describe 'rpg.DataBase', ->
       it 'マップを取得する場合は、取得した後に呼ぶ関数を指定する', (done) ->
         db.preloadMap(1,(map) ->
           # ID は、map プロパティに、url が入る
-          map.map.should.
+          map.url.should.
             equal 'http://localhost:3000/client/data/map/001.json'
           map.mapSheet.name.should.
             equal '001'
@@ -88,15 +88,15 @@ describe 'rpg.DataBase', ->
       # 基本ステートはあらかじめ読むしかない…感じ？
       it '読み込み', (done) ->
         db.preloadStates([1,2,3], (states) ->
-          states[0].state.should.
+          states[0].url.should.
             equal 'http://localhost:3000/client/data/state/001.json'
           states[0].name.should.
             equal 'State01'
-          states[1].state.should.
+          states[1].url.should.
             equal 'http://localhost:3000/client/data/state/002.json'
           states[1].name.should.
             equal 'State02'
-          states[2].state.should.
+          states[2].url.should.
             equal 'http://localhost:3000/client/data/state/003.json'
           states[2].name.should.
             equal 'State03'
@@ -105,20 +105,32 @@ describe 'rpg.DataBase', ->
       it '番号で取得、読み込まれてるから同期実行', ->
         state = null
         state = db.state 1
-        state.state.should.
+        state.url.should.
           equal 'http://localhost:3000/client/data/state/001.json'
         state.name.should.
           equal 'State01'
       it '名前で取得、読み込まれてるから同期実行', ->
         state = null
         state = db.state 'State02'
-        state.state.should.
+        state.url.should.
           equal 'http://localhost:3000/client/data/state/002.json'
         state.name.should.
           equal 'State02'
       it '名前で取得、戻り値を使う', ->
         state = db.state 'State03'
-        state.state.should.
+        state.url.should.
           equal 'http://localhost:3000/client/data/state/003.json'
         state.name.should.
           equal 'State03'
+    describe 'スクリプトで作成', ->
+      it 'ステートの登録', ->
+        db.registState {
+          name: 'StateAA'
+          url: 'http://localhost:3000/client/data/state/StateAA.json'
+        }
+      it '登録したステートの取得', ->
+        state = db.state 'StateAA'
+        state.url.should.
+          equal 'http://localhost:3000/client/data/state/StateAA.json'
+        state.name.should.
+          equal 'StateAA'

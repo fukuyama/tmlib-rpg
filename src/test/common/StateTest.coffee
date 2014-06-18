@@ -507,7 +507,7 @@ describe 'rpg.State', () ->
         for i in [0 ... 200] when state.checkRemove(attack:atkcx)
           n += 1
           state.valid = true # 強制的にリセット
-        (75*2 < n and n < 85*2).should.equal true
+        (70*2 < n and n < 90*2).should.equal true
         
   describe '行動不能系', ->
     describe '行動が一切できないステート', ->

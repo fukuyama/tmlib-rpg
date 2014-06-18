@@ -219,3 +219,34 @@ describe 'rpg.Battler', () ->
       it '３ターン目は解毒されて減らない', ->
         battler.apply()
         battler.hp.should.equal 28
+    describe '相殺ステート', ->
+      it '力アップステート追加', ->
+        battler = new rpg.Battler(base:{str:10})
+        battler.states.length.should.equal 0
+        state = new rpg.State {
+          name:'力アップ'
+          abilities:[
+            {str:{type:'fix',val:5}}
+          ]
+          cancel:{
+            states:['力ダウン']
+          }
+        }
+        battler.addState state
+        battler.str.should.equal 15
+        battler.states.length.should.equal 1
+      it '力ダウンステート追加で相殺する', ->
+        battler.states.length.should.equal 1
+        state = new rpg.State {
+          name:'力ダウン'
+          abilities:[
+            {str:{type:'fix',val:-4}}
+          ]
+          cancel:{
+            states:['力アップ']
+          }
+        }
+        battler.addState state
+        battler.str.should.equal 10
+        battler.states.length.should.equal 0
+

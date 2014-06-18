@@ -7,7 +7,7 @@ MOVE_RESTRICTION = rpg.constants.MOVE_RESTRICTION
 class rpg.Map
 
   constructor: (args={}) ->
-    @map = args.map
+    @url = args.url
     @mapSheet = args
 
   #　マップ範囲内かどうか

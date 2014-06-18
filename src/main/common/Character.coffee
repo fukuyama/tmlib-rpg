@@ -1,8 +1,7 @@
-
-# キャラクタークラス
-#
-# マップ上に表示するキャラクターのクラス
-#
+###*
+* @file Character.coffee
+* キャラクタークラス
+###
 
 # node.js と ブラウザでの this.rpg を同じインスタンスにする
 _g = window ? global ? @
@@ -32,53 +31,22 @@ MOVE_RUNDOM = [
   'moveRight'
 ]
 
-ASSETS =
-  'sample.character':
-    type: 'json'
-    src:
-      spriteSheet: 'sample.spritesheet'
-      x: 0
-      y: 0
-      direction:
-        value: 'down'
-        fix: false
-      mapX: 0
-      mapY: 0
-      moveX: 0
-      moveY: 0
-      moveSpeed: 4
-      moveFrequency: 4
-      animation:
-        mode: on  # アニメーションの ON/OFF
-        fix: off  # アニメーションの固定 ON/OFF
-        move: on  # 移動時のアニメーション ON/OFF
-        stop: on  # 歩行後のアニメーションの停止 ON/OFF
-                  # 停止時にアニメーションを続ける場合は OFF にする
-        'default': '' # デフォルトのアニメーション
-  'sample.spritesheet.hiyoko': 'img/hiyoco_nomal_full.png'
-  'sample.spritesheet':
-    type: 'tmss'
-    src:
-      image: 'sample.spritesheet.hiyoko'
-      frame:
-        width: 32
-        height: 32
-        count: 18
-      animations:
-        down: frames: [7,6,7,8], next: 'down', frequency: 4
-        up: frames: [10,9,10,11], next: 'up', frequency: 4
-        left: frames: [13,12,13,14], next: 'left', frequency: 4
-        right: frames: [16,15,16,17], next: 'right', frequency: 4
-
-@SAMPLE_SYSTEM_LOAD_ASSETS = @SAMPLE_SYSTEM_LOAD_ASSETS ? []
-@SAMPLE_SYSTEM_LOAD_ASSETS.push ASSETS
-
 # キャラクタークラス
 class rpg.Character
 
+  ###* コンストラクタ
+  * @classdesc キャラクタークラス
+  * マップ上に表示するキャラクターのクラス
+  * @constructor rpg.Character
+  * @param {Object} args
+  ###
   constructor: (args={}) ->
     @setup(args)
 
+  ###* セットアップ
+  *　@method rpg.Character#setup
+  * @param {Object} args 初期化パラメータ
+  ###
   setup: (args={}) ->
     {
       @spriteSheet  # スプライト表示で使うシート名
@@ -94,7 +62,7 @@ class rpg.Character
       animation     # アニメーション
       @moveRoute      # 移動ルート
       @moveRouteIndex # 移動ルートのインデックス
-      @moveRouteForce
+      @moveRouteForce # 強制移動ルート
       @stopCount
       @lock
     } = {
@@ -104,11 +72,27 @@ class rpg.Character
       moveSpeed: 4
       moveFrequency: 4
       stopCount: 0
-      lock: {
+      lock:
         stopCount: false
-      }
-    }.$extendAll(ASSETS['sample.character'].src).$extendAll(args)
-    
+      spriteSheet: 'sample.spritesheet'
+      x: 0
+      y: 0
+      direction:
+        value: 'down'
+        fix: false
+      mapX: 0
+      mapY: 0
+      moveX: 0
+      moveY: 0
+      animation:
+        mode: on  # アニメーションの ON/OFF
+        fix: off  # アニメーションの固定 ON/OFF
+        move: on  # 移動時のアニメーション ON/OFF
+        stop: on  # 歩行後のアニメーションの停止 ON/OFF
+                  # 停止時にアニメーションを続ける場合は OFF にする
+        'default': '' # デフォルトのアニメーション
+    }.$extendAll(args)
+
     @mapChipSize = 32
     @mapFrameLength = 256.0
 
@@ -186,22 +170,42 @@ class rpg.Character
     # 初期位置
     @moveTo(@mapX,@mapY)
 
-  # 移動確認
+  ###* 移動確認
+  *　@method rpg.Character#isMove
+  * @return {boolean} 移動中の場合 true
+  ###
   isMove: -> @moveX != @mapX or @moveY != @mapY
 
-  # 停止確認
+  ###* 停止確認
+  *　@method rpg.Character#isStop
+  * @return {boolean} 停止の場合 true
+  ###
   isStop: -> not @isMove()
   
-  # アニメーション Mode
+  ###* アニメーション Mode
+  *　@method rpg.Character#isAnimation
+  * @return {boolean} アニメーション処理をする場合 true
+  ###
   isAnimation: -> @animationMode and not @animationFix
-  # アニメーション Fix
+  ###* アニメーション Fix
+  *　@method rpg.Character#isAnimationFix
+  * @return {boolean} アニメーションが固定されている場合 true
+  ###
   isAnimationFix: -> @animationFix
-  # アニメーション Move
+  ###* アニメーション Move
+  *　@method rpg.Character#isAnimationMove
+  * @return {boolean} 移動時にアニメーションする場合 true
+  ###
   isAnimationMove: -> @isAnimation() and @animationMove
-  # アニメーション Stop
+  ###* アニメーション Stop
+  *　@method rpg.Character#isAnimationStop
+  * @return {boolean} 停止時にアニメーションを止める場合 true
+  ###
   isAnimationStop: -> @isAnimation() and @animationStop
  
-  # 更新処理
+  ###* 更新処理
+  *　@method rpg.Character#update
+  ###
   update: ->
     @updatePosition()
     # 強制移動の場合
@@ -213,14 +217,18 @@ class rpg.Character
       @updateDefaultMoveRoute()
       return
 
-  # 通常時の移動ルート更新
+  ###* 通常時の移動ルート更新
+  *　@method rpg.Character#updateDefaultMoveRoute
+  ###
   updateDefaultMoveRoute: ->
     if @stopCount > @moveFrameFrequency
       @updateMoveRoute()
       @stopCount = 0
     @stopCount++ unless @isMove() or @lock.stopCount
 
-  # 位置の更新
+  ###* 位置の更新
+  *　@method rpg.Character#updatePosition
+  ###
   updatePosition: ->
     # 停止時アニメーション調整
     if @isAnimationStop() and @animationName != '' and
@@ -245,12 +253,16 @@ class rpg.Character
       if @moveY != @mapY and @isAnimationMove()
         @animationName = @direction if @animationName != @direction
 
-  # 移動メソッド実行
+  ###* 移動メソッド実行
+  *　@method rpg.Character#applyMoveMethod
+  ###
   applyMoveMethod: (name, args=[])->
     console.assert(@[name]?, "move メソッドが見つからない。#{name}")
     @[name].apply(@,args)
 
-  # 移動ルートの更新
+  ###* 移動ルートの更新
+  *　@method rpg.Character#updateMoveRoute
+  ###
   updateMoveRoute: ->
     return if @moveRoute.length == 0 or
       @moveRoute.length <= @moveRouteIndex or
@@ -262,20 +274,26 @@ class rpg.Character
       @moveRoute.length = 0
       @moveRouteIndex = 0
 
-  # 移動ルート強制
+  ###* 移動ルート強制
+  *　@method rpg.Character#forceMoveRoute
+  ###
   forceMoveRoute: (moveRoute) ->
     @moveRouteOriginal = @moveRoute unless @moveRouteOriginal?
     @moveRoute = moveRoute
     @moveRouteIndex = 0
     @moveRouteForce = true
 
-  # 移動ルート設定
+  ###* 移動ルート設定
+  *　@method rpg.Character#defaultMoveRoute
+  ###
   defaultMoveRoute: (moveRoute) ->
     @moveRouteOriginal = moveRoute
     @moveRoute = moveRoute
     @moveRouteIndex = 0
 
-  # 移動ルート終了
+  ###* 移動ルート終了
+  *　@method rpg.Character#endMoveRoute
+  ###
   endMoveRoute: () ->
     if @moveRouteOriginal?
       @moveRoute = @moveRouteOriginal
@@ -284,14 +302,23 @@ class rpg.Character
     @moveRouteIndex = 0
     @moveRouteForce = false
 
-  # スクリーン座標計算 x
+  ###* スクリーン座標計算 x
+  *　@method rpg.Character#_calcScreenX
+  * @private
+  ###
   _calcScreenX: () ->
     @moveX * @mapChipSize
-  # スクリーン座標計算 y
+
+  ###* スクリーン座標計算 y
+  *　@method rpg.Character#_calcScreenY
+  * @private
+  ###
   _calcScreenY: () ->
     @moveY * @mapChipSize
 
-  # 指定位置への向き変更
+  ###* 指定位置への向き変更
+  *　@method rpg.Character#directionTo
+  ###
   directionTo: (x, y) ->
     return if @directionFix
     if x instanceof rpg.Character
@@ -309,7 +336,11 @@ class rpg.Character
       else
         @direction = 'left'
 
-  # 指定位置に変更
+  ###* 指定位置に変更
+  *　@method rpg.Character#moveTo
+  * @param {number} x マップX座標
+  * @param {number} y マップY座標
+  ###
   moveTo: (x, y) ->
     @moveX = @mapX = x
     @moveY = @mapY = y
@@ -317,51 +348,81 @@ class rpg.Character
     @y = @_calcScreenY()
     @
 
-  # 左に移動
+  ###* 左に移動
+  *　@method rpg.Character#moveLeft
+  * @param {number} [n=1] 移動歩数
+  ###
   moveLeft: (n=1)->
     @direction = 4
     return unless @isPassable(@mapX,@mapY,4)
     @mapX -= n
     @
-  # 右に移動
+  ###* 右に移動
+  *　@method rpg.Character#moveRight
+  * @param {number} [n=1] 移動歩数
+  ###
   moveRight: (n=1)->
     @direction = 6
     return unless @isPassable(@mapX,@mapY,6)
     @mapX += n
     @
-  # 上に移動
+  ###* 上に移動
+  *　@method rpg.Character#moveUp
+  * @param {number} [n=1] 移動歩数
+  ###
   moveUp: (n=1)->
     @direction = 8
     return unless @isPassable(@mapX,@mapY,8)
     @mapY -= n
     @
-  # 下に移動
+  ###* 下に移動
+  *　@method rpg.Character#moveDown
+  * @param {number} [n=1] 移動歩数
+  ###
   moveDown: (n=1)->
     @direction = 2
     return unless @isPassable(@mapX,@mapY,2)
     @mapY += n
     @
-  # 移動ループ
+  ###* 移動ループ
+  *　@method rpg.Character#moveLoop
+  ###
   moveLoop: () ->
     @moveRouteIndex = 0
     @updateMoveRoute()
-  # ランダム移動
+  ###* ランダム移動
+  *　@method rpg.Character#moveRundom
+  ###
   moveRundom: () ->
     name = MOVE_RUNDOM[Math.floor(Math.random() * MOVE_RUNDOM.length)]
     @applyMoveMethod name
 
-  # 向き設定インデックスの計算 2,4,6,8 と言うのを、0,1,2,3 に
+  ###* 向き設定インデックスの計算 2,4,6,8 と言うのを、0,1,2,3 に
+  *　@method rpg.Character#directionIndex
+  * @param {number} d 向きを表す値 2,4,6,8
+  * @return {number} 0-3 のインデックス
+  ###
   directionIndex: (d) ->
     d / 2 - 1
   
-  # 逆向きの計算
+  ###* 逆向きの計算
+  *　@method rpg.Character#reverseDirection
+  * @param {number} 向きを表す値 2,4,6,8
+  * @return {number} 逆向きの値
+  ###
   reverseDirection: (d=@directionNum) ->
     # 向き指定が文字列の場合は、数値に
     d = CHARACTER_DIRECTION[d] if typeof d is 'string'
     # 逆向きの計算
     REVERSE_DIRECTION[@directionIndex(d)]
 
-  # 目の前の座標
+  ###* 目の前の座標
+  *　@method rpg.Character#frontPosition
+  * @param {number} [x=this.mapX] マップX座標
+  * @param {number} [y=this.mapY]　マップY座標
+  * @param {number|String} [d=this.directionNum]　向き
+  * @return {Array} 指定された座標の目の前の座標 [x,y]
+  ###
   frontPosition: (x=@mapX, y=@mapY, d=@directionNum) ->
     d = CHARACTER_DIRECTION[d] if typeof d is 'string'
     # 向き設定インデックス
@@ -369,9 +430,15 @@ class rpg.Character
     # 移動先座標の計算
     [x + X_ROUTE[di], y + Y_ROUTE[di]]
 
-  # 移動可能判定
-  #　TODO: ななめどしよ
+  ###* 移動可能判定
+  *　@method rpg.Character#isPassable
+  * @param {number} [x=this.mapX] マップX座標
+  * @param {number} [y=this.mapY]　マップY座標
+  * @param {number|String} [d=this.directionNum]　向き
+  * @return {boolean} 移動可能な場合 true
+  ###
   isPassable: (x=@mapX, y=@mapY, d=@directionNum) ->
+    #　TODO: ななめどしよ
     d = CHARACTER_DIRECTION[d] if typeof d is 'string'
     # 移動先座標の取得
     [nx,ny] = @frontPosition(x, y, d)
@@ -385,9 +452,15 @@ class rpg.Character
     return false if not map.isPassable(nx, ny, @reverseDirection(d))
     true
 
-  # 目の前のキャラクターを取得
-  findFrontCharacter: ->
+  ###* 目の前のキャラクターを取得
+  *　@method rpg.Character#findFrontCharacter
+  * @param {number} [x=this.mapX] マップX座標
+  * @param {number} [y=this.mapY]　マップY座標
+  * @param {number|String} [d=this.directionNum]　向き
+  * @return {rpg.Charactor} 目の前のキャラクター
+  ###
+  findFrontCharacter: (x=@mapX, y=@mapY, d=@directionNum) ->
     # 目の前の座標
-    [nx,ny] = @frontPosition()
+    [nx,ny] = @frontPosition(x,y,d)
     # マップ情報から検索
     rpg.system.scene.map.findCharacter(nx,ny,@)

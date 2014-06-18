@@ -39,7 +39,8 @@ tm.define 'rpg.DataBase',
     @itemUrl = @_dataUrl.bind(@,dataPath + itemPath)
     @mapUrl = @_dataUrl.bind(@,dataPath + mapPath)
     @stateUrl = @_dataUrl.bind(@,dataPath + statePath)
-    @_states = {}
+
+    @_states = {} # ステートのキャッシュ
 
   ###* ファイル名の作成
   * @memberof rpg.DataBase#
@@ -81,19 +82,19 @@ tm.define 'rpg.DataBase',
   ###
   preloadItem: (ids,func) ->
     mgr = tm.asset.Manager
-    assets = (@itemUrl(id) for id in ids)
-    items = (@createItem(mgr.get(a).data) for a in assets when mgr.get(a)?)
+    urls = (@itemUrl(id) for id in ids)
+    items = (@createItem(mgr.get(a).data) for a in urls when mgr.get(a)?)
     if items.length == ids.length
       func(items)
       return
     onload = () ->
       items = []
-      for asset in assets
-        data = mgr.get(asset).data
-        data.item = asset
+      for url in urls
+        data = mgr.get(url).data
+        data.url = url
         items.push @createItem(data)
       func(items)
-    rpg.system.loadAssets assets, onload.bind @
+    rpg.system.loadAssets urls, onload.bind @
     return
 
   ###* マップデータの読み込み
@@ -109,7 +110,7 @@ tm.define 'rpg.DataBase',
       return
     onload = () ->
       data = mgr.get(url).data
-      data.map = url
+      data.url = url
       rpg.system.loadAssets(
         (tile.image for tile in data.tilesets)
         (->func(new rpg.Map(data))).bind @
@@ -143,22 +144,34 @@ tm.define 'rpg.DataBase',
   ###
   preloadStates: (ids,func) ->
     mgr = tm.asset.Manager
-    assets = (@stateUrl(id) for id in ids)
-    states = (@createState(mgr.get(a).data) for a in assets when mgr.get(a)?)
+    urls = (@stateUrl(id) for id in ids)
+    states = (@createState(mgr.get(a).data) for a in urls when mgr.get(a)?)
     if states.length == ids.length
       func(states)
       return
     onload = () ->
       states = []
-      for asset in assets
-        data = mgr.get(asset).data
-        data.state = asset
+      for url in urls
+        data = mgr.get(url).data
+        data.url = url
         states.push @createState(data)
-        unless @_states[data.name]?
-          @_states[data.name] = data.state
+        @registState(data)
       func(states)
-    rpg.system.loadAssets assets, onload.bind @
+    rpg.system.loadAssets urls, onload.bind @
     return
+
+  ###* ステートの登録
+  * @memberof rpg.DataBase#
+  * @param {Object} data rpg.State を作成するための json data
+  ###
+  registState: (data) ->
+    data.type = 'State' unless data.type?
+    unless tm.asset.Manager.get(data.url)?
+      tm.asset.Manager.set data.url, data:data
+    unless @_states[data.name]?
+      @_states[data.name] = data.url
+    return
+
 
 ###* ステート読み込み時のコールバック関数
 * @callback rpg.DataBase~statecallback

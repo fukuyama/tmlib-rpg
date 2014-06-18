@@ -2,20 +2,30 @@
 # メイン処理(ページ読み込み後に実行される)
 tm.main ->
   loader = tm.asset.Loader()
-  # 初期ロード処理
-  load = ->
-    #loader.removeEventListener('load', load)
+  ###
+  loader.on 'progress', -> console.log 'progress'
+  loader.on 'load', -> console.log 'load'
+  loader.load
+    'windowskin.image': 'img/test_windowskin.png'
+    'system.se.menu_decision': 'audio/se/fin.mp3'
+    'system.se.menu_cursor_move': 'audio/se/fon.mp3'
+  ###
 
+  load = (assets,func) ->
+    loader.one('load', func)
+    loader.load assets
+
+  # 初期処理
+  init = ->
     # システムオブジェクト
     rpg.system = rpg.System()
+    # ユーザ定義アセットロード
+    load(rpg.system.assets, run)
 
+  # ゲーム開始
+  run = ->
     # 実行
     rpg.system.run()
-
-  loader.addEventListener('load', load)
   
-  # システム情報のAssetを読み込み
-  assets = {}.$extend(SYSTEM_ASSETS)
-  loader.load assets
-  # rpg.System の初期化に必要な情報と
-  # ロードシーンに必要な素材とか
+  # システム定義アセットロード
+  load(SYSTEM_ASSETS, init)

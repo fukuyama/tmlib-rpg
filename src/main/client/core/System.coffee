@@ -6,14 +6,36 @@
 # rpg.game は、１つのゲームのデータを管理
 #
 
-# システムデータとして先読みする場合の data asset
-# rpg.System.assets でアクセス
-# （coffee スクリプトだとこの書き方ではグローバルにならないのでこのままでＯＫ。
-#  上書きされない コンパイルオプションで bare: false の場合…）
-ASSETS =
-  system:
-    type: 'json'
-    src:
+# ここのデフォルトのキー名をメソッド名に使う
+SE_METHOD =
+  menu_decision: 'system.se.menu_decision'
+  menu_cancel: 'system.se.menu_cancel'
+  menu_cursor_move: 'system.se.menu_cursor_move'
+
+# システムデータクラス
+# rpg.system がインスタンス
+tm.define 'rpg.System',
+
+  # 初期化
+  init: (args = 'system') ->
+    args = tm.asset.AssetManager.get(args).data if typeof args == 'string'
+    {
+      @title
+      @assets
+      @main
+      @canvasId
+      @loadingSceneDefault
+      @windowDefault
+      @textColor
+      @lineHeight
+      @screen
+      @se
+      @mapChipSize
+      @setting
+    } = {
+      setting: {
+        se: false
+      }
       title: 'tmlib-rpg'
       assets: {}
       main:
@@ -43,36 +65,8 @@ ASSETS =
         width: 640
         height: 480
         background: 'rgb(0,0,0)'
-      se: # ここのデフォルトのキー名をメソッド名に使う
-        menu_decision: 'system.se.menu_decision'
-        menu_cancel: 'system.se.menu_cancel'
-        menu_cursor_move: 'system.se.menu_cursor_move'
-
-# システムデータクラス
-# rpg.system がインスタンス
-tm.define 'rpg.System',
-
-  # 初期化
-  init: (args = 'system') ->
-    args = tm.asset.AssetManager.get(args).data if typeof args == 'string'
-    {
-      @title
-      @assets
-      @main
-      @canvasId
-      @loadingSceneDefault
-      @windowDefault
-      @textColor
-      @lineHeight
-      @screen
-      @se
-      @mapChipSize
-      @setting
-    } = {
-      setting: {
-        se: false
-      }
-    }.$extendAll(ASSETS.system.src).$extendAll(args)
+      se: SE_METHOD
+    }.$extendAll(args)
     @clearTemp()
     @player = rpg.GamePlayer()
     @db = rpg.DataBase()
@@ -80,7 +74,7 @@ tm.define 'rpg.System',
     # Audio 関連のメソッド作成
     # menu_decision -> rpg.system.se.menuDecision()
     # menu_cursor_move -> rpg.system.se.menuCursorMove()
-    for k, v of ASSETS.system.src.se
+    for k, v of SE_METHOD
       names = k.split '_'
       nm = names[0]
       nm += t.charAt(0).toUpperCase() + t.slice(1) for t in names[1..]

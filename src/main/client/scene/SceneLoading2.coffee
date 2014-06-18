@@ -13,8 +13,6 @@ tm.define 'SceneLoading',
   # 初期化
   init: (args={}) ->
     delete args[k] for k, v of args when not v?
-    # ローダーインスタンス化
-    @_loader = tm.asset.Loader()
     # 親の初期化
     @superInit(name:'SceneLoading')
     {
@@ -40,8 +38,14 @@ tm.define 'SceneLoading',
       bitmap: null
     }.$extend args
     @_count = 0
-    @_endCount = 1
+    @_endCount = 0
+    @_preload_callback = {}
     @updateOnce = @run.bind(@,key,src,type,assets)
+
+    # ローダーインスタンス化
+    @_loader = tm.asset.Loader()
+    @_loader.on 'progress', @progress.bind @
+    @_loader.on 'load', @loadend.bind @
 
     # ロードシーン
     @bg = tm.display.Shape(
@@ -72,7 +76,11 @@ tm.define 'SceneLoading',
     @gauge.x = gauge.x
     @gauge.y = gauge.y
     @gauge.setValue(0,false)
- 
+
+  progress: (e) ->
+    {key} = e
+    console.log "* progress * #{@_count} == #{@_endCount} #{key}"
+    @_preload_callback[key].call(e) if @_preload_callback[key]?
 
   update: (app) ->
     if @updateOnce?
@@ -81,10 +89,10 @@ tm.define 'SceneLoading',
 
   addEndCount: -> @_endCount++
   
-  loaded: ->
+  loadend: ->
+    console.log 'loadend'
     @_count += 1
     if @_count == @_endCount
-      console.log 'loadend'
       @replaceScene
         scene: @scene
         param: @param
@@ -97,36 +105,25 @@ tm.define 'SceneLoading',
       if typeof asset is 'string'
         @preload(asset, asset)
         continue
+      @preload(asset)
+      ###
       for k, v of asset
         if typeof v is 'string'
           @preload(k, v)
         else
           @preload(k, v['src'], v['type'])
-
+      ###
     if key?
-      scene = tm.global[@scene] if typeof @scene is 'string'
-      if scene? and scene.preload?
-        @preload(key, src, type, scene.preload)
-      else
-        @preload(key, src, type)
-      @param = tm.asset.AssetManager.get(key).data
-    else if typeof @scene is 'string'
-      scene = tm.global[@scene]
-      if scene? and scene.preload?
-        scene.preload(@, @param)
-    @loaded()
-  
+      @preload(key, src, type, (->
+        @param = tm.asset.AssetManager.get(key).data
+        console.log @param
+      ).bind @)
 
   preload: (key, src, type, callback) ->
     console.log "preload #{key}, #{src}, #{type}"
     @addEndCount()
-    @_loader.load(key, src, type)
-    obj = tm.asset.Manager.get(key)
-    if obj.loaded
-      callback(@, obj.data, obj) if callback?
-      @loaded()
+    if arguments.length == 1
+      @_loader.load(key)
     else
-      obj.addEventListener 'load', (->
-        callback(@, obj.data, obj) if callback?
-        @loaded()
-      ).bind(@)
+      @_preload_callback[key] = callback if callback?
+      @_loader.load(key, src, type)

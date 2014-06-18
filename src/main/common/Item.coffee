@@ -11,7 +11,7 @@ class rpg.Item
   # コンストラクタ
   constructor: (args={}) ->
     {
-      @item
+      @url
       @type
       @name
       @price
@@ -22,7 +22,7 @@ class rpg.Item
       container
       @_container
     } = {
-      item: ''      # ID(URL)
+      url: ''      # ID(URL)
       name: ''      # 名前
       price: 1      # 価格
       usable: false # 使えるかどうか

@@ -6932,13 +6932,13 @@ tm.dom = tm.dom || {};
                 this.dispatchEvent(e);
             }.bind(this));
             
-            var loadAsset = function(asset) {
-                flow.pass();
-                
+            var loadAsset = function(key,asset) {
                 var e = tm.event.Event("progress");
+                e.key = key;
                 e.asset = asset;
                 e.progress = flow.counter/flow.waits; // todo
                 this.dispatchEvent(e);
+                flow.pass();
             }.bind(this);
             
             Object.keys(hash).each(function(key) {
@@ -6953,11 +6953,11 @@ tm.dom = tm.dom || {};
                 }
                 
                 if (asset.loaded) {
-                    loadAsset(asset);
+                    loadAsset(key,asset);
                 }
                 else {
                     asset.on("load", function() {
-                        loadAsset(asset);
+                        loadAsset(key,asset);
                     });
                 }
             }.bind(this));

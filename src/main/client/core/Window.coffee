@@ -59,7 +59,7 @@ tm.define 'rpg.Window',
     @setupHandler()
 
   # ウィンドウスキンの作成
-  createWindowSkin: (skin = DEFAULT_WINDOWSKIN_ASSET) ->
+  createWindowSkin: (skin) ->
     rpg.WindowSkin(@width, @height, skin)
 
   # タイトル
