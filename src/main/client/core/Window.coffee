@@ -1,9 +1,20 @@
+###*
+* @file Window.coffee
+* ウィンドウ
+###
 
-# ウィンドウクラス
 tm.define 'rpg.Window',
   superClass: tm.display.CanvasElement
 
-  # 初期化
+  ###* コンストラクタ
+  * @classdesc ウィンドウクラス
+  * @constructor rpg.Window
+  * @param {number} x ウィンドウX座標
+  * @param {number} y ウィンドウY座標
+  * @param {number} width ウィンドウ幅
+  * @param {number} height ウィンドウ高さ
+  * @param {Object} args ウィンドウ設定
+  ###
   init: (x, y, width, height, args={}) ->
     delete args[k] for k, v of args when not v?
     @superInit()
@@ -11,6 +22,8 @@ tm.define 'rpg.Window',
       @active     # アクティブフラグ
       @visible    # 表示状態
       @textColor  # テキスト描画時のカラー
+      @fontFamily # フォントファミリー
+      @fontSize   # フォントサイズ
       title       # タイトル
       @alpha
       @windowskin
@@ -23,6 +36,8 @@ tm.define 'rpg.Window',
     }.$extend({
       windowskin: 'windowskin.config.default'
       textColor: 'rgb(255,255,255)'
+      fontFamily: 'sans-serif'
+      fontSize: '24px'
       alpha: 0.9
     }).$extend(rpg.system.windowDefault).$extend args
 
@@ -32,8 +47,8 @@ tm.define 'rpg.Window',
     @origin.set(0, 0)
     @x = x
     @y = y
-    @width = width
-    @height = height
+    @width = if width == 0 then 100 else width
+    @height = if height == 0 then 100 else height
 
     # ウィンドウスキン
     @_windowskin = @createWindowSkin(@windowskin)
@@ -72,7 +87,7 @@ tm.define 'rpg.Window',
       @height += @titleHeight
       @resizeWindow(@width,@height)
     @titleContent.context.save()
-    @titleContent.context.font = '24px sans-serif'
+    @titleContent.context.font = @font
     @titleContent.textBaseline = 'top'
     @titleContent.setFillStyle(@textColor)
     @titleContent.fillText(@titleText, 0, 3) # TODO: textBaseline ちょい下で良いかな？
@@ -101,20 +116,20 @@ tm.define 'rpg.Window',
   drawText: (text, x, y) ->
     # TODO: フォントとかカラーを変更できるようにする
     @content.context.save()
-    @content.context.font = '24px sans-serif'
+    @content.context.font = @font
     @content.textBaseline = 'top'
     @content.setFillStyle(@textColor)
     @content.fillText(text, x, y + 3) # TODO: textBaseline ちょい下で良いかな？
     @content.context.restore()
 
   # テキスト描画テスト
-  measureText: (text) ->
+  measureTextWidth: (text) ->
     @content.context.save()
-    @content.context.font = '24px sans-serif'
+    @content.context.font = @font
     @content.textBaseline = 'top'
-    rect = @content.context.measureText(text)
+    width = Math.ceil @content.context.measureText(text).width
     @content.context.restore()
-    rect
+    width
   
   # リサイズ
   resize: (width, height) ->
@@ -221,3 +236,4 @@ rpg.Window.prototype.getter 'innerRect', -> @content.innerRect
 rpg.Window.prototype.getter 'borderWidth', -> @_windowskin.borderWidth
 rpg.Window.prototype.getter 'borderHeight', -> @_windowskin.borderHeight
 rpg.Window.prototype.getter 'titleHeight', -> @_windowskin.titleHeight
+rpg.Window.prototype.getter 'font', -> "#{@fontSize} #{@fontFamily}"

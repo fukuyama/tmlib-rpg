@@ -1,3 +1,7 @@
+###*
+* @file WindowSkin.coffee
+* ウィンドウスキン
+###
 
 ASSETS =
   'windowskin.config.original':
@@ -7,6 +11,7 @@ ASSETS =
       image: 'windowskin.image'
       borderWidth: 16
       borderHeight: 16
+      titleBorderHeight: 32 - 5 # = 27
       backgroundPadding: 2
       backgroundColor: 'rgba(0,0,0,0)'
       spec:
@@ -21,6 +26,9 @@ ASSETS =
         borderBottom: [16,64-16,32,16]
         borderLeft: [0,16,16,32]
         borderRight: [64-16,16,16,32]
+        titleLeft: [0,64,16,27]
+        titleRight: [64-16,64,16,27]
+        titleBorder: [16,64,32,27]
   'windowskin.vxace': 'img/window.png'
   'windowskin.config.vxace':
     type: 'json'
@@ -65,11 +73,16 @@ ASSETS =
         borderLeft: [0, 32, 32, 32]
         borderRight: [320 - 32, 32, 32, 32]
 
-# ウィンドウスキンクラス
 tm.define 'rpg.WindowSkin',
   superClass: tm.display.CanvasElement
 
-  # 初期化
+  ###* コンストラクタ
+  * @classdesc ウィンドウスキンクラス
+  * @constructor rpg.WindowSkin
+  * @param {number} width ウィンドウ幅
+  * @param {number} height ウィンドウ高さ
+  * @param {String|Object} args スキンアセット名(String) | スキン設定(Object)
+  ###
   init: (width, height, args = 'windowskin.config.original') ->
     @superInit()
     @width = width
@@ -80,6 +93,7 @@ tm.define 'rpg.WindowSkin',
       @image
       @borderWidth
       @borderHeight
+      @titleBorderHeight
       @backgroundPadding
       @backgroundColor
       @spec
@@ -98,6 +112,9 @@ tm.define 'rpg.WindowSkin',
       borderBottom: tm.display.Shape().addChildTo(@)
       borderLeft: tm.display.Shape().addChildTo(@)
       borderRight: tm.display.Shape().addChildTo(@)
+      titleLeft: tm.display.Shape().addChildTo(@)
+      titleRight: tm.display.Shape().addChildTo(@)
+      titleBorder: tm.display.Shape().addChildTo(@)
     }
     v.origin.set(0,0) for k, v of @_border
 
@@ -109,6 +126,8 @@ tm.define 'rpg.WindowSkin',
     @refresh()
 
   refreshTexture: (o,s,r) ->
+    return unless o?
+    return unless s?
     o.x = r[0]
     o.y = r[1]
     o.width = r[2]
@@ -127,15 +146,25 @@ tm.define 'rpg.WindowSkin',
       @refreshTexture(@_background, s, skin.background)
     for k, d of skin.rects
       @refreshTexture(@_border[k], @spec[k], d)
+    if @title
+      for k, d of skin.titles
+        @refreshTexture(@_border[k], @spec[k], d)
 
-  # 描画処理
-  # 与えられたキャンバスにスキンを描画
+  ###* 描画処理。
+  * 与えられたキャンバスにスキンを描画
+  * @memberof rpg.WindowSkin#
+  ###
   drawTo: (canvas) -> #canvas.drawImage(@canvas, 0, 0)
 
-  # スキン設定
+  ###* スキン設定。転送先座標を現在のウィンドウサイズから計算する。
+  * @memberof rpg.WindowSkin#
+  * @return {Object} スキン転送先情報
+  ###
   createSkinConfig: () ->
+    l = @titleHeight
     w = @borderWidth
     h = @borderHeight
+    t = @titleBorderHeight
     p = @backgroundPadding
     {
       background: [p, p, @width - p * 2, @height - p * 2]
@@ -148,15 +177,26 @@ tm.define 'rpg.WindowSkin',
         borderBottom: [w, @height - h, @width - w * 2, h]
         borderLeft: [0, h, w, @height - h * 2]
         borderRight: [@width - w, h, w, @height - h * 2]
+      titles:
+        titleLeft: [0, l - t + h, w, t]
+        titleRight: [@width - w, l - t + h, w, t]
+        titleBorder: [w, l - t + h, @width - w * 2, t]
     }
 
+###* バックグラウンド透明度
+* @var {String} rpg.WindowSkin#backgroundAlpha
+###
 rpg.WindowSkin.prototype.accessor 'backgroundAlpha',
     get: -> @_background.alpha
     set: (v) -> @_background.alpha = v
 
+###* タイトル高さ。
+* タイトル（１行）の高さ＋タイトルボーダーの高さ
+* @var {String} rpg.WindowSkin#titleHeight
+###
 rpg.WindowSkin.prototype.accessor 'titleHeight',
     get: ->
       if @title
-        return rpg.system.lineHeight * 1.5
+        return rpg.system.lineHeight + @titleBorderHeight
       else
         return 0

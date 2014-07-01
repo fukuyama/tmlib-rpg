@@ -6932,12 +6932,13 @@ tm.dom = tm.dom || {};
                 this.dispatchEvent(e);
             }.bind(this));
             
-            var loadAsset = function(key,asset) {
+            var loadAsset = function(key, asset) {
                 var e = tm.event.Event("progress");
                 e.key = key;
                 e.asset = asset;
                 e.progress = flow.counter/flow.waits; // todo
                 this.dispatchEvent(e);
+
                 flow.pass();
             }.bind(this);
             
@@ -17702,7 +17703,10 @@ tm.sound = tm.sound || {};
          * @private
          */
         _load: function(src) {
-            if (!this.context) return ;
+            if (!this.context) {
+                this.loaded = true;
+                return ;
+            }
 
             var xhr = new XMLHttpRequest();
             var self = this;

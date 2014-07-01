@@ -33,4 +33,6 @@ tm.define "SceneMy",
         {name:'TEST2',fn: -> console.log 'test2'}
       ]
     )
+    console.log w.width
+    console.log w.height
     @addChild(w)

@@ -2,18 +2,19 @@
   "name": "tmlib-rpg",
   "version": "0.0.1",
   "description": "RPG framework based on tmlib.js",
-  "scripts": {
-    "preinstall": "npm install -g grunt-cli",
-    "test": "grunt test",
-    "start": "node app.js"
-  },
+  "homepage": "https://github.com/fukuyama/tmlib-rpg",
+  "author": "Yoshihito Fukuyama (https://ja.gravatar.com/yf37)",
+  "license": "MIT",
   "keywords": [
     "JavaScript",
     "tmlib.js",
     "RPG"
   ],
-  "author": "Yoshihito Fukuyama",
-  "license": "MIT",
+  "scripts": {
+    "preinstall": "npm install -g grunt-cli",
+    "test": "grunt test",
+    "start": "node app.js"
+  },
   "dependencies": {
     "express": "3.x",
     "jade": "*"
@@ -30,7 +31,7 @@
     "grunt-express-server": "~0.4.17",
     "grunt-simple-mocha": "~0.4.0",
     "grunt-coffeelint": "~0.0.10",
-	"grunt-jsdoc": "~0.5.4",
+  	"grunt-jsdoc": "~0.5.4",
     "chai": "~1.9.1",
     "grunt-execute": "~0.2.1",
     "grunt-exec": "~0.4.5"

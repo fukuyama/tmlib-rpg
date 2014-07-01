@@ -1,11 +1,18 @@
+###*
+* @file WindowMenu.coffee
+* ウィンドウメニュー
+###
 
 DEFAULT_CURSOR_ASSET = 'sample.cursor'
 
-# ウィンドウメニュークラス
 tm.define 'rpg.WindowMenu',
   superClass: rpg.Window
 
-  # 初期化
+  ###* コンストラクタ
+  * @classdesc ウィンドウメニュークラス
+  * @constructor rpg.WindowMenu
+  * @param {Object} args 初期化パラメータ
+  ###
   init: (args={}) ->
     delete args[k] for k, v of args when not v?
     @menus = []
@@ -111,9 +118,9 @@ tm.define 'rpg.WindowMenu',
     else
       width = 0
       if @titleText
-        width = @measureText(@titleText).width
+        width = @measureTextWidth(@titleText)
       for m in @menus
-        w = @measureText(m.name).width
+        w = @measureTextWidth(m.name)
         width = w if width < w
       @menuWidth = width
     if @menuHeightFix?

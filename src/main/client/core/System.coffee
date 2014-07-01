@@ -54,6 +54,8 @@ tm.define 'rpg.System',
       windowDefault:
         windowskin: {} # WindowSkin クラスのデフォルトを使う
         textColor: 'rgb(255,255,255)'
+        fontFamily: 'sans-serif'
+        fontSize: '24px'
         alpha: 0.9
         cursor:
           color: 'rgba(255,255,255,0.2)'

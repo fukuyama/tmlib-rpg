@@ -1,3 +1,7 @@
+###*
+* @file SceneTitle.coffee
+* タイトルシーン
+###
 
 ASSETS =
   'sample.scene.title':
@@ -25,7 +29,11 @@ ASSETS =
 tm.define 'SceneTitle',
   superClass: rpg.SceneBase
 
-  # 初期化
+  ###* コンストラクタ
+  * @classdesc タイトルシーンクラス
+  * @constructor SceneTitle
+  * @param {Object|String} args 初期化情報
+  ###
   init: (args='sample.scene.title') ->
     # 親の初期化
     @superInit(name:'SceneTitle')
@@ -43,11 +51,15 @@ tm.define 'SceneTitle',
     # タイトルメニューの作成
     @addTitleMenu()
 
-  # ニューゲームアクション
+  ###* ニューゲームアクション
+  * @memberof SceneTitle#
+  ###
   actionNewGame: ->
     rpg.system.newGame()
 
-  # メニュー選択時の処理
+  ###* メニュー選択時の処理
+  * @memberof SceneTitle#
+  ###
   selectMenu: ->
     menu = @menus[@menu_title.index]
     if menu.action
@@ -58,7 +70,9 @@ tm.define 'SceneTitle',
       # シーンを切り替える
       @loadScene menu.next
 
-  # タイトルメニューの作成
+  ###* タイトルメニューの作成
+  * @memberof SceneTitle#
+  ###
   addTitleMenu: ->
     menu.fn = @selectMenu.bind(@) for menu in @menus
     @menu_title = rpg.WindowMenu
@@ -71,7 +85,11 @@ tm.define 'SceneTitle',
     @menu_title.y = rpg.system.screen.height / 2
     @addChild(@menu_title)
 
-  # タイトルバックグラウンドイメージ
+  ###* タイトルバックグラウンドイメージ
+  * @memberof SceneTitle#
+  * @param {Object} background バックグラウンドイメージデータ
+  * @param {String} background.image イメージのアセット名
+  ###
   addBackgroundImage: (background) ->
     if background.image?
       x = 0
@@ -81,7 +99,7 @@ tm.define 'SceneTitle',
       image = background.image
       if typeof image is 'string'
         image = tm.asset.AssetManager.get(image)
-      bg = tm.app.Shape(width,height)
+      bg = tm.display.Shape(width,height)
       bg.origin.set(0,0)
       bg.canvas.drawTexture(
         image

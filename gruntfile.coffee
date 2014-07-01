@@ -3,6 +3,17 @@
 module.exports = (grunt) ->
   pkg = grunt.file.readJSON 'package.json'
 
+  banner = """
+  /*
+   * #{pkg.name} #{pkg.version}
+   * #{pkg.homepage}
+   * #{pkg.license} Licensed
+   *
+   * Copyright (C) 2014 #{pkg.author}
+   */
+
+  """
+
   # 共通系のスクリプト(tmlib.js 非依存のつもり)
   common_sections = [
       'common/utils'
@@ -122,7 +133,7 @@ module.exports = (grunt) ->
     watchConfig[f] = {
       files: [coffee,testcase]
       tasks: ['coffeelint',"coffee:#{f}","simplemocha:#{f}",
-        'concat','uglify','jsdoc']
+        'concat','uglify']
     }
     simplemochaConfig[f] = {
       src: [testcase]
@@ -137,7 +148,7 @@ module.exports = (grunt) ->
     watchConfig[f] = {
       files: [coffee]
       tasks: ['coffeelint',"coffee:#{f}",
-        'concat','uglify','jsdoc']
+        'concat','uglify']
     }
 
   grunt.initConfig
@@ -147,7 +158,7 @@ module.exports = (grunt) ->
     watch: watchConfig
     concat:
       options:
-        separator: ';'
+        banner: banner
       client_scripts:
         src: [
           (genPath + sec + '.js' for sec in common_sections)

@@ -30,7 +30,7 @@ tm.define 'rpg.WindowInputNum',
     @rows = 1
     @cols = (@max+'').length
     @menuHeight = rpg.system.lineHeight
-    @menuWidth = @measureText('9').width
+    @menuWidth = @measureTextWidth('9')
     @colPadding = 0
     # ステップ
     @steps = (parseInt(i) for i in (step + '').split(''))

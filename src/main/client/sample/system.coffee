@@ -28,7 +28,7 @@ module.exports = {
       'scene.title.background.image': 'img/test_001.png'
       'system.se.menu_decision': 'audio/se/fin.mp3'
       'system.se.menu_cursor_move': 'audio/se/fon.mp3'
-      'windowskin.image': 'img/test_windowskin.png'
+      'windowskin.image': 'img/test_windowskin2.png'
       'sample.spritesheet': {src: 'data/spritesheet/hiyoko.json',type:'tmss'}
     ]
   assets: {

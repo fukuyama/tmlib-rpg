@@ -147,7 +147,7 @@ tm.define 'rpg.WindowMessage',
   # メッセージを描画する
   drawMessage: (msg) ->
     @drawText(msg, @_dx, @_dy)
-    @_dx += @measureText(msg).width
+    @_dx += @measureTextWidth(msg)
     @refresh()
 
   # 選択肢ウィンドウの作成
