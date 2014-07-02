@@ -11,7 +11,8 @@ ASSETS =
       image: 'windowskin.image'
       borderWidth: 16
       borderHeight: 16
-      titleBorderHeight: 32 - 5 # = 27
+      titleBorderHeight: 5
+      titlePadding: -10
       backgroundPadding: 2
       backgroundColor: 'rgba(0,0,0,0)'
       spec:
@@ -94,6 +95,7 @@ tm.define 'rpg.WindowSkin',
       @borderWidth
       @borderHeight
       @titleBorderHeight
+      @titlePadding
       @backgroundPadding
       @backgroundColor
       @spec
@@ -161,11 +163,11 @@ tm.define 'rpg.WindowSkin',
   * @return {Object} スキン転送先情報
   ###
   createSkinConfig: () ->
-    l = @titleHeight
     w = @borderWidth
     h = @borderHeight
-    t = @titleBorderHeight
+    t = @borderHeight * 2 - @titleBorderHeight
     p = @backgroundPadding
+    l = @borderHeight + @titleHeight - t
     {
       background: [p, p, @width - p * 2, @height - p * 2]
       rects:
@@ -178,9 +180,9 @@ tm.define 'rpg.WindowSkin',
         borderLeft: [0, h, w, @height - h * 2]
         borderRight: [@width - w, h, w, @height - h * 2]
       titles:
-        titleLeft: [0, l - t + h, w, t]
-        titleRight: [@width - w, l - t + h, w, t]
-        titleBorder: [w, l - t + h, @width - w * 2, t]
+        titleLeft: [0, l, w, t]
+        titleRight: [@width - w, l, w, t]
+        titleBorder: [w, l, @width - w * 2, t]
     }
 
 ###* バックグラウンド透明度
@@ -197,6 +199,9 @@ rpg.WindowSkin.prototype.accessor 'backgroundAlpha',
 rpg.WindowSkin.prototype.accessor 'titleHeight',
     get: ->
       if @title
-        return rpg.system.lineHeight + @titleBorderHeight
+        return rpg.system.lineHeight +
+          @borderHeight * 2 -
+          @titleBorderHeight +
+          @titlePadding * 2
       else
         return 0

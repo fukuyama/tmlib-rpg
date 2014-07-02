@@ -96,7 +96,7 @@ tm.define 'rpg.Window',
   # タイトル描画範囲（ウィンドウの内側の領域サイズ）計算
   _calcInnerTitleRect: (width = @width, height = @height)->
     bw = @borderWidth
-    bh = @borderHeight
+    bh = @borderHeight + @titlePadding
     tm.geom.Rect(bw, bh, width - bw * 2, rpg.system.lineHeight)
 
   # コンテンツ描画範囲（ウィンドウの内側の領域サイズ）計算 コンテンツサイズとは別
@@ -236,4 +236,5 @@ rpg.Window.prototype.getter 'innerRect', -> @content.innerRect
 rpg.Window.prototype.getter 'borderWidth', -> @_windowskin.borderWidth
 rpg.Window.prototype.getter 'borderHeight', -> @_windowskin.borderHeight
 rpg.Window.prototype.getter 'titleHeight', -> @_windowskin.titleHeight
+rpg.Window.prototype.getter 'titlePadding', -> @_windowskin.titlePadding
 rpg.Window.prototype.getter 'font', -> "#{@fontSize} #{@fontFamily}"
