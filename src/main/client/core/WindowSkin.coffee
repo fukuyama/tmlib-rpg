@@ -12,7 +12,7 @@ ASSETS =
       borderWidth: 16
       borderHeight: 16
       titleBorderHeight: 5
-      titlePadding: -10
+      titlePadding: -8
       backgroundPadding: 2
       backgroundColor: 'rgba(0,0,0,0)'
       spec:
@@ -122,12 +122,23 @@ tm.define 'rpg.WindowSkin',
 
     @refresh()
 
+  ###* 各テクスチャの更新
+  * @memberof rpg.WindowSkin#
+  * @private
+  ###
   resize: (width, height) ->
     @width = width
     @height = height
     @refresh()
 
-  refreshTexture: (o,s,r) ->
+  ###* 各テクスチャの更新
+  * @memberof rpg.WindowSkin#
+  * @param {tm.display.Shape} o 書き込み先のシェイプ
+  * @param {Array} s 転送元座標配列 [x,y,width,height]
+  * @param {Array} r 転送先座標配列 [x,y,width,height]
+  * @private
+  ###
+  _refreshTexture: (o,s,r) ->
     return unless o?
     return unless s?
     o.x = r[0]
@@ -137,26 +148,22 @@ tm.define 'rpg.WindowSkin',
     o.canvas.resize(r[2], r[3])
     o.canvas.drawTexture(@texture, s[0], s[1], s[2], s[3], 0, 0, r[2], r[3])
 
-  # 再更新
-  # ウィンドウスキン自体を設定に従って再作成する
-  refresh: ->
-    skin = @createSkinConfig()
-    #if not @backgroundColor?
-    #  @fillStyle = @backgroundColor
-    #  @fillRect.apply(@, skin.background)
-    for s in @spec.backgrounds
-      @refreshTexture(@_background, s, skin.background)
-    for k, d of skin.rects
-      @refreshTexture(@_border[k], @spec[k], d)
-    if @title
-      for k, d of skin.titles
-        @refreshTexture(@_border[k], @spec[k], d)
-
-  ###* 描画処理。
-  * 与えられたキャンバスにスキンを描画
+  ###* 再更新
+  * ウィンドウスキン自体を設定に従って再作成する
   * @memberof rpg.WindowSkin#
   ###
-  drawTo: (canvas) -> #canvas.drawImage(@canvas, 0, 0)
+  refresh: ->
+    skin = @createSkinConfig()
+    for s in @spec.backgrounds
+      @_refreshTexture(@_background, s, skin.background)
+    for k, d of skin.rects
+      @_refreshTexture(@_border[k], @spec[k], d)
+    for k, d of skin.titles
+      if @title
+        @_border[k].show()
+        @_refreshTexture(@_border[k], @spec[k], d)
+      else
+        @_border[k].hide()
 
   ###* スキン設定。転送先座標を現在のウィンドウサイズから計算する。
   * @memberof rpg.WindowSkin#

@@ -40,3 +40,9 @@ tm.define 'rpg.WindowContent',
       @drawTo()
       @_px = @ox
       @_py = @oy
+
+  resize: (w,h)->
+    tm.graphics.Canvas.prototype.resize.call(@,w,h)
+    @shape.width = w
+    @shape.height = h
+    @shape.canvas.resize(w,h)

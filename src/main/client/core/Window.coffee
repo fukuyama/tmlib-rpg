@@ -61,10 +61,16 @@ tm.define 'rpg.Window',
 
     # タイトル
     if title?
-      @setTitle(title)
+      # タイトルコンテンツ
+      @titleContent = rpg.WindowContent(@_calcInnerTitleRect())
+      @addChild @titleContent.shape
+      @_windowskin.title = true
+      @height += @titleHeight
+      @resizeWindow(@width,@height)
+      @drawTitle(title)
 
     # 最初の更新（自分のだけ呼ぶ…OOP的にどなんだろ）
-    rpg.Window.prototype.refresh.apply(@, [])
+    @refreshWindow()
 
     # イベントハンドラ用メソッド
     @eventHandler = rpg.EventHandler({active:true})
@@ -73,46 +79,46 @@ tm.define 'rpg.Window',
     @addRepeatHandler = @eventHandler.addRepeatHandler
     @setupHandler()
 
-  # ウィンドウスキンの作成
+  ###* ウィンドウスキンの作成
+  * @memberof rpg.Window#
+  * @param {Object} skin ウィンドウスキン情報
+  ###
   createWindowSkin: (skin) ->
     rpg.WindowSkin(@width, @height, skin)
 
-  # タイトル
-  setTitle: (title) ->
-    @titleText = title
-    unless @titleContent?
-      @titleContent = rpg.WindowContent(@_calcInnerTitleRect())
-      @addChild @titleContent.shape
-      @_windowskin.title = true
-      @height += @titleHeight
-      @resizeWindow(@width,@height)
-    @titleContent.context.save()
-    @titleContent.context.font = @font
-    @titleContent.textBaseline = 'top'
-    @titleContent.setFillStyle(@textColor)
-    @titleContent.fillText(@titleText, 0, 3) # TODO: textBaseline ちょい下で良いかな？
-    @titleContent.context.restore()
-
   # タイトル描画範囲（ウィンドウの内側の領域サイズ）計算
   _calcInnerTitleRect: (width = @width, height = @height)->
-    bw = @borderWidth
-    bh = @borderHeight + @titlePadding
-    tm.geom.Rect(bw, bh, width - bw * 2, rpg.system.lineHeight)
+    tm.geom.Rect(
+      @borderWidth
+      @borderHeight + @titlePadding
+      width - @borderWidth * 2
+      rpg.system.lineHeight
+    )
 
   # コンテンツ描画範囲（ウィンドウの内側の領域サイズ）計算 コンテンツサイズとは別
   _calcInnerRect: (width = @width, height = @height)->
-    bw = @borderWidth
-    bh = @borderHeight
-    w = width - bw * 2
-    h = height - bh * 2
-    tm.geom.Rect(bw, bh + @titleHeight, w, h - @titleHeight)
+    tm.geom.Rect(
+      @borderWidth
+      @borderHeight + @titleHeight
+      width - @borderWidth * 2
+      height - @borderHeight * 2 - @titleHeight
+    )
 
   # 再更新
   refresh: ->
-    @titleContent.drawTo() if @titleContent
-    @content.drawTo() if @content
+    @refreshWindow()
 
-  # テキスト描画
+  # 再更新(派生用)
+  refreshWindow: ->
+    @titleContent?.drawTo()
+    @content?.drawTo()
+
+  ###* テキスト描画
+  * @memberof rpg.Window#
+  * @param {String} text 描画文字列
+  * @param {number} x 描画X座標
+  * @param {number} y 描画Y座標
+  ###
   drawText: (text, x, y) ->
     # TODO: フォントとかカラーを変更できるようにする
     @content.context.save()
@@ -122,7 +128,24 @@ tm.define 'rpg.Window',
     @content.fillText(text, x, y + 3) # TODO: textBaseline ちょい下で良いかな？
     @content.context.restore()
 
-  # テキスト描画テスト
+  ###* タイトル描画処理
+  * @memberof rpg.Window#
+  * @param {String} title タイトル文字列
+  ###
+  drawTitle: (title = @titleText) ->
+    return unless title?
+    @titleText = title
+    @titleContent.context.save()
+    @titleContent.context.font = @font
+    @titleContent.textBaseline = 'top'
+    @titleContent.setFillStyle(@textColor)
+    @titleContent.fillText(title, 0, 3) # TODO: textBaseline ちょい下で良いかな？
+    @titleContent.context.restore()
+
+  ###* テキスト描画テスト
+  * @memberof rpg.Window#
+  * @param {String} text テスト文字列
+  ###
   measureTextWidth: (text) ->
     @content.context.save()
     @content.context.font = @font
@@ -131,29 +154,56 @@ tm.define 'rpg.Window',
     @content.context.restore()
     width
   
-  # リサイズ
+  ###* リサイズ
+  * @memberof rpg.Window#
+  * @param {number} width 幅
+  * @param {number} height 高さ
+  ###
   resize: (width, height) ->
     @resizeWindow(width, height)
 
-  # リサイズ
+  ###* リサイズ
+  * @memberof rpg.Window#
+  * @param {number} width 幅
+  * @param {number} height 高さ
+  ###
   resizeWindow: (width, height) ->
     @width = width
     @height = height
     @_windowskin.resize(width, height)
     @resizeInnerRect()
     @resizeContent()
+    if @titleText?
+      @resizeTitleContent()
 
+  ###* 内側のリサイズ
+  * @memberof rpg.Window#
+  * @param {number} width 幅
+  * @param {number} height 高さ
+  ###
   resizeInnerRect: (width = @width, height = @height) ->
     ir = @_calcInnerRect(width, height)
     @innerRect.set.apply(@innerRect, ir.toArray())
 
+  ###* コンテンツリサイズ
+  * @memberof rpg.Window#
+  * @param {number} width 幅
+  * @param {number} height 高さ
+  ###
   resizeContent: (w = @innerRect.width,h = @innerRect.height)->
     @content.resize(w,h)
-    @content.shape.width = w
-    @content.shape.height = h
-    @content.shape.canvas.resize(w,h)
 
-  # 更新処理
+  resizeTitleContent: (width = @width, height = @height) ->
+    ir = @_calcInnerTitleRect(width,height)
+    w = ir.width
+    h = ir.height
+    @titleContent.innerRect.width = w
+    @titleContent.innerRect.height = h
+    @titleContent.resize(w,h)
+
+  ###* 更新処理
+  * @memberof rpg.Window#
+  ###
   update: ->
     @eventHandler.updateInput() if @active
     if @_openDuring
@@ -168,7 +218,11 @@ tm.define 'rpg.Window',
       @dispatchEvent rpg.Window.EVENT_CLOSE
     @content.update()
 
-  # 表示位置調整
+  ###* 表示位置調整（中央に配置する）
+  * @memberof rpg.Window#
+  * @param {String} param 'horizon' or 'vertical'
+  * 水平、垂直、どちらかのみ中央にする場合に指定する。
+  ###
   centering: (param) ->
     w = rpg.system.screen.width
     h = rpg.system.screen.height
@@ -176,19 +230,30 @@ tm.define 'rpg.Window',
     @y = (h - @height) / 2 if param is 'vertical' or not param?
     @
 
-  # 開く
+  ###* 開く
+  * @memberof rpg.Window#
+  ###
   open: ->
     @_openDuring = true
     @
-  # 閉じる（treeにあるのは全部閉じる）
+
+  ###* 閉じる（treeにあるのは全部閉じる）
+  * @memberof rpg.Window#
+  ###
   close: ->
     win.close() for win in @windows
     @_closeDuring = true
     @
-  # open 確認
+
+  ###* open 確認
+  * @memberof rpg.Window#
+  ###
   isOpen: ->
     @visible
-  # close 確認
+
+  ###* close 確認
+  * @memberof rpg.Window#
+  ###
   isClose: ->
     not @visible
 

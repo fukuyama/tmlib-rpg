@@ -73,6 +73,8 @@ tm.define 'rpg.WindowMenu',
     if @change_index?
       @addChangeHandler('index',@change_index.bind(@))
 
+    @addChangeHandler('index',@change_page.bind(@))
+
     # イベントリスナー
     @addOpenListener ->
       # カーソル位置を保存しない場合は、開くときに index を初期化
@@ -86,6 +88,13 @@ tm.define 'rpg.WindowMenu',
     # リサイズ、初期更新
     @resizeAuto()
     @refresh()
+
+  # ページ変更
+  change_page: ->
+    if @titleText? and @_page != @currentPageNum
+      @_page = @currentPageNum
+      @refreshTitle()
+      @refreshWindow()
 
   # カーソルの作成
   createCursor: (param = DEFAULT_CURSOR_ASSET) ->
@@ -117,7 +126,7 @@ tm.define 'rpg.WindowMenu',
       @menuWidth = @menuWidthFix
     else
       width = 0
-      if @titleText
+      if @titleText?
         width = @measureTextWidth(@titleText)
       for m in @menus
         w = @measureTextWidth(m.name)
@@ -160,7 +169,28 @@ tm.define 'rpg.WindowMenu',
   # Window再更新
   refresh: ->
     @refreshMenu()
-    rpg.Window.prototype.refresh.call(@)
+    @refreshTitle()
+    @refreshWindow()
+
+  refreshTitle: () ->
+    @titleContent?.clear()
+    @drawTitle()
+    @drawPageNum()
+
+  ###* ページ数描画処理
+  * @memberof rpg.WindowMenu#
+  ###
+  drawPageNum: ->
+    # ページ処理
+    return if @maxPageNum <= 1
+    pageText = "#{@currentPageNum} / #{@maxPageNum}"
+    @titleContent.context.save()
+    @titleContent.context.font = @font
+    @titleContent.textBaseline = 'top'
+    @titleContent.setFillStyle(@textColor)
+    x = @titleContent.width - @measureTextWidth(pageText)
+    @titleContent.fillText(pageText, x, 3)
+    @titleContent.context.restore()
 
   # ----------------------------------------------------
   # 入力処理
@@ -275,7 +305,7 @@ rpg.WindowMenu.prototype.getter 'maxPageNum', ->
   return 1 if @menus.length == 0
   Math.ceil(@menus.length / @maxPageItems)
 
-# 現在のページ数
+# 現在のページ
 rpg.WindowMenu.prototype.getter 'currentPageNum', ->
   Math.floor(@index / @maxPageItems) + 1
 
