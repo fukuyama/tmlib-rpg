@@ -32,6 +32,8 @@ for x in [0..29] when x % 2 == 1 and t <= 15
   for y in [1]
     data[x+y*30] = t++
 
+data[1+5*30]=18
+
 module.exports = {
   name: '001'
   width: 30
@@ -66,6 +68,9 @@ module.exports = {
         MOVE_RESTRICTION.LEFTNG
         MOVE_RESTRICTION.RIGHTNG
       ]
+    }
+    {
+      image: 'img/test_tileset.png'
     }
   ]
   layers: [

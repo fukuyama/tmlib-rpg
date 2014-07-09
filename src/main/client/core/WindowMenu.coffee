@@ -294,8 +294,15 @@ tm.define 'rpg.WindowMenu',
 
   # メニュー選択
   pointing_menu: (e) ->
-    @cursorInstance.setPointing(e)
-    @setIndex @cursorInstance.index
+    base = (@currentPageNum - 1) * @maxPageItems
+    @cursorInstance.setPointing(e,base)
+    if @cursorInstance.index < @menus.length
+      if @index == @cursorInstance.index
+        @input_ok_up()
+      else
+        @setIndex @cursorInstance.index
+    else
+      @setIndex @index
 
 # １ページに表示可能な最大数
 rpg.WindowMenu.prototype.getter 'maxPageItems', -> @cols * @rows

@@ -24,13 +24,13 @@ tm.define "SceneMy",
         {name:'OK',fn: -> console.log 'ok'}
         {name:'NG',fn: -> console.log 'ng'}
         {name:'TEST1',fn: -> console.log 'test1'}
-        {name:'TEST1',fn: -> console.log 'test1'}
         {name:'TEST2',fn: -> console.log 'test2'}
-        {name:'TEST1',fn: -> console.log 'test1'}
-        {name:'TEST1',fn: -> console.log 'test1'}
-        {name:'TEST2',fn: -> console.log 'test2'}
-        {name:'TEST2',fn: -> console.log 'test2'}
-        {name:'TEST2',fn: -> console.log 'test2'}
+        {name:'TEST3',fn: -> console.log 'test3'}
+        {name:'TEST4',fn: -> console.log 'test4'}
+        {name:'TEST5',fn: -> console.log 'test5'}
+        {name:'TEST6',fn: -> console.log 'test6'}
+        {name:'TEST7',fn: -> console.log 'test7'}
+        {name:'TEST8',fn: -> console.log 'test8'}
       ]
     )
     @addChild(w)

@@ -69,14 +69,14 @@ tm.define 'rpg.SpriteCursor',
     @
 
   # カーソル位置設定（ポインティング時）
-  setPointing: (e) ->
+  setPointing: (e,base=0) ->
     pt = @parent.globalToLocal(e.pointing)
     w = @parent.menuWidth
     h = @parent.menuHeight
     rect = tm.geom.Rect(0,0,w,h)
-    for ip, i in @_indexPositions
+    for ip, i in @_indexPositions[base ..]
       rect.move ip.x, ip.y
       if rect.left < pt.x and pt.x < rect.right and
       rect.top < pt.y and pt.y < rect.bottom
-        @setIndex(i)
+        @setIndex(i + base)
         break

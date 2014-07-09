@@ -189,6 +189,11 @@ module.exports = (grunt) ->
         cwd: 'src/test/public/'
         src: ['**']
         dest: 'target/public/'
+      tmlib_build:
+        expand: true
+        cwd: '../tmlib.js/build'
+        src: ['**']
+        dest: 'target/public/ client/lib/build'
 
     express:
       options:
@@ -220,4 +225,7 @@ module.exports = (grunt) ->
   grunt.registerTask 'default', [
     'coffeelint','coffee', 'simplemocha:all'
     'concat', 'uglify', 'copy', 'exec:create_sample'
+  ]
+  grunt.registerTask 'skiptest', [
+    'coffeelint','coffee', 'concat', 'uglify', 'copy', 'exec:create_sample'
   ]
