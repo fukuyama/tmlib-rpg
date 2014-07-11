@@ -24,6 +24,9 @@ for x in [4..6]
 for x in [9..11]
   for y in [9..11]
     data[x+y*30] = 1
+for x in [9..11]
+  for y in [5..6]
+    data[x+y*30] = 0
 for x in [0..29]
   for y in [0,1,2]
     data[x+y*30] = 0
@@ -32,7 +35,7 @@ for x in [0..29] when x % 2 == 1 and t <= 15
   for y in [1]
     data[x+y*30] = t++
 
-data[1+5*30]=18
+data[1+5*30]=17
 
 module.exports = {
   name: '001'
@@ -84,6 +87,7 @@ module.exports = {
       objects: [
         {
           type: 'rpg.SpriteCharacter'
+          name: 'Event001'
           properties:
             init: JSON.stringify([
               {
@@ -100,7 +104,7 @@ module.exports = {
         }
         {
           type: 'rpg.SpriteCharacter'
-          name: 'Event001'
+          name: 'Event002'
           properties:
             init: JSON.stringify([
               {
@@ -141,14 +145,14 @@ module.exports = {
         }
         {
           type: 'rpg.SpriteCharacter'
-          name: 'Event002'
+          name: 'Event003'
           width: 32
           height: 32
           properties:
             init: JSON.stringify([
               {
-                mapX: 4
-                mapY: 4
+                mapX: 10
+                mapY: 5
                 pages: [
                   {
                     name: 'page1'
@@ -168,14 +172,14 @@ module.exports = {
         }
         {
           type: 'rpg.SpriteCharacter'
-          name: 'Event003'
+          name: 'Event004'
           width: 32
           height: 32
           properties:
             init: JSON.stringify([
               {
-                mapX: 5
-                mapY: 4
+                mapX: 11
+                mapY: 5
                 pages: [
                   {
                     name: 'page1'

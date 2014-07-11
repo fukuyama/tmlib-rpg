@@ -11,10 +11,11 @@ mapSheet = require('./MapTestData.coffee')
 describe 'rpg.Mapの仕様', () ->
   debug = (m) ->
     m.mapSheet = mapSheet
-    m.events = []
+    m.events = {}
     for l in m.mapSheet.layers when l.type is 'objectgroup'
       for obj in l.objects
-        m.events.push JSON.parse(obj.properties.init)[0]
+        m.events[obj.name] = JSON.parse(obj.properties.init)[0]
+        m.events[obj.name].name = m.events[obj.name].name ? obj.name
     m
   rpg.system = rpg.system ? {}
   rpg.system.player = {}

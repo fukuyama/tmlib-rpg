@@ -7,7 +7,7 @@ tm.define 'rpg.SpriteCharacter',
   # 初期化
   init: (@character) ->
     if typeof @character is 'string'
-      data = tm.asset.AssetManager.get(@character).data
+      data = tm.asset.Manager.get(@character).data
       @character = new rpg.Character data
     if (not (@character instanceof rpg.Character)) and
     typeof @character is 'object'

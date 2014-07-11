@@ -4,7 +4,12 @@ tm.define 'SceneMap',
 
   superClass: rpg.SceneBase
 
-  # 初期化
+  ###* 初期化
+  * @classdesc マップシーンクラス
+  * @constructor rpg.SceneMap
+  * @param {Object} args
+  * @param {rpg.Map} args.map マップオブジェクト
+  ###
   init: (args={}) ->
     # 親の初期化
     @superInit(name:'SceneMap')
@@ -26,35 +31,35 @@ tm.define 'SceneMap',
     # プレイヤー
     @player = rpg.system.player
 
-    playerActive = (->
-      @player.active = true
-      rpg.system.app.keyboard.clear()
-    ).bind(@)
-    @windowMapMenu.addCloseListener(playerActive)
-    @windowMessage.addCloseListener(playerActive)
+    f = @playerActive.bind @
+    @windowMapMenu.addCloseListener f
+    @windowMessage.addCloseListener f
 
-    openMapMenu = (->
-      @player.active = false
-      rpg.system.app.keyboard.clear()
-      @windowMapMenu.open()
-    ).bind(@)
-    @player.addEventListener('input_ok',openMapMenu)
-    @player.addEventListener('input_cancel',openMapMenu)
+    f = @openMapMenu.bind @
+    @player.setupEventListener input_ok: f, input_cancel: f
 
-    @spriteMap = rpg.SpriteMap(@player.character, @map)
-    @spriteMap.addChild(rpg.SpriteCharacter(@player.character))
+    @spriteMap = rpg.SpriteMap(@map)
 
+    plsc = rpg.SpriteCharacter(@player.character).addChildTo(@spriteMap)
+    plsc.addEventListener('enterframe', @playerEnterframe.bind @)
+
+    @addChild(@player)
     @addChild(@spriteMap)
-    
-    dummy = tm.app.CanvasElement()
-    dummy.update = (->
-      if @interpreter.isRunning()
-        @interpreter.update() if @interpreterUpdate
-      else
-        @player.update()
-        @spriteMap.updatePosition()
-    ).bind(@)
-    @addChild(dummy)
-
     @addChild(@windowMapMenu)
     @addChild(@windowMessage)
+
+  update: ->
+    @interpreter.update() if @interpreter.isRunning() and @interpreterUpdate
+    @player.awake = not @interpreter.isRunning()
+
+  openMapMenu: ->
+    @player.active = false
+    rpg.system.app.keyboard.clear()
+    @windowMapMenu.open()
+
+  playerActive: ->
+    @player.active = true
+    rpg.system.app.keyboard.clear()
+
+  playerEnterframe: ->
+    @spriteMap.updatePosition()

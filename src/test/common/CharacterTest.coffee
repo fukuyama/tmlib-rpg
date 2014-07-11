@@ -609,3 +609,40 @@ describe 'rpg.Character', () ->
     it '1,1 から左に移動不可能(false)', ->
       pc = rpg.system.player.character
       pc.isPassable(1,1,'left').should.equal false
+
+  describe '移動ルート設定', ->
+    c = new rpg.Character()
+    it '移動ルートを設定', ->
+      c.moveTo(5,5)
+      c.forceMoveRoute [
+        {name: 'moveUp'}
+        {name: 'moveLeft'}
+        {name: 'moveRight'}
+        {name: 'moveDown'}
+      ]
+      c.moveRouteForce.should.equal true
+    it '更新1回目、上に移動', ->
+      c.update() for n in [1 .. 16]
+      c.isMove().should.equal true
+      c.mapX.should.equal 5
+      c.mapY.should.equal 4
+    it '更新2回目、左に移動', ->
+      c.update() for n in [1 .. 16]
+      c.isMove().should.equal true
+      c.mapX.should.equal 4
+      c.mapY.should.equal 4
+    it '更新3回目、右に移動', ->
+      c.update() for n in [1 .. 16]
+      c.isMove().should.equal true
+      c.mapX.should.equal 5
+      c.mapY.should.equal 4
+    it '更新4回目、下に移動', ->
+      c.update() for n in [1 .. 16]
+      c.isMove().should.equal true
+      c.mapX.should.equal 5
+      c.mapY.should.equal 5
+    it '更新5回目、その場に停止', ->
+      c.update() for n in [1 .. 16]
+      c.isMove().should.equal false
+      c.mapX.should.equal 5
+      c.mapY.should.equal 5

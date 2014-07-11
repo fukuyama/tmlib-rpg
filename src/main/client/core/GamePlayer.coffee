@@ -24,7 +24,13 @@ tm.define 'rpg.GamePlayer',
     Object.defineProperty @, 'character',
       enumerable: true
       get: -> rpg.game.pc
- 
+
+  # イベントリスナーセットアップ
+  setupEventListener: (arg) ->
+    for k, v of arg
+      @clearEventListener(k)
+      @addEventListener(k,v)
+
   # 更新
   update: ->
     @eventHandler.updateInput()

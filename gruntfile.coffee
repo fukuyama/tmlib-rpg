@@ -193,7 +193,7 @@ module.exports = (grunt) ->
         expand: true
         cwd: '../tmlib.js/build'
         src: ['**']
-        dest: 'target/public/ client/lib/build'
+        dest: 'target/public/client/lib/build'
 
     express:
       options:

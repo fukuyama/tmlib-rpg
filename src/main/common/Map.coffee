@@ -23,15 +23,15 @@ class rpg.Map
   _restriction: (x, y, character = null) ->
     # プレイヤーの位置確認
     res = @_restrictionPlayer(x, y, character)
-    return res if res isnt null
+    return res if res?
     # イベントから見つかったらそれを返す
     res = @_restrictionEvent(x, y, character)
-    return res if res isnt null
+    return res if res?
     # TODO: マップ固有情報から見つかったらそれを返す
 
     # タイルセットから
     res = @_restrictionTileset(x, y)
-    return res if res isnt null
+    return res if res?
     MOVE_RESTRICTION.ALLOK
 
   _restrictionTileset: (x, y) ->
@@ -70,7 +70,7 @@ class rpg.Map
     pc = @findPlayer(x, y, character)
     return pc if pc isnt null
     # イベント位置確認
-    for event in @events when event isnt character
+    for name, event of @events when event isnt character
       if event.mapX == x and event.mapY == y
         return event
     null

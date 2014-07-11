@@ -46,3 +46,13 @@ describe 'rpg.Interpreter', () ->
         interpreter.update()
         interpreter.isRunning().should.equal false
         rpg.system.scene.interpreterUpdate = on
+
+  describe '移動関連', ->
+    describe 'マップを移動する', ->
+      commands = [
+        {type:'moveMap',params:[5]}
+      ]
+      it 'マップシーンへ移動', (done) ->
+        loadTestMap(done)
+      it 'マップシーンへ移動', (done) ->
+        loadTestMap(done)
