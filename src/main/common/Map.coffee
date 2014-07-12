@@ -70,7 +70,7 @@ class rpg.Map
     pc = @findPlayer(x, y, character)
     return pc if pc isnt null
     # イベント位置確認
-    for name, event of @events when event isnt character
+    for event in @events when event isnt character
       if event.mapX == x and event.mapY == y
         return event
     null

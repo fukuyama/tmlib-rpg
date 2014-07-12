@@ -9,11 +9,11 @@ tm.define 'rpg.SpriteMap',
   init: (@map) ->
     cw = ch = rpg.system.mapChipSize
     @superInit(@map.mapSheet, cw, ch)
-    @map.events = {}
+    @map.events = []
     if @events?
       for e in @events.children
-        @map.events[e.name] = e.character
-        e.character.name = e.character.name ? e.name
+        @map.events.push e.character
+        # e.character.name = e.character.name ? e.name
 
     @_screenCX = rpg.system.screen.width / 2 - cw / 2
     @_screenCY = rpg.system.screen.height / 2 - ch / 2
