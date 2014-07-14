@@ -34,7 +34,7 @@ tm.define 'rpg.SpriteCharacter',
   # 向き
   updateDirection: ->
     return unless not @character.directionFix
-    if @directionNum != @character.directionNum
+    if @paused and @directionNum != @character.directionNum
       @gotoAndStop(@character.direction)
       @directionNum = @character.directionNum
 
