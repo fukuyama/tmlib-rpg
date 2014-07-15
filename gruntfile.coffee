@@ -60,6 +60,7 @@ module.exports = (grunt) ->
       'event_command/Function'
       'event_command/Script'
       'event_command/Wait'
+      'event_command/Move'
       'event_command/Message'
       'event_command/Option'
       'event_command/Select'

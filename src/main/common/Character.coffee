@@ -88,8 +88,8 @@ class rpg.Character
         mode: on  # アニメーションの ON/OFF
         fix: off  # アニメーションの固定 ON/OFF
         move: on  # 移動時のアニメーション ON/OFF
-        stop: on  # 歩行後のアニメーションの停止 ON/OFF
-                  # 停止時にアニメーションを続ける場合は OFF にする
+        stop: off # 歩行後のアニメーション ON/OFF
+                  # 停止時にアニメーションを続ける場合は ON にする
         'default': '' # デフォルトのアニメーション
     }.$extendAll(args)
 
@@ -199,7 +199,7 @@ class rpg.Character
   isAnimationMove: -> @isAnimation() and @animationMove
   ###* アニメーション Stop
   *　@method rpg.Character#isAnimationStop
-  * @return {boolean} 停止時にアニメーションを止める場合 true
+  * @return {boolean} 停止時にアニメーションする場合 true
   ###
   isAnimationStop: -> @isAnimation() and @animationStop
  
@@ -230,28 +230,19 @@ class rpg.Character
   *　@method rpg.Character#updatePosition
   ###
   updatePosition: ->
-    # 停止時アニメーション調整
-    if @isAnimationStop() and @animationName != '' and
-    @moveX == @mapX and @moveY == @mapY
-      @animationName = ''
+    # アニメーション調整は、スプライト側で行う
     # x 座標計算
     if @moveX != @mapX
       @moveX += @frameDistance if @moveX < @mapX
       @moveX -= @frameDistance if @moveX > @mapX
       # screen 座標計算
       @x = @_calcScreenX()
-      # 歩行アニメーション調整
-      if @moveX != @mapX and @isAnimationMove()
-        @animationName = @direction if @animationName != @direction
     # y 座標計算
     if @moveY != @mapY
       @moveY += @frameDistance if @moveY < @mapY
       @moveY -= @frameDistance if @moveY > @mapY
       # screen 座標計算
       @y = @_calcScreenY()
-      # 歩行アニメーション調整
-      if @moveY != @mapY and @isAnimationMove()
-        @animationName = @direction if @animationName != @direction
 
   ###* 移動メソッド実行
   *　@method rpg.Character#applyMoveMethod

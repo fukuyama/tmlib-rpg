@@ -9,11 +9,12 @@ tm.define 'rpg.SpriteMap',
   init: (@map) ->
     cw = ch = rpg.system.mapChipSize
     @superInit(@map.mapSheet, cw, ch)
-    @map.events = []
+    @map.events = {}
     if @events?
-      for e in @events.children
-        @map.events.push e.character
-        # e.character.name = e.character.name ? e.name
+      i = 0
+      for name, e of @events when e?.character instanceof rpg.Character
+        e.character.name = e.character.name ? name
+        @map.events[name] = e.character
 
     @_screenCX = rpg.system.screen.width / 2 - cw / 2
     @_screenCY = rpg.system.screen.height / 2 - ch / 2
@@ -22,6 +23,19 @@ tm.define 'rpg.SpriteMap',
 
   updatePosition: () ->
     pc = rpg.system.player.character
-    @x = @_screenCX - pc.x if @_screenCX <= pc.x and pc.x <= @_screenMX
-    @y = @_screenCY - pc.y if @_screenCY <= pc.y and pc.y <= @_screenMY
+
+    if pc.x < @_screenCX
+      @x = 0
+    else if pc.x > @_screenMX
+      @x = rpg.system.screen.width - @width
+    else
+      @x = @_screenCX - pc.x
+
+    if pc.y < @_screenCY
+      @y = 0
+    else if pc.y > @_screenMY
+      @y = rpg.system.screen.height - @height
+    else
+      @y = @_screenCY - pc.y
+
     return

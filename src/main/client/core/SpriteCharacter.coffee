@@ -24,7 +24,6 @@ tm.define 'rpg.SpriteCharacter',
       @animationName
       @directionNum
     } = @character
-    @_animationStop = ''
     @_prevFrameIndex = 0
     if not @character.directionFix
       @gotoAndStop(@character.direction)
@@ -34,8 +33,9 @@ tm.define 'rpg.SpriteCharacter',
   # 向き
   updateDirection: ->
     return unless not @character.directionFix
-    if @paused and @directionNum != @character.directionNum
-      @gotoAndStop(@character.direction)
+    if @directionNum != @character.directionNum
+      unless @character.directionFix
+        @currentAnimation = @ss.animations[@character.direction]
       @directionNum = @character.directionNum
 
   # 位置
@@ -46,15 +46,30 @@ tm.define 'rpg.SpriteCharacter',
   # アニメーション
   updateAnimation: ->
     return unless @character.isAnimation()
-    if @animationName != @character.animationName
-      if @character.animationName != ''
-        @gotoAndPlay(@character.animationName)
-        @currentFrameIndex = @_prevFrameIndex + 1
-        @_normalizeFrame()
-      else if @animationName != ''
-        @_prevFrameIndex = @currentFrameIndex
-        @gotoAndStop(@animationName)
-      @animationName = @character.animationName
+    # TODO:　まだまだ未完成
+    if @animationName != '' or @character.animationName != ''
+      if @animationName != @character.animationName
+        if @character.animationName != ''
+          @gotoAndPlay(@character.animationName)
+          @currentFrameIndex = @_prevFrameIndex + 1
+          @_normalizeFrame()
+        else if @animationName != ''
+          @_prevFrameIndex = @currentFrameIndex
+          @gotoAndStop(@animationName)
+        @animationName = @character.animationName
+    else
+      if @character.isStop()
+        if @character.isAnimationStop()
+          if @currentFrameIndex == 0 or @paused
+            @gotoAndPlay(@character.direction)
+        else
+          @gotoAndStop(@character.direction)
+      if @character.isMove()
+        if @character.isAnimationMove()
+          if @currentFrameIndex == 0 or @paused
+            @gotoAndPlay(@character.direction)
+        else
+          @gotoAndStop(@character.direction)
 
   # 更新
   update: ->
