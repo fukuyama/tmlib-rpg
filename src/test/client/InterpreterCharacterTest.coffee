@@ -52,7 +52,7 @@ describe 'rpg.Interpreter(Character)', () ->
           c.mapY.should.equal 1
           c.moveTo(5,5)
     describe '移動ルート設定', ->
-      describe 'プレイヤーの場所を移動 20,20', ->
+      describe '移動ルート設定 0,0 から左回り', ->
         commands = [
           {type:'move_to',params:['player',0,0]}
           {type:'move_route',params:[
@@ -67,13 +67,34 @@ describe 'rpg.Interpreter(Character)', () ->
             ]
           ]}
         ]
+        route = [
+          [0,2]
+          [2,2]
+          [2,0]
+          [0,0]
+        ]
+        routeIndex = 0
+        _routeCheck = (done) ->
+          c  = rpg.system.player.character
+          if route[routeIndex]?
+            [x,y] = route[routeIndex]
+            if c.mapX == x and c.mapY == y
+              routeIndex++
+            if route.length == routeIndex
+              done()
+        routeCheck = null
         it 'マップシーンへ移動', (done) ->
           loadTestMap(done)
         it 'インタープリタ取得', ->
           interpreter = rpg.system.scene.interpreter
-        it 'interpreter を開始する', (done)->
+        it 'interpreter を開始する', ->
           interpreter.start commands
-          setTimeout(done,200)
+        it 'enterframe 設定', (done) ->
+          routeCheck = _routeCheck.bind(@,done)
+          rpg.system.scene.on 'enterframe', routeCheck
+        it 'enterframe 削除', ->
+          rpg.system.scene.off 'enterframe', routeCheck
+          routeIndex.should.equal 4
     describe.skip 'マップを移動する', ->
       commands = [
         {type:'move_map',params:[2,5,5]}

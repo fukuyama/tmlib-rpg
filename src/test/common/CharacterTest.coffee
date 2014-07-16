@@ -129,8 +129,8 @@ describe 'rpg.Character', () ->
         c.update()
       it 'up move check3', ->
         c.isAnimationMove().should.equal on
-      it.skip 'up name check2', ->
-        c.animationName.should.equal 'up'
+      it 'up name check2', ->
+        c.animationName.should.equal ''
     
   describe 'direction', ->
     describe 'number', ->

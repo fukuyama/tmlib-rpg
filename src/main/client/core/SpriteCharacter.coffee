@@ -25,6 +25,7 @@ tm.define 'rpg.SpriteCharacter',
       @directionNum
     } = @character
     @_prevFrameIndex = 0
+    @_playAnime = false
     if not @character.directionFix
       @gotoAndStop(@character.direction)
     if @character.isAnimation()
@@ -36,6 +37,8 @@ tm.define 'rpg.SpriteCharacter',
     if @directionNum != @character.directionNum
       unless @character.directionFix
         @currentAnimation = @ss.animations[@character.direction]
+        if @paused
+          @_normalizeFrame()
       @directionNum = @character.directionNum
 
   # 位置
@@ -60,16 +63,27 @@ tm.define 'rpg.SpriteCharacter',
     else
       if @character.isStop()
         if @character.isAnimationStop()
-          if @currentFrameIndex == 0 or @paused
+          unless @_playAnime
+            @_playAnime = true
             @gotoAndPlay(@character.direction)
         else
-          @gotoAndStop(@character.direction)
+          kb = rpg.system.app.keyboard
+          unless kb.getKey('left') or
+          kb.getKey('right') or
+          kb.getKey('up') or
+          kb.getKey('down')
+            if @_playAnime
+              @_playAnime = false
+              @gotoAndStop(@character.direction)
       if @character.isMove()
         if @character.isAnimationMove()
-          if @currentFrameIndex == 0 or @paused
+          unless @_playAnime
+            @_playAnime = true
             @gotoAndPlay(@character.direction)
         else
-          @gotoAndStop(@character.direction)
+          if @_playAnime
+            @_playAnime = false
+            @gotoAndStop(@character.direction)
 
   # 更新
   update: ->
