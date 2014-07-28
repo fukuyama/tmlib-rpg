@@ -24,6 +24,7 @@ module.exports = {
         }
       ]
     }
+    transition: {}
     assets : [
       'scene.title.background.image': 'img/test_001.png'
       'system.se.menu_decision': 'audio/se/fin.mp3'

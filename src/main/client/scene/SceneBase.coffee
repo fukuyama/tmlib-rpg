@@ -21,6 +21,9 @@ tm.define 'rpg.SceneBase',
           sys.temp.callback = null
       )
 
+  transitionScene: (args={}) ->
+    rpg.system.transitionScene args
+
   replaceScene: (args={}) ->
     rpg.system.replaceScene args
 

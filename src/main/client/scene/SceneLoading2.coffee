@@ -29,6 +29,7 @@ tm.define 'SceneLoading',
       @scene
       @param
       @callback
+      @transition
       key
       src
       type
@@ -39,6 +40,7 @@ tm.define 'SceneLoading',
     } = {
       param: {}
       callback: null
+      transition: null
       key: null
       src: {}
       type: 'json'
@@ -137,7 +139,13 @@ tm.define 'SceneLoading',
   update: (app) ->
     if @_count == @_endCount
       console.log 'loadend'
-      @replaceScene
-        scene: @scene
-        param: @param
+      if @transition?
+        @transitionScene
+          scene: @scene
+          param: @param
+          transition: @transition
+      else
+        @replaceScene
+          scene: @scene
+          param: @param
       @callback(@) if @callback?

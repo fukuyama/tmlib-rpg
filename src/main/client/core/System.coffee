@@ -199,6 +199,19 @@ tm.define 'rpg.System',
     if typeof scene is 'function'
       scene = scene(param)
     rpg.system.app.replaceScene scene
+
+  # シーン変更
+  transitionScene: (args={}) ->
+    {
+      scene
+      param
+      transition
+    } = args
+    if typeof scene is 'string'
+      scene = tm.global[scene]
+    if typeof scene is 'function'
+      scene = scene(param)
+    rpg.system.app.transitionScene scene, transition
   
   # スクリーンビットマップ保存
   captureScreenBitmap: () ->
