@@ -69,7 +69,7 @@ tm.define 'rpg.GamePlayer',
     c = @character.findFrontCharacter()
     # TODO: 壁越し判定とかカウンターテーブル判定とかどしよ
     # 目の前にキャラクターがいる場合、話しかけられるなら、話しかける
-    if c? and c.triggerTalk? and c.triggerTalk()
+    if c?.triggerTalk?()
       # プレイヤーの方を向く
       c.directionTo(@character)
       # 反応がある場合はイベントを実行

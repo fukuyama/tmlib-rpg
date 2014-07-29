@@ -22,8 +22,9 @@ tm.define 'SceneMap',
       interpreterUpdate: true # デバック用
     }.$extendAll(args)
 
-    # インタープリター
-    @interpreter = rpg.Interpreter()
+    # マップインタープリター
+    @interpreter = rpg.system.mapInterpreter
+
     # メッセージウィンドウ
     @windowMessage = rpg.WindowMessage()
     # マップメインメニュー
@@ -41,16 +42,22 @@ tm.define 'SceneMap',
     @spriteMap = rpg.SpriteMap(@map)
 
     plsc = rpg.SpriteCharacter(@player.character).addChildTo(@spriteMap)
-    plsc.addEventListener('enterframe', @playerEnterframe.bind @)
+    plsc.on 'enterframe', @playerEnterframe.bind(@)
 
     @addChild(@player)
     @addChild(@spriteMap)
     @addChild(@windowMapMenu)
     @addChild(@windowMessage)
 
+    @on 'enter', -> console.log 'start SceneMap'
+
   update: ->
+    # シーン切り替え中は更新しない(カレントシーンが自分では無い場合)
+    return if rpg.system.scene != @
+    # インタプリター更新
     @interpreter.update() if @interpreter.isRunning() and @interpreterUpdate
     @player.awake = not @interpreter.isRunning()
+    return
 
   openMapMenu: ->
     @player.active = false

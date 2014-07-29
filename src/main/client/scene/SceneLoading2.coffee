@@ -106,7 +106,7 @@ tm.define 'SceneLoading',
   ###
   _progress: (e) ->
     {key} = e
-    console.log "* progress * #{key}"
+    #console.log "* progress * #{key}"
     @_progress_callback[key].call(e) if @_progress_callback[key]?
 
   ###* データ読み込み時のハンドラ
@@ -128,7 +128,7 @@ tm.define 'SceneLoading',
   * @private
   ###
   _preload: (key, src, type, callback) ->
-    console.log "preload #{key}, #{src}, #{type}"
+    #console.log "preload #{key}, #{src}, #{type}"
     @_endCount++
     @_progress_callback[key] = callback if callback?
     @_loader.load(key, src, type)
@@ -138,7 +138,7 @@ tm.define 'SceneLoading',
   ###
   update: (app) ->
     if @_count == @_endCount
-      console.log 'loadend'
+      #console.log 'loadend'
       if @transition?
         @transitionScene
           scene: @scene

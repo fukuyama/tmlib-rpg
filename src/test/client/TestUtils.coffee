@@ -26,9 +26,13 @@ _g.loadTestMap = (done) ->
     return
   loadFlg = true
   rpg.system.newGame()
+  checkWait done, -> rpg.system.scene.name == 'SceneMap'
+
+_g.checkWait = (done,fn) ->
   check = ->
-    unless rpg.system.scene.name == 'SceneMap'
+    unless fn.call()
       setTimeout(check,100)
     else
       done()
+      check = null
   check()

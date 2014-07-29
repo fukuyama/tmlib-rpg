@@ -260,6 +260,8 @@ tm.define 'rpg.System',
     game.party.add(a)
     game.actors.push a
 
+    @mapInterpreter = rpg.Interpreter()
+
     @loadMap(1)
 
   # マップのロード

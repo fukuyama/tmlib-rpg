@@ -294,6 +294,7 @@ tm.define 'rpg.WindowMenu',
 
   # メニュー選択
   pointing_menu: (e) ->
+    return unless @active
     base = (@currentPageNum - 1) * @maxPageItems
     @cursorInstance.setPointing(e,base)
     if @cursorInstance.index < @menus.length
