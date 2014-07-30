@@ -65,12 +65,14 @@ class rpg.Character
       @moveRouteForce # 強制移動ルート
       @stopCount
       @lock
+      @transparent  # すり抜け
     } = {
       moveRoute: []
       moveRouteIndex: 0
       moveRouteForce: false
       moveSpeed: 4
       moveFrequency: 4
+      transparent: false
       stopCount: 0
       lock:
         stopCount: false
@@ -337,57 +339,69 @@ class rpg.Character
     @moveY = @mapY = y
     @x = @_calcScreenX()
     @y = @_calcScreenY()
-    @
-
+    true
   ###* 左に移動
   *　@method rpg.Character#moveLeft
   * @param {number} [n=1] 移動歩数
   ###
   moveLeft: (n=1)->
     @direction = 4
-    return unless @isPassable(@mapX,@mapY,4)
-    @mapX -= n
-    @
+    for i in [0...n]
+      return unless @isPassable(@mapX,@mapY,4)
+      @mapX -= 1
+    true
   ###* 右に移動
   *　@method rpg.Character#moveRight
   * @param {number} [n=1] 移動歩数
   ###
   moveRight: (n=1)->
     @direction = 6
-    return unless @isPassable(@mapX,@mapY,6)
-    @mapX += n
-    @
+    for i in [0...n]
+      return unless @isPassable(@mapX,@mapY,6)
+      @mapX += 1
+    true
   ###* 上に移動
   *　@method rpg.Character#moveUp
   * @param {number} [n=1] 移動歩数
   ###
   moveUp: (n=1)->
     @direction = 8
-    return unless @isPassable(@mapX,@mapY,8)
-    @mapY -= n
-    @
+    for i in [0...n]
+      return unless @isPassable(@mapX,@mapY,8)
+      @mapY -= 1
+    true
   ###* 下に移動
   *　@method rpg.Character#moveDown
   * @param {number} [n=1] 移動歩数
   ###
   moveDown: (n=1)->
     @direction = 2
-    return unless @isPassable(@mapX,@mapY,2)
-    @mapY += n
-    @
+    for i in [0...n]
+      return unless @isPassable(@mapX,@mapY,2)
+      @mapY += 1
+    true
+  ###* 前に移動
+  *　@method rpg.Character#moveFront
+  * @param {number} [n=1] 移動歩数
+  ###
+  moveFront: (n=1) ->
+    for i in [0...n]
+      return unless @isPassable()
+      [@mapX,@mapY] = @frontPosition()
+    true
   ###* 移動ループ
   *　@method rpg.Character#moveLoop
   ###
   moveLoop: () ->
     @moveRouteIndex = 0
     @updateMoveRoute()
+    true
   ###* ランダム移動
   *　@method rpg.Character#moveRundom
   ###
   moveRundom: () ->
     name = MOVE_RUNDOM[Math.floor(Math.random() * MOVE_RUNDOM.length)]
     @applyMoveMethod name
-
   ###* 向き設定インデックスの計算 2,4,6,8 と言うのを、0,1,2,3 に
   *　@method rpg.Character#directionIndex
   * @param {number} d 向きを表す値 2,4,6,8
@@ -421,7 +435,7 @@ class rpg.Character
     # 移動先座標の計算
     [x + X_ROUTE[di], y + Y_ROUTE[di]]
 
-  ###* 移動可能判定
+  ###* 移動可能判定（指定方向へ移動できるかどうか）
   *　@method rpg.Character#isPassable
   * @param {number} [x=this.mapX] マップX座標
   * @param {number} [y=this.mapY]　マップY座標
@@ -437,6 +451,8 @@ class rpg.Character
     map = rpg.system.scene.map
     # マップ範囲チェック
     return false if not map.isValid(nx, ny)
+    # すり抜けチェック
+    return true if @transparent
     # 自分位置の移動可能チェック
     return false if not map.isPassable(x, y, d, @)
     # 向きを逆に、移動先の可能チェック

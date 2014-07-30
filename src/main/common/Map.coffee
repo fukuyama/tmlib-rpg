@@ -46,10 +46,14 @@ class rpg.Map
 
   _restrictionEvent: (x, y, character = null) ->
     event = @findCharacter(x, y, character)
-    if event isnt null then MOVE_RESTRICTION.ALLNG else null
+    # 通れないタイルの上のイベントを透過にしても通れない（ALLOK にはしない）
+    return null if event?.transparent
+    if event? then MOVE_RESTRICTION.ALLNG else null
 
   _restrictionPlayer: (x, y, character = null) ->
     pc = @findPlayer(x, y, character)
+    # 通れないタイルの上のイベントを透過にしても通れない（ALLOK にはしない）
+    return null if pc?.transparent
     if pc isnt null then MOVE_RESTRICTION.ALLNG else null
 
   # 座標位置のプレイヤーを検索

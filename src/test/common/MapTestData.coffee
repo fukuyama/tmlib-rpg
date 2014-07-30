@@ -22,6 +22,9 @@ for x in [4..6]
 for x in [9..11]
   for y in [9..11]
     data[x+y*30] = 1
+for x in [12..14]
+  for y in [9..11]
+    data[x+y*30] = 0
 for x in [0..29]
   for y in [0,1,2]
     data[x+y*30] = 0

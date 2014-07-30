@@ -387,152 +387,246 @@ describe 'rpg.Character', () ->
       it 'check xy', ->
         c.x.should.equal 0
         c.y.should.equal 32
-  describe 'moveLeft 5,5', ->
-    c = new rpg.Character()
-    c.moveTo(5,5)
-    it '1', ->
-      c.direction.should.equal 'down'
-      c.moveLeft()
-    it 'x', ->
-      c.mapX.should.equal 5 - 1
-    it 'y', ->
-      c.mapY.should.equal 5
-    it 'direction', ->
-      c.direction.should.equal 'left'
-  describe 'moveRight 5,5', ->
-    c = new rpg.Character()
-    c.moveTo(5,5)
-    it '1', ->
-      c.direction.should.equal 'down'
-      c.moveRight()
-    it 'x', ->
-      c.mapX.should.equal 5 + 1
-    it 'y', ->
-      c.mapY.should.equal 5
-    it 'direction', ->
-      c.direction.should.equal 'right'
-  describe 'moveUp 5,5', ->
-    c = new rpg.Character()
-    c.moveTo(5,5)
-    it '1', ->
-      c.direction.should.equal 'down'
-      c.moveUp()
-    it 'x', ->
-      c.mapX.should.equal 5
-    it 'y', ->
-      c.mapY.should.equal 5 - 1
-    it 'direction', ->
-      c.direction.should.equal 'up'
-  describe 'moveDown 5,5', ->
-    c = new rpg.Character()
-    c.moveTo(5,5)
-    c.direction = 'up'
-    it '1', ->
-      c.direction.should.equal 'up'
-      c.moveDown()
-    it 'x', ->
-      c.mapX.should.equal 5
-    it 'y', ->
-      c.mapY.should.equal 5 + 1
-    it 'direction', ->
-      c.direction.should.equal 'down'
-  # 移動できない位置
-  describe 'moveLeft 10,10', ->
-    c = new rpg.Character()
-    c.moveTo(10,10)
-    it '1', ->
-      c.direction.should.equal 'down'
-      c.moveLeft()
-    it 'x', ->
-      c.mapX.should.equal 10
-    it 'y', ->
-      c.mapY.should.equal 10
-    it 'direction', ->
-      c.direction.should.equal 'left'
-  describe 'moveLeft 11,10', ->
-    c = new rpg.Character()
-    c.moveTo(11,10)
-    it '2', ->
-      c.moveLeft()
-    it 'x2', ->
-      c.mapX.should.equal 11
-    it 'y2', ->
-      c.mapY.should.equal 10
-    it 'direction2', ->
-      c.direction.should.equal 'left'
-  describe 'moveRight 10,10', ->
-    c = new rpg.Character()
-    c.moveTo(10,10)
-    it '1', ->
-      c.direction.should.equal 'down'
-      c.moveRight()
-    it 'x', ->
-      c.mapX.should.equal 10
-    it 'y', ->
-      c.mapY.should.equal 10
-    it 'direction', ->
-      c.direction.should.equal 'right'
-  describe 'moveRight 9,10', ->
-    c = new rpg.Character()
-    c.moveTo(9,10)
-    it '2', ->
-      c.moveRight()
-    it 'x2', ->
-      c.mapX.should.equal 9
-    it 'y2', ->
-      c.mapY.should.equal 10
-    it 'direction2', ->
-      c.direction.should.equal 'right'
-  describe 'moveUp 10,10', ->
-    c = new rpg.Character()
-    c.moveTo(10,10)
-    it '1', ->
-      c.direction.should.equal 'down'
-      c.moveUp()
-    it 'x', ->
-      c.mapX.should.equal 10
-    it 'y', ->
-      c.mapY.should.equal 10
-    it 'direction', ->
-      c.direction.should.equal 'up'
-  describe 'moveUp 10,11', ->
-    c = new rpg.Character()
-    c.moveTo(10,11)
-    it '2', ->
-      c.moveUp()
-    it 'x2', ->
-      c.mapX.should.equal 10
-    it 'y2', ->
-      c.mapY.should.equal 11
-    it 'direction2', ->
-      c.direction.should.equal 'up'
-  describe 'moveDown 10,10', ->
-    c = new rpg.Character()
-    c.moveTo(10,10)
-    c.direction = 'up'
-    it '1', ->
-      c.direction.should.equal 'up'
-      c.moveDown()
-    it 'x', ->
-      c.mapX.should.equal 10
-    it 'y', ->
-      c.mapY.should.equal 10
-    it 'direction', ->
-      c.direction.should.equal 'down'
-  describe 'moveDown 10,9', ->
-    c = new rpg.Character()
-    c.moveTo(10,9)
-    it '2', ->
+  describe '移動可能位置', ->
+    describe 'moveLeft', ->
+      describe '5,5', ->
+        c = new rpg.Character()
+        c.moveTo(5,5)
+        it '1', ->
+          c.direction.should.equal 'down'
+          c.moveLeft()
+        it 'x', ->
+          c.mapX.should.equal 5 - 1
+        it 'y', ->
+          c.mapY.should.equal 5
+        it 'direction', ->
+          c.direction.should.equal 'left'
+      describe '13,10 歩数指定1', ->
+        c = new rpg.Character()
+        c.moveTo(13,10)
+        it '1', ->
+          c.direction.should.equal 'down'
+          c.moveLeft(1)
+        it 'x', ->
+          c.mapX.should.equal 13 - 1
+        it 'y', ->
+          c.mapY.should.equal 10
+        it 'direction', ->
+          c.direction.should.equal 'left'
+      describe '13,10 歩数指定2 途中でぶつかる', ->
+        c = new rpg.Character()
+        c.moveTo(13,10)
+        it '1', ->
+          c.direction.should.equal 'down'
+          c.moveLeft(2)
+        it 'x', ->
+          c.mapX.should.equal 13 - 1
+        it 'y', ->
+          c.mapY.should.equal 10
+        it 'direction', ->
+          c.direction.should.equal 'left'
+      describe '13,10 歩数指定3　途中でぶつかる', ->
+        c = new rpg.Character()
+        c.moveTo(13,10)
+        it '1', ->
+          c.direction.should.equal 'down'
+          c.moveLeft(3)
+        it 'x', ->
+          c.mapX.should.equal 13 - 1
+        it 'y', ->
+          c.mapY.should.equal 10
+        it 'direction', ->
+          c.direction.should.equal 'left'
+      describe '14,10 歩数指定2', ->
+        c = new rpg.Character()
+        c.moveTo(14,10)
+        it '1', ->
+          c.direction.should.equal 'down'
+          c.moveLeft(2)
+        it 'x', ->
+          c.mapX.should.equal 14 - 2
+        it 'y', ->
+          c.mapY.should.equal 10
+        it 'direction', ->
+          c.direction.should.equal 'left'
+    describe 'moveRight 5,5', ->
+      c = new rpg.Character()
+      c.moveTo(5,5)
+      it '1', ->
+        c.direction.should.equal 'down'
+        c.moveRight()
+      it 'x', ->
+        c.mapX.should.equal 5 + 1
+      it 'y', ->
+        c.mapY.should.equal 5
+      it 'direction', ->
+        c.direction.should.equal 'right'
+    describe 'moveUp 5,5', ->
+      c = new rpg.Character()
+      c.moveTo(5,5)
+      it '1', ->
+        c.direction.should.equal 'down'
+        c.moveUp()
+      it 'x', ->
+        c.mapX.should.equal 5
+      it 'y', ->
+        c.mapY.should.equal 5 - 1
+      it 'direction', ->
+        c.direction.should.equal 'up'
+    describe 'moveDown', ->
+      describe '5,5', ->
+        c = new rpg.Character()
+        c.moveTo(5,5)
+        c.direction = 'up'
+        it '1', ->
+          c.direction.should.equal 'up'
+          c.moveDown()
+        it 'x', ->
+          c.mapX.should.equal 5
+        it 'y', ->
+          c.mapY.should.equal 5 + 1
+        it 'direction', ->
+          c.direction.should.equal 'down'
+      describe '5,9 キャラクターが居て移動できない', ->
+        c = new rpg.Character()
+        c.moveTo(5,9)
+        c.direction = 'up'
+        it '1', ->
+          c.direction.should.equal 'up'
+          c.moveDown()
+        it 'x', ->
+          c.mapX.should.equal 5
+        it 'y', ->
+          c.mapY.should.equal 9
+        it 'direction', ->
+          c.direction.should.equal 'down'
+      describe '5,9 キャラクターが居てすり抜けonだと移動可能', ->
+        c = new rpg.Character()
+        c.moveTo(5,9)
+        c.direction = 'up'
+        it 'すり抜けon', ->
+          map.events[0].transparent = true
+        it '1', ->
+          c.direction.should.equal 'up'
+          c.moveDown()
+        it 'x', ->
+          c.mapX.should.equal 5
+        it 'y', ->
+          c.mapY.should.equal 10
+        it 'direction', ->
+          c.direction.should.equal 'down'
+        it 'すり抜けoff', ->
+          map.events[0].transparent = false
+  describe '移動できない位置', ->
+    describe 'moveLeft 10,10', ->
+      c = new rpg.Character()
+      c.moveTo(10,10)
+      it '1', ->
+        c.direction.should.equal 'down'
+        c.moveLeft()
+      it 'x', ->
+        c.mapX.should.equal 10
+      it 'y', ->
+        c.mapY.should.equal 10
+      it 'direction', ->
+        c.direction.should.equal 'left'
+    describe 'moveLeft 10,10 すり抜け', ->
+      c = new rpg.Character()
+      c.moveTo(10,10)
+      c.transparent = true
+      it '1', ->
+        c.direction.should.equal 'down'
+        c.moveLeft()
+      it 'x', ->
+        c.mapX.should.equal 9
+      it 'y', ->
+        c.mapY.should.equal 10
+      it 'direction', ->
+        c.direction.should.equal 'left'
+    describe 'moveLeft 11,10', ->
+      c = new rpg.Character()
+      c.moveTo(11,10)
+      it '2', ->
+        c.moveLeft()
+      it 'x2', ->
+        c.mapX.should.equal 11
+      it 'y2', ->
+        c.mapY.should.equal 10
+      it 'direction2', ->
+        c.direction.should.equal 'left'
+    describe 'moveRight 10,10', ->
+      c = new rpg.Character()
+      c.moveTo(10,10)
+      it '1', ->
+        c.direction.should.equal 'down'
+        c.moveRight()
+      it 'x', ->
+        c.mapX.should.equal 10
+      it 'y', ->
+        c.mapY.should.equal 10
+      it 'direction', ->
+        c.direction.should.equal 'right'
+    describe 'moveRight 9,10', ->
+      c = new rpg.Character()
+      c.moveTo(9,10)
+      it '2', ->
+        c.moveRight()
+      it 'x2', ->
+        c.mapX.should.equal 9
+      it 'y2', ->
+        c.mapY.should.equal 10
+      it 'direction2', ->
+        c.direction.should.equal 'right'
+    describe 'moveUp 10,10', ->
+      c = new rpg.Character()
+      c.moveTo(10,10)
+      it '1', ->
+        c.direction.should.equal 'down'
+        c.moveUp()
+      it 'x', ->
+        c.mapX.should.equal 10
+      it 'y', ->
+        c.mapY.should.equal 10
+      it 'direction', ->
+        c.direction.should.equal 'up'
+    describe 'moveUp 10,11', ->
+      c = new rpg.Character()
+      c.moveTo(10,11)
+      it '2', ->
+        c.moveUp()
+      it 'x2', ->
+        c.mapX.should.equal 10
+      it 'y2', ->
+        c.mapY.should.equal 11
+      it 'direction2', ->
+        c.direction.should.equal 'up'
+    describe 'moveDown 10,10', ->
+      c = new rpg.Character()
+      c.moveTo(10,10)
       c.direction = 'up'
-      c.directionFix.should.equal false
-      c.direction.should.equal 'up'
-      c.moveDown()
-    it 'x2', ->
-      c.mapX.should.equal 10
-    it 'y2', ->
-      c.mapY.should.equal 9
-    it 'direction2', ->
-      c.direction.should.equal 'down'
+      it '1', ->
+        c.direction.should.equal 'up'
+        c.moveDown()
+      it 'x', ->
+        c.mapX.should.equal 10
+      it 'y', ->
+        c.mapY.should.equal 10
+      it 'direction', ->
+        c.direction.should.equal 'down'
+    describe 'moveDown 10,9', ->
+      c = new rpg.Character()
+      c.moveTo(10,9)
+      it '2', ->
+        c.direction = 'up'
+        c.directionFix.should.equal false
+        c.direction.should.equal 'up'
+        c.moveDown()
+      it 'x2', ->
+        c.mapX.should.equal 10
+      it 'y2', ->
+        c.mapY.should.equal 9
+      it 'direction2', ->
+        c.direction.should.equal 'down'
 
   describe 'frontPosition', ->
     c = new rpg.Character()
