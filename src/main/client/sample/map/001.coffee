@@ -91,6 +91,7 @@ module.exports = {
           properties:
             init: JSON.stringify([
               {
+                spriteSheet: 'spritesheet.hiyoko'
                 mapX: 5
                 mapY: 10
                 moveRoute: [
@@ -108,6 +109,7 @@ module.exports = {
           properties:
             init: JSON.stringify([
               {
+                spriteSheet: 'spritesheet.hiyoko'
                 mapX: 7
                 mapY: 10
                 moveRoute: [
@@ -151,6 +153,7 @@ module.exports = {
           properties:
             init: JSON.stringify([
               {
+                spriteSheet: 'spritesheet.hiyoko'
                 mapX: 10
                 mapY: 5
                 pages: [
@@ -178,6 +181,7 @@ module.exports = {
           properties:
             init: JSON.stringify([
               {
+                spriteSheet: 'spritesheet.hiyoko'
                 mapX: 11
                 mapY: 5
                 pages: [
@@ -187,6 +191,30 @@ module.exports = {
                     commands: [
                       {type:'message',params: ['アイテム操作']}
                       {type:'gain_item',params: [1]}
+                    ]
+                  }
+                ]
+              }
+            ])
+        }
+        {
+          type: 'rpg.SpriteCharacter'
+          name: 'Event005'
+          width: 32
+          height: 32
+          properties:
+            init: JSON.stringify([
+              {
+                spriteSheet: 'spritesheet.object001'
+                transparent: true
+                mapX: 20
+                mapY: 5
+                pages: [
+                  {
+                    name: 'page1'
+                    trigger: ['touched']
+                    commands: [
+                      {type:'message',params: ['接触イベント']}
                     ]
                   }
                 ]

@@ -63,10 +63,10 @@ class rpg.EventPage
     @_flag.get(key, url) == val
 
 rpg.EventPage.TRIGGER_TYPE = {
-  TALK: 'talk'
-  CHECK: 'check'
-  TOUCH: 'touch'
-  TOUCHED: 'touched'
-  AUTO: 'auto'
-  PARALLEL: 'parallel'
+  TALK:     'talk'     # 話されたら
+  CHECK:    'check'    # 調べられたら
+  TOUCH:    'touch'    # イベントがプレイヤーに触ったら
+  TOUCHED:  'touched'  # イベントがプレイヤーに触られたら
+  AUTO:     'auto'     # 自動起動
+  PARALLEL: 'parallel' # 平行起動
 }

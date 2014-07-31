@@ -5,6 +5,7 @@ sample_files = [
   'item/test'
   'state/001'
   'spritesheet/hiyoko'
+  'spritesheet/object001'
 ]
 
 target = 'target'

@@ -30,7 +30,15 @@ module.exports = {
       'system.se.menu_decision': 'audio/se/fin.mp3'
       'system.se.menu_cursor_move': 'audio/se/fon.mp3'
       'windowskin.image': 'img/test_windowskin2.png'
-      'sample.spritesheet': {src: 'data/spritesheet/hiyoko.json',type:'tmss'}
+      'sample.spritesheet':
+        type:'tmss'
+        src: 'data/spritesheet/hiyoko.json'
+      'spritesheet.hiyoko':
+        type:'tmss'
+        src: 'data/spritesheet/hiyoko.json'
+      'spritesheet.object001':
+        type:'tmss'
+        src: 'data/spritesheet/object001.json'
     ]
   assets: {
     'i1': 'img/hiyoco_nomal_full.png'

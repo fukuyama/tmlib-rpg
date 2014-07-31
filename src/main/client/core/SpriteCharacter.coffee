@@ -67,11 +67,12 @@ tm.define 'rpg.SpriteCharacter',
             @_playAnime = true
             @gotoAndPlay(@character.direction)
         else
-          kb = rpg.system.app.keyboard
-          unless kb.getKey('left') or
-          kb.getKey('right') or
-          kb.getKey('up') or
-          kb.getKey('down')
+          #kb = rpg.system.app.keyboard
+          #unless kb.getKey('left') or
+          #kb.getKey('right') or
+          #kb.getKey('up') or
+          #kb.getKey('down')
+          if @character.isStopping()
             if @_playAnime
               @_playAnime = false
               @gotoAndStop(@character.direction)
