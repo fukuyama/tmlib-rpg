@@ -11,18 +11,11 @@ class rpg.EventPage
     @setup(args)
     @_conditionFn =
       'flag.on?': @_checkCondFlag.bind(@,'is')
+      'flag.off?': @_checkCondFlag.bind(@,'isnt')
       'flag.>': @_checkCondFlagValueGreater
       'flag.<': @_checkCondFlagValueLesser
       'flag.==': @_checkCondFlagValueEqual
       
-    triggerFunc = (key) ->
-      for t in @trigger when t is key
-        return true
-      return false
-    for k, v of rpg.EventPage.TRIGGER_TYPE
-      f = v.charAt(0).toUpperCase() + v.slice(1)
-      @['trigger'+f] = triggerFunc.bind(@, v)
-
   # 初期化
   setup: (args={}) ->
     {
@@ -39,8 +32,12 @@ class rpg.EventPage
       commands: []
     }.$extendAll(args)
 
+    for k, v of rpg.EventPage.TRIGGER_TYPE
+      f = v.charAt(0).toUpperCase() + v.slice(1)
+      @['trigger' + f] = @_triggerFunc.bind(@,v)
+
   # 条件チェック
-  checkCondition: (flag=rpg.system.flag) ->
+  checkCondition: (flag=rpg.game.flag) ->
     @_flag = flag
     f = @_conditionFn
     r = (d for d in @condition when f[d.type].apply(@, d.params))
@@ -51,7 +48,7 @@ class rpg.EventPage
 
   # フラグ条件チェック
   _checkCondFlag: (op, key, url) ->
-    @_flag[op].apply(@_flag, if key? then [key] else [key, url])
+    @_flag[op].apply(@_flag, if url? then [key,url] else [key])
 
   _checkCondFlagValueGreater: (key, val, url) ->
     @_flag.get(key, url) > val
@@ -61,6 +58,11 @@ class rpg.EventPage
 
   _checkCondFlagValueEqual:   (key, val, url) ->
     @_flag.get(key, url) == val
+
+  _triggerFunc: (key) ->
+    for t in @trigger when t is key
+      return true
+    return false
 
 rpg.EventPage.TRIGGER_TYPE = {
   TALK:     'talk'     # 話されたら

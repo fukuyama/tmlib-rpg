@@ -8,7 +8,8 @@ require('../../main/common/EventPage.coffee')
 
 describe 'rpg.EventPage', () ->
   rpg.system = rpg.system ? {}
-  rpg.system.flag = new rpg.Flag()
+  rpg.game = {}
+  rpg.game.flag = new rpg.Flag()
 
   describe '引数なしで初期化', ->
     page = new rpg.EventPage()
@@ -35,19 +36,53 @@ describe 'rpg.EventPage', () ->
     it 'flg1 が on の場合 checkCondition で true (Flag渡し)', ->
       flag = new rpg.Flag()
       flag.on 'flg1'
-      rpg.system.flag.off 'flg1'
+      rpg.game.flag.off 'flg1'
       page.checkCondition(flag).should.equal true
     it 'flg1 が off の場合 checkCondition で false (Flag渡し)', ->
       flag = new rpg.Flag()
       flag.off 'flg1'
-      rpg.system.flag.on 'flg1'
+      rpg.game.flag.on 'flg1'
       page.checkCondition(flag).should.equal false
     it 'flg1 が on の場合 checkCondition で true (system Flag)', ->
-      rpg.system.flag.on 'flg1'
+      rpg.game.flag.on 'flg1'
       page.checkCondition().should.equal true
     it 'flg1 が off の場合 checkCondition で false (system Flag)', ->
-      rpg.system.flag.off 'flg1'
+      rpg.game.flag.off 'flg1'
       page.checkCondition().should.equal false
+  describe '名前(page1)と条件つき初期化 flag=flg1 url=http://test.test/', ->
+    page = new rpg.EventPage
+      name: 'page1'
+      condition: [
+        {type: 'flag.on?', params: ['flg1','http://test.test/']}
+      ]
+    it '名前に page1 が設定されている', ->
+      page.name.should.equal 'page1'
+    it '条件が設定されている', ->
+      page.condition.should.have.length 1
+      page.condition[0].type.should.equal 'flag.on?'
+      page.condition[0].params.should.deep.equal ['flg1','http://test.test/']
+    it 'flg1 が on の場合 checkCondition で false (url 違い)', ->
+      flag = new rpg.Flag()
+      flag.on 'flg1'
+      page.checkCondition(flag).should.equal false
+    it 'flg1 が on の場合 checkCondition で true (url 一致)', ->
+      flag = new rpg.Flag(url:'http://test.test/')
+      flag.on 'flg1'
+      page.checkCondition(flag).should.equal true
+  describe 'off? 条件動作確認', ->
+    page = new rpg.EventPage
+      name: 'page1'
+      condition: [
+        {type: 'flag.off?', params: ['flg1']}
+      ]
+    it 'flg1 が on の場合 checkCondition で false', ->
+      flag = new rpg.Flag()
+      flag.on 'flg1'
+      page.checkCondition(flag).should.equal false
+    it 'flg1 が off の場合 checkCondition で true', ->
+      flag = new rpg.Flag()
+      flag.off 'flg1'
+      page.checkCondition(flag).should.equal true
   describe '論理条件の動作、複数の condition flg1 and flg2', ->
     page = new rpg.EventPage
       name: 'page2'
@@ -56,20 +91,20 @@ describe 'rpg.EventPage', () ->
         {type: 'flag.on?', params: ['flg2']}
       ]
     it 'flg1=on flg2=on の場合は、true', ->
-      rpg.system.flag.on 'flg1'
-      rpg.system.flag.on 'flg2'
+      rpg.game.flag.on 'flg1'
+      rpg.game.flag.on 'flg2'
       page.checkCondition().should.equal true
     it 'flg1=on flg2=off の場合は、false', ->
-      rpg.system.flag.on 'flg1'
-      rpg.system.flag.off 'flg2'
+      rpg.game.flag.on 'flg1'
+      rpg.game.flag.off 'flg2'
       page.checkCondition().should.equal false
     it 'flg1=off flg2=on の場合は、false', ->
-      rpg.system.flag.off 'flg1'
-      rpg.system.flag.on 'flg2'
+      rpg.game.flag.off 'flg1'
+      rpg.game.flag.on 'flg2'
       page.checkCondition().should.equal false
     it 'flg1=off flg2=off の場合は、false', ->
-      rpg.system.flag.off 'flg1'
-      rpg.system.flag.off 'flg2'
+      rpg.game.flag.off 'flg1'
+      rpg.game.flag.off 'flg2'
       page.checkCondition().should.equal false
   describe '論理条件の動作、複数の condition flg1 or flg2', ->
     page = new rpg.EventPage
@@ -80,20 +115,20 @@ describe 'rpg.EventPage', () ->
       ]
       conditionLogic: 'or'
     it 'flg1=on flg2=on の場合は、true', ->
-      rpg.system.flag.on 'flg1'
-      rpg.system.flag.on 'flg2'
+      rpg.game.flag.on 'flg1'
+      rpg.game.flag.on 'flg2'
       page.checkCondition().should.equal true
     it 'flg1=on flg2=off の場合は、false', ->
-      rpg.system.flag.on 'flg1'
-      rpg.system.flag.off 'flg2'
+      rpg.game.flag.on 'flg1'
+      rpg.game.flag.off 'flg2'
       page.checkCondition().should.equal true
     it 'flg1=off flg2=on の場合は、false', ->
-      rpg.system.flag.off 'flg1'
-      rpg.system.flag.on 'flg2'
+      rpg.game.flag.off 'flg1'
+      rpg.game.flag.on 'flg2'
       page.checkCondition().should.equal true
     it 'flg1=off flg2=off の場合は、false', ->
-      rpg.system.flag.off 'flg1'
-      rpg.system.flag.off 'flg2'
+      rpg.game.flag.off 'flg1'
+      rpg.game.flag.off 'flg2'
       page.checkCondition().should.equal false
       ''
   describe '数値条件 flg1 が 10 より大きいかどうか', ->
@@ -103,19 +138,19 @@ describe 'rpg.EventPage', () ->
         {type: 'flag.>', params: ['flg1',10]}
       ]
     it 'flg1 が 9 だと checkCondition() は、 false', ->
-      rpg.system.flag.set 'flg1', 9
+      rpg.game.flag.set 'flg1', 9
       page.checkCondition().should.equal false
     it 'flg1 が 10 だと checkCondition() は、 false', ->
-      rpg.system.flag.set 'flg1', 10
+      rpg.game.flag.set 'flg1', 10
       page.checkCondition().should.equal false
     it 'flg1 が 11 だと checkCondition() は、 true', ->
-      rpg.system.flag.set 'flg1', 11
+      rpg.game.flag.set 'flg1', 11
       page.checkCondition().should.equal true
     it 'flg1 が off だと checkCondition() は、 false', ->
-      rpg.system.flag.off 'flg1'
+      rpg.game.flag.off 'flg1'
       page.checkCondition().should.equal false
     it 'flg1 が on だと 1 なので false', ->
-      rpg.system.flag.on 'flg1'
+      rpg.game.flag.on 'flg1'
       page.checkCondition().should.equal false
   describe '数値条件 flg1 が 10 より小さいかどうか', ->
     page = new rpg.EventPage
@@ -124,19 +159,19 @@ describe 'rpg.EventPage', () ->
         {type: 'flag.<', params: ['flg1',10]}
       ]
     it 'flg1 が 9 だと checkCondition() は、 true', ->
-      rpg.system.flag.set 'flg1', 9
+      rpg.game.flag.set 'flg1', 9
       page.checkCondition().should.equal true
     it 'flg1 が 10 だと checkCondition() は、 false', ->
-      rpg.system.flag.set 'flg1', 10
+      rpg.game.flag.set 'flg1', 10
       page.checkCondition().should.equal false
     it 'flg1 が 11 だと checkCondition() は、 false', ->
-      rpg.system.flag.set 'flg1', 11
+      rpg.game.flag.set 'flg1', 11
       page.checkCondition().should.equal false
     it 'flg1 が off だと checkCondition() は、 true', ->
-      rpg.system.flag.off 'flg1'
+      rpg.game.flag.off 'flg1'
       page.checkCondition().should.equal true
     it 'flg1 が on だと 1 なので true', ->
-      rpg.system.flag.on 'flg1'
+      rpg.game.flag.on 'flg1'
       page.checkCondition().should.equal true
   describe '数値条件 flg1 が 10 と等しいかどうか', ->
     page = new rpg.EventPage
@@ -145,19 +180,19 @@ describe 'rpg.EventPage', () ->
         {type: 'flag.==', params: ['flg1',10]}
       ]
     it 'flg1 が 9 だと checkCondition() は、 false', ->
-      rpg.system.flag.set 'flg1', 9
+      rpg.game.flag.set 'flg1', 9
       page.checkCondition().should.equal false
     it 'flg1 が 10 だと checkCondition() は、 true', ->
-      rpg.system.flag.set 'flg1', 10
+      rpg.game.flag.set 'flg1', 10
       page.checkCondition().should.equal true
     it 'flg1 が 11 だと checkCondition() は、 false', ->
-      rpg.system.flag.set 'flg1', 11
+      rpg.game.flag.set 'flg1', 11
       page.checkCondition().should.equal false
     it 'flg1 が off だと checkCondition() は、 false', ->
-      rpg.system.flag.off 'flg1'
+      rpg.game.flag.off 'flg1'
       page.checkCondition().should.equal false
     it 'flg1 が on だと 1 なので false', ->
-      rpg.system.flag.on 'flg1'
+      rpg.game.flag.on 'flg1'
       page.checkCondition().should.equal false
       ''
 

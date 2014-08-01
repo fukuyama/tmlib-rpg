@@ -21,6 +21,9 @@ class rpg.Flag
   'is': (key,url=@url) ->
     @values[url]? and 0 != @get(key, url)
 
+  'isnt': (key,url=@url) ->
+    not @is(key,url)
+
   'on': (key) ->
     @set(key,1) unless @is key
 

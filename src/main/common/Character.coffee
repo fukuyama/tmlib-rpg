@@ -53,6 +53,7 @@ class rpg.Character
       @x            # スプライトの x 座標 real
       @y            # スプライトの y 座標 real
       direction     # キャラクターの向き
+      @frame        # フレーム指定
       @mapX         # Mapでの x 座標
       @mapY         # Mapでの y 座標
       @moveX        # 移動中の x 座標 map
@@ -82,6 +83,7 @@ class rpg.Character
       direction:
         value: 'down'
         fix: false
+      frame: null
       mapX: 0
       mapY: 0
       moveX: 0
@@ -246,24 +248,25 @@ class rpg.Character
     if @_moved
       @_moved = false
     if @isStop()
-      @_stopping += 1
-    # アニメーション調整は、スプライト側で行う
-    # x 座標計算
-    if @moveX != @mapX
-      @_stopping = 0
-      @moveX += @frameDistance if @moveX < @mapX
-      @moveX -= @frameDistance if @moveX > @mapX
-      # screen 座標計算
-      @x = @_calcScreenX()
-      @_moved = true if @isStop()
-    # y 座標計算
-    if @moveY != @mapY
-      @_stopping = 0
-      @moveY += @frameDistance if @moveY < @mapY
-      @moveY -= @frameDistance if @moveY > @mapY
-      # screen 座標計算
-      @y = @_calcScreenY()
-      @_moved = true if @isStop()
+      @_stopping += 1 if @_stopping <= 255
+    else
+      # アニメーション調整は、スプライト側で行う
+      # x 座標計算
+      if @moveX != @mapX
+        @_stopping = 0
+        @moveX += @frameDistance if @moveX < @mapX
+        @moveX -= @frameDistance if @moveX > @mapX
+        # screen 座標計算
+        @x = @_calcScreenX()
+        @_moved = true if @isStop()
+      # y 座標計算
+      if @moveY != @mapY
+        @_stopping = 0
+        @moveY += @frameDistance if @moveY < @mapY
+        @moveY -= @frameDistance if @moveY > @mapY
+        # screen 座標計算
+        @y = @_calcScreenY()
+        @_moved = true if @isStop()
 
   ###* 移動メソッド実行
   *　@method rpg.Character#applyMoveMethod

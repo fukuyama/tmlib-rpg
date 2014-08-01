@@ -26,10 +26,18 @@ tm.define 'rpg.SpriteCharacter',
     } = @character
     @_prevFrameIndex = 0
     @_playAnime = false
-    if not @character.directionFix
-      @gotoAndStop(@character.direction)
+    @gotoAndStop(@character.direction)
+    if @character.frame?
+      @setFrame @character.frame
     if @character.isAnimation()
       @gotoAndPlay(@animationName) if @animationName != ''
+
+  # フレーム設定
+  setFrame: (frame) ->
+    @currentAnimation  = null
+    @currentFrame      = frame
+    @currentFrameIndex = 0
+    @paused            = true
 
   # 向き
   updateDirection: ->
@@ -67,11 +75,6 @@ tm.define 'rpg.SpriteCharacter',
             @_playAnime = true
             @gotoAndPlay(@character.direction)
         else
-          #kb = rpg.system.app.keyboard
-          #unless kb.getKey('left') or
-          #kb.getKey('right') or
-          #kb.getKey('up') or
-          #kb.getKey('down')
           if @character.isStopping()
             if @_playAnime
               @_playAnime = false

@@ -56,10 +56,9 @@ class rpg.Event extends rpg.Character
   # 現在のページを確認
   checkPage: ->
     @currentPage = @pages[0]
-    for page in @pages
-      if page.checkCondition()
-        @currentPage = page
-        break
+    for page in @pages when page.checkCondition()
+      @currentPage = page
+      break
     @currentPage
 
   # イベント開始

@@ -9,7 +9,8 @@ require('../../main/common/Event.coffee')
 
 describe 'rpg.Event', () ->
   rpg.system = rpg.system ? {}
-  rpg.system.flag = new rpg.Flag()
+  rpg.game = {}
+  rpg.game.flag = new rpg.Flag()
 
   describe '引数なしで初期化', ->
     event = new rpg.Event()
@@ -75,11 +76,11 @@ describe 'rpg.Event', () ->
     it 'フラグがなければ page1', ->
       event.currentPage.name.should.equal 'page1'
     it 'フラグががあると、page2', ->
-      rpg.system.flag.on 'flg1'
+      rpg.game.flag.on 'flg1'
       event.checkPage()
       event.currentPage.name.should.equal 'page2'
     it 'フラグが off だと話す', ->
-      rpg.system.flag.off 'flg1'
+      rpg.game.flag.off 'flg1'
       event.checkPage()
       event.triggerTalk().should.equal true
       event.triggerCheck().should.equal false
@@ -87,7 +88,7 @@ describe 'rpg.Event', () ->
       event.commands[0].type.should.equal 'message'
       event.commands[0].params.should.deep.equal ['TEST2']
     it 'フラグが on だとしらべる', ->
-      rpg.system.flag.on 'flg1'
+      rpg.game.flag.on 'flg1'
       event.checkPage()
       event.triggerTalk().should.equal false
       event.triggerCheck().should.equal true

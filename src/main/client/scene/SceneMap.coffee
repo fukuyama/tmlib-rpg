@@ -54,6 +54,9 @@ tm.define 'SceneMap',
   update: ->
     # シーン切り替え中は更新しない(カレントシーンが自分では無い場合)
     return if rpg.system.scene != @
+    unless @interpreter.isRunning()
+      # 接触イベント判定
+      @player.checkTouched() if @player.character.isMoved()
     # インタプリター更新
     @interpreter.update() if @interpreter.isRunning() and @interpreterUpdate
     @player.awake = not @interpreter.isRunning()

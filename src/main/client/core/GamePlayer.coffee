@@ -33,15 +33,16 @@ tm.define 'rpg.GamePlayer',
 
   # 更新
   update: ->
+    @eventHandler.updateInput()
+
+  # タッチイベントチェック
+  checkTouched: ->
     # タッチイベントチェック
     if @character.isMoved()
       c = @character.findCharacter()
       if c?.triggerTouched?()
         # 反応がある場合はイベントを実行
         c.start('touched')
-        # イベントを実行したときは更新おわり
-        return
-    @eventHandler.updateInput()
 
   # 上入力処理
   input_up: ->
