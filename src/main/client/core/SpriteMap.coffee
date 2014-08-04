@@ -21,6 +21,8 @@ tm.define 'rpg.SpriteMap',
     @_screenMX = @width - @_screenCX - cw
     @_screenMY = @height - @_screenCY - ch
 
+    @updatePosition()
+
   updatePosition: () ->
     pc = rpg.system.player.character
 

@@ -7,25 +7,25 @@ module.exports = {
     height: 32 * 15
     background: 'rgb(255,255,255)'
   main:
-    scene: 'SceneTitle'
-    key: 'scene.title'
-    src: {
-      background:
-        image: 'scene.title.background.image'
-      menus: [
-        {
-          name:'NewGame'
-          action: 'NewGame'
-        }
-        {
-          name:'Test'
-          next:
-            scene:'SceneMy'
-        }
-      ]
-    }
-    transition: {}
-    assets : [
+    nextScene: 'SceneTitle'
+    param: ['scene.title']
+    assets: {
+      'scene.title':
+        type: 'json'
+        src:
+          background:
+            image: 'scene.title.background.image'
+          menus: [
+            {
+              name:'NewGame'
+              action: 'NewGame'
+            }
+            {
+              name:'Test'
+              next:
+                nextScene: 'SceneMy'
+            }
+          ]
       'scene.title.background.image': 'img/test_001.png'
       'system.se.menu_decision': 'audio/se/fin.mp3'
       'system.se.menu_cursor_move': 'audio/se/fon.mp3'
@@ -39,7 +39,7 @@ module.exports = {
       'spritesheet.object001':
         type:'tmss'
         src: 'data/spritesheet/object001.json'
-    ]
+    }
   assets: {
     'i1': 'img/hiyoco_nomal_full.png'
     'i2': 'img/test_character.png'

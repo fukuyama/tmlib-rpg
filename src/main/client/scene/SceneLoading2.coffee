@@ -138,7 +138,6 @@ tm.define 'SceneLoading',
   ###
   update: (app) ->
     if @_count == @_endCount
-      #console.log 'loadend'
       if @transition?
         @transitionScene
           scene: @scene

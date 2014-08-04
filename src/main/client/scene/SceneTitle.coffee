@@ -37,7 +37,9 @@ tm.define 'SceneTitle',
   init: (args='sample.scene.title') ->
     # 親の初期化
     @superInit(name:'SceneTitle')
+    console.log args
     args = tm.asset.AssetManager.get(args).data if typeof args is 'string'
+    console.log args
     {
       background
       @menus
@@ -64,9 +66,7 @@ tm.define 'SceneTitle',
     menu = @menus[@menu_title.index]
     if menu.action
       @['action' + menu.action].apply(@,[])
-    if menu.next? and menu.next.scene != ''
-      # 現在のシーンをキャプチャー
-      rpg.system.captureScreenBitmap()
+    if menu.next?
       # シーンを切り替える
       @loadScene menu.next
 

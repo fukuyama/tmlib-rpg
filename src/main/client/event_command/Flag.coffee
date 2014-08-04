@@ -18,6 +18,7 @@ tm.define 'rpg.event_command.Flag',
         when '-' then rsf.minus flag, value2
         when '*' then rsf.multi flag, value2
         when '/' then rsf.div flag, value2
+    rpg.system.scene.refreshEvent?()
     false
 
 rpg.event_command.flag = rpg.event_command.Flag()

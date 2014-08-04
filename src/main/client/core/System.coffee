@@ -176,17 +176,20 @@ tm.define 'rpg.System',
 
   # Assetロード
   loadAssets: (assets, callback=null) ->
-    @loadScene
-      scene: rpg.system.scene
+    rpg.system.app.pushScene SceneLoading(
       assets: assets
       callback: callback
+    )
   
   # シーンロード
   loadScene: (args={}) ->
-    args = {
-      bitmap: @temp.screenBitmap
-    }.$extend(@loadingSceneDefault).$extend(args)
-    rpg.system.app.replaceScene SceneLoading(args)
+    args = {}.$extend(@loadingSceneDefault).$extend(args)
+    if args.assets?
+      rpg.system.app.replaceScene SceneLoading(args)
+    else
+      @replaceScene
+        scene: args.nextScene
+        param: args.param
 
   # シーン変更
   replaceScene: (args={}) ->
@@ -197,7 +200,7 @@ tm.define 'rpg.System',
     if typeof scene is 'string'
       scene = tm.global[scene]
     if typeof scene is 'function'
-      scene = scene(param)
+      scene = scene.apply(null,param)
     rpg.system.app.replaceScene scene
 
   # シーン変更
@@ -265,10 +268,15 @@ tm.define 'rpg.System',
     @loadMap(1)
 
   # マップのロード
-  loadMap: (mapid) ->
+  loadMap: (mapid,enter) ->
     # 現在のシーンをキャプチャー
     @captureScreenBitmap()
     # マップのロードと切替
     @db.preloadMap mapid, ((map) ->
-      @replaceScene scene: SceneMap(map: map)
+      console.log 'preloadMap'
+      scene = SceneMap(map: map)
+      if enter?
+        console.log 'enter'
+        scene.on 'enter', enter
+      @replaceScene scene: scene
     ).bind @

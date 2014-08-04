@@ -279,6 +279,35 @@ module.exports = {
               }
             ])
         }
+        {
+          type: 'rpg.SpriteCharacter'
+          name: 'Event007'
+          width: 32
+          height: 32
+          properties:
+            init: JSON.stringify([
+              {
+                spriteSheet: 'spritesheet.object001'
+                transparent: true
+                frame: 2
+                direction:
+                  fix: true
+                mapX: 20
+                mapY: 10
+                pages: [
+                  {
+                    name: 'page1'
+                    trigger: ['touched']
+                    commands: [
+                      {type:'setup_transition'}
+                      {type:'move_map',params:[2,5,5,8]}
+                      {type:'start_transition'}
+                    ]
+                  }
+                ]
+              }
+            ])
+        }
       ]
     }
   ]

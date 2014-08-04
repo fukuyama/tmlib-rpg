@@ -79,6 +79,10 @@ class rpg.Map
         return event
     null
 
+  refreshEvent: () ->
+    for name, event of @events
+      event.checkPage?()
+
 # マップ幅
 Object.defineProperty rpg.Map.prototype, 'width',
   enumerable: true

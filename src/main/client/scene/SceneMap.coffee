@@ -22,6 +22,8 @@ tm.define 'SceneMap',
       interpreterUpdate: true # デバック用
     }.$extendAll(args)
 
+    @_refreshEvent = false # イベント更新フラグ
+
     # マップインタープリター
     @interpreter = rpg.system.mapInterpreter
 
@@ -49,18 +51,26 @@ tm.define 'SceneMap',
     @addChild(@windowMapMenu)
     @addChild(@windowMessage)
 
-    @on 'enter', -> console.log 'start SceneMap'
+    rpg.system.temp.transition?.addChildTo @
 
   update: ->
     # シーン切り替え中は更新しない(カレントシーンが自分では無い場合)
     return if rpg.system.scene != @
     unless @interpreter.isRunning()
+      # イベントの更新が必要な場合
+      if @_refreshEvent
+        # イベント更新
+        @map.refreshEvent()
+        @_refreshEvent = false
       # 接触イベント判定
       @player.checkTouched() if @player.character.isMoved()
     # インタプリター更新
     @interpreter.update() if @interpreter.isRunning() and @interpreterUpdate
     @player.awake = not @interpreter.isRunning()
     return
+
+  refreshEvent: () ->
+    @_refreshEvent = true
 
   openMapMenu: ->
     @player.active = false

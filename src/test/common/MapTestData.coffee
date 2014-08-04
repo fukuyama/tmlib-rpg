@@ -93,7 +93,7 @@ module.exports = {
             ])
           width: 32
           height: 32
-        },
+        }
         {
           type: 'rpg.SpriteCharacter'
           name: 'Event001'
@@ -134,6 +134,85 @@ module.exports = {
             ])
           width: 32
           height: 32
+        }
+        {
+          type: 'rpg.SpriteCharacter'
+          name: 'Event005'
+          width: 32
+          height: 32
+          properties:
+            init: JSON.stringify([
+              {
+                spriteSheet: 'spritesheet.object001'
+                transparent: true
+                frame: 0
+                direction:
+                  fix: true
+                mapX: 20
+                mapY: 5
+                pages: [
+                  {
+                    name: 'page1'
+                    trigger: ['touched']
+                    commands: [
+                      {type:'message',params: ['接触イベント']}
+                      {type:'if',params:['flag','A',on]}
+                      {type:'block',params:[
+                        {type:'message',params:['フラグＡ=ON']}
+                      ]}
+                      {type:'else'}
+                      {type:'block',params:[
+                        {type:'message',params:['フラグＡ=OFF']}
+                      ]}
+                      {type:'end'}
+                    ]
+                  }
+                ]
+              }
+            ])
+        }
+        {
+          type: 'rpg.SpriteCharacter'
+          name: 'Event006'
+          width: 32
+          height: 32
+          properties:
+            init: JSON.stringify([
+              {
+                spriteSheet: 'spritesheet.object001'
+                transparent: true
+                frame: 1
+                direction:
+                  fix: true
+                mapX: 20
+                mapY: 4
+                pages: [
+                  {
+                    name: 'page0'
+                  }
+                  {
+                    name: 'page1'
+                    condition: [
+                      {type:'flag.off?',params:['A']}
+                    ]
+                    trigger: ['touched']
+                    commands: [
+                      {type:'flag',params:['A',true]}
+                    ]
+                  }
+                  {
+                    name: 'page2'
+                    condition: [
+                      {type:'flag.on?',params:['A']}
+                    ]
+                    trigger: ['touched']
+                    commands: [
+                      {type:'flag',params:['A',false]}
+                    ]
+                  }
+                ]
+              }
+            ])
         }
       ]
     }

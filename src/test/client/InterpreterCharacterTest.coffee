@@ -179,3 +179,46 @@ describe 'rpg.Interpreter(Character)', () ->
             url = 'http://localhost:3000/client/data/map/001.json'
             return map?.url == url and
               pc.mapX == 0 and pc.mapY == 0 and pc.direction == 'down'
+      describe 'マップを移動するトランジションあり', ->
+        commands = [
+          {type:'move_map',params:[1,0,0,2]}
+          {type:'setup_transition'}
+          {type:'move_map',params:[2,5,5,8]}
+          {type:'start_transition'}
+        ]
+        it 'マップシーンへ移動', (done) ->
+          loadTestMap(done)
+        it 'インタープリタ取得', ->
+          interpreter = rpg.system.scene.interpreter
+        it 'interpreter を開始する', (done)->
+          interpreter.start commands
+          checkWait done, -> interpreter.isEnd()
+        it '移動確認', ->
+          map = rpg.system.scene.map
+          pc = rpg.system.player.character
+          map.url.should.equal 'http://localhost:3000/client/data/map/002.json'
+          pc.mapX.should.equal 5
+          pc.mapY.should.equal 5
+          pc.direction.should.equal 'up'
+      describe 'マップを移動するトランジションあり、遅め', ->
+        commands = [
+          {type:'move_map',params:[1,0,0,2]}
+          {type:'wait',params:[2]}
+          {type:'setup_transition',params:[{frame:90}]}
+          {type:'move_map',params:[2,5,5,8]}
+          {type:'start_transition'}
+        ]
+        it 'マップシーンへ移動', (done) ->
+          loadTestMap(done)
+        it 'インタープリタ取得', ->
+          interpreter = rpg.system.scene.interpreter
+        it 'interpreter を開始する', (done)->
+          interpreter.start commands
+          checkWait done, -> interpreter.isEnd()
+        it '移動確認', ->
+          map = rpg.system.scene.map
+          pc = rpg.system.player.character
+          map.url.should.equal 'http://localhost:3000/client/data/map/002.json'
+          pc.mapX.should.equal 5
+          pc.mapY.should.equal 5
+          pc.direction.should.equal 'up'

@@ -5,6 +5,9 @@ require('../../main/common/utils.coffee')
 require('../../main/common/constants.coffee')
 require('../../main/common/Character.coffee')
 require('../../main/common/Map.coffee')
+require('../../main/common/Flag.coffee')
+require('../../main/common/EventPage.coffee')
+require('../../main/common/Event.coffee')
 
 mapSheet = require('./MapTestData.coffee')
 
@@ -14,8 +17,8 @@ describe 'rpg.Mapの仕様', () ->
     m.events = []
     for l in m.mapSheet.layers when l.type is 'objectgroup'
       for obj in l.objects
-        m.events.push JSON.parse(obj.properties.init)[0]
-        #m.events[obj.name].name = m.events[obj.name].name ? obj.name
+        params = JSON.parse(obj.properties.init)[0]
+        m.events[obj.name] = new rpg.Event(params)
     m
   rpg.system = rpg.system ? {}
   rpg.system.player = {}
@@ -23,6 +26,8 @@ describe 'rpg.Mapの仕様', () ->
     mapX: 0
     mapY: 0
   })
+  rpg.game = {}
+  rpg.game.flag = new rpg.Flag()
 
   describe '初期化', ->
     m = new rpg.Map()
@@ -109,3 +114,25 @@ describe 'rpg.Mapの仕様', () ->
       m.isPassable(5,5,6).should.equal false
     it '5,5 から上(8)へ移動不可能(false)', ->
       m.isPassable(5,5,8).should.equal false
+
+  describe 'マップイベント', ->
+    describe 'イベントページ切替', ->
+      m = debug new rpg.Map()
+      it 'イベント確認1 page1', ->
+        event = m.events.Event006
+        page = event.currentPage
+        page.name.should.equal 'page1'
+      it 'フラグ操作 A=on', ->
+        rpg.game.flag.on 'A'
+        m.refreshEvent()
+      it 'イベント確認2 page2', ->
+        event = m.events.Event006
+        page = event.currentPage
+        page.name.should.equal 'page2'
+      it 'フラグ操作 A=off', ->
+        rpg.game.flag.off 'A'
+        m.refreshEvent()
+      it 'イベント確認3 page1', ->
+        event = m.events.Event006
+        page = event.currentPage
+        page.name.should.equal 'page1'

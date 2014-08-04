@@ -33,10 +33,11 @@ tm.define 'rpg.event_command.MoveMap',
 
   # コマンド
   apply_command: (mapid,x,y,d) ->
-    rpg.system.loadMap mapid
-    c = rpg.system.player.character
-    c.moveTo x, y
-    c.direction = d
+    rpg.system.loadMap mapid, ->
+      console.error 'setup ' + rpg.system.scene?.map?.url
+      c = rpg.system.player.character
+      c.moveTo x, y
+      c.direction = d
     @next()
     true
 

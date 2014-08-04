@@ -22,3 +22,16 @@ describe 'rpg.Interpreter(Trigger)', () ->
       it 'Enter', (done) ->
         getMessage().should.equals 'フラグＡ=OFF'
         emulate_key 'enter', done
+      it 'up', (done) ->
+        emulate_key 'up', done
+      it 'down', (done) ->
+        emulate_key 'down', done
+      it 'メッセージ表示待ち', (done) ->
+        setTimeout done, 2000
+      it 'Enter', (done) ->
+        emulate_key 'enter', done
+      it 'メッセージ表示待ち', (done) ->
+        setTimeout done, 2000
+      it 'Enter', (done) ->
+        getMessage().should.equals 'フラグＡ=ON'
+        emulate_key 'enter', done
