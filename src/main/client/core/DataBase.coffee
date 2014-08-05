@@ -105,17 +105,20 @@ tm.define 'rpg.DataBase',
   preloadMap: (mapid,func) ->
     mgr = tm.asset.Manager
     url = @mapUrl(mapid)
-    if mgr.get(mapid)?
-      func(new rpg.Map(mgr.get(mapid).data))
+    if mgr.get(url)?
+      func(new rpg.Map(mgr.get(url).data))
       return
-    onload = () ->
+    load = () ->
       data = mgr.get(url).data
-      data.url = url
-      rpg.system.loadAssets(
-        (tile.image for tile in data.tilesets)
-        (->func(new rpg.Map(data))).bind @
-      )
-    rpg.system.loadAssets [url], onload.bind @
+      func(new rpg.Map(data))
+    rpg.system.loadAssets url
+    rpg.system.scene.on 'load', load.bind @
+    rpg.system.scene.on 'progress', (e) ->
+      if e.key == url
+        data = mgr.get(url).data
+        data.url = url
+        @nextAssets = tile.image for tile in data.tilesets
+    return
 
   ###* ステートを作成
   * @memberof rpg.DataBase#

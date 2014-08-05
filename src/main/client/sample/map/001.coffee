@@ -300,7 +300,7 @@ module.exports = {
                     trigger: ['touched']
                     commands: [
                       {type:'setup_transition'}
-                      {type:'move_map',params:[2,5,5,8]}
+                      {type:'move_map',params:[2,5,6,8]}
                       {type:'start_transition'}
                     ]
                   }

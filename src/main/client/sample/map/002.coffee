@@ -55,7 +55,37 @@ module.exports = {
     {
       type: 'objectgroup'
       name: 'events'
-      objects: []
+      objects: [
+        {
+          type: 'rpg.SpriteCharacter'
+          name: 'Event001'
+          width: 32
+          height: 32
+          properties:
+            init: JSON.stringify([
+              {
+                spriteSheet: 'spritesheet.object001'
+                transparent: true
+                frame: 2
+                direction:
+                  fix: true
+                mapX: 5
+                mapY: 5
+                pages: [
+                  {
+                    name: 'page1'
+                    trigger: ['touched']
+                    commands: [
+                      {type:'setup_transition'}
+                      {type:'move_map',params:[1,20,10,2]}
+                      {type:'start_transition'}
+                    ]
+                  }
+                ]
+              }
+            ])
+        }
+      ]
     }
   ]
 }

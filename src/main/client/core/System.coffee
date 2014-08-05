@@ -176,10 +176,9 @@ tm.define 'rpg.System',
 
   # Assetロード
   loadAssets: (assets, callback=null) ->
-    rpg.system.app.pushScene SceneLoading(
-      assets: assets
-      callback: callback
-    )
+    scene = SceneLoading assets: assets, autopop: true
+    scene.on 'load', callback if callback?
+    rpg.system.app.pushScene scene
   
   # シーンロード
   loadScene: (args={}) ->
@@ -273,10 +272,8 @@ tm.define 'rpg.System',
     @captureScreenBitmap()
     # マップのロードと切替
     @db.preloadMap mapid, ((map) ->
-      console.log 'preloadMap'
       scene = SceneMap(map: map)
       if enter?
-        console.log 'enter'
         scene.on 'enter', enter
       @replaceScene scene: scene
     ).bind @

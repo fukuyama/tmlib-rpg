@@ -19,7 +19,13 @@ tm.define 'rpg.event_command.SetupTransition',
     setOrigin(0,0).
     setPosition(0,0)
     rpg.system.temp.transition = transition
-    false
+    # 次のコマンドがマップ移動だったらトランジションを反映させる(ちらつき防止)
+    if @nextCommand().type == 'move_map'
+      if scene.getChildAt(transition) < 0
+        scene.addChild(transition)
+      @next()
+      return true
+    return false
 
 rpg.event_command.setup_transition = rpg.event_command.SetupTransition()
 
@@ -36,6 +42,7 @@ tm.define 'rpg.event_command.StartTransition',
     transition = rpg.system.temp.transition
     if scene.getChildAt(transition) < 0
       scene.addChild(transition) # 切替先のシーンに追加する
+      return true
     if transition.isEnd()
       # トランジションが終わっていたら削除
       transition.remove()

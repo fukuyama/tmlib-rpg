@@ -9,6 +9,7 @@ tm.define 'SceneMap',
   * @constructor rpg.SceneMap
   * @param {Object} args
   * @param {rpg.Map} args.map マップオブジェクト
+  *                  事前に読み込む物があるのでStringでは無理
   ###
   init: (args={}) ->
     # 親の初期化

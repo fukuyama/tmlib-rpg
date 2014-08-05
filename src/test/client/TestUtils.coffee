@@ -28,6 +28,10 @@ _g.loadTestMap = (done) ->
   rpg.system.newGame()
   checkWait done, -> rpg.system.scene.name == 'SceneMap'
 
+_g.reloadTestMap = (done) ->
+  rpg.system.newGame()
+  checkWait done, -> rpg.system.scene.name == 'SceneMap'
+
 _g.checkWait = (done,fn) ->
   check = ->
     unless fn.call()
@@ -36,3 +40,13 @@ _g.checkWait = (done,fn) ->
       done()
       check = null
   check()
+
+_g.checkMapMove =  (mapid,x,y,dir,done) ->
+  checkWait done, ->
+    map = rpg.system.scene.map
+    pc = rpg.system.player.character
+    url = "http://localhost:3000/client/data/map/#{mapid}.json"
+    return map?.url == url and
+      pc.mapX == x and
+      pc.mapY == y and
+      pc.direction == dir
