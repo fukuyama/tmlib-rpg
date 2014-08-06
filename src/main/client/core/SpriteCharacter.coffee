@@ -89,6 +89,9 @@ tm.define 'rpg.SpriteCharacter',
             @_playAnime = false
             @gotoAndStop(@character.direction)
 
+  updateVisible: ->
+    @visible = @character.visible
+
   # 更新
   update: ->
     # キャラクターの更新
@@ -97,3 +100,4 @@ tm.define 'rpg.SpriteCharacter',
     @updateDirection()
     @updatePosition()
     @updateAnimation()
+    @updateVisible()

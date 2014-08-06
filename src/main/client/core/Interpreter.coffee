@@ -96,3 +96,9 @@ tm.define 'rpg.Interpreter',
   # 次のコマンド
   nextCommand: ->
     @command(@index + 1)
+
+  # キャラクター検索
+  findCharactor: (chara) ->
+    if chara == 'player'
+      return rpg.system.player.character
+    return rpg.system.scene.map.events[chara]

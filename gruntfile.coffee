@@ -60,6 +60,7 @@ module.exports = (grunt) ->
       'core/Interpreter'
       'event_command/Function'
       'event_command/Script'
+      'event_command/Character'
       'event_command/Transition'
       'event_command/Wait'
       'event_command/Move'

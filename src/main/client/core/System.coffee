@@ -244,8 +244,7 @@ tm.define 'rpg.System',
     game = rpg.game = {}
     game.flag = new rpg.Flag()
     # TODO: プレイヤーキャラクターとりあえず版
-    o = tm.asset.AssetManager.get('sample.character.test')
-    game.pc = new rpg.Character(o)
+    game.pc = new rpg.Character()
     game.pc.moveSpeed = 6
     
     # パーティ編成

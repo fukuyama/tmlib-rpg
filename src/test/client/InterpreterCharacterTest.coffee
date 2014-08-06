@@ -3,6 +3,39 @@ describe 'rpg.Interpreter(Character)', () ->
   interpreter = null
   @timeout(10000)
   describe 'キャラクター関連のイベント', ->
+    describe '状態変更', ->
+      describe 'プレイヤー非表示', ->
+        it 'マップシーンへ移動', (done) ->
+          loadTestMap(done)
+        it 'インタープリタ取得', ->
+          interpreter = rpg.system.scene.interpreter
+        it '状態確認 visible=on', ->
+          pc = rpg.system.player.character
+          pc.visible.should.equal true
+        it 'interpreter を開始する visible off に', (done)->
+          commands = [
+            {type:'visible',params:['player',off]}
+            {type:'message',params:['TEST']}
+          ]
+          interpreter.start commands
+          checkWait done, -> interpreter.isEnd()
+        it '状態確認 visible=off', ->
+          pc = rpg.system.player.character
+          pc.visible.should.equal false
+        it 'メッセージ表示待ち2', (done) ->
+          setTimeout(done,2000)
+        it 'Enter', (done) ->
+          emulate_key('enter',done)
+        it 'interpreter を開始する visible on に', (done)->
+          commands = [
+            {type:'visible',params:['player',on]}
+          ]
+          interpreter.start commands
+          checkWait done, -> interpreter.isEnd()
+        it '状態確認 visible=on', ->
+          pc = rpg.system.player.character
+          pc.visible.should.equal true
+  describe.skip 'キャラクター関連のイベント', ->
     describe '場所移動', ->
       describe 'プレイヤーの場所を移動 20,20', ->
         commands = [

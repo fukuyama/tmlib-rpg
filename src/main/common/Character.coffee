@@ -67,6 +67,7 @@ class rpg.Character
       @stopCount
       @lock
       @transparent  # すり抜け
+      @visible      # 表示状態
     } = {
       moveRoute: []
       moveRouteIndex: 0
@@ -74,6 +75,7 @@ class rpg.Character
       moveSpeed: 4
       moveFrequency: 4
       transparent: false
+      visible: true
       stopCount: 0
       lock:
         stopCount: false

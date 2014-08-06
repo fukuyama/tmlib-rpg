@@ -23,6 +23,9 @@ tm.define 'SceneLoading',
       bgColor: 'transparent'
     }.$extend args
 
+    @_assets = []
+    @addAssets param.assets
+
     @fromJSON
       children:
         stage:
@@ -81,18 +84,17 @@ tm.define 'SceneLoading',
     stage.alpha = 0.0
     stage.tweener.clear().fadeIn(100).call (->
       if param.assets
-        @loader = loader = tm.asset.Loader()
+        loader = tm.asset.Loader()
 
         loader.on 'load', (->
-          if @nextAssets?
-            loader.load @nextAssets
-            @nextAssets = null
+          if @_assets.length > 0
+            loader.load @_assets.shift()
           else
             bar.value = 100
             stage.tweener.clear().wait(200).fadeOut(200).call (->
               # console.log 'loadend'
               if param.nextScene?
-                rpg.system.replaceScene
+                @replaceScene
                   scene: param.nextScene
                   param: param.param
               else if param.autopop
@@ -112,10 +114,16 @@ tm.define 'SceneLoading',
           @fire event
         ).bind(@)
 
-        assets = param.assets
-        if param.assets instanceof Array
-          assets = {}
-          for i in param.assets
-            assets[i] = i
-        loader.load(assets)
+        loader.load @_assets.shift()
     ).bind(@)
+
+
+  ###* アセットの追加
+  * @memberof SceneLoading#
+  * @param {Array|Hash} assets 追加するアセット
+  ###
+  addAssets: (assets) ->
+    if Array.isArray assets
+      @_assets = @_assets.concat(assets)
+    else
+      @_assets.push assets

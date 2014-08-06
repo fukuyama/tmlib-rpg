@@ -117,7 +117,8 @@ tm.define 'rpg.DataBase',
       if e.key == url
         data = mgr.get(url).data
         data.url = url
-        @nextAssets = tile.image for tile in data.tilesets
+        for tile in data.tilesets
+          @addAssets tile.image
     return
 
   ###* ステートを作成
