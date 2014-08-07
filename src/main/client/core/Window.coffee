@@ -285,6 +285,7 @@ tm.define 'rpg.Window',
     _callback = (->
       fn()
       @removeEventListener('close',_callback)
+      _callback = null
     ).bind(@)
     @addEventListener('close',_callback)
     @

@@ -2,7 +2,13 @@
 # 文章表示
 tm.define 'rpg.event_command.Message',
 
-  # コマンド
+  ###* イベントコマンドの反映。
+  * Interpreter インスタンスのメソッドとして実行される。
+  * イベントコマンド自体のインスタンスは、@event_command で取得する。
+  * @memberof rpg.event_command.CharacterProprties#
+  * @param {string} msg 表示するメッセージ。
+  * @return {boolean} false
+  ###
   apply_command: (msg) ->
     tmp = rpg.system.temp
     tmp.message = [msg]
@@ -13,13 +19,13 @@ tm.define 'rpg.event_command.Message',
       tmp.message.push command.params[0]
       @next()
     # 文章表示終了処理
-    tmp.messageEndProc = (->
-      @waitFlag = false
-    ).bind(@)
+    self = @
+    tmp.messageEndProc = -> self.waitFlag = false
     @waitFlag = true
     # 次のコマンドが選択肢か数値入力の場合続けて処理する
     if @hasNext() and
-    (@nextCommand().type is 'select' or @nextCommand().type is 'input_num')
+    (@nextCommand().type is 'select' or
+    @nextCommand().type is 'input_num')
       @next().execute()
     false
 

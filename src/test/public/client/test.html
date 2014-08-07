@@ -7,30 +7,29 @@
     <link rel="stylesheet" href="mocha.css" />
     <script src="lib/develop/tmlib.js"></script>
     <script src="main.js"></script>
-	<script>
-		function checkKeyEvent (event) {
-			if (document.getElementById('scrollLock').checked) {
-				event.preventDefault();
-			}
-		}
-	</script>
-	<style>
-		#scrollLockLabel {
-			position: fixed;
-			margin: 0;
-			bottom: 0px;
-			right: 0px;
-			z-index: 10;
-			zoom: 0.8;
-		}
-	</style>
+  <script>
+    function checkKeyEvent (event) {
+      if (document.getElementById('scrollLock').checked) {
+      event.preventDefault();
+      }
+      }
+  </script>
+  <style>
+    #scrollLockLabel {
+      position: fixed;
+      margin:   0;
+      bottom:   0px;
+      right:    0px;
+      z-index:  10;
+      zoom:     0.8;
+    }
+  </style>
   </head>
   <body onkeydown="checkKeyEvent(event)">
     <canvas id="game_screen"></canvas>
-	<label id="scrollLockLabel">
-	Keyboard Event Lock
-	<input id="scrollLock" type="checkbox" />
-	</label>
+    <label id="scrollLockLabel">
+      Keyboard Event Lock <input id="scrollLock" type="checkbox" />
+    </label>
     <script src="mocha.js"></script>
     <script src="chai.js"></script>
     <script>
@@ -41,9 +40,9 @@
       rpg.mocha_run = function() {
         console.log('* mocha_run *');
         runner = mocha.run();
-		runner.on('test',function(){
-			window.scrollBy(0,1000);
-		});
+        runner.on('test',function(){
+          window.scrollBy(0,1000);
+        });
       }
     </script>
     <script src="test/TestUtils.js"></script>

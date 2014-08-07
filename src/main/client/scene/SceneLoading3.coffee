@@ -41,9 +41,9 @@ tm.define 'SceneLoading',
         label:
           type: 'tm.display.Label'
           text: 'Loading'
-          x: param.width / 2
+          x: param.width - 100
           y: param.height - 32
-          align: 'center'
+          align: 'right'
           baseline: 'middle'
           fontSize: 24
           fillStyle: '#000'

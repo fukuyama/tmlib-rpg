@@ -2200,7 +2200,7 @@ tm.util = tm.util || {};
 
 
 (function() {
-    
+
     /*
      * @enum
      * @private
@@ -2229,7 +2229,7 @@ tm.util = tm.util || {};
         /* @property beforeSend */
         beforeSend: null,
     };
-    
+
     /**
      * @class tm.util.Ajax
      * Ajax クラス
@@ -2242,11 +2242,11 @@ tm.util = tm.util || {};
             for (var key in AJAX_DEFAULT_SETTINGS) {
                 params[key] = params[key] || AJAX_DEFAULT_SETTINGS[key];
             }
-            
+
             var httpRequest = new XMLHttpRequest();
             var ajax_params = "";
             var conv_func = tm.util.Ajax.DATA_CONVERTE_TABLE[params.dataType];
-            
+
             var url = params.url;
             if (params.data) {
                 var query = "";
@@ -2257,7 +2257,7 @@ tm.util = tm.util || {};
                 else {
                     query = tm.util.QueryString.stringify(params.data);
                 }
-                
+
                 if (params.type == 'GET') {
                     params.url += '?' + query;
                     params.data = null;
@@ -2266,14 +2266,14 @@ tm.util = tm.util || {};
                     params.data = query;
                 }
             }
-            
+
             // httpRequest.withCredentials = true;
-            
+
             // コールバック
             httpRequest.onreadystatechange = function() {
                 if (httpRequest.readyState == 4) {
                     // 成功(status === 0 はローカルファイル用)
-                    if (httpRequest.status === 200 || httpRequest.status === 0) {
+                    if (httpRequest.status === 200 || httpRequest.status === 201 || httpRequest.status === 0) {
                         if (params.responseType !== "arraybuffer") {
                             // タイプ別に変換をかける
                             var data = conv_func(httpRequest.responseText);
@@ -2292,8 +2292,8 @@ tm.util = tm.util || {};
                     //console.log("通信中");
                 }
             };
-            
-            
+
+
             httpRequest.open(params.type, params.url, params.async, params.username, params.password);   // オープン
             if (params.type === "POST") {
                 httpRequest.setRequestHeader('Content-Type', params.contentType);        // ヘッダをセット
@@ -2302,18 +2302,18 @@ tm.util = tm.util || {};
             if (params.responseType) {
                 httpRequest.responseType = params.responseType;
             }
-            
+
             if (params.beforeSend) {
                 params.beforeSend(httpRequest);
             }
-            
+
             if (params.password) {
                 httpRequest.withCredentials = true;
             }
 
             httpRequest.send(params.data);
         },
-        
+
         /**
          * loadJSONP
          */
@@ -2322,16 +2322,16 @@ tm.util = tm.util || {};
             g.tmlib_js_dummy_func_count = tm.global.tmlib_js_dummy_func || 0;
             var dummy_func_name = "tmlib_js_dummy_func" + (g.tmlib_js_dummy_func_count++);
             g[dummy_func_name]  = callback;
-            
+
             var elm = document.createElement("script");
             elm.type = "text/javascript";
             elm.charset = "UTF-8";
-            elm.src = url + "&callback=" + dummy_func_name;
+            elm.src = url + (url.indexOf("?") < 0 ? "?" : "&") + "callback=" + dummy_func_name;
             elm.setAttribute("defer", true);
             document.getElementsByTagName("head")[0].appendChild(elm);
         }
     };
-    
+
     /*
      * @enum tm.util.Ajax.DATA_CONVERTE_TABLE
      * データコンバータテーブル
@@ -2341,12 +2341,12 @@ tm.util = tm.util || {};
         undefined: function(data) {
             return data;
         },
-        
+
         /* @method */
         text: function(data) {
             return data;
         },
-        
+
         /* @method */
         xml: function(data) {
             var parser = new DOMParser();
@@ -2354,14 +2354,14 @@ tm.util = tm.util || {};
 
             return xml;
         },
-        
+
         /* @method */
         dom: function(data) {
             var div = document.createElement("div");
             div.innerHTML = data;
             return tm.dom.Element(div);
         },
-        
+
         /* @method */
         json: function(data) {
             try {
@@ -2372,13 +2372,13 @@ tm.util = tm.util || {};
                 console.dir(data);
             }
         },
-        
+
         /* @method */
         script: function(data) {
             eval(data);
             return data;
         },
-        
+
         /*
          * @method
          * ### Reference
@@ -2392,7 +2392,7 @@ tm.util = tm.util || {};
             }
             return bytearray;
         },
-        
+
     };
 
 
@@ -7219,8 +7219,8 @@ tm.dom = tm.dom || {};
             this.superInit();
             
             this.element = new Image();
-            if (!tm.isLocal()) {
-                this.element.crossOrigin="anonymous";
+            if ( !tm.isLocal() && !(/^data:/.test(src)) ) {
+                // this.element.crossOrigin = "anonymous";
             }
             this.element.src = src;
             
@@ -7229,6 +7229,16 @@ tm.dom = tm.dom || {};
                 self.loaded = true;
                 var e = tm.event.Event("load");
                 self.dispatchEvent( e );
+            };
+
+            this.element.onerror = function(e) {
+                console.error("[tmlib] {0}の読み込みに失敗!".format(src));
+
+                var key = src.split('/').last.replace('.png', '').split('?').first.split('#').first;
+                var elm = e.target;
+
+                elm.src = "http://dummyimage.com/128x128/444444/eeeeee&text=" + key;
+                elm.onerror = null;
             };
         },
         
@@ -7642,6 +7652,9 @@ tm.dom = tm.dom || {};
         _propertiesToJson: function(elm) {
             var properties = elm.getElementsByTagName("properties")[0];
             var obj = {};
+            if (properties === undefined) {
+                return obj;
+            }
             for (var k = 0;k < properties.childNodes.length;k++) {
                 var p = properties.childNodes[k];
                 if (p.tagName === "property") {
@@ -8259,6 +8272,7 @@ tm.input = tm.input || {};
             this.prevPosition   = tm.geom.Vector2(0, 0);
             this._x = 0;
             this._y = 0;
+            this.touches = [];
             
             var self = this;
             this.element.addEventListener("mousedown", function(e){
@@ -8499,7 +8513,8 @@ tm.input = tm.input || {};
             this.prevPosition   = tm.geom.Vector2(0, 0);
             this._x = 0;
             this._y = 0;
-            
+            this.touches = [];
+
             var self = this;
             this.element.addEventListener("touchstart", function(e){
                 self.touched = true;
@@ -8508,14 +8523,20 @@ tm.input = tm.input || {};
                 // 最初だけセット
                 self.position.set(self._x, self._y);
                 self.prevPosition.set(self._x, self._y);    // prevPostion をリセット
+
+                self._setTouches(e);
             });
             this.element.addEventListener("touchend", function(e){
                 self.touched = false;
+
+                self._setTouches(e);
             });
             this.element.addEventListener("touchmove", function(e){
                 self._touchmove(e);
                 // 画面移動を止める
                 e.stop();
+
+                self._setTouches(e);
             });
             
             // var self = this;
@@ -8628,6 +8649,37 @@ tm.input = tm.input || {};
                 this._y *= e.target.height / parseInt(e.target.style.height);
             }
         },
+
+        _getAdjustPoint: function(p) {
+            var elm = this.element;
+            var style = elm.style;
+            var r = elm.getBoundingClientRect();
+            var p = {
+                x: p.clientX - r.left,
+                y: p.clientY - r.top,
+            };
+            
+            if (style.width) {
+                p.x *= elm.width / parseInt(style.width);
+            }
+            if (style.height) {
+                p.y *= elm.height / parseInt(style.height);
+            }
+
+            return p;
+         },
+
+        _setTouches: function(e) {
+            var touches = e.touches;
+
+            this.touches.clear();
+            for (var i=0,len=touches.length; i<len; ++i) {
+                var p = this._getAdjustPoint(touches[i]);
+                this.touches.push(p);
+            }
+
+            return this;
+        }
         
     });
     
@@ -10648,11 +10700,11 @@ tm.graphics = tm.graphics || {};
      * @member tm.asset.Texture
      * ビットマップ生成
      */
-    tm.asset.Texture.prototype.getBitmap = function(width, height) {
+    tm.asset.Texture.prototype.getBitmap = function(x, y, width, height) {
         var canvas = tm.graphics.Canvas();
         canvas.resize(this.width, this.height);
         canvas.drawTexture(this, 0, 0, this.width, this.height);
-        return canvas.getBitmap(width, height);
+        return canvas.getBitmap(x, y, width, height);
     };
 
     var dummyCanvas = null;
@@ -11780,10 +11832,8 @@ tm.app = tm.app || {};
         stats         : null,
         /** タイマー */
         timer         : null,
-        /** フレームレート */
-        fps           : 30,
         /** 現在更新中か */
-        isPlaying     : null,
+        awake         : null,
         /** @private  シーン情報の管理 */
         _scenes       : null,
         /** @private  シーンのインデックス */
@@ -11817,7 +11867,7 @@ tm.app = tm.app || {};
             this.updater = tm.app.Updater(this);
             
             // 再生フラグ
-            this.isPlaying = true;
+            this.awake = true;
             
             // シーン周り
             this._scenes = [ tm.app.Scene() ];
@@ -11838,7 +11888,7 @@ tm.app = tm.app || {};
                 this.currentScene.dispatchEvent(tm.event.Event("blur"));
             }.bind(this));
             // クリック
-            this.element.addEventListener((tm.isMobile) ? "touchstart" : "mousedown", this._onclick.bind(this));
+            this.element.addEventListener((tm.isMobile) ? "touchend" : "mouseup", this._onclick.bind(this));
         },
         
         /**
@@ -11846,28 +11896,30 @@ tm.app = tm.app || {};
          */
         run: function() {
             var self = this;
-            
-            // // requestAnimationFrame version
-            // var fn = function() {
-                // self._loop();
-                // requestAnimationFrame(fn);
-            // }
-            // fn();
-            
-            tm.setLoop(function(){ self._loop(); }, this.timer.frameTime);
-            
-            return ;
-            
-            if (true) {
-                setTimeout(arguments.callee.bind(this), 1000/this.fps);
-                this._loop();
-            }
-            
-            return ;
-            
-            var self = this;
-            // setInterval(function(){ self._loop(); }, 1000/self.fps);
-            tm.setLoop(function(){ self._loop(); }, 1000/self.fps);
+
+            this.startedTime = new Date();
+            this.prevTime = new Date();
+            this.deltaTime = 0;
+
+            var _run = function() {
+                // start
+                var start = (new Date()).getTime();
+
+                // run
+                self._loop();
+
+                // calculate progress time
+                var progress = (new Date()).getTime() - start;
+                // calculate next waiting time
+                var newDelay = self.timer.frameTime-progress;
+
+                // set next running function
+                setTimeout(_run, newDelay);
+            };
+
+            _run();
+
+            return this;
         },
         
         /*
@@ -11882,6 +11934,10 @@ tm.app = tm.app || {};
             // draw
             if (this.draw) this.draw();
             this._draw();
+
+            var now = new Date();
+            this.deltaTime = now - this.prevTime;
+            this.prevTime = now;
             
             // stats update
             if (this.stats) this.stats.update();
@@ -11996,7 +12052,7 @@ tm.app = tm.app || {};
          * シーンのupdateを実行するようにする
          */
         start: function() {
-            this.isPlaying = true;
+            this.awake = true;
 
             return this;
         },
@@ -12005,7 +12061,7 @@ tm.app = tm.app || {};
          * シーンのupdateを実行しないようにする
          */
         stop: function() {
-            this.isPlaying = false;
+            this.awake = false;
 
             return this;
         },
@@ -12021,7 +12077,7 @@ tm.app = tm.app || {};
             this.touch.update();
             // this.touches.update();
             
-            if (this.isPlaying) {
+            if (this.awake) {
                 this.updater.update(this.currentScene);
                 this.timer.update();
             }
@@ -12046,26 +12102,14 @@ tm.app = tm.app || {};
          * @param {Object} e
          */
         _onclick: function(e) {
-            var px = e.pointX;
-            var py = e.pointY;
-
-            if (this.element.style.width) {
-                px *= this.element.width / parseInt(this.element.style.width);
-            }
-            if (this.element.style.height) {
-                py *= this.element.height / parseInt(this.element.style.height);
-            }
-
             var _fn = function(elm) {
                 if (elm.children.length > 0) {
-                    elm.children.each(function(elm) {
-                        if (elm.hasEventListener("click")) {
-                            if (elm.isHitPoint && elm.isHitPoint(px, py)) {
-                                elm.dispatchEvent(tm.event.Event("click"));
-                            }
-                        }
-                    });
+                    elm.children.each(function(elm) { _fn(elm); });
                 }
+                if (elm._clickFlag && elm.hasEventListener("click")) {
+                    elm.dispatchEvent(tm.event.Event("click"));
+                }
+                elm._clickFlag = false;
             };
             _fn(this.currentScene);
         },
@@ -12423,6 +12467,7 @@ tm.app = tm.app || {};
             this.interactive = false;
             this.hitFlags = [];
             this.downFlags= [];
+            this._clickFlag = false;
 
             this._worldMatrix = tm.geom.Matrix33();
             this._worldMatrix.identity();
@@ -12765,9 +12810,8 @@ tm.app = tm.app || {};
             var elm = this.element;
             
             var prevHitFlag = this.hitFlags[index];
-            
             this.hitFlags[index]    = this.isHitPoint(p.x, p.y);
-            
+
             if (!prevHitFlag && this.hitFlags[index]) {
                 this._dispatchPointingEvent("mouseover", "touchover", "pointingover", app, p);
             }
@@ -12780,6 +12824,7 @@ tm.app = tm.app || {};
                 if (p.getPointingStart()) {
                     this._dispatchPointingEvent("mousedown", "touchstart", "pointingstart", app, p);
                     this.downFlags[index] = true;
+                    this._clickFlag = true;
                 }
             }
             
@@ -15418,6 +15463,7 @@ tm.display = tm.display || {};
         /** @property originY */
         /** @property width */
         /** @property height */
+        /** @property tileset */
 
         /**
          * @constructor
@@ -15440,6 +15486,7 @@ tm.display = tm.display || {};
             this.width = chipWidth*this.mapSheet.width;
             this.height= chipWidth*this.mapSheet.height;
 
+            this.tileset = [];
             this._build();
         },
 
@@ -15448,6 +15495,10 @@ tm.display = tm.display || {};
          */
         _build: function() {
             var self = this;
+
+            this.mapSheet.tilesets.each(function(tileset) {
+                self._buildTileset(tileset);
+            });
 
             this.mapSheet.layers.each(function(layer, hoge) {
                 if (layer.type == "objectgroup") {
@@ -15462,14 +15513,38 @@ tm.display = tm.display || {};
         /**
          * @private
          */
+        _buildTileset: function(tileset) {
+            var self      = this;
+            var mapSheet  = this.mapSheet;
+            var texture   = tm.asset.Manager.get(tileset.image);
+            var xIndexMax = (texture.width / mapSheet.tilewidth)|0;
+            var yIndexMax = (texture.height / mapSheet.tileheight)|0;
+
+            yIndexMax.times(function(my) {
+                xIndexMax.times(function(mx) {
+                    var rect = tm.geom.Rect(
+                        mx * mapSheet.tilewidth,
+                        my * mapSheet.tileheight,
+                        mapSheet.tilewidth,
+                        mapSheet.tileheight
+                        );
+                    self.tileset.push({
+                        image: tileset.image,
+                        rect: rect
+                    });
+                });
+            });
+        },
+
+        /**
+         * @private
+         */
         _buildLayer: function(layer) {
-            var self        = this;
-            var mapSheet    = this.mapSheet;
-            var texture     = tm.asset.Manager.get(mapSheet.tilesets[0].image);
-            var xIndexMax   = (texture.width/mapSheet.tilewidth)|0;
-            var shape       = tm.display.Shape(this.width, this.height).addChildTo(this);
-            var visible = (layer.visible === 1) || (layer.visible === undefined);
-            var opacity = layer.opacity === undefined ? 1 : layer.opacity;
+            var self     = this;
+            var mapSheet = this.mapSheet;
+            var shape    = tm.display.Shape(this.width, this.height).addChildTo(this);
+            var visible  = (layer.visible === 1) || (layer.visible === undefined);
+            var opacity  = layer.opacity === undefined ? 1 : layer.opacity;
             shape.origin.set(0, 0);
 
             if (visible) {
@@ -15482,16 +15557,17 @@ tm.display = tm.display || {};
 
                     var xIndex = index%mapSheet.width;
                     var yIndex = (index/mapSheet.width)|0;
-
-                    var mx = (type%xIndexMax);
-                    var my = (type/xIndexMax)|0;
-
                     var dx = xIndex*self.chipWidth;
                     var dy = yIndex*self.chipHeight;
 
+                    var tile = self.tileset[type];
+
+                    var texture = tm.asset.Manager.get(tile.image);
+                    var rect = tile.rect;
+
                     shape.canvas.globalAlpha = opacity;
                     shape.canvas.drawTexture(texture,
-                        mx*mapSheet.tilewidth, my*mapSheet.tileheight, mapSheet.tilewidth, mapSheet.tileheight,
+                        rect.x, rect.y, rect.width, rect.height,
                         dx, dy, self.chipWidth, self.chipHeight
                         );
                 }.bind(this));
@@ -15720,18 +15796,8 @@ tm.display = tm.display || {};
         },
         "label": function(canvas) {
             canvas.setText(this.fontStyle, this.align, this.baseline);
-            if (this.fill) {
-                if (this.maxWidth) {
-                    this._lines.each(function(elm, i) {
-                        canvas.fillText(elm, 0, this.textSize*i, this.maxWidth);
-                    }.bind(this));
-                }
-                else {
-                    this._lines.each(function(elm, i) {
-                        canvas.fillText(elm, 0, this.textSize*i);
-                    }.bind(this));
-                }
-            }
+            if (this.lineWidth) canvas.lineWidth = this.lineWidth;
+            
             if (this.stroke) {
                 if (this.maxWidth) {
                     this._lines.each(function(elm, i) {
@@ -15741,6 +15807,18 @@ tm.display = tm.display || {};
                 else {
                     this._lines.each(function(elm, i) {
                         canvas.strokeText(elm, 0, this.textSize*i);
+                    }.bind(this));
+                }
+            }
+            if (this.fill) {
+                if (this.maxWidth) {
+                    this._lines.each(function(elm, i) {
+                        canvas.fillText(elm, 0, this.textSize*i, this.maxWidth);
+                    }.bind(this));
+                }
+                else {
+                    this._lines.each(function(elm, i) {
+                        canvas.fillText(elm, 0, this.textSize*i);
                     }.bind(this));
                 }
             }
@@ -17579,25 +17657,25 @@ tm.ui = tm.ui || {};
 		init: function(param) {
 			this.superInit();
 
-			var loader = tm.asset.Loader();
-			loader.load({
-				"ss": "scene/ss.png",
-			});
+			// var loader = tm.asset.Loader();
+			// loader.load({
+			// 	"ss": "scene/ss.png",
+			// });
 
-			loader.onload = function() {
-				this.fromJSON({
-					children: {
-						ss: {
-							type: "tm.display.Sprite",
-							init: "ss",
-							originX: 0,
-							originY: 0,
-							y: -88,
-							alpha: 0.1,
-						}
-					}
-				})
-			}.bind(this);
+			// loader.onload = function() {
+			// 	this.fromJSON({
+			// 		children: {
+			// 			ss: {
+			// 				type: "tm.display.Sprite",
+			// 				init: "ss",
+			// 				originX: 0,
+			// 				originY: 0,
+			// 				y: -88,
+			// 				alpha: 0.1,
+			// 			}
+			// 		}
+			// 	})
+			// }.bind(this);
 
 			this.fromJSON({
 				children: {
@@ -18403,8 +18481,14 @@ tm.sound = tm.sound || {};
 
 (function() {
 
-    var isAvailable = tm.global.webkitAudioContext ? true : false;
-    var context = isAvailable ? new webkitAudioContext() : null;
+    var context = null;
+    if (tm.global.webkitAudioContext) {
+        context = new webkitAudioContext();
+    } else if (tm.global.mozAudioContext) {
+        context = new mozAudioContext();
+    } else if (tm.global.AudioContext) {
+        context = new AudioContext();
+    }
 
     /**
      * @class tm.sound.WebAudio
@@ -18422,6 +18506,10 @@ tm.sound = tm.sound || {};
         panner: null,
         /** volume */
         volume: 0.8,
+        /** playing **/
+        playing: false,
+
+        _pannerEnabled: true,
 
         /**
          * @constructor
@@ -18453,11 +18541,12 @@ tm.sound = tm.sound || {};
          * - noteGrainOn ... http://www.html5rocks.com/en/tutorials/casestudies/munkadoo_bouncymouse/
          */
         play: function(time) {
+            if (this.playing == true) { return ; }
+            this.playing = true;
+
             if (time === undefined) time = 0;
 
-            if (this.source.playbackState == 0) {
-                this.source.noteOn(this.context.currentTime + time);
-            }
+            this.source.start(this.context.currentTime + time);
             
             var self = this;
             var time = (this.source.buffer.duration/this.source.playbackRate.value)*1000;
@@ -18473,18 +18562,21 @@ tm.sound = tm.sound || {};
          * 停止
          */
         stop: function(time) {
+            if (this.playing == false) { return ; }
+            this.playing = false;
+
             if (time === undefined) time = 0;
             if (this.source.playbackState == 0) {
                 return ;
             }
-            this.source.noteOff(this.context.currentTime + time);
+            this.source.stop(this.context.currentTime + time);
             
             var buffer = this.buffer;
             var volume = this.volume;
             var loop   = this.loop;
             
             this.source = this.context.createBufferSource();
-            this.source.connect(this.panner);
+            this.source.connect(this.gainNode);
             this.buffer = buffer;
             this.volume = volume;
             this.loop = loop;
@@ -18505,7 +18597,7 @@ tm.sound = tm.sound || {};
          * レジューム
          */
         resume: function() {
-            this.source.connect(this.panner);
+            this.source.connect(this.gainNode);
 
             return this;
         },
@@ -18593,7 +18685,9 @@ tm.sound = tm.sound || {};
                 url: src,
                 responseType: "arraybuffer",
                 success: function(data) {
+                    // console.debug("WebAudio ajax load success");
                     self.context.decodeAudioData(data, function(buffer) {
+                        console.debug("WebAudio decodeAudioData success");
                         self._setup();
                         self.buffer = buffer;
                         self.loaded = true;
@@ -18608,13 +18702,19 @@ tm.sound = tm.sound || {};
          */
         _setup: function() {
             this.source     = this.context.createBufferSource();
-//            this.gainNode   = this.context.createGainNode();
+            this.gainNode   = this.context.createGain();
             this.panner     = this.context.createPanner();
             this.analyser   = this.context.createAnalyser();
 
-            this.source.connect(this.panner);
+            this.source.connect(this.gainNode);
+            this.gainNode.connect(this.panner);
             this.panner.connect(this.analyser);
             this.analyser.connect(this.context.destination);
+
+            // TODO 暫定的対応
+            if (tm.BROWSER === "Firefox") {
+                this.pannerEnabled = false;
+            }
         },
 
         /**
@@ -18666,8 +18766,8 @@ tm.sound = tm.sound || {};
      * ボリューム
      */
     tm.sound.WebAudio.prototype.accessor("volume", {
-        get: function()  { return this.source.gain.value; },
-        set: function(v) { this.source.gain.value = v; }
+        get: function()  { return this.gainNode.gain.value; },
+        set: function(v) { this.gainNode.gain.value = v; }
     });
 
     /**
@@ -18679,8 +18779,29 @@ tm.sound = tm.sound || {};
         set: function(v) { this.source.playbackRate.value = v; }
     });
 
+    /**
+     * @property    pannerEnabled
+     * panner有効
+     */
+    tm.sound.WebAudio.prototype.accessor("pannerEnabled", {
+        get: function()  { return this._pannerEnabled; },
+        set: function(v) {
+            this.gainNode.disconnect();
+            this.panner.disconnect();
+            if (v) {
+                this.gainNode.connect(this.panner);
+                this.panner.connect(this.analyser);
+            } else {
+                this.gainNode.connect(this.analyser);
+            }
+            this._pannerEnabled = v;
+
+            // console.debug("WebAudio pannerEnabled: " + v);
+        }
+    });
+
     /** @static @property */
-    tm.sound.WebAudio.isAvailable = tm.global.webkitAudioContext ? true : false;
+    tm.sound.WebAudio.isAvailable = (tm.global.webkitAudioContext || tm.global.mozAudioContext || tm.global.AudioContext) ? true : false;
 
 })();
 
@@ -18857,14 +18978,19 @@ tm.social = tm.social || {};
 
 
 (function() {
-    
+
     /**
      * @class tm.social.NineLeap
      * 9leap ネームスペース
      */
     tm.social.Nineleap = tm.social.Nineleap || {};
-    
+
     var BASE_URL = "http://9leap.net/games/{id}/result?score={score}&result={result}";
+
+    /**
+     * @member      tm.social.Nineleap
+     */
+    tm.social.Nineleap.DEBUG_GAME_ID = "0";
 
     /**
      * @member      tm.social.Nineleap
@@ -18886,14 +19012,136 @@ tm.social = tm.social || {};
      */
     tm.social.Nineleap.postRanking = function(score, result) {
         if (location.hostname == 'r.jsgames.jp') {
-            var id = location.pathname.match(/^\/games\/(\d+)/)[1]; 
+            var id = location.pathname.match(/^\/games\/(\d+)/)[1];
             location.replace( this.createURL(id, score, result) );
         }
         else {
             console.warn("9leap に投稿されていません!");
         }
     };
-    
+
+    /**
+     * @member      tm.social.Nineleap
+     * @method      gotoLogin
+     * 9leapログインページヘ遷移する.
+     */
+    tm.social.Nineleap.gotoLogin = function() {
+        window.location.replace("http://9leap.net/api/login");
+    };
+
+    /**
+     * @member      tm.social.Nineleap
+     * @method      isOn9leap
+     * アプリケーションが9leap上にデプロイされているか
+     */
+    tm.social.Nineleap.isOn9leap = function() {
+        return window.location.hostname === "r.jsgames.jp";
+    };
+
+    /**
+     * @member      tm.social.Nineleap
+     * @method      getGameId
+     * 9leapのゲームIDを取得する
+     */
+    tm.social.Nineleap.getGameId = function() {
+        if (tm.social.Nineleap.isOn9leap()) {
+            return window.location.pathname.match(/^\/games\/(\d+)/)[1];
+        } else {
+            return tm.social.Nineleap.DEBUG_GAME_ID;
+        }
+    };
+
+    /**
+     * @member      tm.social.Nineleap
+     * @method      getMyData
+     * プレイヤーのゲームデータを取得する
+     */
+    tm.social.Nineleap.getMyData = function(callback) {
+        tm.util.Ajax.loadJSONP(tm.social.Nineleap.createMyDataURL(), callback);
+    };
+
+    /**
+     * @member      tm.social.Nineleap
+     * @method      postMyData
+     * プレイヤーのゲームデータを保存する
+     */
+    tm.social.Nineleap.postMyData = function(data, callback) {
+        tm.util.Ajax.load({
+            type: "POST",
+            url: tm.social.Nineleap.createMemoryURL("user_memory.json"),
+            dataType: "json",
+            data: "json=" + JSON.stringify(data),
+            contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+            async: false,
+            beforeSend: function(xhr) {
+                xhr.withCredentials = true;
+            },
+            success: callback,
+            error: function(responseText) {
+                console.error(responseText);
+            }
+        });
+    };
+
+    /**
+     * @member      tm.social.Nineleap
+     * @method      createMemoryURL
+     * 9leap Memory API へアクセスするURLを生成
+     */
+    tm.social.Nineleap.createMemoryURL = function() {
+        var url = [
+            "http://9leap.net/api/memory/",
+            tm.social.Nineleap.getGameId() + "/",
+        ];
+        for (var i = 0, len = arguments.length; i < len; i++) {
+            url.push(arguments[i]);
+        }
+
+        return url.join("");
+    };
+    /**
+     * @member      tm.social.Nineleap
+     * @method      createMyDataURL
+     * ユーザデータURLを生成
+     */
+    tm.social.Nineleap.createMyDataURL = function() {
+        return tm.social.Nineleap.createMemoryURL("user_memory.json");
+    };
+    /**
+     * @member      tm.social.Nineleap
+     * @method      createUserDataURL
+     * 他のユーザのプレイデータURLを生成
+     */
+    tm.social.Nineleap.createUserDataURL = function(screenName) {
+        return tm.social.Nineleap.createMemoryURL("u/", screenName + ".json");
+    };
+    /**
+     * @member      tm.social.Nineleap
+     * @method      createRecentDataURL
+     * 最近プレイしたユーザのプレイデータURLを生成
+     */
+    tm.social.Nineleap.createRecentDataURL = function(max) {
+        max = max || 30;
+        return tm.social.Nineleap.createMemoryURL("recent_memories.json", "?max=" + max);
+    };
+    /**
+     * @member      tm.social.Nineleap
+     * @method      createFriendDataURL
+     * TwitterでフォローしているユーザのプレイデータURLを生成
+     */
+    tm.social.Nineleap.createFriendDataURL = function(max) {
+        max = max || 30;
+        return tm.social.Nineleap.createMemoryURL("friends_memories.json", "?max=" + max);
+    };
+    /**
+     * @member      tm.social.Nineleap
+     * @method      createRankingDataURL
+     * スコアランキング上位のユーザのプレイデータURLを生成
+     */
+    tm.social.Nineleap.createRankingDataURL = function(max) {
+        max = max || 30;
+        return tm.social.Nineleap.createMemoryURL("ranking_memories.json", "?max=" + max);
+    };
 })();
 
 

@@ -285,7 +285,7 @@ class rpg.Character
       @moveRoute.length <= @moveRouteIndex or
       @isMove()
     route = @moveRoute[@moveRouteIndex++]
-    @applyMoveMethod route.name, route.params
+    @applyMoveMethod route.name ? route.type, route.params
     # 移動ルート完了
     if @moveRoute.length == @moveRouteIndex
       @moveRoute.length = 0
@@ -488,7 +488,7 @@ class rpg.Character
   * @param {number} [x=this.mapX] マップX座標
   * @param {number} [y=this.mapY]　マップY座標
   * @param {number|String} [d=this.directionNum]　向き
-  * @return {rpg.Charactor} 目の前のキャラクター
+  * @return {rpg.Character} 目の前のキャラクター
   ###
   findFrontCharacter: (x=@mapX, y=@mapY, d=@directionNum) ->
     # 目の前の座標
@@ -500,7 +500,7 @@ class rpg.Character
   *　@method rpg.Character#findCharacter
   * @param {number} [x=this.mapX] マップX座標
   * @param {number} [y=this.mapY]　マップY座標
-  * @return {rpg.Charactor} 見つかったキャラクター
+  * @return {rpg.Character} 見つかったキャラクター
   ###
   findCharacter: (x=@mapX, y=@mapY) ->
     # マップ情報から検索

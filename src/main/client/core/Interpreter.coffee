@@ -67,9 +67,9 @@ tm.define 'rpg.Interpreter',
     #console.log command
     #console.log 'command:' + command.type
     if rpg.event_command[command.type]?
-      f = rpg.event_command[command.type].apply_command
-    if f?
-      return f.apply(@, command.params)
+      ec = rpg.event_command[command.type]
+      @event_command = ec
+      return ec.apply_command.apply(@, command.params)
     else
       console.error 'command not found. ' + command.type
       false
@@ -98,7 +98,7 @@ tm.define 'rpg.Interpreter',
     @command(@index + 1)
 
   # キャラクター検索
-  findCharactor: (chara) ->
+  findCharacter: (chara) ->
     if chara == 'player'
       return rpg.system.player.character
-    return rpg.system.scene.map.events[chara]
+    return rpg.system.scene?.map?.events[chara]

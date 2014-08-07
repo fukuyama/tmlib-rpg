@@ -4,6 +4,35 @@ describe 'rpg.Interpreter(Character)', () ->
   @timeout(10000)
   describe 'キャラクター関連のイベント', ->
     describe '状態変更', ->
+      describe 'すり抜け', ->
+        it 'マップシーンへ移動', (done) ->
+          loadTestMap(done)
+        it 'インタープリタ取得', ->
+          interpreter = rpg.system.scene.interpreter
+        it 'interpreter を開始する すり抜け on に', (done)->
+          commands = [
+            {type:'move_to',params:[0,0]}
+            {type:'transparent',params:['player',on]}
+            {type:'move_route',params:[
+              'player'
+              [
+                {type: 'moveDown'}
+                {type: 'moveRight'}
+                {type: 'moveRight'}
+              ]
+            ]}
+          ]
+          interpreter.start commands
+          checkWait done, -> interpreter.isEnd()
+        it '移動完了待ち', (done) ->
+          checkWait done, ->
+            pc = rpg.system.player.character
+            pc.mapX == 2 and pc.mapY == 1
+        it '状態確認 transparent=true', ->
+          pc = rpg.system.player.character
+          pc.transparent.should.equal true
+          pc.mapX.should.equal 2
+          pc.mapY.should.equal 1
       describe 'プレイヤー非表示', ->
         it 'マップシーンへ移動', (done) ->
           loadTestMap(done)
@@ -35,7 +64,6 @@ describe 'rpg.Interpreter(Character)', () ->
         it '状態確認 visible=on', ->
           pc = rpg.system.player.character
           pc.visible.should.equal true
-  describe.skip 'キャラクター関連のイベント', ->
     describe '場所移動', ->
       describe 'プレイヤーの場所を移動 20,20', ->
         commands = [
@@ -49,7 +77,10 @@ describe 'rpg.Interpreter(Character)', () ->
           interpreter.start commands
           checkWait done, -> interpreter.isEnd()
         it '移動確認', (done) ->
-          checkMapMove '001',20,20,'down',done
+          checkWait done, ->
+            pc = rpg.system.player.character
+            pc.mapX == 20 and pc.mapY == 20
+        it '移動確認', ->
           rpg.system.player.character.mapX.should.equal 20
           rpg.system.player.character.mapY.should.equal 20
       describe 'プレイヤーの場所を移動 2,1', ->
@@ -64,7 +95,10 @@ describe 'rpg.Interpreter(Character)', () ->
           interpreter.start commands
           checkWait done, -> interpreter.isEnd()
         it '移動確認', (done) ->
-          checkMapMove '001',2,1,'down',done
+          checkWait done, ->
+            pc = rpg.system.player.character
+            pc.mapX == 2 and pc.mapY == 1
+        it '移動確認', ->
           rpg.system.player.character.mapX.should.equal 2
           rpg.system.player.character.mapY.should.equal 1
       describe 'キャラクターの場所を移動 2,2', ->
@@ -77,6 +111,7 @@ describe 'rpg.Interpreter(Character)', () ->
           interpreter = rpg.system.scene.interpreter
         it 'interpreter を開始する', (done)->
           c = rpg.system.scene.map.events['Event001']
+          c.moveTo 5, 10
           c.mapX.should.equal 5
           c.mapY.should.equal 10
           interpreter.start commands
