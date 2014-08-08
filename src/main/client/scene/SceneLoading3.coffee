@@ -1,6 +1,7 @@
 ###*
 * @file SceneLoading.coffee
-* ロードシーン
+* ロードシーン３つめ
+* tmlib.js 内の LoadingScene を参考に
 ###
 
 # TODO: ロード中のアニメーション画像とか背景画像を追加したい
@@ -12,6 +13,10 @@ tm.define 'SceneLoading',
   * シーン切り替え時に必要な Asset を事前に読み込む等の処理をする。
   * @constructor SceneLoading
   * @param {Object} args 初期化パラメータ
+  * @param {string|Scene} args.nextScene 次のシーン(ID可)
+  * @param {boolean} args.autopop pushScene で置き換えた場合に、自動で pop する場合 true
+  * @param {Array|Hash} args.assets 読み込む Asset。 配列はシーケンシャルにロードする。
+  * @param {Object} args.param nextScene でIDを指定して、シーンを作成する場合のシーンクラスのパラメータ。
   ###
   init: (args={}) ->
     delete args[k] for k, v of args when not v?
@@ -21,6 +26,7 @@ tm.define 'SceneLoading',
       width: rpg.system.screen.width
       height: rpg.system.screen.height
       bgColor: 'transparent'
+      labelText: 'Loading'
     }.$extend args
 
     @_assets = []
@@ -31,6 +37,9 @@ tm.define 'SceneLoading',
         stage:
           type: 'tm.display.CanvasElement'
 
+    dummyCanvas = tm.graphics.Canvas()
+    rect = dummyCanvas.context.measureText(param.labelText)
+
     @stage.fromJSON
       children:
         bg:
@@ -40,8 +49,8 @@ tm.define 'SceneLoading',
           originY: 0
         label:
           type: 'tm.display.Label'
-          text: 'Loading'
-          x: param.width - 100
+          text: param.labelText
+          x: param.width - rect.width
           y: param.height - 32
           align: 'right'
           baseline: 'middle'
@@ -120,7 +129,7 @@ tm.define 'SceneLoading',
 
   ###* アセットの追加
   * @memberof SceneLoading#
-  * @param {Array|Hash} assets 追加するアセット
+  * @param {Array|Hash} assets 追加する Asset
   ###
   addAssets: (assets) ->
     if Array.isArray assets
