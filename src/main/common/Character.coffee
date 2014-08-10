@@ -68,6 +68,7 @@ class rpg.Character
       @lock
       @transparent  # すり抜け
       @visible      # 表示状態
+      @remove       # 削除フラグ
     } = {
       moveRoute: []
       moveRouteIndex: 0
@@ -76,6 +77,7 @@ class rpg.Character
       moveFrequency: 4
       transparent: false
       visible: true
+      remove: false
       stopCount: 0
       lock:
         stopCount: false

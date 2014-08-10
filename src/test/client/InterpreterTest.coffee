@@ -46,3 +46,22 @@ describe 'rpg.Interpreter', () ->
         interpreter.update()
         interpreter.isRunning().should.equal false
         rpg.system.scene.interpreterUpdate = on
+  describe 'イベント操作', ->
+    describe 'イベント削除', ->
+      commands = [
+        {type:'delete',params:['Event001']}
+      ]
+      it 'マップシーンへ移動', (done) ->
+        loadTestMap(done)
+      it 'インタープリタ取得', ->
+        interpreter = rpg.system.scene.interpreter
+      it 'イベント実行', (done) ->
+        interpreter.start commands
+        checkWait done, -> interpreter.isEnd()
+      it '削除確認', ->
+        c = rpg.system.scene.map.events['Event001']
+        (c?).should.equal false
+
+
+
+

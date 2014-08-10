@@ -39,7 +39,9 @@ class rpg.Event extends rpg.Character
     {
       @name # イベント名
       pages
-    } = {}.$extendAll(ASSETS['sample.event'].src).$extendAll(args)
+    } = {
+      name: null
+    }.$extendAll(ASSETS['sample.event'].src).$extendAll(args)
     @pages = (new rpg.EventPage(page) for page in pages.reverse())
     @checkPage()
 

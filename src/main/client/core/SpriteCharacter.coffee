@@ -89,7 +89,10 @@ tm.define 'rpg.SpriteCharacter',
             @_playAnime = false
             @gotoAndStop(@character.direction)
 
-  updateVisible: ->
+  updateFlags: ->
+    if @character.remove
+      @remove()
+      return
     @visible = @character.visible
 
   # 更新
@@ -100,4 +103,4 @@ tm.define 'rpg.SpriteCharacter',
     @updateDirection()
     @updatePosition()
     @updateAnimation()
-    @updateVisible()
+    @updateFlags()

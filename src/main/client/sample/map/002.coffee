@@ -85,6 +85,33 @@ module.exports = {
               }
             ])
         }
+        {
+          type: 'rpg.SpriteCharacter'
+          name: 'Event002'
+          width: 32
+          height: 32
+          properties:
+            init: JSON.stringify([
+              {
+                spriteSheet: 'spritesheet.object001'
+                transparent: true
+                frame: 2
+                direction:
+                  fix: true
+                mapX: 6
+                mapY: 5
+                pages: [
+                  {
+                    name: 'page1'
+                    trigger: ['touched']
+                    commands: [
+                      {type:'delete'}
+                    ]
+                  }
+                ]
+              }
+            ])
+        }
       ]
     }
   ]

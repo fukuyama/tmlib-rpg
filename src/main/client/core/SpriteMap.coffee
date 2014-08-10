@@ -13,7 +13,10 @@ tm.define 'rpg.SpriteMap',
     if @events?
       i = 0
       for name, e of @events when e?.character instanceof rpg.Character
-        e.character.name = e.character.name ? name
+        unless e.character.name
+          e.character.name = name
+        if e.character.name == ""
+          e.character.name = name
         @map.events[name] = e.character
 
     @_screenCX = rpg.system.screen.width / 2 - cw / 2
