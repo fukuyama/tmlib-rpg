@@ -6,7 +6,7 @@ describe 'rpg.Interpreter(Character)', () ->
     describe '状態変更', ->
       describe 'すり抜け', ->
         it 'マップシーンへ移動', (done) ->
-          loadTestMap(done)
+          reloadTestMap(done)
         it 'インタープリタ取得', ->
           interpreter = rpg.system.scene.interpreter
         it 'interpreter を開始する すり抜け on に', (done)->

@@ -61,7 +61,19 @@ describe 'rpg.Interpreter', () ->
       it '削除確認', ->
         c = rpg.system.scene.map.events['Event001']
         (c?).should.equal false
-
-
-
-
+    describe 'イベント中断', ->
+      commands = [
+        {type:'message',params:['TEST001']}
+        {type:'return'}
+        {type:'message',params:['TEST002']}
+      ]
+      it 'マップシーンへ移動', (done) ->
+        loadTestMap(done)
+      it 'インタープリタ取得', ->
+        interpreter = rpg.system.scene.interpreter
+      it 'イベント実行', ->
+        interpreter.start commands
+      it 'Enter', (done) ->
+        emulate_key('enter',done)
+      it 'イベントが終わる', (done) ->
+        checkWait done, -> interpreter.isEnd()

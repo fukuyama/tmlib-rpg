@@ -5,14 +5,6 @@
 
 tm.define 'rpg.event_command.Delete',
 
-  ###* コンストラクタ
-  * @classdesc キャラクタープロパティ変更
-  * @constructor rpg.event_command.CharacterProprties
-  * @param {string} name プロパティ名
-  ###
-  init: (name) ->
-    @name = name
-
   ###* イベントコマンドの反映。
   * Interpreter インスタンスのメソッドとして実行される。
   * イベントコマンド自体のインスタンスは、@event_command で取得する。
