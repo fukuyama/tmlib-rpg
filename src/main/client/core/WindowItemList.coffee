@@ -27,13 +27,15 @@ tm.define 'rpg.WindowItemList',
       y: 16
       cols: 1
       rows: 10
-      menuWidthFix: 24*9
+      menuWidthFix: 24 * 9
+      close: false
     }.$extend(args))
 
   selectMenu: (name) ->
     @selectItem @items[@index]
 
   selectItem: (item) ->
+    console.log 'selectItem'
     console.log item
 
   setItems: (items) ->
@@ -43,3 +45,8 @@ tm.define 'rpg.WindowItemList',
       @addMenu(i.name,@selectMenu.bind @)
     @refresh()
     @
+
+  cancel: ->
+    @setIndex -1
+    @parentWindow.active = true
+    @active = false

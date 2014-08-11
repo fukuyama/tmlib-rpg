@@ -18,13 +18,12 @@ tm.define 'rpg.WindowItemActorList',
   
   createItemWindow: ->
     top = @findTopWindow()
-    items = []
     @window_item = rpg.WindowItemList(
-      parent: @
       x: @.right
       y: top.top
       index: -1
     ).onceOpenListener((->
+      @window_item.active = false
       @changeActor(@actor)
     ).bind(@)).open()
     @addWindow(@window_item)
@@ -35,6 +34,10 @@ tm.define 'rpg.WindowItemActorList',
     if @window_item?
       items = []
       if actor?
-        actor.backpack.eachItem (item) ->
-          items.push item
+        actor.backpack.eachItem (item) -> items.push item
       @window_item.setItems(items)
+
+  selectActor: (actor) ->
+    @window_item.setIndex 0
+    @window_item.active = true
+    @active = false

@@ -3,7 +3,7 @@ require('../../common/constants')
 
 module.exports = {
   'screen':
-    width: 32 * 25
+    width: 32 * 20
     height: 32 * 15
     background: 'rgb(255,255,255)'
   main:
@@ -47,7 +47,7 @@ module.exports = {
   loadingSceneDefault:
     gauge:
       color: 'rgb(96,96,96)'
-      width: 32 * 25
+      width: 32 * 20
       y: 32 * 15 - 10
   windowDefault: {}
 }

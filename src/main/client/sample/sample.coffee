@@ -2,6 +2,7 @@ sample_files = [
   'system'
   'map/001'
   'map/002'
+  'map/003'
   'item/test'
   'state/001'
   'spritesheet/hiyoko'

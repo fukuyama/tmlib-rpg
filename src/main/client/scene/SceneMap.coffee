@@ -23,7 +23,7 @@ tm.define 'SceneMap',
       interpreterUpdate: true # デバック用
     }.$extendAll(args)
 
-    @_refreshEvent = false # イベント更新フラグ
+    @_refreshEvent = true # イベント更新フラグ
 
     # マップインタープリター
     @interpreter = rpg.system.mapInterpreter
@@ -60,9 +60,13 @@ tm.define 'SceneMap',
     unless @interpreter.isRunning()
       # イベントの更新が必要な場合
       if @_refreshEvent
-        # イベント更新
+        # イベント更新(自動起動反映)
         @map.refreshEvent()
         @_refreshEvent = false
+      # 自動実行イベント判定
+      if @map.autoEvents.length > 0
+        @map.autoEvents.shift().start('auto')
+    unless @interpreter.isRunning()
       # 接触イベント判定
       @player.checkTouched() if @player.character.isMoved()
     # インタプリター更新

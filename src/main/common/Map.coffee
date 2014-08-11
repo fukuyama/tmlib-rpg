@@ -9,6 +9,8 @@ class rpg.Map
   constructor: (args={}) ->
     @url = args.url
     @mapSheet = args
+    @autoEvents = []
+    @events = {}
 
   #　マップ範囲内かどうか
   isValid: (x, y) ->
@@ -80,8 +82,10 @@ class rpg.Map
     null
 
   refreshEvent: () ->
-    for name, event of @events
-      event.checkPage?()
+    for name, event of @events when event instanceof rpg.Event
+      event.checkPage()
+      if event.triggerAuto()
+        @autoEvents.push event
 
 # マップ幅
 Object.defineProperty rpg.Map.prototype, 'width',

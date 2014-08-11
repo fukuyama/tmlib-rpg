@@ -308,6 +308,33 @@ module.exports = {
               }
             ])
         }
+        {
+          type: 'rpg.SpriteCharacter'
+          name: 'Event008'
+          width: 32
+          height: 32
+          properties:
+            init: JSON.stringify([
+              {
+                spriteSheet: 'spritesheet.object001'
+                transparent: true
+                frame: 2
+                direction:
+                  fix: true
+                mapX: 0
+                mapY: 4
+                pages: [
+                  {
+                    name: 'page1'
+                    trigger: ['touched']
+                    commands: [
+                      {type:'move_map',params:[3,0,0,2]}
+                    ]
+                  }
+                ]
+              }
+            ])
+        }
       ]
     }
   ]

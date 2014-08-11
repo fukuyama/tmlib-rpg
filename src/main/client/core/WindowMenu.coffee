@@ -22,7 +22,7 @@ tm.define 'rpg.WindowMenu',
       @menus
       index
       saveIndex
-      @cancel
+      @cancelIndex
       @cols
       @rows
       @cursor
@@ -34,7 +34,7 @@ tm.define 'rpg.WindowMenu',
       menus: [] # {name:'name',fn:menuFunc} の配列
       index: 0
       saveIndex: false # カーソル位置の保存フラグ true だと保存する
-      cancel: -1 # キャンセル時のインデックス
+      cancelIndex: -1 # キャンセル時のインデックス
       cols: 1
       rows: 2
       cursor: DEFAULT_CURSOR_ASSET
@@ -202,14 +202,17 @@ tm.define 'rpg.WindowMenu',
     if 0 <= @index and @index < @menus.length
       rpg.system.se.menuDecision()
       @callMenuHandler(@menus[@index].name)
+      rpg.system.app.keyboard.clear()
     # TODO:ミスの場合 SE 鳴らす？
 
   # キャンセル
   input_cancel_up: ->
     if @closeEvent
       rpg.system.se.menuCancel()
-      @index = @cancel
+      @index = @cancelIndex
       @close()
+    if @cancel instanceof Function
+      @cancel()
 
   # 上
   input_up: ->

@@ -5,7 +5,7 @@
 
 tm.define 'rpg.event_command.Return',
 
-  ###* イベントコマンドの反映。
+  ###* イベントの中断コマンドの反映。
   * Interpreter インスタンスのメソッドとして実行される。
   * イベントコマンド自体のインスタンスは、@event_command で取得する。
   * @memberof rpg.event_command.Return#

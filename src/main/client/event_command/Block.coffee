@@ -1,8 +1,16 @@
+###*
+* @file Block.coffee
+* ブロック
+###
 
-# ブロック
 tm.define 'rpg.event_command.Block',
 
-  # コマンド
+  ###* ブロックイベントコマンドの反映。
+  * Interpreter インスタンスのメソッドとして実行される。
+  * イベントコマンド自体のインスタンスは、@event_command で取得する。
+  * @memberof rpg.event_command.Block#
+  * @return {boolean} false
+  ###
   apply_command: ->
     command = @command()
     # 選択肢表示で選択されたブロックでは無い場合は飛ばす
@@ -17,13 +25,19 @@ tm.define 'rpg.event_command.Block',
     @index = 0
     false
 
-# ブロック終了(内部用)
+rpg.event_command.block = rpg.event_command.Block()
+
+
 tm.define 'rpg.event_command.BlockEnd',
 
-  # コマンド
+  ###* ブロック終了(内部用)イベントコマンドの反映。
+  * Interpreter インスタンスのメソッドとして実行される。
+  * イベントコマンド自体のインスタンスは、@event_command で取得する。
+  * @memberof rpg.event_command.BlockEnd#
+  * @return {boolean} false
+  ###
   apply_command: ->
     [@indent,@index,@commands] = @blocks.pop()
     false
 
-rpg.event_command.block = rpg.event_command.Block()
 rpg.event_command.block_end = rpg.event_command.BlockEnd()

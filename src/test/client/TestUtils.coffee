@@ -34,11 +34,11 @@ _g.reloadTestMap = (done) ->
 
 _g.checkWait = (done,fn) ->
   check = ->
-    unless fn.call()
-      setTimeout(check,100)
-    else
+    if fn.call()
       done()
       check = null
+    else
+      setTimeout(check,100)
   check()
 
 _g.checkMapMove =  (mapid,x,y,dir,done) ->

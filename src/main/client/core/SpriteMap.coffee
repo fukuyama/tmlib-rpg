@@ -9,7 +9,6 @@ tm.define 'rpg.SpriteMap',
   init: (@map) ->
     cw = ch = rpg.system.mapChipSize
     @superInit(@map.mapSheet, cw, ch)
-    @map.events = {}
     if @events?
       i = 0
       for name, e of @events when e?.character instanceof rpg.Character

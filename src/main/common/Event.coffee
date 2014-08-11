@@ -66,7 +66,7 @@ class rpg.Event extends rpg.Character
   # イベント開始
   start: (@trigger) ->
     @lock.stopCount = true
-    rpg.system.scene.interpreter.start @
+    rpg.system.mapInterpreter.start @
 
   # イベント終了
   end: ->
