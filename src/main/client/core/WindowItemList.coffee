@@ -31,12 +31,12 @@ tm.define 'rpg.WindowItemList',
       close: false
     }.$extend(args))
 
-  selectMenu: (name) ->
+  selectMenu: ->
     @selectItem @items[@index]
 
   selectItem: (item) ->
-    console.log 'selectItem'
-    console.log item
+    @addWindow rpg.WindowItemMenu().open()
+    @active = false
 
   setItems: (items) ->
     @clearMenu()

@@ -66,6 +66,8 @@ tm.define 'SceneMap',
       # 自動実行イベント判定
       if @map.autoEvents.length > 0
         @map.autoEvents.shift().start('auto')
+        @player.awake = false
+        return
     unless @interpreter.isRunning()
       # 接触イベント判定
       @player.checkTouched() if @player.character.isMoved()

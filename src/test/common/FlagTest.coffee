@@ -102,3 +102,8 @@ describe 'rpg.Flag', ->
       flag.get('local_flg1').should.equal 0
       flag.on 'local_flg1'
       flag.get('local_flg1',null).should.equal 1
+
+    it '存在確認', ->
+      (flag.exist 'flgX').should.equal false
+      flag.on 'flgX'
+      (flag.exist 'flgX').should.equal true

@@ -19,7 +19,7 @@ tm.define 'rpg.WindowMenu',
     # width と height はダミー すぐに resizeAuto する
     @superInit(args.x ? 0, args.y ? 0, 128, 128, args)
     {
-      @menus
+      menus
       index
       saveIndex
       @cancelIndex
@@ -43,7 +43,9 @@ tm.define 'rpg.WindowMenu',
       menuWidthFix: null
       menuHeightFix: null
     }.$extend(rpg.system.windowDefault).$extend args
-    index = -1 if @menus.length == 0
+    console.assert(@rows > 0,'@rows は０より大きく')
+    @rows = 2 if @rows <= 0
+    index = -1 if menus.length == 0
     @index = index # インデックスの初期化関連でローカル変数も使う
     @closeEvent = close
 
@@ -69,7 +71,7 @@ tm.define 'rpg.WindowMenu',
     @clearChangeHandler = @eventHandler.clearChangeHandler
 
     # メニューハンドラ初期化
-    @addMenuHandler(m.name, m.fn) for m in @menus
+    @addMenu(menus)
     if @change_index?
       @addChangeHandler('index',@change_index.bind(@))
 
@@ -109,15 +111,16 @@ tm.define 'rpg.WindowMenu',
   addMenu: (name, fn) ->
     if typeof name is 'string'
       @menus.push name: name, fn: fn
-      @addMenuHandler.apply(@,arguments)
+      @addMenuHandler(@menus.length - 1,fn)
     else
       @addMenu(m.name, m.fn) for m in name
 
   # メニューのクリア
   clearMenu: () ->
     @content.clear()
+    for m,i in @menus
+      @clearMenuHandler(i)
     @menus = []
-    @clearMenuHandler.call(@)
 
   # 自動リサイズ
   resizeAuto: ->
@@ -201,7 +204,7 @@ tm.define 'rpg.WindowMenu',
     # メニューがあるかどうか
     if 0 <= @index and @index < @menus.length
       rpg.system.se.menuDecision()
-      @callMenuHandler(@menus[@index].name)
+      @callMenuHandler(@index)
       rpg.system.app.keyboard.clear()
     # TODO:ミスの場合 SE 鳴らす？
 

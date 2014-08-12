@@ -26,6 +26,10 @@ tm.define 'rpg.event_command.MoveMap',
 
   # コマンド
   apply_command: (mapid,x,y,d) ->
+    mapid = @normalizeEventValue mapid
+    x = @normalizeEventValue x
+    y = @normalizeEventValue y
+    d = @normalizeEventValue d
     rpg.system.loadMap mapid, ->
       c = rpg.system.player.character
       c.moveTo x, y

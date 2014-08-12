@@ -103,8 +103,12 @@ tm.define 'rpg.WindowInputNum',
   
   input_ok_up: ->
     @close()
+    rpg.system.app.keyboard.clear()
+    @active = false
   
   input_cancel_up: ->
     return if typeof @cancel is 'boolean' and not @cancel
     @setValue @cancel
     @close()
+    rpg.system.app.keyboard.clear()
+    @active = false

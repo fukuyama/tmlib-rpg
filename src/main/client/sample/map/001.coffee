@@ -328,7 +328,38 @@ module.exports = {
                     name: 'page1'
                     trigger: ['touched']
                     commands: [
-                      {type:'move_map',params:[3,0,0,2]}
+                      {type:'message',params:['マップＩＤの入力']}
+                      {type:'input_num',params:['MAPID']}
+                      {type:'message',params:['移動します']}
+                      {type:'move_map',params:['MAPID',0,0,2]}
+                    ]
+                  }
+                ]
+              }
+            ])
+        }
+        {
+          type: 'rpg.SpriteCharacter'
+          name: 'Event009'
+          width: 32
+          height: 32
+          properties:
+            init: JSON.stringify([
+              {
+                spriteSheet: 'spritesheet.object001'
+                transparent: true
+                frame: 2
+                direction:
+                  fix: true
+                mapX: 0
+                mapY: 0
+                pages: [
+                  {
+                    name: 'page1'
+                    trigger: ['auto']
+                    commands: [
+                      {type:'gain_item',params: [1]}
+                      {type:'delete'}
                     ]
                   }
                 ]

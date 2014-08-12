@@ -259,6 +259,11 @@ tm.define 'rpg.Window',
 
   addWindow: (w) ->
     w.parentWindow = @
+    w.addCloseListener (e) ->
+      p = @parentWindow
+      if p?
+        p.removeWindow(e.target)
+        p.active = true
     @windows.push w
     @parent.addChild(w)
     @

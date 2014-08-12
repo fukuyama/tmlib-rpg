@@ -72,10 +72,10 @@ tm.define 'rpg.EventHandler',
 
   # ハンドラ追加
   addHandler: (dispatcher, key, fn) ->
-    if typeof key is 'string'
-      dispatcher.addEventListener(key, fn)
-    else
+    if typeof key is 'object'
       dispatcher.addEventListener(k, f) for k, f of key
+    else
+      dispatcher.addEventListener(key, fn)
 
   # ハンドラ呼び出し
   callHandler: (dispatcher, key) ->
@@ -90,8 +90,8 @@ tm.define 'rpg.EventHandler',
       dispatcher.removeEventListener(k, f) for k, f of key
 
   # ハンドラ全削除
-  clearHandler: (dispatcher) ->
-    dispatcher.clearEventListener()
+  clearHandler: (dispatcher, key) ->
+    dispatcher.clearEventListener(key)
 
   # ハンドラセットアップ
   # receiver のメソッド名から、自動的にハンドラを設定する

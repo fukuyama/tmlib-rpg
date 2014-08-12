@@ -169,9 +169,7 @@ tm.define 'rpg.WindowMessage',
       menus: menuAndFuncs
     }.$extend options).addCloseListener((->
       callback(@windowMenu.index) if callback?
-      @removeWindow(@windowMenu)
       @windowMenu = null
-      @active = true
       @pauseCancel()
     ).bind(@)).open()
     @addWindow(@windowMenu)
@@ -189,9 +187,7 @@ tm.define 'rpg.WindowMessage',
     @windowInputNum = rpg.WindowInputNum(options)
     @windowInputNum.addCloseListener((->
       callback(@windowInputNum.value) if callback?
-      @removeWindow(@windowInputNum)
       @windowInputNum = null
-      @active = true
       @pauseCancel()
     ).bind(@)).open()
     @addWindow(@windowInputNum)

@@ -11,7 +11,7 @@ tm.define 'rpg.event_command.Flag',
       else
         rsf.off flag
     else if typeof value1 is 'string'
-      value2 = rsf.get(value2) if typeof value2 is 'string'
+      value2 = @normalizeEventValue value2
       switch value1
         when '=' then rsf.set flag, value2
         when '+' then rsf.plus flag, value2

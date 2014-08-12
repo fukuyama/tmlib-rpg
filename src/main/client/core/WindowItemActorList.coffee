@@ -7,7 +7,7 @@ tm.define 'rpg.WindowItemActorList',
   init: (args={}) ->
     @superInit(args.$extend {
       title: 'だれの？'
-      addMenus: [
+      menus: [
         {name:'ふくろ',fn: -> console.log 'ふくろ'}
       ]
     })

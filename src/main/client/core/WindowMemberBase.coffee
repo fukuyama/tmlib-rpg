@@ -6,33 +6,34 @@ tm.define 'rpg.WindowMemberBase',
   # 初期化
   init: (args={}) ->
     {
-      addMenus
+      menus
       @actors
     } = {
-      addMenus: [] # {name:'name',fn:menuFunc} の配列
+      menus: [] # {name:'name',fn:menuFunc} の配列
       actors: (rpg.game.party.getAt(i) for i in [0 ... rpg.game.party.length])
     }.$extend(args)
     
-    selectActorInternal = ->
+    _menus = []
+    _selectActorInternal = (->
       if 0 <= @index and @index < @actors.length
         @selectActor @actor
-
-    menus = []
+    ).bind @
     for a in @actors
-      menus.push {
+      _menus.push {
         name: a.name,
-        fn: selectActorInternal.bind(@)
+        fn: _selectActorInternal
       }
-    menus = menus.concat addMenus
+    _selectActorInternal = null
+    args.menus = _menus.concat menus
 
     @superInit({
-      menus: menus
+      menus: _menus
       active: false
       visible: false
       x: 16
       y: 16
       cols: 1
-      rows: @actors.length + addMenus.length
+      rows: @actors.length + menus.length
       menuWidthFix: 24*5
     }.$extend(args))
   

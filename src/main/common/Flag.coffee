@@ -17,7 +17,10 @@ class rpg.Flag
       url: 'http://localhost:3000/'
     }.$extendAll args
     @clear()
-    
+
+  exist: (key,url=@url) ->
+    @values[url]?[key]?
+
   'is': (key,url=@url) ->
     @values[url]? and 0 != @get(key, url)
 

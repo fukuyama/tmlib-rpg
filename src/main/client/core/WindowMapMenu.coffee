@@ -35,10 +35,7 @@ tm.define 'rpg.WindowMapMenu',
       rpg.WindowItemActorList(
         x: @left
         y: @bottom
-      ).addCloseListener(((e) ->
-        @removeWindow(e.target)
-        @active = true
-      ).bind(@)).open()
+      ).open()
     )
     @active = false
     @
@@ -51,10 +48,7 @@ tm.define 'rpg.WindowMapMenu',
       rpg.WindowStatusActorList(
         x: @left + x
         y: @top + y
-      ).addCloseListener(((e) ->
-        @removeWindow(e.target)
-        @active = true
-      ).bind(@)).open()
+      ).open()
     )
     @active = false
     @
@@ -63,10 +57,7 @@ tm.define 'rpg.WindowMapMenu',
       rpg.WindowOperation(
         x: @right
         y: @top
-      ).addCloseListener(((e) ->
-        @removeWindow(e.target)
-        @active = true
-      ).bind(@)).open()
+      ).open()
     )
     @active = false
     @

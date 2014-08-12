@@ -102,3 +102,15 @@ tm.define 'rpg.Interpreter',
     if chara == 'player'
       return rpg.system.player.character
     return rpg.system.scene?.map?.events[chara]
+
+  ###* イベントコマンドパラメータの正規化。
+  * 数値パラメータにフラグが指定出来る場合に、フラグから値を取得するために正規化する。
+  * @memberof rpg.Interpreter#
+  * @param {num|string} val イベントコマンドのパラメータ
+  * @return {num} 正規化された値
+  ###
+  normalizeEventValue: (val) ->
+    flag = rpg.game.flag
+    if typeof val is 'string' and flag.exist val
+      return flag.get(val)
+    return val

@@ -4,7 +4,7 @@ describe 'rpg.Interpreter(Select)', () ->
   describe '選択肢分岐', ->
     describe 'はい／いいえの分岐', ->
       commands = [
-        {type:'select',params:[['はい','いいえ'],{index:0,cancel:0}]}
+        {type:'select',params:[['はい','いいえ'],{index:0,cancelIndex:0}]}
         {type:'block',params:[
           {type:'flag',params:['flag10',on]}
         ]}
@@ -55,7 +55,7 @@ describe 'rpg.Interpreter(Select)', () ->
     describe 'ABCの分岐（メッセージあり）', ->
       commands = [
         {type:'message',params:['選択してください。']}
-        {type:'select',params:[['A','B','C'],{index:1,cancel:0}]}
+        {type:'select',params:[['A','B','C'],{index:1,cancelIndex:0}]}
         {type:'block',params:[
           {type:'flag',params:['flag10',on]}
         ]}
@@ -96,7 +96,7 @@ describe 'rpg.Interpreter(Select)', () ->
         rpg.game.flag.is('flag30').should.equal off
     describe 'デフォルトで選択肢を選択しない', ->
       commands = [
-        {type:'select',params:[['はい','いいえ'],{index:-1,cancel:0}]}
+        {type:'select',params:[['はい','いいえ'],{index:-1,cancelIndex:0}]}
         {type:'block',params:[
           {type:'flag',params:['flag10',on]}
         ]}
@@ -130,7 +130,7 @@ describe 'rpg.Interpreter(Select)', () ->
         rpg.game.flag.is('flag20').should.equal off
     describe 'キャンセルした場合の選択肢を設定', ->
       commands = [
-        {type:'select',params:[['はい','いいえ'],{index:0,cancel:2}]}
+        {type:'select',params:[['はい','いいえ'],{index:0,cancelIndex:2}]}
         {type:'block',params:[
           {type:'flag',params:['flag10',on]}
         ]}
@@ -170,7 +170,7 @@ describe 'rpg.Interpreter(Select)', () ->
         rpg.game.flag.is('flag30').should.equal on
     describe 'キャンセルした場合に「いいえ」になる', ->
       commands = [
-        {type:'select',params:[['はい','いいえ'],{index:0,cancel:1}]}
+        {type:'select',params:[['はい','いいえ'],{index:0,cancelIndex:1}]}
         {type:'block',params:[
           {type:'flag',params:['flag10',on]}
         ]}
