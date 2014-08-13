@@ -59,8 +59,8 @@ class rpg.Battler
         sen: 10 # かんせい
         luc: 10 # うんのよさ
         cha: 10 # みりょく
-        basehp: 10
-        basemp: 10
+        basehp: 10 # HP
+        basemp: 10 # MP
       }
       properties: {}
       states: []

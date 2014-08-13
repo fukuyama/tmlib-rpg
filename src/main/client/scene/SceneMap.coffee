@@ -71,9 +71,9 @@ tm.define 'SceneMap',
     unless @interpreter.isRunning()
       # 接触イベント判定
       @player.checkTouched() if @player.character.isMoved()
+    @player.awake = not @interpreter.isRunning()
     # インタプリター更新
     @interpreter.update() if @interpreter.isRunning() and @interpreterUpdate
-    @player.awake = not @interpreter.isRunning()
     return
 
   refreshEvent: () ->

@@ -11,6 +11,8 @@ tm.define 'rpg.WindowItemActorList',
         {name:'ふくろ',fn: -> console.log 'ふくろ'}
       ]
     })
+    @x = 16
+    @y = 16
     # 初期化時（コンストラクタ）では、まだインスタンス化中で
     # addWindow/addChildができないから開くときに追加する。
     # （perent がまだない）

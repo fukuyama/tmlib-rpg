@@ -119,12 +119,26 @@ tm.define 'rpg.Window',
   * @param {number} x 描画X座標
   * @param {number} y 描画Y座標
   ###
-  drawText: (text, x, y) ->
+  drawText: (text, x, y, op={}) ->
     # TODO: フォントとかカラーを変更できるようにする
+    {
+      font
+      baseline
+      align
+      color
+      strokeStyle
+    } = {
+      font: @font
+      baseline: 'top'
+      align: 'left'
+      color: @textColor
+    }.$extend op
     @content.context.save()
-    @content.context.font = @font
-    @content.textBaseline = 'top'
-    @content.setFillStyle(@textColor)
+    @content.font = font
+    @content.textBaseline = baseline
+    @content.textAlign = align
+    @content.fillStyle = color
+    @content.strokeStyle = strokeStyle ? color
     @content.fillText(text, x, y + 3) # TODO: textBaseline ちょい下で良いかな？
     @content.context.restore()
 
@@ -264,6 +278,7 @@ tm.define 'rpg.Window',
       if p?
         p.removeWindow(e.target)
         p.active = true
+        p.visible = true
     @windows.push w
     @parent.addChild(w)
     @
@@ -299,6 +314,12 @@ tm.define 'rpg.Window',
     if @parentWindow instanceof rpg.Window
       return @parentWindow.findTopWindow()
     @
+  # ウインドウを探す
+  findWindow: (fn)->
+    for w in @windows when fn w
+      return w
+    return null
+
 
 rpg.Window.EVENT_OPEN = tm.event.Event "open"
 rpg.Window.EVENT_CLOSE = tm.event.Event "close"

@@ -1,6 +1,6 @@
 # tmlib-rpg
 
-RPG framework based on tmlib.js
+RPG framework for tmlib.js
 
 # License
 
@@ -8,6 +8,4 @@ MIT
 
 # Status
 
-作成中
 creating.
-

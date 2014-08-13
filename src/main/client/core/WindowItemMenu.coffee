@@ -19,12 +19,13 @@ tm.define 'rpg.WindowItemMenu',
       menus: []
     }.$extend(args)
 
-    _menus = []
-    _menus.push name:'つかう', fn: @itemUse.bind @
-    _menus.push name:'わたす', fn: @itemTrade.bind @
-    _menus.push name:'すてる', fn: @itemThrow.bind @
-    args.menus = _menus.concat menus
+    m = []
+    m.push name:'つかう', fn: @itemUse.bind @
+    m.push name:'わたす', fn: @itemTrade.bind @
+    m.push name:'すてる', fn: @itemThrow.bind @
+    args.menus = m.concat menus
     @superInit({
+      title: 'どうする？'
       active: false
       visible: false
       x: 16

@@ -5,16 +5,18 @@ tm.define 'rpg.WindowStatusInfo',
 
   # 初期化
   init: (args={}) ->
-    #parent = args.parent
-    {x,y,w,h} = args.$extend {
-      w: 24 * 5 + 16 * 2
-      h: 100
-    }
+    rs = rpg.system
+    parent = args.parent
+    detail = parent.findWindow (o) -> o instanceof rpg.WindowStatusDetail
+    x = detail.right
+    y = 16
+    w = 24 * 6 + 16 * 2
+    h = rs.lineHeight * 4 + 16 * 2
     @superInit(x,y,w,h,args)
 
   # 指定アクターを描画
-  drawActor: (@actor) ->
+  changeActor: (actor) ->
     @content.clear()
-    if @actor?
-      @drawText(@actor.name,0,0)
+    if actor?
+      @drawText(actor.name,0,0)
     @refresh()

@@ -95,3 +95,7 @@ Object.defineProperty rpg.Map.prototype, 'width',
 Object.defineProperty rpg.Map.prototype, 'height',
   enumerable: true
   get: -> @mapSheet.height
+# マップ高さ
+Object.defineProperty rpg.Map.prototype, 'name',
+  enumerable: true
+  get: -> @mapSheet.name

@@ -33,24 +33,23 @@ tm.define 'rpg.WindowMapMenu',
   menuItem: ->
     @addWindow(
       rpg.WindowItemActorList(
-        x: @left
-        y: @bottom
+        parent: @
       ).open()
     )
     @active = false
+    @visible = false
     @
   menuCheck: ->
     console.log 'check'
     @
   menuStatus: ->
-    [x,y] = @calcMenuPosition(@index)
     @addWindow(
       rpg.WindowStatusActorList(
-        x: @left + x
-        y: @top + y
+        parent: @
       ).open()
     )
     @active = false
+    @visible = false
     @
   menuOperation: ->
     @addWindow(
