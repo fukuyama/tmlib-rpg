@@ -9,23 +9,36 @@ tm.define 'rpg.WindowStatusActorList',
     @superInit(args.$extend {
       title: 'つよさ'
       menus: [
-        {name:'ぜんいん',fn: -> console.log 'all'}
+        {name:'ぜんいん',fn: @allStatus}
       ]
     })
     @x = 16
     @y = 16
-    # 初期化時（コンストラクタ）では、まだインスタンス化中で
-    # addWindow/addChildができないから開くときに追加する。
-    # （perent がまだない）
-    @onceOpenListener @init2.bind @
-  
-  init2: ->
-    @addWindow rpg.WindowStatusDetail(parent: @)
-    @addWindow rpg.WindowStatusInfo(parent: @)
-    @changeActor(@actor)
+
+    @on 'addWindow', ->
+      @addWindow rpg.WindowStatusDetail(parent: @)
+      @addWindow rpg.WindowStatusInfo(parent: @)
+      @changeActor(@actor)
 
   # アクターが変更された場合
   changeActor: (actor) ->
-    # 変更されたアクターを描画
-    for w in @windows
-      w.changeActor?(actor)
+    if actor?
+      for w in @windows
+        if w.changeActor?
+          # 変更されたアクターを描画
+          w.changeActor(actor)
+          w.visible = true
+        else
+          w.visible = false
+    else
+      # ぜんいん
+      for w in @windows
+        if w.changeActor?
+          w.visible = false
+        else
+          w.visible = true
+      console.log @menus[@index]
+
+  # ぜんいん
+  allStatus: ->
+    console.log @

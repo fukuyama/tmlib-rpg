@@ -77,6 +77,8 @@ tm.define 'rpg.WindowMenu',
 
     @addChangeHandler('index',@change_page.bind(@))
 
+    # インデックス初期化
+    @setIndex(index)
     # イベントリスナー
     @addOpenListener ->
       # カーソル位置を保存しない場合は、開くときに index を初期化

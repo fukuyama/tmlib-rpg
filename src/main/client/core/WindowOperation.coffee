@@ -4,9 +4,12 @@ tm.define 'rpg.WindowOperation',
   superClass: rpg.WindowMenu
   # 初期化
   init: (args={}) ->
+    parent = args.parent
     args.$extend {
-      active: false
-      visible: false
+      x: parent.right
+      y: parent.top
+      active: true
+      visible: true
       cols: 1
       rows: 5
       menus: [

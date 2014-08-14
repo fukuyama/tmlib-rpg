@@ -281,6 +281,7 @@ tm.define 'rpg.Window',
         p.visible = true
     @windows.push w
     @parent.addChild(w)
+    w.dispatchEvent rpg.Window.EVENT_ADD_WINDOW
     @
   removeWindow: (w) ->
     w.parentWindow = null
@@ -321,8 +322,9 @@ tm.define 'rpg.Window',
     return null
 
 
-rpg.Window.EVENT_OPEN = tm.event.Event "open"
-rpg.Window.EVENT_CLOSE = tm.event.Event "close"
+rpg.Window.EVENT_OPEN = tm.event.Event 'open'
+rpg.Window.EVENT_CLOSE = tm.event.Event 'close'
+rpg.Window.EVENT_ADD_WINDOW = tm.event.Event 'addWindow'
 
 rpg.Window.prototype.getter 'innerRect', -> @content.innerRect
 rpg.Window.prototype.getter 'borderWidth', -> @_windowskin.borderWidth

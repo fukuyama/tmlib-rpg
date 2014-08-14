@@ -28,8 +28,8 @@ tm.define 'rpg.WindowMemberBase',
 
     @superInit({
       menus: _menus
-      active: false
-      visible: false
+      active: true
+      visible: true
       x: 16
       y: 16
       cols: 1

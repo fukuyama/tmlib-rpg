@@ -13,24 +13,19 @@ tm.define 'rpg.WindowItemActorList',
     })
     @x = 16
     @y = 16
-    # 初期化時（コンストラクタ）では、まだインスタンス化中で
-    # addWindow/addChildができないから開くときに追加する。
-    # （perent がまだない）
-    @onceOpenListener(@createItemWindow.bind(@))
-  
-  createItemWindow: ->
-    top = @findTopWindow()
-    @window_item = rpg.WindowItemList(
-      x: @.right
-      y: top.top
-      index: -1
-    ).onceOpenListener((->
-      @window_item.active = false
-      @changeActor(@actor)
-    ).bind(@)).open()
-    @addWindow(@window_item)
-    @
 
+    @on 'addWindow', ->
+      top = @findTopWindow()
+      @window_item = rpg.WindowItemList(
+        x: @right
+        y: top.top
+        index: -1
+        visible: true
+        active: false
+      )
+      @addWindow(@window_item)
+      @changeActor(@actor)
+  
   # アクターが変更された場合
   changeActor: (actor) ->
     if @window_item?

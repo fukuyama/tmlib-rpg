@@ -16,6 +16,10 @@ tm.define 'rpg.DataBase',
   * @classdesc データベースクラス
   * @constructor rpg.DataBase
   * @param {Object} args
+  * @param {string} args.path.data データパス
+  * @param {string} args.path.item アイテムパス
+  * @param {string} args.path.map マップパス
+  * @param {string} args.path.state ステートパス
   ###
   init: (args={}) ->
     href = document.location.href
@@ -23,24 +27,31 @@ tm.define 'rpg.DataBase',
     {
       @baseUrl
       @idformat
-      dataPath   # データパス
-      itemPath   # アイテムパス
-      mapPath    # マップパス
-      statePath  # ステートパス
+      path
     } = {
       baseUrl: href.substr(0,i) + '/'
       idformat: '000'
-      dataPath: 'data/'
-      itemPath: 'item'
-      mapPath: 'map'
-      statePath: 'state'
+      path:
+        data: 'data/'
+        item: 'item/'
+        map: 'map/'
+        state: 'state/'
     }.$extend args
-    
-    @itemUrl = @_dataUrl.bind(@,dataPath + itemPath)
-    @mapUrl = @_dataUrl.bind(@,dataPath + mapPath)
-    @stateUrl = @_dataUrl.bind(@,dataPath + statePath)
+
+    @_metaif = {
+      item:
+        url: @_dataUrl.bind @, path.data + path.item
+        create: @_create.bind @, 'Item'
+    }
+
+    @preloadItem = @_preload.bind @, 'item'
+
+    @mapUrl   = @_dataUrl.bind @, path.data + path.map
+    @stateUrl = @_dataUrl.bind @, path.data + path.state
 
     @_states = {} # ステートのキャッシュ
+
+  _create: (klass,data) -> new rpg[data.type ? klass](data)
 
   ###* ファイル名の作成
   * @memberof rpg.DataBase#
@@ -60,42 +71,32 @@ tm.define 'rpg.DataBase',
   * @return {String} データをロードするためのURL
   * @private
   ###
-  _dataUrl: (path, id) ->
-    if id?
-      @baseUrl + path + '/' + @_filename(id) + '.json'
-    else
-      @baseUrl + path + '.json'
+  _dataUrl: (path, id=0) -> @baseUrl + path + @_filename(id) + '.json'
 
-  ###* アイテムデータの作成
-  * @memberof rpg.DataBase#
-  * @param {Object} data アイテム初期化用Object
-  * @return {rpg.State} アイテムオブジェクト
-  ###
-  createItem: (data) ->
-    type = data.type ? 'Item'
-    return new rpg[type](data)
+  _preload: (key,ids,func) ->
+    mgr = tm.asset.Manager
+    urls = for id in ids then @_metaif[key].url id
+    list = for url in urls when mgr.get(url)?
+      @_metaif[key].create mgr.get(url).data
+    if list.length == ids.length
+      func(list)
+      return
+    onload = () ->
+      list = []
+      for url in urls
+        data = mgr.get(url).data
+        data.url = url
+        list.push @_metaif[key].create data
+      func(list)
+    rpg.system.loadAssets urls, onload.bind @
+    return
 
   ###* アイテムデータの読み込み
   * @memberof rpg.DataBase#
   * @param {Array} ids アイテムデータのID / ファイル名の配列
   * @param {rpg.DataBase~itemcallback} func 読み込み後のコールバック関数
   ###
-  preloadItem: (ids,func) ->
-    mgr = tm.asset.Manager
-    urls = (@itemUrl(id) for id in ids)
-    items = (@createItem(mgr.get(a).data) for a in urls when mgr.get(a)?)
-    if items.length == ids.length
-      func(items)
-      return
-    onload = () ->
-      items = []
-      for url in urls
-        data = mgr.get(url).data
-        data.url = url
-        items.push @createItem(data)
-      func(items)
-    rpg.system.loadAssets urls, onload.bind @
-    return
+  #preloadItem: (ids,func) -> @_preload('item',ids,func)
 
   ###* マップデータの読み込み
   * @memberof rpg.DataBase#
@@ -104,7 +105,7 @@ tm.define 'rpg.DataBase',
   ###
   preloadMap: (mapid,func) ->
     mgr = tm.asset.Manager
-    url = @mapUrl(mapid)
+    url = @mapUrl mapid
     if mgr.get(url)?
       func(new rpg.Map(mgr.get(url).data))
       return

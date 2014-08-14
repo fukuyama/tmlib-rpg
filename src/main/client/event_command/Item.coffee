@@ -11,7 +11,8 @@ tm.define 'rpg.event_command.GainItem',
     @waitFlag = true
     # 現在のシーンをキャプチャー
     rpg.system.captureScreenBitmap()
-    rpg.system.db.preloadItem([item],((items) ->
+    self = @
+    rpg.system.db.preloadItem [item], (items) ->
       # 誰かのアイテム
       target = rpg.game.party
       if actor?
@@ -24,9 +25,7 @@ tm.define 'rpg.event_command.GainItem',
       # 対象のアイテムを増やす
       for n in [0 ... num]
         target.addItem(i) for i in items
-      @waitFlag = false
-      ).bind(@)
-    )
+      self.waitFlag = false
     false
 
 # アイテムを減らす
@@ -39,7 +38,8 @@ tm.define 'rpg.event_command.LostItem',
     @waitFlag = true
     # 現在のシーンをキャプチャー
     rpg.system.captureScreenBitmap()
-    rpg.system.db.preloadItem([item],((items) ->
+    self = @
+    rpg.system.db.preloadItem [item], (items) ->
       # 誰かのアイテム
       target = rpg.game.party
       if actor?
@@ -54,9 +54,7 @@ tm.define 'rpg.event_command.LostItem',
         for i in items
           i = target.getItem(i.name)
           target.removeItem(i) if i?
-      @waitFlag = false
-      ).bind(@)
-    )
+      self.waitFlag = false
     false
 
 # アイテムをすべて捨てる

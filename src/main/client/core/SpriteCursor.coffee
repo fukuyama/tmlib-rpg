@@ -57,10 +57,9 @@ tm.define 'rpg.SpriteCursor',
     @setIndex()
 
   # カーソル位置設定
-  setIndex: (index = @index) ->
+  setIndex: (@index=@index) ->
     # 範囲チェック
-    if 0 <= index and index < @_indexPositions.length
-      @index = index
+    if 0 <= @index and @index < @_indexPositions.length
       {@x, @y} = @_indexPositions[@index]
       @visible = true
     else

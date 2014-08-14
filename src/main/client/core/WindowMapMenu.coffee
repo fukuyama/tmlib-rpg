@@ -31,11 +31,7 @@ tm.define 'rpg.WindowMapMenu',
     console.log 'skill'
     @
   menuItem: ->
-    @addWindow(
-      rpg.WindowItemActorList(
-        parent: @
-      ).open()
-    )
+    @addWindow rpg.WindowItemActorList parent: @
     @active = false
     @visible = false
     @
@@ -43,20 +39,12 @@ tm.define 'rpg.WindowMapMenu',
     console.log 'check'
     @
   menuStatus: ->
-    @addWindow(
-      rpg.WindowStatusActorList(
-        parent: @
-      ).open()
-    )
+    @addWindow rpg.WindowStatusActorList parent: @
     @active = false
     @visible = false
     @
   menuOperation: ->
-    @addWindow(
-      rpg.WindowOperation(
-        x: @right
-        y: @top
-      ).open()
-    )
+    @addWindow rpg.WindowOperation parent: @
     @active = false
+    @visible = false
     @
