@@ -12,25 +12,10 @@ describe 'rpg.DataBase', ->
       db.idformat.should.equal '000'
 
   describe 'アイテムデータ', ->
-    describe 'itemUrl', ->
-      it '文字列を渡すと、ファイル名として url を返す', ->
-        db.itemUrl('abc').should.
-          equal 'http://localhost:3000/client/data/item/abc.json'
-      it '数値を渡すと、フォーマットしたファイル名として url を返す', ->
-        db.itemUrl(1).should.
-          equal 'http://localhost:3000/client/data/item/001.json'
-
-    describe.skip 'アイテムの一覧', ->
-      it 'アイテムの一覧を取得する', (done) ->
-        db.itemlist((items)->
-          items[0].url.should.
-            equal 'http://localhost:3000/client/data/item/001.json'
-          done()
-        )
     describe 'アイテムのロード', ->
       it 'アイテムを取得する場合は、取得した後に呼ぶ関数を指定する', (done) ->
         db.preloadItem([2,1],(items) ->
-          # ID は、item プロパティに、url が入る
+          # ID は、item プロパティとして、url に使用する
           items[0].url.should.
             equal 'http://localhost:3000/client/data/item/002.json'
           items[1].url.should.
