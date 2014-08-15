@@ -30,6 +30,24 @@ tm.define 'rpg.WindowItemList',
       menuWidthFix: 24 * 9
       close: false
     }.$extend(args))
+    @on 'addWindow', (e) ->
+      @window_help = rpg.Window(
+        @right
+        16
+        24 * 5 + 16 * 2
+        rpg.system.lineHeight * 3 + 16 * 2
+        {
+          visible: false
+          active: false
+        }
+      )
+      @addWindow(@window_help)
+
+  change_index: ->
+    if @index >= 0
+      @window_help?.visible = true
+    else
+      @window_help?.visible = false
 
   selectMenu: ->
     @selectItem @items[@index]

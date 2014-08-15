@@ -15,6 +15,7 @@ class rpg.Item
       @type
       @name
       @price
+      @help
       usable
       equip
       stack
@@ -22,9 +23,10 @@ class rpg.Item
       container
       @_container
     } = {
-      url: ''      # ID(URL)
+      url: ''       # ID(URL)
       name: ''      # 名前
       price: 1      # 価格
+      help: ''      # ヘルプテキスト
       usable: false # 使えるかどうか
       equip: false  # 装備できるかどうか
       stack: false  # スタック可能かどうか

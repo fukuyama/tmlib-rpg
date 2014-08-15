@@ -22,29 +22,21 @@ tm.define 'rpg.WindowMapMenu',
       ]
     }
     @superInit(args)
+
+  _next: (w) ->
+    @addWindow w
+    @active = false
+    @visible = false
   
   menuTalk: ->
-    @close()
     rpg.system.player.talk()
-    @
+    @close()
   menuSkill: ->
     console.log 'skill'
     @
-  menuItem: ->
-    @addWindow rpg.WindowItemActorList parent: @
-    @active = false
-    @visible = false
-    @
+  menuItem: -> @_next rpg.WindowItemActorList parent: @
   menuCheck: ->
-    console.log 'check'
-    @
-  menuStatus: ->
-    @addWindow rpg.WindowStatusActorList parent: @
-    @active = false
-    @visible = false
-    @
-  menuOperation: ->
-    @addWindow rpg.WindowOperation parent: @
-    @active = false
-    @visible = false
-    @
+    rpg.system.player.checkEvent()
+    @close()
+  menuStatus: -> @_next rpg.WindowStatusActorList parent: @
+  menuOperation: -> @_next rpg.WindowOperation parent: @

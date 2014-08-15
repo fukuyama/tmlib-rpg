@@ -15,10 +15,9 @@ tm.define 'rpg.WindowItemActorList',
     @y = 16
 
     @on 'addWindow', ->
-      top = @findTopWindow()
       @window_item = rpg.WindowItemList(
         x: @right
-        y: top.top
+        y: 16
         index: -1
         visible: true
         active: false
