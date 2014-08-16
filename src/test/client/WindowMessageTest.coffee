@@ -94,7 +94,10 @@ describe 'rpg.WindowMessage', ->
     @timeout(10000)
     interpreter = null
     commands = [
-      {type:'message',params:['0123456789\\n0123456789\\n0123456789']}
+      {
+        type:'message',
+        params:['0123456789\\n01\\C[1]234\\C[0]56789\\n0123456789']
+      }
       {type:'message',params:['AAAAAAAAAA\\nBBBBBBBBBB\\nCCCCCCCCCC']}
       {type:'message',params:['DDDDDDDDDD\\nEEEEEEEEEE\\nFFFFFFFFFF']}
       {type:'message',params:['GGGGGGGGGG\\nHHHHHHHHHH\\nIIIIIIIIII']}

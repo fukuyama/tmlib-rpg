@@ -88,3 +88,29 @@ describe 'rpg.MarkupText', ->
       mt.clear()
     it 'フラグがクリアされる', ->
       mt.matched.should.equal false
+
+  describe 'カラー', ->
+    it 'カラー反映１つ', ->
+      [x,y,i]=[0,0,0]
+      mt = rpg.MarkupText.default
+      msg = 'test\\C[1]test'
+      class rpg.Window # dummy
+      dummy = new rpg.Window()
+      m = ''
+      while i < msg.length
+        [x,y,i] = mt.draw(dummy,x,y,msg,i)
+        m += msg[i++]
+      m.should.equal 'testtest'
+      dummy.textColor.should.equal 'rgb(255,  0,  0)'
+    it 'カラー反映２つ', ->
+      [x,y,i]=[0,0,0]
+      mt = rpg.MarkupText.default
+      msg = 'test\\C[1]test\\C[0]test'
+      class rpg.Window # dummy
+      dummy = new rpg.Window()
+      m = ''
+      while i < msg.length
+        [x,y,i] = mt.draw(dummy,x,y,msg,i)
+        m += msg[i++]
+      m.should.equal 'testtesttest'
+      dummy.textColor.should.equal 'rgb(255,255,255)'

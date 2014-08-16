@@ -30,11 +30,10 @@ class rpg.MarkupText
   # マークアップ内部処理
   _drawIntarnal: ->
     for markup in @markups when markup.mark == @message[@i]
-      @message[@i + 1 .. markup.name.length + @i]
-      if markup.name == @message[@i + 1 .. markup.name.length + @i]
-        [@x, @y, @i] = markup.func(@obj, @x, @y, @message, @i)
-        @matched = true
-        return true
+      nm = @message[@i + 1 .. markup.name.length + @i]
+      if markup.name == nm
+        [@x, @y, @i, @matched] = markup.func(@obj, @x, @y, @message, @i)
+        return true if @matched
     return false
 
   # マークアップ描画
@@ -51,5 +50,31 @@ rpg.MarkupText.MARKUP_NEW_LINE = {
     x = 0
     y += rpg.system.lineHeight
     i += 2
-    [x,y,i]
+    [x,y,i,true]
 }
+
+COLORS = [
+  'rgb(255,255,255)'
+  'rgb(255,  0,  0)'
+  'rgb(  0,255,  0)'
+  'rgb(  0,  0,255)'
+]
+
+rpg.MarkupText.MARKUP_COLOR = {
+  mark: '\\'
+  name: 'C'
+  func: (obj, x, y, msg, i) ->
+    if obj instanceof rpg.Window
+      e = msg[i .. ].indexOf(']') + i
+      if e > 0
+        m = msg[i .. e]
+        s = i + m.indexOf('[') + 1
+        obj.textColor = COLORS[msg[s .. e - 1]]
+        i = e + 1
+    [x,y,i,false]
+}
+
+_default = new rpg.MarkupText()
+_default.add rpg.MarkupText.MARKUP_NEW_LINE
+_default.add rpg.MarkupText.MARKUP_COLOR
+rpg.MarkupText.default = _default

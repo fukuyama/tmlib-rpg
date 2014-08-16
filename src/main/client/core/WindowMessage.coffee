@@ -49,8 +49,7 @@ tm.define 'rpg.WindowMessage',
       @innerRect.width
       @innerRect.height * 2)
 
-    @markup = new rpg.MarkupText()
-    @markup.add(rpg.MarkupText.MARKUP_NEW_LINE)
+    @markup = rpg.MarkupText.default
     
     @addOpenListener((->
       @setDisplayPosition()
