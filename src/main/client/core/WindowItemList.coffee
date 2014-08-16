@@ -45,7 +45,11 @@ tm.define 'rpg.WindowItemList',
 
   change_index: ->
     if @index >= 0
-      @window_help?.visible = true
+      if @window_help?
+        @window_help.visible = true
+        @window_help.content.clear()
+        @window_help.drawMarkup(@item.help,0,0)
+        @window_help.refresh()
     else
       @window_help?.visible = false
 
@@ -68,3 +72,5 @@ tm.define 'rpg.WindowItemList',
     @setIndex -1
     @parentWindow.active = true
     @active = false
+
+rpg.WindowItemList.prototype.getter 'item', -> @items[@index]

@@ -4,7 +4,6 @@ require('../../common/constants')
 ITEM_SCOPE = rpg.constants.ITEM_SCOPE
 
 module.exports = [
-  {type: 'Item', item: '001', name: 'item 001'}
   {type: 'Item', item: '002', name: 'item 002'}
   {type: 'Item', item: '003', name: 'item 003'}
   {

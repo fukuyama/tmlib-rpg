@@ -4,6 +4,7 @@ sample_files = [
   'map/002'
   'map/003'
   'item/test'
+  'item/001'
   'state/001'
   'spritesheet/hiyoko'
   'spritesheet/object001'

@@ -120,7 +120,6 @@ tm.define 'rpg.Window',
   * @param {number} y 描画Y座標
   ###
   drawText: (text, x, y, op={}) ->
-    # TODO: フォントとかカラーを変更できるようにする
     {
       font
       baseline
@@ -155,6 +154,32 @@ tm.define 'rpg.Window',
     @titleContent.setFillStyle(@textColor)
     @titleContent.fillText(title, 0, 3) # TODO: textBaseline ちょい下で良いかな？
     @titleContent.context.restore()
+
+  ###* マークアップテキストの描画
+  * @memberof rpg.Window#
+  * @param {String} text マークアップテキスト
+  * @param {number} x 描画X座標
+  * @param {number} y 描画Y座標
+  ###
+  drawMarkup: (text,x,y,op={}) ->
+    {
+      i
+      markup
+    } = op = {
+      i: 0
+      markup: rpg.MarkupText.default
+    }.$extend op
+    console.log text
+    while i < text.length
+      [x,y,i] = markup.draw(@,x,y,text,i)
+      c = text[i++]
+      @drawText(c,x,y)
+      console.log "#{c} #{x} #{y}"
+      cx = @measureTextWidth(c)
+      x += cx
+      if @content.width - cx <= x
+        x = 0
+        y += rpg.system.lineHeight
 
   ###* テキスト描画テスト
   * @memberof rpg.Window#
