@@ -48,7 +48,8 @@ tm.define 'rpg.WindowItemList',
       if @window_help?
         @window_help.visible = true
         @window_help.content.clear()
-        @window_help.drawMarkup(@item.help,0,0)
+        if @item?.help?
+          @window_help.drawMarkup(@item.help,0,0)
         @window_help.refresh()
     else
       @window_help?.visible = false
@@ -57,7 +58,7 @@ tm.define 'rpg.WindowItemList',
     @selectItem @items[@index]
 
   selectItem: (item) ->
-    @addWindow rpg.WindowItemMenu().open()
+    @addWindow rpg.WindowItemMenu(parent:@)
     @active = false
 
   setItems: (items) ->

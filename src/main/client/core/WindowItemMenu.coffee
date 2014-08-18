@@ -14,6 +14,7 @@ tm.define 'rpg.WindowItemMenu',
   ###
   init: (args={}) ->
     {
+      parent
       menus
     } = {
       menus: []
@@ -26,13 +27,15 @@ tm.define 'rpg.WindowItemMenu',
     args.menus = m.concat menus
     @superInit({
       title: 'どうする？'
-      active: false
-      visible: false
+      active: true
+      visible: true
       x: 16
       y: 16
       cols: 1
       rows: args.menus.length
     }.$extend(args))
+    @x = parent.right
+    @y = parent.top
 
   itemUse: ->
     return
@@ -41,4 +44,13 @@ tm.define 'rpg.WindowItemMenu',
     return
 
   itemThrow: ->
-    return
+    w1 = @findWindowTree (o) -> o instanceof rpg.WindowItemList
+    w2 = @findWindowTree (o) -> o instanceof rpg.WindowItemActorList
+    w2.actor.backpack.removeItem w1.item
+    @close()
+    w2.changeActor(w2.actor)
+    if w1.items.length == 0
+      w2.active = true
+      w1.active = false
+    if w1.items.length <= w1.index
+      w1.setIndex(w1.items.length - 1)

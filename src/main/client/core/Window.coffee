@@ -161,7 +161,7 @@ tm.define 'rpg.Window',
   * @param {number} x 描画X座標
   * @param {number} y 描画Y座標
   ###
-  drawMarkup: (text,x,y,op={}) ->
+  drawMarkup: (text,x=0,y=0,op={}) ->
     {
       i
       markup
@@ -169,12 +169,10 @@ tm.define 'rpg.Window',
       i: 0
       markup: rpg.MarkupText.default
     }.$extend op
-    console.log text
     while i < text.length
       [x,y,i] = markup.draw(@,x,y,text,i)
       c = text[i++]
       @drawText(c,x,y)
-      console.log "#{c} #{x} #{y}"
       cx = @measureTextWidth(c)
       x += cx
       if @content.width - cx <= x
@@ -344,6 +342,17 @@ tm.define 'rpg.Window',
   findWindow: (fn)->
     for w in @windows when fn w
       return w
+    return null
+  # ウインドウを探す
+  findWindowTree: (fn)->
+    t = @findTopWindow()
+    return t._findWindowTree(fn)
+
+  _findWindowTree: (fn)->
+    return @ if fn @
+    for w in @windows
+      r = w._findWindowTree(fn)
+      return r if r?
     return null
 
 

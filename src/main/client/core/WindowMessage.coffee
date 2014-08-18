@@ -145,6 +145,7 @@ tm.define 'rpg.WindowMessage',
 
   # メッセージを描画する
   drawMessage: (msg) ->
+    return unless msg?
     @drawText(msg, @_dx, @_dy)
     @_dx += @measureTextWidth(msg)
     @refresh()

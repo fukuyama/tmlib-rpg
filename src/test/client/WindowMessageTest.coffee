@@ -1,8 +1,8 @@
 
 describe 'rpg.WindowMessage', ->
+  interpreter = null
+  @timeout(10000)
   describe '文章表示', ->
-    @timeout(10000)
-    interpreter = null
     commands = [
       {type:'message',params:['TEST1']}
       {type:'message',params:['TEST2']}
@@ -21,8 +21,6 @@ describe 'rpg.WindowMessage', ->
     it '次のメッセージ表示2', (done) ->
       emulate_key('enter',done)
   describe '文章表示２行', ->
-    @timeout(10000)
-    interpreter = null
     commands = [
       {type:'message',params:['TEST1\\nTEST1']}
       {type:'message',params:['TEST2\\nほえほえ']}
@@ -41,8 +39,6 @@ describe 'rpg.WindowMessage', ->
     it '次のメッセージ表示2', (done) ->
       emulate_key('enter',done)
   describe '文章表示３行', ->
-    @timeout(10000)
-    interpreter = null
     commands = [
       {type:'message',params:['TEST1\\nTEST1\\nTEST1']}
       {type:'message',params:['TEST2\\nほえほえ\\nTEST2']}
@@ -61,8 +57,6 @@ describe 'rpg.WindowMessage', ->
     it '次のメッセージ表示2', (done) ->
       emulate_key('enter',done)
   describe '文章表示２行 x ４回', ->
-    @timeout(10000)
-    interpreter = null
     commands = [
       {type:'message',params:['TEST1\\nTEST1']}
       {type:'message',params:['TEST2\\nほえほえ']}
@@ -91,8 +85,6 @@ describe 'rpg.WindowMessage', ->
     it '次のメッセージ表示4', (done) ->
       emulate_key('enter',done)
   describe '文章表示３行 x ４回', ->
-    @timeout(10000)
-    interpreter = null
     commands = [
       {
         type:'message',
@@ -124,8 +116,6 @@ describe 'rpg.WindowMessage', ->
     it '次のメッセージ表示4', (done) ->
       emulate_key('enter',done)
   describe '表示位置変更', ->
-    @timeout(10000)
-    interpreter = null
     commands = [
       {type:'option',params:[{
         message:
@@ -174,4 +164,22 @@ describe 'rpg.WindowMessage', ->
       pos.should.equal 3
       windowMessage.y.should.equal (480 - windowMessage.height)
     it '次のメッセージ表示', (done) ->
+      emulate_key('enter',done)
+  describe 'カラー確認', ->
+    commands = [
+      {
+        type:'message',
+        params:[
+          'A\\C[1]A\\C[2]A\\C[3]A\\C[4]A\\C[5]A\\C[6]A\\C[7]A\\C[0]'
+        ]
+      }
+    ]
+    it 'マップシーンへ移動', (done) ->
+      loadTestMap(done)
+    it 'コマンド実行', ->
+      interpreter = rpg.system.scene.interpreter
+      interpreter.start commands
+    it 'メッセージ表示待ち1', (done) ->
+      setTimeout(done,2000)
+    it '次のメッセージ表示1', (done) ->
       emulate_key('enter',done)
