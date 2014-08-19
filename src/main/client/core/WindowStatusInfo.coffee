@@ -7,7 +7,8 @@ tm.define 'rpg.WindowStatusInfo',
   init: (args={}) ->
     rs = rpg.system
     parent = args.parent
-    detail = parent.findWindow (o) -> o instanceof rpg.WindowStatusDetail
+    detail = parent.findWindowTree (o) ->
+      o instanceof rpg.WindowStatusDetail
     x = detail.right
     y = 16
     w = 24 * 6 + 16 * 2

@@ -102,7 +102,7 @@ COLORS = [
   'rgb(228,  0,127)'
 ]
 
-###* カラー(\C[0-12])
+###* カラー(\C[0-7])
 * @var {Object} rpg.MarkupText.MARKUP_COLOR
 ###
 rpg.MarkupText.MARKUP_COLOR = {

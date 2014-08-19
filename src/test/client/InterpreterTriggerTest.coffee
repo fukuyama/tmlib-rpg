@@ -9,9 +9,11 @@ describe 'rpg.Interpreter(Trigger)', () ->
     describe 'イベントへの接触判定', ->
       it 'マップシーンへ移動', (done) ->
         loadTestMap(done)
+      it 'wait', (done) ->
+        setTimeout(done,500)
       it '移動', ->
         rpg.system.player.character.moveTo 19, 5
-      it 'Enter', (done) ->
+      it 'right', (done) ->
         emulate_key 'right', done
       it 'メッセージ表示待ち', (done) ->
         setTimeout done, 2000

@@ -86,7 +86,12 @@ tm.define 'rpg.Window',
   createWindowSkin: (skin) ->
     rpg.WindowSkin(@width, @height, skin)
 
-  # タイトル描画範囲（ウィンドウの内側の領域サイズ）計算
+  ###* タイトル描画範囲（ウィンドウの内側の領域サイズ）計算
+  * @memberof rpg.Window#
+  * @param {number} width=@width 幅
+  * @param {number} height=@height 高さ
+  * @private
+  ###
   _calcInnerTitleRect: (width = @width, height = @height)->
     tm.geom.Rect(
       @borderWidth
@@ -95,7 +100,12 @@ tm.define 'rpg.Window',
       rpg.system.lineHeight
     )
 
-  # コンテンツ描画範囲（ウィンドウの内側の領域サイズ）計算 コンテンツサイズとは別
+  ###* コンテンツ描画範囲（ウィンドウの内側の領域サイズ）計算 コンテンツサイズとは別
+  * @memberof rpg.Window#
+  * @param {number} width=@width 幅
+  * @param {number} height=@height 高さ
+  * @private
+  ###
   _calcInnerRect: (width = @width, height = @height)->
     tm.geom.Rect(
       @borderWidth
@@ -104,11 +114,15 @@ tm.define 'rpg.Window',
       height - @borderHeight * 2 - @titleHeight
     )
 
-  # 再更新
+  ###* 再更新
+  * @memberof rpg.Window#
+  ###
   refresh: ->
     @refreshWindow()
 
-  # 再更新(派生用)
+  ###* 再更新(派生用)
+  * @memberof rpg.Window#
+  ###
   refreshWindow: ->
     @titleContent?.drawTo()
     @content?.drawTo()
@@ -230,6 +244,11 @@ tm.define 'rpg.Window',
   resizeContent: (w = @innerRect.width,h = @innerRect.height)->
     @content.resize(w,h)
 
+  ###* タイトルコンテンツリサイズ
+  * @memberof rpg.Window#
+  * @param {number} width 幅
+  * @param {number} height 高さ
+  ###
   resizeTitleContent: (width = @width, height = @height) ->
     ir = @_calcInnerTitleRect(width,height)
     w = ir.width
@@ -274,11 +293,13 @@ tm.define 'rpg.Window',
     @_openDuring = true
     @
 
-  ###* 閉じる（treeにあるのは全部閉じる）
+  ###* 閉じる
   * @memberof rpg.Window#
+  * @param {boolean} closeall=true treeにあるのは全部閉じるかどうか
   ###
-  close: ->
-    win.close() for win in @windows
+  close: (closeall=true)->
+    if closeall
+      w.close() for w in @windows
     @_closeDuring = true
     @
 
@@ -294,6 +315,10 @@ tm.define 'rpg.Window',
   isClose: ->
     not @visible
 
+  ###* ウィンドウ追加
+  * @memberof rpg.Window#
+  * @param {rpg.Window} w 追加するウィンドウ
+  ###
   addWindow: (w) ->
     w.parentWindow = @
     w.addCloseListener (e) ->
@@ -306,15 +331,27 @@ tm.define 'rpg.Window',
     @parent.addChild(w)
     w.dispatchEvent rpg.Window.EVENT_ADD_WINDOW
     @
+  ###* ウィンドウ追加
+  * @memberof rpg.Window#
+  * @param {rpg.Window} w 追加するウィンドウ
+  ###
   removeWindow: (w) ->
     w.parentWindow = null
     w.remove()
     index = @windows.indexOf(w)
     @windows.splice(index,1) if 0 <= index
     @
+  ###* open リスナ追加
+  * @memberof rpg.Window#
+  * @param {Function} fn リスナー
+  ###
   addOpenListener: (fn) ->
     @addEventListener('open',fn)
     @
+  ###* open リスナ追加（１回用）
+  * @memberof rpg.Window#
+  * @param {Function} fn リスナー
+  ###
   onceOpenListener: (fn) ->
     _callback = (->
       fn()
@@ -322,9 +359,17 @@ tm.define 'rpg.Window',
     ).bind(@)
     @addEventListener('open',_callback)
     @
+  ###* close リスナ追加
+  * @memberof rpg.Window#
+  * @param {Function} fn リスナー
+  ###
   addCloseListener: (fn) ->
     @addEventListener('close',fn)
     @
+  ###* close リスナ追加（１回用）
+  * @memberof rpg.Window#
+  * @param {Function} fn リスナー
+  ###
   onceCloseListener: (fn) ->
     _callback = (->
       fn()
@@ -333,21 +378,26 @@ tm.define 'rpg.Window',
     ).bind(@)
     @addEventListener('close',_callback)
     @
-  # ツリー構造のウィンドウで一番上のウィンドウを探す
+  ###* ツリー構造のウィンドウで一番上のウィンドウを探す
+  * @memberof rpg.Window#
+  ###
   findTopWindow: ->
     if @parentWindow instanceof rpg.Window
       return @parentWindow.findTopWindow()
     @
-  # ウインドウを探す
-  findWindow: (fn)->
-    for w in @windows when fn w
-      return w
-    return null
-  # ウインドウを探す
+  ###* ツリーを巡ってウインドウを探す
+  * @memberof rpg.Window#
+  * @param {rpg.Window~findWindowCallback} fn 検索用コールバック
+  ###
   findWindowTree: (fn)->
     t = @findTopWindow()
     return t._findWindowTree(fn)
 
+  ###* ツリーを巡ってウインドウを探す内部メソッド
+  * @memberof rpg.Window#
+  * @param {rpg.Window~findWindowCallback} fn 検索用コールバック
+  * @private
+  ###
   _findWindowTree: (fn)->
     return @ if fn @
     for w in @windows
@@ -356,8 +406,8 @@ tm.define 'rpg.Window',
     return null
 
 
-rpg.Window.EVENT_OPEN = tm.event.Event 'open'
-rpg.Window.EVENT_CLOSE = tm.event.Event 'close'
+rpg.Window.EVENT_OPEN       = tm.event.Event 'open'
+rpg.Window.EVENT_CLOSE      = tm.event.Event 'close'
 rpg.Window.EVENT_ADD_WINDOW = tm.event.Event 'addWindow'
 
 rpg.Window.prototype.getter 'innerRect', -> @content.innerRect

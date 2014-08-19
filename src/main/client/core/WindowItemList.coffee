@@ -1,9 +1,19 @@
+###*
+* @file WindowItemList.coffee
+* アイテム一覧ウィンドウクラス
+###
 
 # アイテム一覧ウィンドウクラス
 tm.define 'rpg.WindowItemList',
   superClass: rpg.WindowMenu
 
-  # 初期化
+  ###* コンストラクタ
+  * @classdesc ウィンドウクラス
+  * @constructor rpg.WindowItemList
+  * @param {Object} param
+  * @param {Array} param.items アイテムインスタンスの配列
+  * @param {Array} param.menus 追加メニュー
+  ###
   init: (args={}) ->
     {
       @items
@@ -42,7 +52,11 @@ tm.define 'rpg.WindowItemList',
         }
       )
       @addWindow(@window_help)
+    return
 
+  ###* インデックス変更時の処理
+  * @memberof rpg.WindowItemList#
+  ###
   change_index: ->
     if @index >= 0
       if @window_help?
@@ -54,24 +68,45 @@ tm.define 'rpg.WindowItemList',
     else
       @window_help?.visible = false
 
+  ###* メニュー選択時の処理
+  * @memberof rpg.WindowItemList#
+  ###
   selectMenu: ->
     @selectItem @items[@index]
+    return
 
+  ###* アイテム選択時の処理
+  * @memberof rpg.WindowItemList#
+  ###
   selectItem: (item) ->
+    # アイテムメニューを表示する
     @addWindow rpg.WindowItemMenu(parent:@)
+    # 自分は非アクティブに
     @active = false
+    return
 
-  setItems: (items) ->
+  ###* アイテムリストの設定
+  * @memberof rpg.WindowItemList#
+  * @param {Arraty} items アイテムインスタンスの配列
+  ###
+  setItems: (@items) ->
     @clearMenu()
-    @items = items
     for i in @items
       @addMenu(i.name,@selectMenu.bind @)
     @refresh()
-    @
+    return
 
+  ###* キャンセル時の処理
+  * @memberof rpg.WindowItemList#
+  ###
   cancel: ->
+    # 選択解除
     @setIndex -1
+    # 親(アクターリスト)をアクティブに
     @parentWindow.active = true
+    # 自分は非アクティブに
     @active = false
+    # クローズ（非表示）には、しない
+    return
 
 rpg.WindowItemList.prototype.getter 'item', -> @items[@index]

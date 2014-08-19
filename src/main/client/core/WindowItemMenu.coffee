@@ -34,8 +34,9 @@ tm.define 'rpg.WindowItemMenu',
       cols: 1
       rows: args.menus.length
     }.$extend(args))
-    @x = parent.right
-    @y = parent.top
+    w  = parent.findWindowTree (o) -> o instanceof rpg.WindowItemActorList
+    @x = w.right - @width
+    @y = w.bottom
 
   itemUse: ->
     return
