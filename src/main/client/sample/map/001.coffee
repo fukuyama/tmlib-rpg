@@ -358,7 +358,17 @@ module.exports = {
                     name: 'page1'
                     trigger: ['auto']
                     commands: [
+                      {type:'flag',params: ['init',on]}
                       {type:'gain_item',params: [1]}
+                    ]
+                  }
+                  {
+                    name: 'page2'
+                    condition: [
+                      {type:'flag.on?',params:['init']}
+                    ]
+                    trigger: ['auto']
+                    commands: [
                       {type:'delete'}
                     ]
                   }
