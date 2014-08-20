@@ -18,9 +18,11 @@ tm.define 'rpg.WindowItemList',
     {
       @items
       menus
+      help
     } = {
       items: []
       menus: []
+      help: on
     }.$extend(args)
     
     for i in @items
@@ -40,18 +42,19 @@ tm.define 'rpg.WindowItemList',
       menuWidthFix: 24 * 9
       close: false
     }.$extend(args))
-    @on 'addWindow', (e) ->
-      @window_help = rpg.Window(
-        @right
-        16
-        24 * 5 + 16 * 2
-        rpg.system.lineHeight * 3 + 16 * 2
-        {
-          visible: false
-          active: false
-        }
-      )
-      @addWindow(@window_help)
+    if help
+      @on 'addWindow', (e) ->
+        @window_help = rpg.Window(
+          @right
+          16
+          24 * 5 + 16 * 2
+          rpg.system.lineHeight * 3 + 16 * 2
+          {
+            visible: false
+            active: false
+          }
+        )
+        @addWindow(@window_help)
     return
 
   ###* インデックス変更時の処理

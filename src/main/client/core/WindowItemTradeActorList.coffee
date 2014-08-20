@@ -1,30 +1,31 @@
 ###*
-* @file WindowItemActorList.coffee
-* アイテム一覧用メンバーリストウィンドウ
+* @file WindowItemTradeActorList.coffee
+* トレードアイテム一覧用メンバーリストウィンドウ
 ###
 
-# アイテム一覧用メンバーリストウィンドウ
-tm.define 'rpg.WindowItemActorList',
+# トレードアイテム一覧用メンバーリストウィンドウ
+tm.define 'rpg.WindowItemTradeActorList',
 
   superClass: rpg.WindowMemberBase
 
   ###* コンストラクタ
-  * @classdesc アイテム一覧用メンバーリストウィンドウ
-  * @constructor rpg.WindowItemActorList
+  * @classdesc トレードアイテム一覧用メンバーリストウィンドウ
+  * @constructor rpg.WindowItemTradeActorList
   * @param {Object} args
   ###
   init: (args={}) ->
     @superInit(args.$extend {
-      title: 'だれの？'
+      title: 'だれに？'
       menus: [
         {name:'ふくろ',fn: -> console.log 'ふくろ'}
       ]
     })
-    @x = 16
+    parent = args.parent
+    @x = parent.right
     @y = 16
 
     @on 'addWindow', ->
-      @window_item = rpg.WindowItemList(
+      @window_item = rpg.WindowItemTradeList(
         x: @right
         y: 16
         index: -1
@@ -35,7 +36,7 @@ tm.define 'rpg.WindowItemActorList',
       @changeActor(@actor)
   
   ###* アクターが変更された場合の処理
-  * @memberof rpg.WindowItemActorList#
+  * @memberof rpg.WindowItemTradeActorList#
   * @param {rpg.Actor} actor アクター
   ###
   changeActor: (actor) ->
@@ -47,7 +48,7 @@ tm.define 'rpg.WindowItemActorList',
     return
 
   ###* アクターが選択された場合の処理
-  * @memberof rpg.WindowItemActorList#
+  * @memberof rpg.WindowItemTradeActorList#
   * @param {rpg.Actor} actor アクター
   ###
   selectActor: (actor) ->

@@ -42,6 +42,8 @@ tm.define 'rpg.WindowItemMenu',
     return
 
   itemTrade: ->
+    @addWindow rpg.WindowItemTradeActorList parent: @
+    @active = false
     return
 
   itemThrow: ->

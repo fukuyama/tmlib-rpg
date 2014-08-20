@@ -34,9 +34,12 @@ tm.define 'rpg.WindowMapMenu',
   menuSkill: ->
     console.log 'skill'
     @
-  menuItem: -> @_next rpg.WindowItemActorList parent: @
+  menuItem: ->
+    @_next rpg.WindowItemActorList parent: @
   menuCheck: ->
     rpg.system.player.checkEvent()
     @close()
-  menuStatus: -> @_next rpg.WindowStatusActorList parent: @
-  menuOperation: -> @_next rpg.WindowOperation parent: @
+  menuStatus: ->
+    @_next rpg.WindowStatusActorList parent: @
+  menuOperation: ->
+    @_next rpg.WindowOperation parent: @
