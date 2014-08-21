@@ -47,13 +47,13 @@ tm.define 'rpg.WindowItemMenu',
     return
 
   itemThrow: ->
-    w1 = @findWindowTree (o) -> o instanceof rpg.WindowItemList
-    w2 = @findWindowTree (o) -> o instanceof rpg.WindowItemActorList
-    w2.actor.backpack.removeItem w1.item
+    wi = @findWindowTree (o) -> o instanceof rpg.WindowItemList
+    wa = @findWindowTree (o) -> o instanceof rpg.WindowItemActorList
+    wa.actor.backpack.removeItem wi.item
     @close()
-    w2.changeActor(w2.actor)
-    if w1.items.length == 0
-      w2.active = true
-      w1.active = false
-    if w1.items.length <= w1.index
-      w1.setIndex(w1.items.length - 1)
+    wa.changeActor(wa.actor)
+    if wi.items.length == 0
+      wa.active = true
+      wi.active = false
+    if wi.items.length <= wi.index
+      wi.setIndex(wi.items.length - 1)

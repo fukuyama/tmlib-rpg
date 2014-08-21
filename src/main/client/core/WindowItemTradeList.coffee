@@ -22,7 +22,7 @@ tm.define 'rpg.WindowItemTradeList',
   ###* アイテム選択時の処理
   * @memberof rpg.WindowItemTradeList#
   ###
-  selectItem: (item) ->
+  selectItem: (tradeitem) ->
     @active = false
     wa = @findWindowTree (w) -> w instanceof rpg.WindowItemActorList
     wm = @findWindowTree (w) -> w instanceof rpg.WindowItemMenu
@@ -33,11 +33,15 @@ tm.define 'rpg.WindowItemTradeList',
     i  = wi.item
     s.backpack.removeItem i
     t.backpack.addItem i
-    s.backpack.addItem item if item?
+    s.backpack.addItem tradeitem if tradeitem?
     wm.close()
     wa.changeActor(wa.actor)
-    wa.active = true
-    wi.setIndex(-1)
+    if wi.items.length == 0
+      wm.on 'close', ->
+        wa.active = true
+        wi.active = false
+    if wi.items.length <= wi.index
+      wi.setIndex(wi.items.length - 1)
     return
 
   ###* アイテムリストの設定
