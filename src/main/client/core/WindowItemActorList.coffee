@@ -51,10 +51,11 @@ tm.define 'rpg.WindowItemActorList',
   * @param {rpg.Actor} actor アクター
   ###
   selectActor: (actor) ->
-    # アイテムウィンドウのカーソル位置設定
-    @window_item.setIndex 0
-    # アイテムウィンドウをアクティブに
-    @window_item.active = true
-    # 自分は非アクティブに
-    @active = false
+    if @window_item?.items.length != 0
+      # アイテムウィンドウのカーソル位置設定
+      @window_item.setIndex 0
+      # アイテムウィンドウをアクティブに
+      @window_item.active = true
+      # 自分は非アクティブに
+      @active = false
     return
