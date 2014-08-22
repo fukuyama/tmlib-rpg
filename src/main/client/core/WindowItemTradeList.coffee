@@ -28,12 +28,14 @@ tm.define 'rpg.WindowItemTradeList',
     wm = @findWindowTree (w) -> w instanceof rpg.WindowItemMenu
     wt = @findWindowTree (w) -> w instanceof rpg.WindowItemTradeActorList
     wi = @findWindowTree (w) -> w instanceof rpg.WindowItemList
-    s  = wa.actor
-    t  = wt.actor
-    i  = wi.item
-    s.backpack.removeItem i
-    t.backpack.addItem i
-    s.backpack.addItem tradeitem if tradeitem?
+    sa = wa.actor
+    ta = wt.actor
+    item = wi.item
+    sa.backpack.removeItem item
+    ta.backpack.addItem item
+    if tradeitem?
+      ta.backpack.removeItem tradeitem
+      sa.backpack.addItem tradeitem
     wm.close()
     wa.changeActor(wa.actor)
     if wi.items.length == 0

@@ -85,7 +85,8 @@ tm.define 'SceneMap',
     @windowMapMenu.open()
 
   playerActive: ->
-    @player.active = true
+    unless @windowMessage.visible or @windowMapMenu.visible
+      @player.active = true
     rpg.system.app.keyboard.clear()
 
   playerEnterframe: ->
