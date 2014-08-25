@@ -88,6 +88,10 @@ describe 'rpg.WindowItemTest', ->
         actor.backpack.itemCount.should.equal 0
         actor = rpg.game.party.getAt(1)
         actor.backpack.itemCount.should.equal 1
+      it 'メッセージ待ち', (done) ->
+        setTimeout(done,2000)
+      it 'メッセージ', (done) ->
+        emulate_key('enter',done)
       it 'キャンセル', (done) ->
         emulate_key('escape',done)
       it 'キャンセル', (done) ->
@@ -147,6 +151,12 @@ describe 'rpg.WindowItemTest', ->
         actor.backpack.itemCount.should.equal 1
         item = actor.backpack.getItem(0)
         item.name.should.equal 'item 001'
+      it 'メッセージ待ち', (done) ->
+        setTimeout(done,2000)
+      it 'メッセージ', (done) ->
+        emulate_key('enter',done)
+      it 'キャンセル', (done) ->
+        emulate_key('escape',done)
       it 'キャンセル', (done) ->
         emulate_key('escape',done)
       it 'キャンセル', (done) ->
