@@ -37,11 +37,9 @@ tm.define 'rpg.WindowItemTradeList',
     if tradeitem?
       ta.backpack.removeItem tradeitem
       sa.backpack.addItem tradeitem
-      eg.message "#{sa.name}は#{item.name}を\\n"+
-      "#{ta.name}の#{tradeitem.name}とこうかんした。"
+      eg.itemTradeSwap(sa,ta,item,tradeitem)
     else
-      eg.message "#{sa.name}は#{item.name}を\\n"+
-      "#{ta.name}に手渡した。"
+      eg.itemTradeHandOver(sa,ta,item)
     eg.function ->
       wm.close()
       wa.changeActor(wa.actor)

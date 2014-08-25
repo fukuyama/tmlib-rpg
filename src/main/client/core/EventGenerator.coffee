@@ -12,6 +12,18 @@ tm.define 'rpg.EventGenerator',
   init: (args={}) ->
     @commands = []
 
+  itemTradeSwap: (user1,user2,item1,item2) ->
+    @message(
+      "#{user1.name}は#{item1.name}を\\n" +
+      "#{user2.name}の#{item2.name}とこうかんした。"
+    )
+
+  itemTradeHandOver: (user1,user2,item1) ->
+    @message(
+      "#{user1.name}は#{item1.name}を\\n" +
+      "#{user2.name}に手渡した。"
+    )
+
 # rpg.event_command パッケージから create メソッドを持ったイベントコマンドで
 # コマンドを生成するメソッドを作成
 for own cmd,ins of rpg.event_command when ins.create?
