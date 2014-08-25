@@ -24,6 +24,7 @@ tm.define 'rpg.WindowItemTradeList',
   ###
   selectItem: (tradeitem) ->
     @active = false
+    eg = rpg.EventGenerator()
     wa = @findWindowTree (w) -> w instanceof rpg.WindowItemActorList
     wm = @findWindowTree (w) -> w instanceof rpg.WindowItemMenu
     wt = @findWindowTree (w) -> w instanceof rpg.WindowItemTradeActorList
@@ -36,14 +37,21 @@ tm.define 'rpg.WindowItemTradeList',
     if tradeitem?
       ta.backpack.removeItem tradeitem
       sa.backpack.addItem tradeitem
-    wm.close()
-    wa.changeActor(wa.actor)
-    if wi.items.length == 0
-      wm.on 'close', ->
-        wa.active = true
-        wi.active = false
-    if wi.items.length <= wi.index
-      wi.setIndex(wi.items.length - 1)
+      eg.message "#{sa.name}は#{item.name}を\\n"+
+      "#{ta.name}の#{tradeitem.name}とこうかんした。"
+    else
+      eg.message "#{sa.name}は#{item.name}を\\n"+
+      "#{ta.name}に手渡した。"
+    eg.function ->
+      wm.close()
+      wa.changeActor(wa.actor)
+      if wi.items.length == 0
+        wm.on 'close', ->
+          wa.active = true
+          wi.active = false
+      if wi.items.length <= wi.index
+        wi.setIndex(wi.items.length - 1)
+    rpg.system.mapInterpreter.start eg.commands
     return
 
   ###* アイテムリストの設定

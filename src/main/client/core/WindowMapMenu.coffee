@@ -34,11 +34,11 @@ tm.define 'rpg.WindowMapMenu',
     return
   menuSkill: ->
     self = @
+    eg = rpg.EventGenerator()
+    eg.message 'Skill'
+    eg.function -> self.active = true
     interpreter = rpg.system.mapInterpreter
-    interpreter.start [
-      {type:'message',params:['Skill']}
-      {type:'function',params:[-> self.active = true]}
-    ]
+    interpreter.start eg.commands
     @active = false
     return
   menuItem: ->

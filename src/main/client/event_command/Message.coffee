@@ -1,3 +1,7 @@
+###*
+* @file Message.coffee
+* 文章表示
+###
 
 # 文章表示
 tm.define 'rpg.event_command.Message',
@@ -5,7 +9,7 @@ tm.define 'rpg.event_command.Message',
   ###* イベントコマンドの反映。
   * Interpreter インスタンスのメソッドとして実行される。
   * イベントコマンド自体のインスタンスは、@event_command で取得する。
-  * @memberof rpg.event_command.CharacterProprties#
+  * @memberof rpg.event_command.Message#
   * @param {string} msg 表示するメッセージ。
   * @return {boolean} false
   ###
@@ -28,5 +32,13 @@ tm.define 'rpg.event_command.Message',
     @nextCommand().type is 'input_num')
       @next().execute()
     false
+
+  ###* イベントコマンドの作成
+  * @memberof rpg.event_command.Message#
+  * @param {string} msg 表示するメッセージ。
+  * @return {Object} コマンドデータ
+  ###
+  create: (msg) ->
+    {type:'message',params:[msg]}
 
 rpg.event_command.message = rpg.event_command.Message()

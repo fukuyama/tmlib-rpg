@@ -81,6 +81,7 @@ module.exports = (grunt) ->
       'event_command/Loop'
       'event_command/End'
       'event_command/Item'
+      'core/EventGenerator'
       'scene/SceneBase'
       'scene/SceneLoading3'
       'scene/SceneMain'
