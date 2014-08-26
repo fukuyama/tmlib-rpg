@@ -38,22 +38,37 @@ tm.define 'rpg.WindowItemMenu',
     @x = w.right - @width
     @y = w.bottom
 
+  ###* 使うメニュー
+  * @memberof rpg.WindowItemMenu#
+  ###
   itemUse: ->
     return
 
+  ###* わたすメニュー
+  * @memberof rpg.WindowItemMenu#
+  ###
   itemTrade: ->
     @addWindow rpg.WindowItemTradeActorList parent: @
     @active = false
     return
 
+  ###* 捨てるメニュー
+  * @memberof rpg.WindowItemMenu#
+  ###
   itemThrow: ->
+    @active = false
     wi = @findWindowTree (o) -> o instanceof rpg.WindowItemList
     wa = @findWindowTree (o) -> o instanceof rpg.WindowItemActorList
+    self = @
     wa.actor.backpack.removeItem wi.item
-    @close()
-    wa.changeActor(wa.actor)
-    if wi.items.length == 0
-      wa.active = true
-      wi.active = false
-    if wi.items.length <= wi.index
-      wi.setIndex(wi.items.length - 1)
+    eg = rpg.EventGenerator()
+    eg.itemThrow(wa.actor,wi.item)
+    eg.function ->
+      self.close()
+      wa.changeActor(wa.actor)
+      if wi.items.length == 0
+        wa.active = true
+        wi.active = false
+      if wi.items.length <= wi.index
+        wi.setIndex(wi.items.length - 1)
+    rpg.system.mapInterpreter.start eg.commands

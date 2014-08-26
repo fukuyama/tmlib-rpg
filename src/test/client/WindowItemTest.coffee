@@ -38,6 +38,10 @@ describe 'rpg.WindowItemTest', ->
       actor.backpack.itemCount.should.equal 2
     it '選択', (done) ->
       emulate_key('enter',done)
+    it 'メッセージ待ち', (done) ->
+      setTimeout(done,2000)
+    it 'メッセージ', (done) ->
+      emulate_key('enter',done)
     it 'アイテム数確認 2', ->
       actor = rpg.game.party.getAt(0)
       actor.backpack.itemCount.should.equal 1

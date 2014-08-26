@@ -78,10 +78,13 @@ tm.define 'rpg.WindowMessage',
   setMessage: (msg) ->
     @open()
     @_messages = if msg instanceof Array then [].concat(msg) else [msg]
-    @_message = @_messages.shift()
-    @_messageIndex = 0
+    @nextMessage()
     @_sy = @_dx = @_dy = 0
     @
+
+  nextMessage: ->
+    @_message = @_messages.shift().replace /\n/g, '\\n'
+    @_messageIndex = 0
 
   # 表示位置設定
   setDisplayPosition: (options=@options) ->
@@ -291,9 +294,8 @@ tm.define 'rpg.WindowMessage',
         @_dx = 0
         @_dy += rpg.system.lineHeight
       @_py = @_dy
-      @_messageIndex = 0
       @_waitCount = 0
-      @_message = @_messages.shift()
+      @nextMessage()
   
   input_ok_up: ->
     if @isPause()
