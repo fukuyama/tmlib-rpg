@@ -49,8 +49,16 @@ tm.define 'SceneMap',
 
     @addChild(@player)
     @addChild(@spriteMap)
-    @addChild(@windowMapMenu)
-    @addChild(@windowMessage)
+
+    # メニューレイヤー
+    menuLayer = tm.display.CanvasElement()
+    menuLayer.addChild(@windowMapMenu)
+    @addChild(menuLayer)
+
+    # メッセージレイヤー
+    messageLayer = tm.display.CanvasElement()
+    messageLayer.addChild(@windowMessage)
+    @addChild(messageLayer)
 
     rpg.system.temp.transition?.addChildTo @
 
