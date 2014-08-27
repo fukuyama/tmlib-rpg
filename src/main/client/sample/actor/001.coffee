@@ -2,7 +2,7 @@ require('../../../common/utils')
 require('../../../common/constants')
 
 module.exports = {
-  name: 'item 001'
+  name: 'あくたー１'
   str: 10 # ちから
   vit: 10 # たいりょく
   dex: 10 # きようさ

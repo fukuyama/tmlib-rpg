@@ -36,15 +36,22 @@ tm.define 'rpg.DataBase',
         item: 'item/'
         map: 'map/'
         state: 'state/'
+        actor: 'actor/'
     }.$extend args
 
+    # メタ インタフェース
     @_metaif = {
       item:
         url: @_dataUrl.bind @, path.data + path.item
         create: @_create.bind @, 'Item'
+      actor:
+        url: @_dataUrl.bind @, path.data + path.actor
+        create: @_create.bind @, 'Actor'
     }
 
+    # preload 用 公開メソッド
     @preloadItem = @_preload.bind @, 'item'
+    @preloadActor = @_preload.bind @, 'actor'
 
     @mapUrl   = @_dataUrl.bind @, path.data + path.map
     @stateUrl = @_dataUrl.bind @, path.data + path.state
@@ -90,13 +97,6 @@ tm.define 'rpg.DataBase',
       func(list)
     rpg.system.loadAssets urls, onload.bind @
     return
-
-  ###* アイテムデータの読み込み
-  * @memberof rpg.DataBase#
-  * @param {Array} ids アイテムデータのID / ファイル名の配列
-  * @param {rpg.DataBase~itemcallback} func 読み込み後のコールバック関数
-  ###
-  #preloadItem: (ids,func) -> @_preload('item',ids,func)
 
   ###* マップデータの読み込み
   * @memberof rpg.DataBase#

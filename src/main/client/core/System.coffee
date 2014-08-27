@@ -32,6 +32,7 @@ tm.define 'rpg.System',
       @se
       @mapChipSize
       @setting
+      @start
     } = {
       setting: {
         se: false
@@ -68,6 +69,8 @@ tm.define 'rpg.System',
         height: 480
         background: 'rgb(0,0,0)'
       se: SE_METHOD
+      start:
+        actors: []
     }.$extendAll(args)
     @clearTemp()
     @player = rpg.GamePlayer()
@@ -247,23 +250,25 @@ tm.define 'rpg.System',
     game.pc = new rpg.Character()
     game.pc.moveSpeed = 6
     
+    @mapInterpreter = rpg.Interpreter()
+
     # パーティ編成
     game.party = new rpg.Party()
     
     # TODO: アクターデータ
-    game.actors = []
+    # game.actors = []
 
-    # DUMMY
-    a = new rpg.Actor(name: 'ああああ')
-    game.party.add(a)
-    game.actors.push a
-    a = new rpg.Actor(name: 'あああい')
-    game.party.add(a)
-    game.actors.push a
 
-    @mapInterpreter = rpg.Interpreter()
-
-    @loadMap(1)
+    # Actors
+    @db.preloadActor(
+      @start.actors
+      (actors) ->
+        for a in actors
+          rpg.game.party.add(a)
+        rpg.system.loadMap(1)
+        return
+    )
+    return
 
   # マップのロード
   loadMap: (mapid,enter) ->

@@ -50,4 +50,6 @@ module.exports = {
       width: 32 * 20
       y: 32 * 15 - 10
   windowDefault: {}
+  start:
+    actors: [1,2]
 }

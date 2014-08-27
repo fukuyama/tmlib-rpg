@@ -8,6 +8,8 @@ sample_files = [
   'state/001'
   'spritesheet/hiyoko'
   'spritesheet/object001'
+  'actor/001'
+  'actor/002'
 ]
 
 target = 'target'
@@ -21,7 +23,7 @@ fs   = require 'fs'
 jc.base = path.dirname fs.realpathSync(__filename)
 
 outputDir = path.join(target, 'public/client/data')
-for i in ['map','item','state', 'spritesheet']
+for i in ['map','item','state', 'spritesheet', 'actor']
   dirnm = path.join(outputDir,i)
   fs.mkdirSync(dirnm) unless fs.existsSync(dirnm)
 

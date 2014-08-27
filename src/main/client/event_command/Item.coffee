@@ -9,8 +9,6 @@ tm.define 'rpg.event_command.GainItem',
     if item.item?
       {item,num,actor,backpack} = {num: 1}.$extend item
     @waitFlag = true
-    # 現在のシーンをキャプチャー
-    rpg.system.captureScreenBitmap()
     self = @
     rpg.system.db.preloadItem [item], (items) ->
       # 誰かのアイテム
@@ -36,8 +34,6 @@ tm.define 'rpg.event_command.LostItem',
     if item.item?
       {item,num,actor,backpack} = {num: 1}.$extend item
     @waitFlag = true
-    # 現在のシーンをキャプチャー
-    rpg.system.captureScreenBitmap()
     self = @
     rpg.system.db.preloadItem [item], (items) ->
       # 誰かのアイテム

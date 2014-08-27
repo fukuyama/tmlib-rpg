@@ -25,8 +25,6 @@ tm.define 'rpg.WindowOperation',
     console.log w
   menuTest001: ->
     console.log 'menuTest001'
-    # 現在のシーンをキャプチャー
-    rpg.system.captureScreenBitmap()
-    rpg.system.db.item(['001','002'],(items)->
+    rpg.system.db.preloadItem(['001','002'],(items)->
       console.log items
     )
