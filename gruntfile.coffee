@@ -206,6 +206,11 @@ module.exports = (grunt) ->
         cwd: '../tmlib.js/build'
         src: ['**']
         dest: 'target/public/client/lib/build'
+      bgm:
+        expand: true
+        cwd: '../bgm'
+        src: ['**']
+        dest: 'target/public/client/audio/bgm'
 
     express:
       options:

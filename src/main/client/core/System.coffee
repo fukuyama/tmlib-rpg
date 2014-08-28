@@ -18,7 +18,7 @@ tm.define 'rpg.System',
 
   # 初期化
   init: (args = 'system') ->
-    args = tm.asset.AssetManager.get(args).data if typeof args == 'string'
+    args = tm.asset.Manager.get(args).data if typeof args == 'string'
     {
       @title
       @assets
@@ -36,6 +36,7 @@ tm.define 'rpg.System',
     } = {
       setting: {
         se: false
+        bgm: false
       }
       title: 'tmlib-rpg'
       assets: {}
@@ -145,6 +146,56 @@ tm.define 'rpg.System',
       rpg.mocha_run()
     1000)
 
+  # DEBUG実行
+  runDebug: ->
+    console.log '* debug mode *'
+    # アプリケーション作成
+    app = @app = tm.display.CanvasApp '#' + @canvasId
+
+    # リサイズ
+    app.resize @screen.width, @screen.height
+
+    # 自動フィット
+    app.fitDebugWindow = ->
+      _fitFunc = (->
+        e = @element
+        s = e.style
+        
+        s.position = 'fixed'
+        s.margin = '0'
+        s.top  = '0px'
+        s.left = '0px'
+        s.zIndex = 10
+
+        rateWidth = e.width / window.innerWidth
+        rateHeight= e.height / window.innerHeight
+        rate = e.height / e.width
+
+        if (rateWidth > rateHeight)
+          s.width  = innerWidth + 'px'
+          s.height = innerWidth * rate + 'px'
+        else
+          s.width  = innerHeight / rate + 'px'
+          s.height = innerHeight + 'px'
+      ).bind(@)
+
+      # 一度実行しておく
+      _fitFunc()
+      # リサイズ時のリスナとして登録しておく
+      window.addEventListener('resize', _fitFunc, false)
+
+    app.fitDebugWindow()
+    
+    # APバックグラウンド
+    app.background = @screen.background
+
+    sceneMain = {}.$extendAll(@main)
+    # 最初のシーンに切り替える
+    @loadScene sceneMain
+
+    # 実行
+    app.run()
+
   # 通常実行
   runNomal: ->
     # アプリケーション作成
@@ -174,14 +225,21 @@ tm.define 'rpg.System',
       return
     if rpg.mocha
       @runMocha()
+    else if rpg.debug
+      @runDebug()
     else
       @runNomal()
 
   # Assetロード
   loadAssets: (assets, callback=null) ->
-    scene = SceneLoading assets: assets, autopop: true
-    scene.on 'load', callback if callback?
-    rpg.system.app.pushScene scene
+    if rpg.system.scene instanceof SceneLoading
+      scene = rpg.system.scene
+      scene.addAssets(assets)
+      scene.on 'load', callback if callback?
+    else
+      scene = SceneLoading assets: assets, autopop: true
+      scene.on 'load', callback if callback?
+      rpg.system.app.pushScene scene
   
   # シーンロード
   loadScene: (args={}) ->
@@ -225,10 +283,25 @@ tm.define 'rpg.System',
   # SEの演奏
   playSe: (name) ->
     return unless @setting.se
-    if tm.asset.AssetManager.contains name
-      audio = tm.asset.AssetManager.get(name)
+    if tm.asset.Manager.contains name
+      audio = tm.asset.Manager.get(name)
       audio.play()
       audio.stop(1)
+
+  # Bgmの演奏
+  playBgm: (name) ->
+    return unless @setting.bgm
+    if tm.asset.Manager.contains name
+      audio = tm.asset.Manager.get(name)
+      audio.play()
+      audio.loop(true)
+
+  # Bgmの停止
+  stopBgm: () ->
+    return unless @setting.bgm
+    if tm.asset.Manager.contains name
+      audio = tm.asset.Manager.get(name)
+      audio.stop()
 
   # テンポラリ削除
   clearTemp: ->
@@ -265,9 +338,11 @@ tm.define 'rpg.System',
       (actors) ->
         for a in actors
           rpg.game.party.add(a)
-        rpg.system.loadMap(1)
         return
     )
+
+    # Map
+    @loadMap(1)
     return
 
   # マップのロード

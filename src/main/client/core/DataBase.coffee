@@ -91,10 +91,13 @@ tm.define 'rpg.DataBase',
     onload = () ->
       list = []
       for url in urls
-        data = mgr.get(url).data
-        data.url = url
-        list.push @_metaif[key].create data
-      func(list)
+        m = mgr.get(url)
+        if m?
+          data = m.data
+          data.url = url
+          list.push @_metaif[key].create data
+      if list.length != 0
+        func(list)
     rpg.system.loadAssets urls, onload.bind @
     return
 
@@ -109,11 +112,12 @@ tm.define 'rpg.DataBase',
     if mgr.get(url)?
       func(new rpg.Map(mgr.get(url).data))
       return
-    load = () ->
-      data = mgr.get(url).data
-      func(new rpg.Map(data))
-    rpg.system.loadAssets url
-    rpg.system.scene.on 'load', load.bind @
+    onload = () ->
+      m = mgr.get(url)
+      if m?
+        data = m.data
+        func(new rpg.Map(data))
+    rpg.system.loadAssets url, onload.bind @
     rpg.system.scene.on 'progress', (e) ->
       if e.key == url
         data = mgr.get(url).data

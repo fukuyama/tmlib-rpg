@@ -29,6 +29,7 @@ module.exports = {
       'scene.title.background.image': 'img/test_001.png'
       'system.se.menu_decision': 'audio/se/fin.mp3'
       'system.se.menu_cursor_move': 'audio/se/fon.mp3'
+      'system.bgm.field': 'audio/bgm/game_maoudamashii_4_field10.mp3'
       'windowskin.image': 'img/test_windowskin2.png'
       'sample.spritesheet':
         type:'tmss'
