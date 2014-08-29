@@ -199,7 +199,7 @@ class rpg.Character
   ###
   isStop: -> not @isMove()
 
-  isStopping: -> @_stopping > 1
+  isStopping: (n=1) -> @_stopping > n
   
   ###* アニメーション Mode
   *　@method rpg.Character#isAnimation
@@ -252,7 +252,7 @@ class rpg.Character
     if @_moved
       @_moved = false
     if @isStop()
-      @_stopping += 1 if @_stopping <= 255
+      @_stopping += 1 if @_stopping <= 9999
     else
       # アニメーション調整は、スプライト側で行う
       # x 座標計算

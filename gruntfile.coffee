@@ -55,6 +55,7 @@ module.exports = (grunt) ->
       'core/WindowStatusActorList'
       'core/WindowStatusInfo'
       'core/WindowStatusDetail'
+      'core/WindowMapStatus'
       'core/WindowItemActorList'
       'core/WindowItemListBase'
       'core/WindowItemList'

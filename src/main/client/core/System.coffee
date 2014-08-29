@@ -292,16 +292,17 @@ tm.define 'rpg.System',
   playBgm: (name) ->
     return unless @setting.bgm
     if tm.asset.Manager.contains name
-      audio = tm.asset.Manager.get(name)
-      audio.play()
-      audio.loop(true)
+      @stopBgm() if @currentBgm?
+      @currentBgm = tm.asset.Manager.get(name)
+      @currentBgm.play()
+      @currentBgm.loop(true)
 
   # Bgmの停止
   stopBgm: () ->
     return unless @setting.bgm
-    if tm.asset.Manager.contains name
-      audio = tm.asset.Manager.get(name)
-      audio.stop()
+    if @currentBgm?
+      @currentBgm.stop()
+      @currentBgm = null
 
   # テンポラリ削除
   clearTemp: ->

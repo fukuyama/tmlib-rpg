@@ -32,6 +32,8 @@ tm.define 'SceneMap',
     @windowMessage = rpg.WindowMessage()
     # マップメインメニュー
     @windowMapMenu = rpg.WindowMapMenu()
+    # 簡易ステータスウィンドウ
+    @windowMapStatus = rpg.WindowMapStatus(windowMapMenu:@windowMapMenu)
     # プレイヤー
     @player = rpg.system.player
 
@@ -52,6 +54,7 @@ tm.define 'SceneMap',
 
     # メニューレイヤー
     menuLayer = tm.display.CanvasElement()
+    menuLayer.addChild(@windowMapStatus)
     menuLayer.addChild(@windowMapMenu)
     @addChild(menuLayer)
 
