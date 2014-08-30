@@ -62,6 +62,7 @@ module.exports = (grunt) ->
       'core/WindowItemMenu'
       'core/WindowItemTradeActorList'
       'core/WindowItemTradeList'
+      'core/WindowItemTargetActorList'
       'core/GamePlayer'
       'core/Interpreter'
       'event_command/Function'

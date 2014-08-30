@@ -112,6 +112,30 @@ module.exports = {
               }
             ])
         }
+        {
+          type: 'rpg.SpriteCharacter'
+          name: 'Event003'
+          width: 32
+          height: 32
+          properties:
+            init: JSON.stringify([
+              {
+                spriteSheet: 'spritesheet.hiyoko'
+                mapX: 7
+                mapY: 5
+                pages: [
+                  {
+                    name: 'page1'
+                    trigger: ['talk']
+                    commands: [
+                      {type:'message',params: ['アイテム操作']}
+                      {type:'gain_item',params: [4]}
+                    ]
+                  }
+                ]
+              }
+            ])
+        }
       ]
     }
   ]

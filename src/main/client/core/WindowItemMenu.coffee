@@ -3,6 +3,8 @@
 * アイテムメニュー
 ###
 
+ITEM_SCOPE = rpg.constants.ITEM_SCOPE
+
 tm.define 'rpg.WindowItemMenu',
 
   superClass: rpg.WindowMenu
@@ -42,6 +44,18 @@ tm.define 'rpg.WindowItemMenu',
   * @memberof rpg.WindowItemMenu#
   ###
   itemUse: ->
+    wi = @findWindowTree (o) -> o instanceof rpg.WindowItemList
+    wa = @findWindowTree (o) -> o instanceof rpg.WindowItemActorList
+    i = wi.item
+    a = wa.actor
+    return if i.scope.type == ITEM_SCOPE.TYPE.ENEMY
+    if i.scope.range == ITEM_SCOPE.RANGE.ONE
+      # 単体なので相手を選択
+      @addWindow rpg.WindowItemTargetActorList parent: @
+      @active = false
+    if i.scope.range == ITEM_SCOPE.RANGE.MULTI
+      # 複数対象なのでこの場で使う
+      a.useItem i
     return
 
   ###* わたすメニュー
