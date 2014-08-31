@@ -19,4 +19,17 @@ module.exports = [
       }}
     ]
   }
+  {
+    type: 'UsableItem', item: '005', name: 'heal I'
+    scope: {
+      type: ITEM_SCOPE.TYPE.FRIEND
+      range: ITEM_SCOPE.RANGE.MULTI
+    }
+    effect: [
+      {hp: {
+        type: 'fix'
+        val: 10
+      }}
+    ]
+  }
 ]

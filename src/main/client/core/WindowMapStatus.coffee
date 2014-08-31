@@ -59,6 +59,10 @@ tm.define 'rpg.WindowMapStatus',
       x += (24 * 4) + 8
     @refresh()
 
-  drawActor: (actor,x,y) ->
+  drawActor: (a,x,y) ->
     op = {}
-    @drawText(actor.name,x,y,op)
+    @drawText(a.name,x,y,op)
+    y += rpg.system.lineHeight
+    @drawText("#{a.hp}/#{a.maxhp}",x,y,op)
+    y += rpg.system.lineHeight
+    @drawText("#{a.mp}/#{a.maxmp}",x,y,op)

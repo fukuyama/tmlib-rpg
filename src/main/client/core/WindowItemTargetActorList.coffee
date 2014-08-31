@@ -30,7 +30,13 @@ tm.define 'rpg.WindowItemTargetActorList',
 
   ###* アクターが選択された場合の処理
   * @memberof rpg.WindowItemTargetActorList#
-  * @param {rpg.Actor} actor アクター
+  * @param {rpg.Actor} target アクター
   ###
-  selectActor: (actor) ->
+  selectActor: (target) ->
+    wi = @findWindowTree (o) -> o instanceof rpg.WindowItemList
+    wa = @findWindowTree (o) -> o instanceof rpg.WindowItemActorList
+    i = wi.item
+    a = wa.actor
+    r = a.useItem i, target
+    console.log r
     return
