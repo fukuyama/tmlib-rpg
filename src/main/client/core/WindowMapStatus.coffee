@@ -31,7 +31,7 @@ tm.define 'rpg.WindowMapStatus',
   update: ->
     player = rpg.system.player
     pc = player.character
-    if @windowMapMenu.visible
+    if not player.active
       @visible = true
       @stopCount = 0
     else

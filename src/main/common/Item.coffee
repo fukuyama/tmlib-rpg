@@ -16,6 +16,7 @@ class rpg.Item
       @name
       @price
       @help
+      @message
       usable
       equip
       stack
@@ -26,7 +27,8 @@ class rpg.Item
       url: ''       # ID(URL)
       name: ''      # 名前
       price: 1      # 価格
-      help: ''      # ヘルプテキスト
+      help: null    # ヘルプテキスト
+      message: null # ログメッセージテンプレート
       usable: false # 使えるかどうか
       equip: false  # 装備できるかどうか
       stack: false  # スタック可能かどうか
@@ -92,3 +94,26 @@ class rpg.Item
   clearItem: () ->
     return false unless @_container?
     @_container.clear()
+
+  # ヘルプテキストのキャッシュ
+  @_helpCache = {}
+  # メッセージテンプレートのキャッシュ
+  @_messageCache = {}
+
+Object.defineProperty rpg.Item.prototype, 'help',
+  enumerable: true
+  get: ->
+    rpg.Item._helpCache[@url] ? ''
+  set: (h) ->
+    return if rpg.Item._helpCache[@url]?
+    return unless h?
+    rpg.Item._helpCache[@url] = h
+
+Object.defineProperty rpg.Item.prototype, 'message',
+  enumerable: true
+  get: ->
+    rpg.Item._messageCache[@url] ? ''
+  set: (msg) ->
+    return if rpg.Item._messageCache[@url]?
+    return unless msg?
+    rpg.Item._messageCache[@url] = msg

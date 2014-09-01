@@ -12,24 +12,47 @@ tm.define 'rpg.EventGenerator',
   init: (args={}) ->
     @commands = []
 
-  itemThrow: (user1,item1) ->
+  itemThrow: (owner,item) ->
     @message """
-    #{user1.name}は#{item1.name}を
+    #{owner.name} は #{item.name} を
     なげすてた。
     """
 
-  itemTradeSwap: (user1,user2,item1,item2) ->
+  itemTradeSwap: (owner,target,item1,item2) ->
     @message """
-    #{user1.name}は#{item1.name}を
-    #{user2.name}の#{item2.name}とこうかんした。
+    #{owner.name} は #{item1.name} を
+    #{target.name} の #{item2.name} とこうかんした。
     """
 
-  itemTradeHandOver: (user1,user2,item1) ->
+  itemTradeHandOver: (owner,target,item) ->
     @message """
-    #{user1.name}は#{item1.name}を
-    #{user2.name}に手渡した。
+    #{owner.name} は #{item.name} を
+    #{target.name} に手渡した。
     """
 
+  itemUseOk: (user,item,target,log) ->
+    msgs = item.message.ok
+    return unless msgs?
+    msgs = [msgs] unless Array.isArray msgs
+    for msg in msgs
+      msg = msg.replace /user.name/g, user.name
+      msg = msg.replace /item.name/g, item.name
+      msg = msg.replace /target.name/g, target.name
+      msg = msg.replace /effect.value/g, log.targets[0].hp
+      @message msg
+    return
+
+  itemUseNg: (user,item,target,log) ->
+    msgs = item.message.ng
+    return unless msgs?
+    msgs = [msgs] unless Array.isArray msgs
+    for msg in msgs
+      msg = msg.replace /user.name/g, user.name
+      msg = msg.replace /item.name/g, item.name
+      msg = msg.replace /target.name/g, target.name
+      msg = msg.replace /value/g, log.targets[0].hp
+      @message msg
+    return
 
 # rpg.event_command パッケージから create メソッドを持ったイベントコマンドで
 # コマンドを生成するメソッドを作成

@@ -92,8 +92,8 @@ tm.define 'SceneMap',
 
   openMapMenu: ->
     @player.active = false
-    rpg.system.app.keyboard.clear()
     @windowMapMenu.open()
+    rpg.system.app.keyboard.clear()
 
   playerActive: ->
     wa = @windowMapMenu.findWindowTree (w) -> w.visible

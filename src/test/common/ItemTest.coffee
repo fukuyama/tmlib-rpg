@@ -8,6 +8,8 @@ require('../../main/common/ItemContainer.coffee')
 
 describe 'rpg.Item', ->
   item = null
+  item1 = null
+  item2 = null
   rpg.system = rpg.system ? {}
   rpg.system.temp = rpg.system.temp ? {}
 
@@ -27,11 +29,60 @@ describe 'rpg.Item', ->
     it '価格を設定', ->
       item.price = 100
       item.price.should.equal 100
+    it 'ヘルプは空', ->
+      item.help.should.equal ''
     it 'セーブロード', ->
       json = rpg.utils.createJsonData(item)
       item = rpg.utils.createRpgObject(json)
       item.name.should.equal 'Name00'
       item.price.should.equal 100
+  describe 'ヘルプテキスト', ->
+    it 'アイテムの初期化', ->
+      item = new rpg.Item(
+        url: '001'
+        help: 'help001'
+      )
+      item2 = new rpg.Item(
+        url: '002'
+        help: 'help002'
+      )
+    it 'ヘルプテキスト取得', ->
+      (item instanceof rpg.Item).should.equal true
+      item.help.should.equal 'help001'
+    it 'セーブロード', ->
+      json = rpg.utils.createJsonData(item)
+      obj = JSON.parse(json)
+      obj.d.url.should.equal '001'
+      (obj.d.help?).should.equal false
+      item = rpg.utils.createRpgObject(json)
+      (item instanceof rpg.Item).should.equal true
+      item.url.should.equal '001'
+      item.help.should.equal 'help001'
+  describe 'ログメッセージテキスト', ->
+    it 'アイテムの初期化', ->
+      item = new rpg.Item(
+        url: '001'
+        help: 'help001'
+        message: 'message001'
+      )
+      item2 = new rpg.Item(
+        url: '002'
+        help: 'help002'
+        message: 'message002'
+      )
+    it 'テキスト取得', ->
+      (item instanceof rpg.Item).should.equal true
+      item.message.should.equal 'message001'
+      item2.message.should.equal 'message002'
+    it 'セーブロード', ->
+      json = rpg.utils.createJsonData(item)
+      obj = JSON.parse(json)
+      obj.d.url.should.equal '001'
+      (obj.d.message?).should.equal false
+      item = rpg.utils.createRpgObject(json)
+      (item instanceof rpg.Item).should.equal true
+      item.url.should.equal '001'
+      item.message.should.equal 'message001'
   describe '使えるかどうか調べる', ->
     it 'アイテムの初期化', ->
       item = new rpg.Item({usable: true})

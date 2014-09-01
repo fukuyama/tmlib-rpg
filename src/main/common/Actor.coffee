@@ -54,8 +54,8 @@ class rpg.Actor extends rpg.Battler
   * @param {rpg.Item} item 使用するアイテム
   * @param {rpg.Battler} [target] 使用する対象
   ###
-  useItem: (item, target) ->
-    r = super(item, target)
+  useItem: (item, target, log={}) ->
+    r = super(item, target, log)
     if item.isLost()
       @backpack.removeItem item
     r

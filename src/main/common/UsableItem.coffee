@@ -67,20 +67,15 @@ class rpg.UsableItem extends rpg.Item
     
     return false unless @checkScopeRange(user, targets)
     for t in targets when @checkScopeType(user, t)
-      console.log 'test ' + t
       for effect in @effects
-        console.log 'effect ' + effect
         for effectType, param of effect
           r = @['effect_'+effectType].call(@, param, user, t, log) or r
-          console.log 'effect_' + effectType + ' ' + r
     r
 
   # 使う
   # user: rpg.Actor
   # target: rpg.Actor or Array<rpg.Actor>
   use: (user, target, log = {}) ->
-    console.log 'item#use'
-    console.log 'isLost ' + @isLost()
     return false if @isLost()
     r = @effect(user, [].concat(target), log)
     if r then @ok_count += 1 else @miss_count += 1

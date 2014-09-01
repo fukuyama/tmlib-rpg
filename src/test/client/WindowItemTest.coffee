@@ -165,3 +165,45 @@ describe 'rpg.WindowItemTest', ->
         emulate_key('escape',done)
       it 'キャンセル', (done) ->
         emulate_key('escape',done)
+
+  describe 'アイテムを使う', ->
+    describe '単体アイテム', ->
+      it 'マップシーンへ移動', (done) ->
+        reloadTestMap(done)
+      it 'wait', (done) ->
+        setTimeout(done,1000)
+      it 'アクターにダメージ', ->
+        actor = rpg.game.party.getAt(1)
+        actor.hp -= 20
+      it '通常アイテムをロード', (done) ->
+        db = rpg.system.db
+        db.preloadItem([4],(items) ->
+          actor = rpg.game.party.getAt(0)
+          item = items[0]
+          actor.backpack.addItem item
+          item.url.should.
+            equal 'http://localhost:3000/client/data/item/004.json'
+          item.type.should.equal 'UsableItem'
+          done()
+        )
+      it 'メニュー表示', (done) ->
+        emulate_key('enter',done)
+      it 'どうぐへ移動', (done) ->
+        emulate_key('down',done)
+      it 'メニュー選択', (done) ->
+        emulate_key('enter',done)
+      it 'アクター選択', (done) ->
+        emulate_key('enter',done)
+      it '２番目のアイテムに移動', (done) ->
+        emulate_key('down',done)
+      it 'アイテム選択', (done) ->
+        emulate_key('enter',done)
+      it 'つかうメニュー選択', (done) ->
+        emulate_key('enter',done)
+      it '２番目のアクターに移動', (done) ->
+        emulate_key('down',done)
+      it 'アクター選択', (done) ->
+        emulate_key('enter',done)
+      it 'HP確認', ->
+        actor = rpg.game.party.getAt(1)
+        actor.hp.should.equal (actor.maxhp - 10)

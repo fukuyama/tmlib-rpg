@@ -47,7 +47,11 @@ tm.define 'rpg.WindowMenu',
     @rows = 2 if @rows <= 0
     index = -1 if menus.length == 0
     @index = index # インデックスの初期化関連でローカル変数も使う
-    @closeEvent = close
+    if close
+      @cancel = ->
+        rpg.system.se.menuCancel()
+        @index = @cancelIndex
+        @close()
 
     # カーソル作成
     @cursorInstance = @createCursor(@cursor)
@@ -212,10 +216,6 @@ tm.define 'rpg.WindowMenu',
 
   # キャンセル
   input_cancel_up: ->
-    if @closeEvent
-      rpg.system.se.menuCancel()
-      @index = @cancelIndex
-      @close()
     if @cancel instanceof Function
       @cancel()
 

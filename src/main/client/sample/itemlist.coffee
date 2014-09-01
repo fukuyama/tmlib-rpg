@@ -12,12 +12,21 @@ module.exports = [
       type: ITEM_SCOPE.TYPE.FRIEND
       range: ITEM_SCOPE.RANGE.ONE
     }
-    effect: [
+    effects: [
       {hp: {
         type: 'fix'
         val: 10
       }}
     ]
+    message:
+      ok: [
+        'user.name は　item.name を　target.name に使った。'
+        'target.name の hp が effect.value 回復した。'
+      ]
+      ng: [
+        'user.name は　item.name を　target.name に使った。'
+        'しかし　効果がなかった。'
+      ]
   }
   {
     type: 'UsableItem', item: '005', name: 'heal I'
@@ -25,7 +34,7 @@ module.exports = [
       type: ITEM_SCOPE.TYPE.FRIEND
       range: ITEM_SCOPE.RANGE.MULTI
     }
-    effect: [
+    effects: [
       {hp: {
         type: 'fix'
         val: 10

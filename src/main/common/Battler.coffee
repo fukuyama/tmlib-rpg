@@ -188,5 +188,5 @@ class rpg.Battler
   * @param {rpg.Item} 使用するアイテム
   * @param {rpg.Battler|Array} アイテムを使用する対象
   ###
-  useItem: (item, target) ->
-    item.use @, target
+  useItem: (item, target, log={}) ->
+    item.use @, target, log

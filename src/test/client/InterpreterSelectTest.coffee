@@ -15,6 +15,8 @@ describe 'rpg.Interpreter(Select)', () ->
       ]
       it 'マップシーンへ移動', (done) ->
         loadTestMap(done)
+      it 'ウェイト', (done) ->
+        setTimeout done, 1000
       it 'インタープリタ取得', ->
         interpreter = rpg.system.scene.interpreter
       it 'flag10はoff', ->
@@ -25,9 +27,13 @@ describe 'rpg.Interpreter(Select)', () ->
         rpg.game.flag.is('flag20').should.equal off
       it 'マップシーンへ移動', (done) ->
         loadTestMap(done)
+      it 'ウェイト', (done) ->
+        setTimeout done, 1000
       it 'interpreter を実行する（「はい」を選択してください）', ->
         interpreter = rpg.system.scene.interpreter
         interpreter.start commands
+      it 'ウェイト', (done) ->
+        setTimeout done, 1000
       it '実行中', (done) ->
         emulate_key('enter',done)
       it 'flag10がonになる', ->
