@@ -18,6 +18,7 @@ class rpg.MarkupText
   ###
   constructor: ->
     @markups = []
+    @replaces = []
     @clear()
 
   ###* 状態クリア
@@ -25,21 +26,22 @@ class rpg.MarkupText
   ###
   clear: ->
     @matched = false
+    return
 
-  ###* マークアップ追加.
+  ###* マークアップ追加
   * @method rpg.MarkupText#add
   * @param {string} mark マークアップ文字列
   * @param {rpg.MarkupText~replacecallback} func マークアップ置き換え用コールバック
   ###
 
-  ###* マークアップ追加.
-  * @method rpg.MarkupText#add
+  ###* マークアップ追加
+  * @method rpg.MarkupText#addMarkup
   * @param {Object} param
   * @param {string} param.mark マークアップ１文字目
   * @param {string} param.name マークアップ名
   * @param {rpg.MarkupText~replacecallback} param.func マークアップ置き換え用コールバック
   ###
-  add: (args1,args2) ->
+  addMarkup: (args1,args2) ->
     if arguments.length == 2
       @markups.push {
         mark: args1[0]
@@ -48,6 +50,22 @@ class rpg.MarkupText
       }
     else if arguments.length == 1
       @markups.push args1
+
+  ###* 置き換え追加
+  * @method rpg.MarkupText#addReplaces
+  * @param {Object} param
+  * @param {string} param.mark マークアップ１文字目
+  * @param {string} param.name マークアップ名
+  * @param {rpg.MarkupText~replacecallback} param.func マークアップ置き換え用コールバック
+  ###
+  addReplace: (args1,args2) ->
+    if arguments.length == 2
+      @replaces.push {
+        regexp: args1[0]
+        func: args2
+      }
+    else if arguments.length == 1
+      @replaces.push args1
 
   ###* マークアップ内部処理
   * @method rpg.MarkupText#_drawIntarnal
@@ -58,25 +76,38 @@ class rpg.MarkupText
     for markup in @markups when markup.mark == @message[@i]
       nm = @message[@i + 1 .. markup.name.length + @i]
       if markup.name == nm
-        [@x, @y, @i, @matched] = markup.func(@obj, @x, @y, @message, @i)
-        return true if @matched
+        if markup.func.call @
+          @matched = true
+          return true
     return false
 
-  ###* マークアップ描画.
-  * メッセージ処理位置が、マークアップ１文字目ではない場合は、置き換えられない.
+  ###* マークアップ描画
+  * メッセージ処理位置が、マークアップ１文字目ではない場合は、置き換えられない
   * @method rpg.MarkupText#draw
   * @param {Object} obj 対象オブジェクト(rpg.Window 等)
   * @param {number} x 表示位置X座標
   * @param {number} y 表示位置Y座標
   * @param {string} message 処理中のメッセージ
   * @param {number} i 処理中のメッセージ箇所のインデックス
-  * @return {Array} [x,y,i] 置き換え後の表示位置とインデックスを返す
+  * @return {Array} [x,y,i,msg] 置き換え後の表示位置とインデックス,文字列を返す
   ###
   draw: (@obj, @x, @y, @message, @i) ->
     @clear()
     while @_drawIntarnal()
       break unless @i < @message.length
-    [@x, @y, @i]
+    [@x, @y, @i, @message]
+
+  _replaceIntarnal: ->
+    ret = false
+    for rep in @replaces
+      if rep.regexp.test @message
+        @message = @message.replace rep.regexp, rep.func
+        ret = true
+    return ret
+
+  replace: (@message) ->
+    true while @_replaceIntarnal()
+    return @message
 
 ###* 改行(\n)
 * @var {Object} rpg.MarkupText.MARKUP_NEW_LINE
@@ -84,11 +115,11 @@ class rpg.MarkupText
 rpg.MarkupText.MARKUP_NEW_LINE = {
   mark: '\\'
   name: 'n'
-  func: (obj, x, y, message, i) ->
-    x = 0
-    y += rpg.system.lineHeight
-    i += 2
-    [x,y,i,true]
+  func: ->
+    @x = 0
+    @y += rpg.system.lineHeight
+    @i += 2
+    false
 }
 
 COLORS = [
@@ -108,20 +139,46 @@ COLORS = [
 rpg.MarkupText.MARKUP_COLOR = {
   mark: '\\'
   name: 'C'
-  func: (obj, x, y, msg, i) ->
-    if obj instanceof rpg.Window
-      e = msg[i .. ].indexOf(']') + i
+  func: ->
+    if @obj instanceof rpg.Window
+      e = @message[@i .. ].indexOf(']') + @i
       if e > 0
-        m = msg[i .. e]
-        s = i + m.indexOf('[') + 1
-        obj.textColor = COLORS[msg[s .. e - 1]]
-        i = e + 1
-    [x,y,i,false]
+        m = @message[@i .. e]
+        s = @i + m.indexOf('[') + 1
+        @obj.textColor = COLORS[@message[s .. e - 1]]
+        @i = e + 1
+    false
 }
 
+
+###* フラグ置き換え(\F[any])
+* @var {Object} rpg.MarkupText.REPLACE_FLAG
+###
+rpg.MarkupText.REPLACE_FLAG = {
+  regexp: /\\F\[([^\\]+?)\]/g
+  func: (reg, key) ->
+    rpg.game.flag.get key
+}
+
+###* ログメッセージ置き換え(#{any})
+* @var {Object} rpg.MarkupText.REPLACE_LOG
+###
+rpg.MarkupText.REPLACE_LOG = {
+  regexp: /\#\{(.+?)\}/g
+  func: (reg, path) ->
+    log = rpg.system.temp.log
+    log = log[i] for i in path.split '.'
+    log
+}
+
+
 _default = new rpg.MarkupText()
-_default.add rpg.MarkupText.MARKUP_NEW_LINE
-_default.add rpg.MarkupText.MARKUP_COLOR
+_default.addMarkup rpg.MarkupText.MARKUP_NEW_LINE
+_default.addMarkup rpg.MarkupText.MARKUP_COLOR
+
+_default.addReplace rpg.MarkupText.REPLACE_LOG
+_default.addReplace rpg.MarkupText.REPLACE_FLAG
+
 rpg.MarkupText.default = _default
 
 
