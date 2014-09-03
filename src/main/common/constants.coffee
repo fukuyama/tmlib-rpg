@@ -37,3 +37,18 @@ c.ITEM_SCOPE = {
     ONE: 1
     MULTI: 2
 }
+
+c.MESSAGE_OPTION = {
+  MESSAGE:
+    TOP: 1
+    CENTER: 2
+    BOTTOM: 3
+  SELECT:
+    LEFT: 1
+    CENTER: 2
+    RIGHT: 3
+  NUMBER:
+    LEFT: 1
+    CENTER: 2
+    RIGHT: 3
+}

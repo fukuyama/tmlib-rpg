@@ -25,11 +25,15 @@ tm.define 'SceneMap',
 
     @_refreshEvent = true # イベント更新フラグ
 
+    setting = rpg.system.setting
+
     # マップインタープリター
     @interpreter = rpg.system.mapInterpreter
 
     # メッセージウィンドウ
-    @windowMessage = rpg.WindowMessage()
+    @windowMessage = rpg.WindowMessage(
+      messageSpeed: setting.messageSpeed
+    )
     # マップメインメニュー
     @windowMapMenu = rpg.WindowMapMenu()
     # 簡易ステータスウィンドウ

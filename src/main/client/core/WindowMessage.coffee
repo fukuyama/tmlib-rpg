@@ -1,15 +1,5 @@
 
-MSG_TOP = 1
-MSG_CENTER = 2
-MSG_BOTTOM = 3
-
-SEL_LEFT = 1
-SEL_CENTER = 2
-SEL_RIGHT = 3
-
-NUM_LEFT = 1
-NUM_CENTER = 2
-NUM_RIGHT = 3
+MSG_OPT = rpg.constants.MESSAGE_OPTION
 
 tm.define 'rpg.WindowMessage',
   superClass: rpg.Window
@@ -29,17 +19,25 @@ tm.define 'rpg.WindowMessage',
     } = {
       visible: false
       active: false
-      messageSpeed: 15 # メッセージスピード
+      messageSpeed: 4 # メッセージスピード
       scrollSpeed: 5 # スクロールスピード
       maxLine: 3
       options:
         message:
-          position: MSG_BOTTOM # メッセージウィンドウ位置
+          position: MSG_OPT.MESSAGE.BOTTOM # メッセージウィンドウ位置
         select:
-          position: SEL_RIGHT # 選択肢ウィンドウ位置
+          position: MSG_OPT.SELECT.RIGHT # 選択肢ウィンドウ位置
         input_num:
-          position: NUM_RIGHT # 数値入力ウィンドウ位置
+          position: MSG_OPT.NUMBER.RIGHT # 数値入力ウィンドウ位置
     }.$extend(args)
+
+    # 1-8
+    if @messageSpeed >= 4
+      @_waitCountMax = @messageSpeed - 3
+      @_drawCount = 0
+    else
+      @_waitCountMax = 1
+      @_drawCount = @messageSpeed - 4
 
     # リサイズ
     @resize(
@@ -48,6 +46,10 @@ tm.define 'rpg.WindowMessage',
     @resizeContent(
       @innerRect.width
       @innerRect.height * 2)
+
+    # １ライン用キャンバス
+    @lineCanvas = tm.graphics.Canvas()
+    @lineCanvas.resize(@innerRect.width, @innerRect.height)
 
     @markup = rpg.MarkupText.default
     
@@ -83,18 +85,19 @@ tm.define 'rpg.WindowMessage',
     @
 
   nextMessage: ->
-    @_message = @_messages.shift().replace /\n/g, '\\n'
+    @_message = @markup.replace(@_messages.shift().replace /\n/g, '\\n')
     @_messageIndex = 0
 
   # 表示位置設定
   setDisplayPosition: (options=@options) ->
     # x座標は真ん中
     @centering('horizon')
+    c = MSG_OPT.MESSAGE
     # y座標は上中下のいずれか
     switch options.message.position
-      when MSG_TOP then @y = 0
-      when MSG_CENTER then @centering('vertical')
-      when MSG_BOTTOM then @y = rpg.system.screen.height - @height
+      when c.TOP then @y = 0
+      when c.CENTER then @centering('vertical')
+      when c.BOTTOM then @y = rpg.system.screen.height - @height
     @setDisplayPositionMenu options
     @setDisplayPositionInputNum options
     @
@@ -102,13 +105,14 @@ tm.define 'rpg.WindowMessage',
   # 選択肢表示位置
   setDisplayPositionMenu: (options=@options) ->
     if @windowMenu?
+      c = MSG_OPT.SELECT
       # 左右位置
       switch options.select.position
-        when SEL_LEFT then @windowMenu.x = @left
-        when SEL_CENTER then @windowMenu.center()
-        when SEL_RIGHT then @windowMenu.x = @right - @windowMenu.width
+        when c.LEFT then @windowMenu.x = @left
+        when c.CENTER then @windowMenu.center()
+        when c.RIGHT then @windowMenu.x = @right - @windowMenu.width
       # 上下位置
-      if options.message.position is MSG_TOP
+      if options.message.position is MSG_OPT.MESSAGE.TOP
         @windowMenu.y = @bottom
       else
         @windowMenu.y = @top - @windowMenu.height
@@ -117,13 +121,14 @@ tm.define 'rpg.WindowMessage',
   # 数値入力ウィンドウ表示位置
   setDisplayPositionInputNum: (options=@options) ->
     if @windowInputNum?
+      c = MSG_OPT.NUMBER
       # 左右位置
       switch options.input_num.position
-        when NUM_LEFT then @windowInputNum.x = @left
-        when NUM_CENTER then @windowInputNum.center()
-        when NUM_RIGHT then @windowInputNum.x = @right - @windowInputNum.width
+        when c.LEFT then @windowInputNum.x = @left
+        when c.CENTER then @windowInputNum.center()
+        when c.RIGHT then @windowInputNum.x = @right - @windowInputNum.width
       # 上下位置
-      if options.message.position is MSG_TOP
+      if options.message.position is MSG_OPT.MESSAGE.TOP
         @windowInputNum.y = @bottom
       else
         @windowInputNum.y = @top - @windowInputNum.height
@@ -143,15 +148,8 @@ tm.define 'rpg.WindowMessage',
 
   # 描画タイミングの計算
   countDrawTiming: ->
-    @_waitCount = @_waitCount++ % @messageSpeed
+    @_waitCount = ++@_waitCount % @_waitCountMax
     @_waitCount != 0
-
-  # メッセージを描画する
-  drawMessage: (msg) ->
-    return unless msg?
-    @drawText(msg, @_dx, @_dy)
-    @_dx += @measureTextWidth(msg)
-    @refresh()
 
   # 選択肢ウィンドウの作成
   createSelectWindow: (args={}) ->
@@ -275,8 +273,44 @@ tm.define 'rpg.WindowMessage',
     return if @isInput()
     return if @isPause()
     return if @countDrawTiming()
+    @drawMessage() for num in [0 .. @_drawCount]
+    @refresh()
+
+  # メッセージを描画する
+  drawMessage: ->
     return if @processMarkup()
-    @drawMessage @_message[@_messageIndex++]
+    msg = @_message[@_messageIndex++]
+    return unless msg?
+    @drawText(msg, @_dx, @_dy)
+    @_dx += @measureTextWidth(msg)
+
+  ###* テキスト描画
+  * @memberof rpg.Window#
+  * @param {String} text 描画文字列
+  * @param {number} x 描画X座標
+  * @param {number} y 描画Y座標
+  ###
+  drawLineCanvas: (text, x, y, op={}) ->
+    {
+      font
+      baseline
+      align
+      color
+      strokeStyle
+    } = {
+      font: @font
+      baseline: 'top'
+      align: 'left'
+      color: @textColor
+    }.$extend op
+    @lineCanvas.context.save()
+    @lineCanvas.font = font
+    @lineCanvas.textBaseline = baseline
+    @lineCanvas.textAlign = align
+    @lineCanvas.fillStyle = color
+    @lineCanvas.strokeStyle = strokeStyle ? color
+    @lineCanvas.fillText(text, x, y + 3) # TODO: textBaseline ちょい下で良いかな？
+    @lineCanvas.context.restore()
 
   # マークアップ処理
   processMarkup: ->

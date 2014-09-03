@@ -119,7 +119,7 @@ rpg.MarkupText.MARKUP_NEW_LINE = {
     @x = 0
     @y += rpg.system.lineHeight
     @i += 2
-    false
+    true
 }
 
 COLORS = [
@@ -172,10 +172,14 @@ rpg.MarkupText.REPLACE_LOG = {
 }
 
 
+# デフォルトのMarkupText
 _default = new rpg.MarkupText()
+
+# マークアップ
 _default.addMarkup rpg.MarkupText.MARKUP_NEW_LINE
 _default.addMarkup rpg.MarkupText.MARKUP_COLOR
 
+# 置き換え
 _default.addReplace rpg.MarkupText.REPLACE_LOG
 _default.addReplace rpg.MarkupText.REPLACE_FLAG
 
