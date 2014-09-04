@@ -13,14 +13,14 @@ tm.define 'rpg.event_command.Message',
   * @param {string} msg 表示するメッセージ。
   * @return {boolean} false
   ###
-  apply_command: (msg) ->
+  apply_command: (msgs ...) ->
     tmp = rpg.system.temp
-    tmp.message = [msg]
+    tmp.message = msgs
     # 文章が続く場合まとめて表示する。
     while @hasNext()
       command = @nextCommand()
       break if command.type isnt 'message'
-      tmp.message.push command.params[0]
+      tmp.message.push m for m in command.params
       @next()
     # 文章表示終了処理
     self = @

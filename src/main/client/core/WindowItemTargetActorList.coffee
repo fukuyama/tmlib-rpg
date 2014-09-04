@@ -39,7 +39,7 @@ tm.define 'rpg.WindowItemTargetActorList',
     wm = @findWindowTree (o) -> o instanceof rpg.WindowItemMenu
     i = wi.item
     a = wa.actor
-    log = {}
+    log = rpg.system.temp.log = {}
     r = a.useItem i, target, log
     eg = rpg.EventGenerator()
     if r

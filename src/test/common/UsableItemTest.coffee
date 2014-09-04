@@ -134,9 +134,13 @@ describe 'rpg.UsableItem', ->
       item.isLost().should.equal true
   describe '回復アイテムを使う（ぴったりの場合）', ->
     it 'HPを１０回復する１度使えるアイテム', ->
-      item = new rpg.UsableItem(lost:{max:1},effects:[
-        {hp: {type:'fix',val:10}}
-      ])
+      item = new rpg.UsableItem(
+        name: '10up'
+        lost:{max:1}
+        effects:[
+          {hp: {type:'fix',val:10}}
+        ]
+      )
       item.isLost().should.equal false
     it '１０ダメージを受けてるので１０回復して全快する', ->
       user = new rpg.Actor(name:'user')
@@ -150,6 +154,7 @@ describe 'rpg.UsableItem', ->
       target.hp.should.equal target.maxhp
     it '結果確認', ->
       log.user.name.should.equal 'user'
+      log.item.name.should.equal '10up'
       log.targets.length.should.equal 1
       log.targets[0].name.should.equal 'target'
       log.targets[0].hp.should.equal 10

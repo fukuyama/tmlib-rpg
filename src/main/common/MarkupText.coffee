@@ -167,7 +167,7 @@ rpg.MarkupText.REPLACE_LOG = {
   regexp: /\#\{(.+?)\}/g
   func: (reg, path) ->
     log = rpg.system.temp.log
-    log = log[i] for i in path.split '.'
+    log = log[k] for k in path.split /[\[\]\.]/ when log[k]?
     log
 }
 

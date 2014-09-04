@@ -20,12 +20,22 @@ module.exports = [
     ]
     message:
       ok: [
-        'user.name は　item.name を　target.name に使った。'
-        'target.name の hp が effect.value 回復した。'
+        {
+          type: 'message'
+          params: [
+            '\#{user.name} は　\#{item.name} を　\#{targets[0].name} に使った。'
+            '\#{targets[0].name} の hp が \#{targets[0].hp} 回復した。'
+          ]
+        }
       ]
       ng: [
-        'user.name は　item.name を　target.name に使った。'
-        'しかし　効果がなかった。'
+        {
+          type: 'message'
+          params: [
+            '\#{user.name} は　\#{item.name} を　\#{targets[0].name} に使った。'
+            'しかし　効果がなかった。'
+          ]
+        }
       ]
   }
   {

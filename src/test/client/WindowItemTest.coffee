@@ -207,3 +207,17 @@ describe 'rpg.WindowItemTest', ->
       it 'HP確認', ->
         actor = rpg.game.party.getAt(1)
         actor.hp.should.equal (actor.maxhp - 10)
+      it 'メッセージ待ち', (done) ->
+        setTimeout(done,1000)
+      it 'メッセージ', (done) ->
+        emulate_key('enter',done)
+      it 'メッセージ待ち', (done) ->
+        setTimeout(done,1000)
+      it 'メッセージ', (done) ->
+        emulate_key('enter',done)
+      it 'キャンセル', (done) ->
+        emulate_key('escape',done)
+      it 'キャンセル', (done) ->
+        emulate_key('escape',done)
+      it 'キャンセル', (done) ->
+        emulate_key('escape',done)

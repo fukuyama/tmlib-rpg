@@ -6,6 +6,11 @@ module.exports = {
     width: 32 * 20
     height: 32 * 15
     background: 'rgb(255,255,255)'
+  setting: {
+    se: false
+    bgm: false
+    messageSpeed: 3
+  }
   main:
     nextScene: 'SceneTitle'
     param: ['scene.title']

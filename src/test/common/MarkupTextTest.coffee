@@ -154,3 +154,19 @@ describe 'rpg.MarkupText', ->
         msg = 'test\#{user.name}test'
         m = mt.replace(msg)
         m.should.equal 'testhoehoetest'
+      it 'use Item sample', ->
+        rpg.system.temp.log = {
+          user:
+            name: 'hoehoe'
+          item:
+            name: '10up'
+          targets: [
+            {name: 'tgt', hp: 10}
+          ]
+        }
+        mt = rpg.MarkupText.default
+        msg = """
+        \#{user.name} \#{item.name} \#{targets[0].name} \#{targets[0].hp}
+        """
+        m = mt.replace(msg)
+        m.should.equal 'hoehoe 10up tgt 10'

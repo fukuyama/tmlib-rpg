@@ -62,6 +62,9 @@ class rpg.UsableItem extends rpg.Item
     log.user = {
       name: user.name # 使った人
     }
+    log.item = {
+      name: @name
+    }
     log.targets = [] # 誰がどれくらい回復したか
     # TODO: effect と target の組み合わせのリザルトをどうするか…悩み中
     

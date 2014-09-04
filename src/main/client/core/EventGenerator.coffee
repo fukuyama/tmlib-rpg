@@ -33,25 +33,13 @@ tm.define 'rpg.EventGenerator',
   itemUseOk: (user,item,target,log) ->
     msgs = item.message.ok
     return unless msgs?
-    msgs = [msgs] unless Array.isArray msgs
-    for msg in msgs
-      msg = msg.replace /user.name/g, user.name
-      msg = msg.replace /item.name/g, item.name
-      msg = msg.replace /target.name/g, target.name
-      msg = msg.replace /effect.value/g, log.targets[0].hp
-      @message msg
+    @commands.push m for m in msgs
     return
 
   itemUseNg: (user,item,target,log) ->
     msgs = item.message.ng
     return unless msgs?
-    msgs = [msgs] unless Array.isArray msgs
-    for msg in msgs
-      msg = msg.replace /user.name/g, user.name
-      msg = msg.replace /item.name/g, item.name
-      msg = msg.replace /target.name/g, target.name
-      msg = msg.replace /value/g, log.targets[0].hp
-      @message msg
+    @commands.push m for m in msgs
     return
 
 # rpg.event_command パッケージから create メソッドを持ったイベントコマンドで
