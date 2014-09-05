@@ -16,6 +16,15 @@ class rpg.Flag
       values: {}
       url: 'http://localhost:3000/'
     }.$extendAll args
+
+    if @url != 'system'
+      @system = new rpg.Flag(
+        url: 'system'
+      )
+      # 同じものを指すに様にする
+      @system.values = @values
+      @system.clear()
+
     @clear()
 
   exist: (key,url=@url) ->
@@ -34,7 +43,7 @@ class rpg.Flag
     @set(key,0)
 
   get: (key,url=@url) ->
-    @values[url][key] ? 0
+    @values[url]?[key] ? 0
 
   set: (key, val) ->
     unless typeof val is 'number'

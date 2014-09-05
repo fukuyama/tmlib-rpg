@@ -12,19 +12,20 @@ tm.define 'rpg.event_command.If',
         if arguments.length == 3
           flag = arguments[1]
           value = arguments[2]
-          result = rsf.is(flag) is value
+          result = @normalizeEventBool(flag) is value
         if arguments.length == 4
-          flag = arguments[1]
+          lflag = arguments[1]
           ope = arguments[2]
-          value = arguments[3]
-          fvalue = rsf.get(flag)
+          rflag = arguments[3]
+          lvalue = @normalizeEventValue(lflag)
+          rvalue = @normalizeEventValue(rflag)
           switch ope
-            when '==' then result = fvalue == value
-            when '!=' then result = fvalue != value
-            when '<'  then result = fvalue < value
-            when '>'  then result = fvalue > value
-            when '<=' then result = fvalue <= value
-            when '>=' then result = fvalue >= value
+            when '==' then result = lvalue == rvalue
+            when '!=' then result = lvalue != rvalue
+            when '<'  then result = lvalue <  rvalue
+            when '>'  then result = lvalue >  rvalue
+            when '<=' then result = lvalue <= rvalue
+            when '>=' then result = lvalue >= rvalue
 
     # else ブロックがある場合 結果を保存
     if @command(@index + 2).type is 'else'

@@ -155,3 +155,28 @@ describe 'rpg.Interpreter(Flag)', () ->
       interpreter.update()
       rpg.game.flag.get('flag10').should.equal 30
       rpg.game.flag.get('flag11').should.equal 20
+
+  describe 'システムフラグ操作', ->
+    it 'マップシーンへ移動', (done) ->
+      loadTestMap(done)
+    it 'インタープリタ取得', ->
+      interpreter = rpg.system.scene.interpreter
+    it 'システムフラグ flag20 に 100 を設定', ->
+      rpg.game.flag.clear()
+      rpg.game.flag.get('flag20').should.equal 0
+      rpg.game.flag.get('flag20','system').should.equal 0
+      interpreter.start [
+        {type:'flag',params:['system:flag20','=',100]}
+      ]
+      interpreter.update()
+      rpg.game.flag.get('flag20').should.equal 0
+      rpg.game.flag.get('flag20','system').should.equal 100
+    it 'システムフラグ flag20 に flag21 を足す', ->
+      interpreter.start [
+        {type:'flag',params:['system:flag20','=',10]}
+        {type:'flag',params:['system:flag21','=',20]}
+        {type:'flag',params:['system:flag20','+','system:flag21']}
+      ]
+      interpreter.update()
+      rpg.game.flag.get('flag20','system').should.equal 30
+      rpg.game.flag.get('flag21','system').should.equal 20

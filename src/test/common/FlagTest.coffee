@@ -107,3 +107,13 @@ describe 'rpg.Flag', ->
       (flag.exist 'flgX').should.equal false
       flag.on 'flgX'
       (flag.exist 'flgX').should.equal true
+
+  describe.skip 'システムフラグ操作', ->
+    flag = new rpg.Flag()
+    it '初期値は、0', ->
+      (flag.get 'test').should.equal 0
+    it 'システム test を on にする', ->
+      flag.system.on 'test'
+    it 'システム test の値は、1 になる', ->
+      (flag.system.get 'test').should.equal 1
+      (flag.get 'test', 'system').should.equal 1

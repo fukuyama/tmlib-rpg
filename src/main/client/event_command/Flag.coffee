@@ -5,6 +5,10 @@ tm.define 'rpg.event_command.Flag',
   # コマンド
   apply_command: (flag, value1, value2) ->
     rsf = rpg.game.flag
+    m = flag.match /^system:(.+)$/
+    if m?
+      flag = m[1]
+      rsf = rsf.system
     if typeof value1 is 'boolean'
       if value1
         rsf.on flag

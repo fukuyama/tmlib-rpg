@@ -111,6 +111,28 @@ tm.define 'rpg.Interpreter',
   ###
   normalizeEventValue: (val) ->
     flag = rpg.game.flag
-    if typeof val is 'string' and flag.exist val
-      return flag.get(val)
+    if typeof val is 'string'
+      url = null
+      m = val.match /^system:(.+)$/
+      if m?
+        val = m[1]
+        url = 'system'
+      if url?
+        val = flag.get(val,url) if flag.exist val, url
+      else
+        val = flag.get(val) if flag.exist val
+    return val
+
+  normalizeEventBool: (val) ->
+    flag = rpg.game.flag
+    if typeof val is 'string'
+      url = null
+      m = val.match /^system:(.+)$/
+      if m?
+        val = m[1]
+        url = 'system'
+      if url?
+        val = flag.is(val,url) if flag.exist val, url
+      else
+        val = flag.is(val) if flag.exist val
     return val

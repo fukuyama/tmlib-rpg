@@ -169,6 +169,48 @@ describe 'rpg.Interpreter', () ->
         it 'クリア', ->
           message_clear()
           interpreter.update()
+      describe 'フラグ同士の比較による分岐', ->
+        commands = [
+          {type:'if',params:['flag','flag20','==','flag21']}
+          {type:'block',params:[
+            {type:'message',params:['TEST1']}
+          ]}
+          {type:'else'}
+          {type:'block',params:[
+            {type:'message',params:['TEST2']}
+          ]}
+          {type:'end'}
+        ]
+        it 'マップシーンへ移動', (done) ->
+          loadTestMap(done)
+        it 'インタープリタ取得', ->
+          rpg.system.scene.name.should.equal 'SceneMap'
+          interpreter = rpg.system.scene.interpreter
+        it 'flag20 / flag21 を 222 にする', ->
+          message_clear()
+          rpg.game.flag.set 'flag20', 222
+          rpg.game.flag.set 'flag21', 222
+        it 'interpreter を実行する', ->
+          interpreter.start commands
+          interpreter.update()
+        it 'message が "TEST1" になる', ->
+          (rpg.system.temp.message isnt null).should.equal true
+          rpg.system.temp.message.should.deep.equal ['TEST1']
+        it 'クリア', ->
+          message_clear()
+          interpreter.update()
+        it 'flag20 を 223 にする', ->
+          message_clear()
+          rpg.game.flag.set 'flag20', 223
+        it 'interpreter を実行する', ->
+          interpreter.start commands
+          interpreter.update()
+        it 'message が "TEST2" になる', ->
+          (rpg.system.temp.message isnt null).should.equal true
+          rpg.system.temp.message.should.deep.equal ['TEST2']
+        it 'クリア', ->
+          message_clear()
+          interpreter.update()
     describe 'ネストされた条件分岐', ->
       describe 'flag20 == 322 and flag21 == 232', ->
         commands = [
