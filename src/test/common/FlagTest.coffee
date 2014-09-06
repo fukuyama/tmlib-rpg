@@ -108,7 +108,7 @@ describe 'rpg.Flag', ->
       flag.on 'flgX'
       (flag.exist 'flgX').should.equal true
 
-  describe.skip 'システムフラグ操作', ->
+  describe 'システムフラグ操作', ->
     flag = new rpg.Flag()
     it '初期値は、0', ->
       (flag.get 'test').should.equal 0
