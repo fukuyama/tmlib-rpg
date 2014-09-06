@@ -101,6 +101,5 @@ describe 'rpg.Interpreter', () ->
         it 'ループまち', (done)->
           setTimeout(done,200)
         it 'message が "" になる', ->
-          console.log rpg.system.scene
           m = rpg.system.scene.windowMessage.currentMessage
           m.should.equal ''
