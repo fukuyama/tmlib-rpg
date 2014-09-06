@@ -1,6 +1,7 @@
 # 価値は何か，誰にとっての価値か，実際の機能は何か
 describe 'rpg.Interpreter', () ->
   interpreter = null
+  @timeout(10000)
   describe 'ループ制御', ->
     describe '基本ループ（フラグ利用）', ->
       describe 'flag30 が on の間ループする', ->
@@ -19,6 +20,8 @@ describe 'rpg.Interpreter', () ->
         it 'マップシーンへ移動', (done) ->
           message_clear()
           loadTestMap(done)
+        it 'ウェイト', (done)->
+          setTimeout(done,2000)
         it 'インタープリタ取得', ->
           interpreter = rpg.system.scene.interpreter
         it 'flag30 を on にする', ->
@@ -63,6 +66,8 @@ describe 'rpg.Interpreter', () ->
         ]
         it 'マップシーンへ移動', (done) ->
           loadTestMap(done)
+        it 'ウェイト', (done)->
+          setTimeout(done,2000)
         it 'インタープリタ取得', ->
           interpreter = rpg.system.scene.interpreter
         it 'interpreter を実行する1', (done) ->
@@ -96,5 +101,6 @@ describe 'rpg.Interpreter', () ->
         it 'ループまち', (done)->
           setTimeout(done,200)
         it 'message が "" になる', ->
+          console.log rpg.system.scene
           m = rpg.system.scene.windowMessage.currentMessage
           m.should.equal ''

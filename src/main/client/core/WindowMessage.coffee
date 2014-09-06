@@ -336,4 +336,4 @@ tm.define 'rpg.WindowMessage',
       @pauseCancel()
 
 Object.defineProperty rpg.WindowMessage.prototype, 'currentMessage',
-  enumerable: true, get: -> @_message
+  enumerable: true, get: -> @_message ? ''
