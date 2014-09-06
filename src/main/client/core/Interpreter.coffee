@@ -109,30 +109,5 @@ tm.define 'rpg.Interpreter',
   * @param {num|string} val イベントコマンドのパラメータ
   * @return {num} 正規化された値
   ###
-  normalizeEventValue: (val) ->
-    flag = rpg.game.flag
-    if typeof val is 'string'
-      url = null
-      m = val.match /^system:(.+)$/
-      if m?
-        val = m[1]
-        url = 'system'
-      if url?
-        val = flag.get(val,url) if flag.exist val, url
-      else
-        val = flag.get(val) if flag.exist val
-    return val
-
-  normalizeEventBool: (val) ->
-    flag = rpg.game.flag
-    if typeof val is 'string'
-      url = null
-      m = val.match /^system:(.+)$/
-      if m?
-        val = m[1]
-        url = 'system'
-      if url?
-        val = flag.is(val,url) if flag.exist val, url
-      else
-        val = flag.is(val) if flag.exist val
-    return val
+  normalizeEventValue: (val) -> rpg.game.flag.normalizeValue val
+  normalizeEventBool: (val) -> rpg.game.flag.normalizeBool val

@@ -17,11 +17,11 @@ tm.define 'rpg.event_command.Flag',
     else if typeof value1 is 'string'
       value2 = @normalizeEventValue value2
       switch value1
-        when '=' then rsf.set flag, value2
-        when '+' then rsf.plus flag, value2
+        when '=' then rsf.set   flag, value2
+        when '+' then rsf.plus  flag, value2
         when '-' then rsf.minus flag, value2
         when '*' then rsf.multi flag, value2
-        when '/' then rsf.div flag, value2
+        when '/' then rsf.div   flag, value2
     rpg.system.scene.refreshEvent?()
     false
 

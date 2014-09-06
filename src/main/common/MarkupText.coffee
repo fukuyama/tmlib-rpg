@@ -157,7 +157,7 @@ rpg.MarkupText.MARKUP_COLOR = {
 rpg.MarkupText.REPLACE_FLAG = {
   regexp: /\\F\[([^\\]+?)\]/g
   func: (reg, key) ->
-    rpg.game.flag.get key
+    rpg.game.flag.normalizeValue key
 }
 
 ###* ログメッセージ置き換え(#{any})

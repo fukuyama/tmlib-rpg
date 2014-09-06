@@ -64,3 +64,35 @@ class rpg.Flag
 
   clear: ->
     @values[@url] = {}
+
+  ###* イベントコマンドパラメータの正規化。
+  * 数値パラメータにフラグが指定出来る場合に、フラグから値を取得するために正規化する。
+  * @memberof rpg.Interpreter#
+  * @param {num|string} val イベントコマンドのパラメータ
+  * @return {num} 正規化された値
+  ###
+  normalizeValue: (val) ->
+    if typeof val is 'string'
+      url = null
+      m = val.match /^system:(.+)$/
+      if m?
+        val = m[1]
+        url = 'system'
+      if url?
+        val = @get(val,url) if @exist val, url
+      else
+        val = @get(val) if @exist val
+    return val
+
+  normalizeBool: (val) ->
+    if typeof val is 'string'
+      url = null
+      m = val.match /^system:(.+)$/
+      if m?
+        val = m[1]
+        url = 'system'
+      if url?
+        val = @is(val,url) if @exist val, url
+      else
+        val = @is(val) if @exist val
+    return val
