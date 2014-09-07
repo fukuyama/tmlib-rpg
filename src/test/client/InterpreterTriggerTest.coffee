@@ -8,7 +8,7 @@ describe 'rpg.Interpreter(Trigger)', () ->
   describe 'イベントトリガーの確認', ->
     describe 'イベントへの接触判定', ->
       it 'マップシーンへ移動', (done) ->
-        loadTestMap(done)
+        reloadTestMap(done)
       it 'wait', (done) ->
         setTimeout(done,500)
       it '移動', ->
@@ -39,7 +39,9 @@ describe 'rpg.Interpreter(Trigger)', () ->
         emulate_key 'enter', done
     describe 'イベントの自動起動', ->
       it 'マップシーンへ移動', (done) ->
-        loadTestMap(done)
+        reloadTestMap(done)
+      it 'wait', (done) ->
+        setTimeout(done,500)
       it 'Interpreter 取得', ->
         interpreter = rpg.system.scene.interpreter
       it 'Interpreter 実行', ->

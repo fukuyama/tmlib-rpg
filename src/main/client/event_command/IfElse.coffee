@@ -2,30 +2,41 @@
 # 条件分岐
 tm.define 'rpg.event_command.If',
 
+  split_params: (params) ->
+    lval = []
+    ope = null
+    rval = []
+    while params.length != 0
+      param = params.shift()
+      if typeof param is 'string'
+        m = param.match(/^(\=\=|\!\=|\<|\>|\<\=|\=\>)$/)
+        if m?
+          ope = m[1]
+          param = params.shift()
+      if ope?
+        rval.push param
+      else
+        lval.push param
+    return [lval,ope,rval]
+
   # コマンド
-  apply_command: (type) ->
+  apply_command: (args ... ) ->
+    ec = rpg.event_command.if
+    [lval,ope,rval] = ec.split_params args
     # 条件の結果
     result = false
-    switch type
-      when 'flag' # フラグによる分岐 type is 'flag'
-        rsf = rpg.game.flag
-        if arguments.length == 3
-          flag = arguments[1]
-          value = arguments[2]
-          result = @normalizeEventBool(flag) is value
-        if arguments.length == 4
-          lflag = arguments[1]
-          ope = arguments[2]
-          rflag = arguments[3]
-          lvalue = @normalizeEventValue(lflag)
-          rvalue = @normalizeEventValue(rflag)
-          switch ope
-            when '==' then result = lvalue == rvalue
-            when '!=' then result = lvalue != rvalue
-            when '<'  then result = lvalue <  rvalue
-            when '>'  then result = lvalue >  rvalue
-            when '<=' then result = lvalue <= rvalue
-            when '>=' then result = lvalue >= rvalue
+    if ope?
+      lvalue = @normalizeEventValue(lval[0],lval[1])
+      rvalue = @normalizeEventValue(rval[0],rval[1])
+      switch ope
+        when '==' then result = lvalue == rvalue
+        when '!=' then result = lvalue != rvalue
+        when '<'  then result = lvalue <  rvalue
+        when '>'  then result = lvalue >  rvalue
+        when '<=' then result = lvalue <= rvalue
+        when '>=' then result = lvalue >= rvalue
+    else
+      result = @normalizeEventBool(lval[0],lval[1]) is lval[2]
 
     # else ブロックがある場合 結果を保存
     if @command(@index + 2).type is 'else'

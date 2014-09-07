@@ -109,5 +109,34 @@ tm.define 'rpg.Interpreter',
   * @param {num|string} val イベントコマンドのパラメータ
   * @return {num} 正規化された値
   ###
-  normalizeEventValue: (val) -> rpg.game.flag.normalizeValue val
-  normalizeEventBool: (val) -> rpg.game.flag.normalizeBool val
+  normalizeEventValue: (type,val) ->
+    result = 0
+    unless val?
+      val = type
+      if typeof val is 'string'
+        type = 'flag'
+      else
+        type = 'default'
+        result = val
+    switch type
+      when 'flag'
+        result = rpg.game.flag.normalizeValue val
+      when 'log'
+        log = rpg.system.temp.log
+        log = log[i] for i in log when log[i]?
+        result = log
+    result
+
+  normalizeEventBool: (type,val) ->
+    result = 0
+    unless val?
+      val = type
+      type = 'flag'
+    switch type
+      when 'flag'
+        result = rpg.game.flag.normalizeBool val
+      when 'log'
+        log = rpg.system.temp.log
+        log = log[i] for i in log when log[i]?
+        result = log
+    result

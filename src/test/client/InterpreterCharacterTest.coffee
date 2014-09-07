@@ -254,6 +254,8 @@ describe 'rpg.Interpreter(Character)', () ->
         ]
         it 'マップシーンへ移動', (done) ->
           reloadTestMap(done)
+        it 'ウェイト', (done) ->
+          setTimeout(done,3000)
         it 'インタープリタ取得', ->
           interpreter = rpg.system.scene.interpreter
         it 'interpreter を開始する', (done)->
@@ -269,3 +271,5 @@ describe 'rpg.Interpreter(Character)', () ->
           pc.direction.should.equal 'up'
         it '戻し', (done) ->
           reloadTestMap(done)
+        it 'ウェイト', (done) ->
+          setTimeout(done,3000)

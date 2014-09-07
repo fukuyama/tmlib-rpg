@@ -102,32 +102,32 @@ describe 'rpg.Interpreter', () ->
         ]
         it 'マップシーンへ移動', (done) ->
           loadTestMap(done)
+        it 'wait', (done) ->
+          setTimeout(done,1000)
         it 'インタープリタ取得', ->
           interpreter = rpg.system.scene.interpreter
         it 'flag20 を 222 にする', ->
-          message_clear()
           rpg.game.flag.set 'flag20', 222
         it 'interpreter を実行する', ->
           interpreter.start commands
-          interpreter.update()
+        it 'wait', (done) ->
+          setTimeout(done,1000)
         it 'message が "TEST1" になる', ->
-          (rpg.system.temp.message isnt null).should.equal true
-          rpg.system.temp.message.should.deep.equal ['TEST1']
-        it 'クリア', ->
-          message_clear()
-          interpreter.update()
+          m = rpg.system.scene.windowMessage.currentMessage
+          m.should.equal 'TEST1'
+        it 'ENTER', (done) ->
+          emulate_key('enter',done)
         it 'flag20 を 223 にする', ->
-          message_clear()
           rpg.game.flag.set 'flag20', 223
         it 'interpreter を実行する', ->
           interpreter.start commands
-          interpreter.update()
+        it 'wait', (done) ->
+          setTimeout(done,1000)
         it 'message が "TEST2" になる', ->
-          (rpg.system.temp.message isnt null).should.equal true
-          rpg.system.temp.message.should.deep.equal ['TEST2']
-        it 'クリア', ->
-          message_clear()
-          interpreter.update()
+          m = rpg.system.scene.windowMessage.currentMessage
+          m.should.equal 'TEST2'
+        it 'ENTER', (done) ->
+          emulate_key('enter',done)
       describe 'flag20 が等しくない(!223)場合に分岐する', ->
         commands = [
           {type:'if',params:['flag','flag20','!=',223]}

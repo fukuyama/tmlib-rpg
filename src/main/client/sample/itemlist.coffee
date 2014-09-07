@@ -50,5 +50,36 @@ module.exports = [
         val: 10
       }}
     ]
+    message:
+      ok: [
+        {
+          type: 'message'
+          params: ['\#{user.name} は　\#{item.name} を使った。']
+        }
+        {type:'flag',params:['system:i','=',0]}
+        {type:'loop'}
+        {type:'block',params:[
+          {
+            type: 'message'
+            params: ['\#{targets[0].name} の hp が \#{targets[0].hp} 回復した。']
+          }
+          {type:'flag',params:['system:i','+',1]}
+          {type:'if',params:['flag','system:i','>=','log:targets.length']}
+          {type:'block',params:[
+            {type:'break'}
+          ]}
+          {type:'end'}
+        ]}
+        {type:'end'}
+      ]
+      ng: [
+        {
+          type: 'message'
+          params: [
+            '\#{user.name} は　\#{item.name} を使った。'
+            'しかし　効果がなかった。'
+          ]
+        }
+      ]
   }
 ]

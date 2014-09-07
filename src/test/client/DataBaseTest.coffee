@@ -119,3 +119,6 @@ describe 'rpg.DataBase', ->
           equal 'http://localhost:3000/client/data/state/StateAA.json'
         state.name.should.
           equal 'StateAA'
+    describe 'クリア', ->
+      it 'クリア', ->
+        tm.asset.Manager.assets = {}
