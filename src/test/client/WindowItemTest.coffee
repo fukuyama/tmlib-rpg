@@ -234,7 +234,7 @@ describe 'rpg.WindowItemTest', ->
         actor.hp -= 20
       it '通常アイテムをロード', (done) ->
         db = rpg.system.db
-        db.preloadItem([4],(items) ->
+        db.preloadItem([5],(items) ->
           actor = rpg.game.party.getAt(0)
           item = items[0]
           actor.backpack.addItem item
@@ -257,10 +257,6 @@ describe 'rpg.WindowItemTest', ->
         emulate_key('enter',done)
       it 'つかうメニュー選択', (done) ->
         emulate_key('enter',done)
-      it '２番目のアクターに移動', (done) ->
-        emulate_key('down',done)
-      it 'アクター選択', (done) ->
-        emulate_key('enter',done)
       it 'HP確認', ->
         actor = rpg.game.party.getAt(1)
         actor.hp.should.equal (actor.maxhp - 10)
@@ -270,6 +266,7 @@ describe 'rpg.WindowItemTest', ->
         emulate_key('enter',done)
       it 'メッセージ待ち', (done) ->
         setTimeout(done,1000)
+      ###
       it 'メッセージ', (done) ->
         emulate_key('enter',done)
       it 'キャンセル', (done) ->
@@ -278,3 +275,4 @@ describe 'rpg.WindowItemTest', ->
         emulate_key('escape',done)
       it 'キャンセル', (done) ->
         emulate_key('escape',done)
+      ###

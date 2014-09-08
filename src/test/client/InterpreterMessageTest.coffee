@@ -27,3 +27,27 @@ describe 'rpg.Interpreter(Message)', () ->
       m.should.equal 'TEST2'
     it 'ENTER', (done) ->
       emulate_key('enter',done)
+  describe.skip 'ループとメッセージ', ->
+    commands = [
+      {type:'flag',params:['system:i',0]}
+      {type:'message',params:['START']}
+      {type:'loop'}
+      {type:'block',params:[
+        {type:'flag',params:['system:i','+',1]}
+        {type:'message',params:['TEST \\F[system:i]']}
+        {type:'if',params:['flag','system:i','>=',5]}
+        {type:'block',params:[
+          {type:'break'}
+        ]}
+        {type:'end'}
+      ]}
+      {type:'end'}
+      {type:'message',params:['END']}
+    ]
+    it 'マップシーンへ移動', (done) ->
+      loadTestMap(done)
+    it 'ウェイト', (done) ->
+      setTimeout(done,1000)
+    it 'コマンド実行', ->
+      interpreter = rpg.system.scene.interpreter
+      interpreter.start commands

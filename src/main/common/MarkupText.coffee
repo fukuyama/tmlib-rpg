@@ -180,8 +180,8 @@ _default.addMarkup rpg.MarkupText.MARKUP_NEW_LINE
 _default.addMarkup rpg.MarkupText.MARKUP_COLOR
 
 # 置き換え
-_default.addReplace rpg.MarkupText.REPLACE_LOG
 _default.addReplace rpg.MarkupText.REPLACE_FLAG
+_default.addReplace rpg.MarkupText.REPLACE_LOG
 
 rpg.MarkupText.default = _default
 

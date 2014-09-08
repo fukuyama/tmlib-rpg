@@ -61,10 +61,11 @@ module.exports = [
         {type:'block',params:[
           {
             type: 'message'
-            params: ['\#{targets[0].name} の hp が \#{targets[0].hp} 回復した。']
+            params: ['\#{targets[\\F[system:i]].name} の'+
+            ' hp が \#{targets[\\F[system:i]].hp} 回復した。']
           }
           {type:'flag',params:['system:i','+',1]}
-          {type:'if',params:['flag','system:i','>=','log:targets.length']}
+          {type:'if',params:['flag','system:i','>=','log','targets.length']}
           {type:'block',params:[
             {type:'break'}
           ]}

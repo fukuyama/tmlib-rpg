@@ -24,7 +24,8 @@ tm.define 'rpg.event_command.Message',
       @next()
     # 文章表示終了処理
     self = @
-    tmp.messageEndProc = -> self.waitFlag = false
+    tmp.messageEndProc = ->
+      self.waitFlag = false
     @waitFlag = true
     # 次のコマンドが選択肢か数値入力の場合続けて処理する
     if @hasNext() and

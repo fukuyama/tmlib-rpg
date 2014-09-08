@@ -76,12 +76,17 @@ tm.define 'rpg.WindowMessage',
     @_waitCount = 0 # 描画時のウェイトカウント
     @content.clear()
 
+  # 終了処理
+  terminate: ->
+    @fire rpg.WindowMessage.EVENT_TERMINATE
+
   # メッセージを設定
   setMessage: (msg) ->
-    @open()
+    @open() if @isClose()
     @_messages = if msg instanceof Array then [].concat(msg) else [msg]
     @nextMessage()
-    @_sy = @_dx = @_dy = 0
+    #@_sy = @_dx = @_dy = 0
+    #@_sy = 0
     @
 
   nextMessage: ->
@@ -204,8 +209,10 @@ tm.define 'rpg.WindowMessage',
     rpg.system.temp.message = null
     rpg.system.temp.messageEndProc = null
 
+    if endProc?
+      @one 'terminate', endProc
+
     @setMessage(msg)
-    @onceCloseListener(endProc) if endProc?
 
   # 選択肢の確認
   checkTempSelect: ->
@@ -322,7 +329,14 @@ tm.define 'rpg.WindowMessage',
   pauseCancel: ->
     if @isEmpty()
       rpg.system.app.keyboard.clear()
+      @terminate()
       @close()
+      # TODO: コンティニュー表示を作らないと…
+      #if @_dx != 0
+      #  @_dx = 0
+      #  @_dy += rpg.system.lineHeight
+      #@_py = @_dy
+      #@_waitCount = 0
     else
       if @_dx != 0
         @_dx = 0
@@ -337,3 +351,5 @@ tm.define 'rpg.WindowMessage',
 
 Object.defineProperty rpg.WindowMessage.prototype, 'currentMessage',
   enumerable: true, get: -> @_message ? ''
+
+rpg.WindowMessage.EVENT_TERMINATE = tm.event.Event 'terminate'

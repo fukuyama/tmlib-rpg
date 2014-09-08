@@ -51,11 +51,32 @@ tm.define 'rpg.WindowItemMenu',
     return if i.scope.type == ITEM_SCOPE.TYPE.ENEMY
     if i.scope.range == ITEM_SCOPE.RANGE.ONE
       # 単体なので相手を選択
-      @addWindow rpg.WindowItemTargetActorList parent: @
       @active = false
+      @addWindow rpg.WindowItemTargetActorList parent: @
     if i.scope.range == ITEM_SCOPE.RANGE.MULTI
       # 複数対象なのでこの場で使う
-      a.useItem i
+      @active = false
+      wi = @findWindowTree (o) -> o instanceof rpg.WindowItemList
+      wa = @findWindowTree (o) -> o instanceof rpg.WindowItemActorList
+      wm = @findWindowTree (o) -> o instanceof rpg.WindowItemMenu
+      targets = []
+      rpg.game.party.each (a) -> targets.push a
+      log = rpg.system.temp.log = {}
+      r = a.useItem i, targets, log
+      eg = rpg.EventGenerator()
+      if r
+        eg.itemUseOk a, i, targets, log
+      else
+        eg.itemUseNg a, i, targets, log
+      eg.function ->
+        wm.close()
+        wa.changeActor(wa.actor)
+        if wi.items.length == 0
+          wa.active = true
+          wi.active = false
+        if wi.items.length <= wi.index
+          wi.setIndex(wi.items.length - 1)
+      rpg.system.mapInterpreter.start eg.commands
     return
 
   ###* わたすメニュー

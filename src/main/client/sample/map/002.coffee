@@ -128,8 +128,32 @@ module.exports = {
                     name: 'page1'
                     trigger: ['talk']
                     commands: [
-                      {type:'message',params: ['アイテム操作']}
+                      {type:'message',params: ['アイテム操作 \\item[4]']}
                       {type:'gain_item',params: [4]}
+                    ]
+                  }
+                ]
+              }
+            ])
+        }
+        {
+          type: 'rpg.SpriteCharacter'
+          name: 'Event004'
+          width: 32
+          height: 32
+          properties:
+            init: JSON.stringify([
+              {
+                spriteSheet: 'spritesheet.hiyoko'
+                mapX: 7
+                mapY: 6
+                pages: [
+                  {
+                    name: 'page1'
+                    trigger: ['talk']
+                    commands: [
+                      {type:'message',params: ['アイテム操作 \\item[5]']}
+                      {type:'gain_item',params: [5]}
                     ]
                   }
                 ]
