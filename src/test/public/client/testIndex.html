@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>tmlib-rpg Mocha Testcase</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+  <script>
+  var list = [
+    "rpg.DataBase",
+    "rpg.Interpreter(Character)",
+    "rpg.Interpreter(Flag)",
+    "rpg.Interpreter(IfBlock)",
+    "rpg.Interpreter(Item)",
+    "rpg.Interpreter(LoopBlock)",
+    "rpg.Interpreter(Message)",
+    "rpg.Interpreter(Select)",
+    "rpg.Interpreter(Etc)",
+    "rpg.Interpreter(Trigger)",
+    "rpg.WindowInputNum",
+    "rpg.WindowItemTest",
+    "rpg.WindowMessage"
+  ];
+  </script>
+  <body>
+    <ul>
+      <li><a href="test.html">all</a></li>
+      <script>
+      for (var i = 0; i < list.length; i++) {
+        document.write("<li>");
+        document.write("<a href=\"test.html?grep=" + list[i] + "\">");
+        document.write(list[i]);
+        document.write("</a>");
+        document.write("</li>");
+      }
+      </script>
+    </ul>
+  </body>
+</html>

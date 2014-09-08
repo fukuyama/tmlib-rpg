@@ -1,5 +1,5 @@
 # 価値は何か，誰にとっての価値か，実際の機能は何か
-describe 'rpg.Interpreter', () ->
+describe 'rpg.Interpreter(Etc)', () ->
   interpreter = null
   describe '初期化', ->
     it '引数なし', ->

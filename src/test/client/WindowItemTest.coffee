@@ -3,7 +3,7 @@ describe 'rpg.WindowItemTest', ->
   @timeout(10000)
   describe 'アイテムを捨てる', ->
     it 'マップシーンへ移動', (done) ->
-      loadTestMap(done)
+      reloadTestMap(done)
     it 'wait', (done) ->
       setTimeout(done,1000)
     it '通常アイテムをロード', (done) ->

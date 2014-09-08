@@ -9,7 +9,7 @@ tm.define 'rpg.event_command.If',
     while params.length != 0
       param = params.shift()
       if typeof param is 'string'
-        m = param.match(/^(\=\=|\!\=|\<|\>|\<\=|\=\>)$/)
+        m = param.match(/^(\=\=|\!\=|\<|\>|\<\=|\=\<|\>\=|\=\>)$/)
         if m?
           ope = m[1]
           param = params.shift()
@@ -34,7 +34,9 @@ tm.define 'rpg.event_command.If',
         when '<'  then result = lvalue <  rvalue
         when '>'  then result = lvalue >  rvalue
         when '<=' then result = lvalue <= rvalue
+        when '=<' then result = lvalue <= rvalue
         when '>=' then result = lvalue >= rvalue
+        when '=>' then result = lvalue >= rvalue
     else
       result = @normalizeEventBool(lval[0],lval[1]) is lval[2]
 

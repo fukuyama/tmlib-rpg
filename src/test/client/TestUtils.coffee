@@ -50,3 +50,10 @@ _g.checkMapMove =  (mapid,x,y,dir,done) ->
       pc.mapX == x and
       pc.mapY == y and
       pc.direction == dir
+
+_g.getMessage = -> rpg.system.scene?.windowMessage?.currentMessage
+
+_g.checkMessage = (done,msg) ->
+  checkWait done, ->
+    w = rpg.system.scene?.windowMessage
+    return w? and w.currentMessage == msg and w.isPause()
