@@ -1,10 +1,20 @@
+###*
+* @file WindowMessage.coffee
+* メッセージウィンドウ
+###
 
 MSG_OPT = rpg.constants.MESSAGE_OPTION
 
 tm.define 'rpg.WindowMessage',
   superClass: rpg.Window
 
-  # 初期化
+  ###* コンストラクタ
+  * @classdesc メッセージウィンドウ
+  * @constructor rpg.WindowMessage
+  * @param {Object} args
+  * @param {number} args.messageSpeed メッセージスピード
+  * @param {number} args.scrollSpeed スクロールスピード
+  ###
   init: (args={}) ->
     delete args[k] for k, v of args when not v?
     @superInit(0,0,0,0,args)
@@ -25,6 +35,7 @@ tm.define 'rpg.WindowMessage',
       options:
         message:
           position: MSG_OPT.MESSAGE.BOTTOM # メッセージウィンドウ位置
+          close: on
         select:
           position: MSG_OPT.SELECT.RIGHT # 選択肢ウィンドウ位置
         input_num:
@@ -47,10 +58,6 @@ tm.define 'rpg.WindowMessage',
       @innerRect.width
       @innerRect.height * 2)
 
-    # １ライン用キャンバス
-    @lineCanvas = tm.graphics.Canvas()
-    @lineCanvas.resize(@innerRect.width, @innerRect.height)
-
     @markup = rpg.MarkupText.default
     
     @addOpenListener((->
@@ -58,13 +65,16 @@ tm.define 'rpg.WindowMessage',
     ).bind(@))
 
     @addCloseListener((->
-      @windowMenu.close() if @windowMenu?
+      @windowMenu?.close()
+      @windowInputNum?.close()
       @clear()
     ).bind(@))
 
     @clear()
 
-  # 状態クリア
+  ###* 状態クリア
+  * @memberof rpg.WindowMessage#
+  ###
   clear: ->
     @_messages = []
     @_message = ''
@@ -75,26 +85,56 @@ tm.define 'rpg.WindowMessage',
     @_ay = 0 # スクロール差分用座標
     @_waitCount = 0 # 描画時のウェイトカウント
     @content.clear()
+    return
 
-  # 終了処理
+  ###* 終了処理。最後のメッセージを表示してプレイヤーが読み終わったときに呼ばれる。
+  * @memberof rpg.WindowMessage#
+  ###
   terminate: ->
     @fire rpg.WindowMessage.EVENT_TERMINATE
+    if @options.message.close
+      @close()
+    return
 
-  # メッセージを設定
+  ###* メッセージを設定。
+  * @memberof rpg.WindowMessage#
+  * @params {string|Array} msg メッセージ。
+  ###
   setMessage: (msg) ->
     @open() if @isClose()
-    @_messages = if msg instanceof Array then [].concat(msg) else [msg]
-    @nextMessage()
-    #@_sy = @_dx = @_dy = 0
-    #@_sy = 0
-    @
+    @_messages = if Array.isArray msg then [].concat(msg) else [msg]
+    @_nextMessage()
+    return
 
-  nextMessage: ->
+  ###* 次のメッセージ。
+  * @memberof rpg.WindowMessage#
+  * @private
+  ###
+  _nextMessage: ->
+    if @_dx != 0
+      @_dx = 0
+      @_dy += rpg.system.lineHeight
+    @_py = @_dy
+    @_waitCount = 0
     @_message = @markup.replace(@_messages.shift().replace /\n/g, '\\n')
     @_messageIndex = 0
+    return
 
-  # 表示位置設定
+  ###* 表示位置設定。
+  * @memberof rpg.WindowMessage#
+  * @params {Object} options
+  ###
   setDisplayPosition: (options=@options) ->
+    @setDisplayPositionMain options
+    @setDisplayPositionMenu options
+    @setDisplayPositionInputNum options
+    return
+
+  ###* メッセージウィンドウ表示位置設定
+  * @memberof rpg.WindowMessage#
+  * @params {Object} options
+  ###
+  setDisplayPositionMain: (options=@options) ->
     # x座標は真ん中
     @centering('horizon')
     c = MSG_OPT.MESSAGE
@@ -103,11 +143,12 @@ tm.define 'rpg.WindowMessage',
       when c.TOP then @y = 0
       when c.CENTER then @centering('vertical')
       when c.BOTTOM then @y = rpg.system.screen.height - @height
-    @setDisplayPositionMenu options
-    @setDisplayPositionInputNum options
-    @
+    return
 
-  # 選択肢表示位置
+  ###* 選択肢表示位置
+  * @memberof rpg.WindowMessage#
+  * @params {Object} options
+  ###
   setDisplayPositionMenu: (options=@options) ->
     if @windowMenu?
       c = MSG_OPT.SELECT
@@ -121,9 +162,12 @@ tm.define 'rpg.WindowMessage',
         @windowMenu.y = @bottom
       else
         @windowMenu.y = @top - @windowMenu.height
-    @
+    return
 
-  # 数値入力ウィンドウ表示位置
+  ###* 数値入力ウィンドウ表示位置
+  * @memberof rpg.WindowMessage#
+  * @params {Object} options
+  ###
   setDisplayPositionInputNum: (options=@options) ->
     if @windowInputNum?
       c = MSG_OPT.NUMBER
@@ -137,26 +181,45 @@ tm.define 'rpg.WindowMessage',
         @windowInputNum.y = @bottom
       else
         @windowInputNum.y = @top - @windowInputNum.height
-    @
+    return
 
-  # ポーズ状態の場合 true
-  isPause: -> @_message.length <= @_messageIndex
+  ###* ポーズ状態確認。
+  * メッセージの表示位置が、メッセージの長さ以上の場合、ポーズする。
+  * @memberof rpg.WindowMessage#
+  * @return {boolean} ポーズが必要な場合 true
+  ###
+  isPause: -> @_messageIndex >= @_message.length
   
-  # 表示するメッセージが無い場合 true
+  ###* 残りの表示メッセージ確認。
+  * メッセージのリストが空の場合。残りメッセージが無い状態。
+  * @memberof rpg.WindowMessage#
+  * @return {boolean} 表示するメッセージが無い場合 true
+  ###
   isEmpty: -> @_messages.length == 0
 
-  # 選択肢表示中の場合 true
+  ###* 選択中確認。
+  * @memberof rpg.WindowMessage#
+  * @return {boolean} 選択肢表示中の場合 true
+  ###
   isSelect: -> @windowMenu?
 
-  # 入力ウィンドウ表示中の場合 true
+  ###* 数値入力中確認。
+  * @memberof rpg.WindowMessage#
+  * @return {boolean} 数値入力ウィンドウ表示中の場合 true
+  ###
   isInput: -> @windowInputNum?
 
-  # 描画タイミングの計算
+  ###* 描画タイミングの計算。
+  * @memberof rpg.WindowMessage#
+  * @return {boolean} 描画タイミングの場合 false
+  ###
   countDrawTiming: ->
     @_waitCount = ++@_waitCount % @_waitCountMax
     @_waitCount != 0
 
-  # 選択肢ウィンドウの作成
+  ###* 選択肢ウィンドウの作成
+  * @memberof rpg.WindowMessage#
+  ###
   createSelectWindow: (args={}) ->
     {
       menus
@@ -181,8 +244,11 @@ tm.define 'rpg.WindowMessage',
     @addWindow(@windowMenu)
     @active = false
     @setDisplayPosition()
+    return
 
-  # 数値入力ウィンドウの作成
+  ###* 数値入力ウィンドウの作成
+  * @memberof rpg.WindowMessage#
+  ###
   createInputNumWindow: (args={}) ->
     {
       flag
@@ -199,8 +265,11 @@ tm.define 'rpg.WindowMessage',
     @addWindow(@windowInputNum)
     @active = false
     @setDisplayPosition()
+    return
 
-  # メッセージの確認
+  ###* メッセージの確認
+  * @memberof rpg.WindowMessage#
+  ###
   checkTempMessage: ->
     return unless rpg.system.temp.message?
 
@@ -214,7 +283,9 @@ tm.define 'rpg.WindowMessage',
 
     @setMessage(msg)
 
-  # 選択肢の確認
+  ###* 選択肢の確認
+  * @memberof rpg.WindowMessage#
+  ###
   checkTempSelect: ->
     return unless rpg.system.temp.selectArgs?
     return unless @isPause() and @isEmpty()
@@ -222,7 +293,9 @@ tm.define 'rpg.WindowMessage',
     rpg.system.temp.selectArgs = null
     @
   
-  # 数値入力の確認
+  ###* 数値入力の確認
+  * @memberof rpg.WindowMessage#
+  ###
   checkTempInputNum: ->
     return unless rpg.system.temp.inputNumArgs?
     return unless @isPause() and @isEmpty()
@@ -230,14 +303,20 @@ tm.define 'rpg.WindowMessage',
     rpg.system.temp.inputNumArgs = null
     @
 
-  # オプションの確認
+  ###* オプションの確認
+  * @memberof rpg.WindowMessage#
+  ###
   checkTempOption: ->
     return unless rpg.system.temp.options?
     @options = @options.$extendAll rpg.system.temp.options
     rpg.system.temp.options = null
-    @
+    if @options.message.close and @isOpen()
+      @close()
+    return
 
-  # スクロール処理
+  ###* スクロール処理
+  * @memberof rpg.WindowMessage#
+  ###
   scroll: ->
     # スクロール処理
     if @_sy > 0
@@ -267,7 +346,9 @@ tm.define 'rpg.WindowMessage',
       return true
     return false
 
-  # 更新処理
+  ###* 更新処理
+  * @memberof rpg.WindowMessage#
+  ###
   update: ->
     rpg.Window.prototype.update.apply(@)
     return if @scroll()
@@ -283,7 +364,9 @@ tm.define 'rpg.WindowMessage',
     @drawMessage() for num in [0 .. @_drawCount]
     @refresh()
 
-  # メッセージを描画する
+  ###* メッセージを描画する
+  * @memberof rpg.WindowMessage#
+  ###
   drawMessage: ->
     return if @processMarkup()
     msg = @_message[@_messageIndex++]
@@ -291,62 +374,29 @@ tm.define 'rpg.WindowMessage',
     @drawText(msg, @_dx, @_dy)
     @_dx += @measureTextWidth(msg)
 
-  ###* テキスト描画
-  * @memberof rpg.Window#
-  * @param {String} text 描画文字列
-  * @param {number} x 描画X座標
-  * @param {number} y 描画Y座標
+  ###* マークアップ処理
+  * @memberof rpg.WindowMessage#
   ###
-  drawLineCanvas: (text, x, y, op={}) ->
-    {
-      font
-      baseline
-      align
-      color
-      strokeStyle
-    } = {
-      font: @font
-      baseline: 'top'
-      align: 'left'
-      color: @textColor
-    }.$extend op
-    @lineCanvas.context.save()
-    @lineCanvas.font = font
-    @lineCanvas.textBaseline = baseline
-    @lineCanvas.textAlign = align
-    @lineCanvas.fillStyle = color
-    @lineCanvas.strokeStyle = strokeStyle ? color
-    @lineCanvas.fillText(text, x, y + 3) # TODO: textBaseline ちょい下で良いかな？
-    @lineCanvas.context.restore()
-
-  # マークアップ処理
   processMarkup: ->
     [@_dx, @_dy, @_messageIndex] =
       @markup.draw(@, @_dx, @_dy, @_message, @_messageIndex)
     @markup.matched
 
-  # ポーズ解除
+  ###* ポーズ解除
+  * @memberof rpg.WindowMessage#
+  ###
   pauseCancel: ->
     if @isEmpty()
-      rpg.system.app.keyboard.clear()
       @terminate()
-      @close()
-      # TODO: コンティニュー表示を作らないと…
-      #if @_dx != 0
-      #  @_dx = 0
-      #  @_dy += rpg.system.lineHeight
-      #@_py = @_dy
-      #@_waitCount = 0
     else
-      if @_dx != 0
-        @_dx = 0
-        @_dy += rpg.system.lineHeight
-      @_py = @_dy
-      @_waitCount = 0
-      @nextMessage()
-  
+      @_nextMessage()
+
+  ###* イベントハンドラ
+  * @memberof rpg.WindowMessage#
+  ###
   input_ok_up: ->
     if @isPause()
+      rpg.system.app.keyboard.clear()
       @pauseCancel()
 
 Object.defineProperty rpg.WindowMessage.prototype, 'currentMessage',

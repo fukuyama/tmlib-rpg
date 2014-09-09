@@ -9,6 +9,11 @@ _g.message_clear = ->
 
 # キー操作エミュレーション
 _g.emulate_key = (key,callback) ->
+  if arguments.length == 1
+    {
+      key
+      callback
+    } = arguments[0]
   setTimeout(->
     rpg.system.app.keyboard.setKey(key,true)
   150)
@@ -18,6 +23,9 @@ _g.emulate_key = (key,callback) ->
   setTimeout(->
     callback()
   400)
+
+_g.emulateKey = _g.emulate_key
+
 loadFlg = false
 # テスト用マップロード
 _g.loadTestMap = (done) ->
@@ -53,7 +61,12 @@ _g.checkMapMove =  (mapid,x,y,dir,done) ->
 
 _g.getMessage = -> rpg.system.scene?.windowMessage?.currentMessage
 
-_g.checkMessage = (done,msg) ->
-  checkWait done, ->
+_g.checkMessage = (callback,msg) ->
+  if arguments.length == 1
+    {
+      callback
+      msg
+    } = arguments[0]
+  checkWait callback, ->
     w = rpg.system.scene?.windowMessage
     return w? and w.currentMessage == msg and w.isPause()

@@ -52,6 +52,7 @@ module.exports = [
     ]
     message:
       ok: [
+        {type:'option',params:[{message:{close:off}}]}
         {
           type: 'message'
           params: ['\#{user.name} は　\#{item.name} を使った。']
@@ -72,6 +73,7 @@ module.exports = [
           {type:'end'}
         ]}
         {type:'end'}
+        {type:'option',params:[{message:{close:on}}]}
       ]
       ng: [
         {

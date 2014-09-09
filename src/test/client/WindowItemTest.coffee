@@ -222,7 +222,7 @@ describe 'rpg.WindowItemTest', ->
       it 'キャンセル', (done) ->
         emulate_key('escape',done)
 
-    describe.skip '複数アイテム', ->
+    describe '複数アイテム', ->
       it 'マップシーンへ移動', (done) ->
         reloadTestMap(done)
       it 'wait', (done) ->
@@ -260,19 +260,19 @@ describe 'rpg.WindowItemTest', ->
       it 'HP確認', ->
         actor = rpg.game.party.getAt(1)
         actor.hp.should.equal (actor.maxhp - 10)
-      it 'メッセージ待ち', (done) ->
-        setTimeout(done,1000)
-      it 'メッセージ', (done) ->
-        emulate_key('enter',done)
-      it 'メッセージ待ち', (done) ->
-        setTimeout(done,1000)
-      ###
-      it 'メッセージ', (done) ->
-        emulate_key('enter',done)
-      it 'キャンセル', (done) ->
-        emulate_key('escape',done)
-      it 'キャンセル', (done) ->
-        emulate_key('escape',done)
-      it 'キャンセル', (done) ->
-        emulate_key('escape',done)
-      ###
+      it 'メッセージ表示待ち', (done) ->
+        checkMessage callback:done, msg:'あくたー１ は　heal I を使った。'
+      it '次のメッセージ表示', (done) -> emulateKey callback:done, key: 'enter'
+      it 'メッセージ表示待ち', (done) ->
+        checkMessage
+          callback:done
+          msg:'あくたー１ の hp が 10 回復した。'
+      it '次のメッセージ表示', (done) -> emulateKey callback:done, key: 'enter'
+      it 'メッセージ表示待ち', (done) ->
+        checkMessage
+          callback:done
+          msg:'あくたー２ の hp が 10 回復した。'
+      it '次のメッセージ表示', (done) -> emulateKey callback:done, key: 'enter'
+      it 'キャンセル', (done) -> emulateKey callback:done, key: 'escape'
+      it 'キャンセル', (done) -> emulateKey callback:done, key: 'escape'
+      it 'キャンセル', (done) -> emulateKey callback:done, key: 'escape'
