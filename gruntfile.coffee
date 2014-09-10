@@ -98,6 +98,8 @@ module.exports = (grunt) ->
   genPath = 'target/generate/'
   
   coffeelintConfig =
+    options:
+      configFile: 'coffeelint.json'
     all:
       files:
         src: [
