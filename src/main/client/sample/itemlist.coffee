@@ -47,40 +47,78 @@ EVENT_TEMPLATE = {
   ]
 }
 
-module.exports = [
-  {type: 'Item', item: '002', name: 'item 002'}
 
-  {type: 'Item', item: '003', name: 'item 003'}
+# scope 定義
+FRIEND_ONE =
+  type: ITEM_SCOPE.TYPE.FRIEND
+  range: ITEM_SCOPE.RANGE.ONE
+  hp0: false
+
+FRIEND_ALL =
+  type: ITEM_SCOPE.TYPE.FRIEND
+  range: ITEM_SCOPE.RANGE.MULTI
+  hp0: false
+
+ENEMY_ONE =
+  type: ITEM_SCOPE.TYPE.ENEMY
+  range: ITEM_SCOPE.RANGE.ONE
+  hp0: false
+
+ENEMY_ALL =
+  type: ITEM_SCOPE.TYPE.ENEMY
+  range: ITEM_SCOPE.RANGE.MULTI
+  hp0: false
+
+effect = {
+  hp: (n) -> hp:{type:'fix',val:n}
+}
+
+
+module.exports = [
+  {
+    type: 'Item'     # クラス名
+   　item: '002'      # ID(URLになる)
+    name: 'item 002' # 名前
+    price: 1         # 価格
+    help: 'help 002' # ヘルプテキスト
+    message: null    # ログメッセージテンプレート
+    usable: false    # 使えるかどうか
+    equip: false     # 装備できるかどうか
+    stack: false     # スタック可能かどうか
+    maxStack: 99     # スタック可能な場合のスタック数
+  }
 
   {
-    type: 'UsableItem', item: '004', name: 'cure I'
-    scope: {
-      type: ITEM_SCOPE.TYPE.FRIEND
-      range: ITEM_SCOPE.RANGE.ONE
-    }
-    effects: [
-      {hp: {
-        type: 'fix'
-        val: 10
-      }}
-    ]
+    type: 'Item'
+   　item: '003'
+   　name: 'item 003'
+    price: 1
+    help: 'help 003'
+  }
+
+  {
+    type: 'UsableItem'
+   　item: '004'
+    name: 'cure I'
+    price: 10
+    help: '仲間一人を少し回復する'
+    stack: true
+    maxStack: 99
+    scope: FRIEND_ONE
+    effects: [effect.hp 10]
     message:
       ok: EVENT_TEMPLATE.CURE
       ng: EVENT_TEMPLATE.ITEM_NG
   }
 
   {
-    type: 'UsableItem', item: '005', name: 'heal I'
-    scope: {
-      type: ITEM_SCOPE.TYPE.FRIEND
-      range: ITEM_SCOPE.RANGE.MULTI
-    }
-    effects: [
-      {hp: {
-        type: 'fix'
-        val: 10
-      }}
-    ]
+    type: 'UsableItem'
+    item: '005'
+    name: 'heal I'
+    price: 40
+    help: '仲間全員を少し回復する'
+    scope: FRIEND_ALL
+    effects: [effect.hp 10]
     message:
       ok: EVENT_TEMPLATE.CURE_ALL
       ng: EVENT_TEMPLATE.ITEM_NG
