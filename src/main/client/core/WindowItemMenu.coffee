@@ -44,39 +44,43 @@ tm.define 'rpg.WindowItemMenu',
   * @memberof rpg.WindowItemMenu#
   ###
   itemUse: ->
+    wm = @
     wi = @findWindowTree (o) -> o instanceof rpg.WindowItemList
-    wa = @findWindowTree (o) -> o instanceof rpg.WindowItemActorList
     i = wi.item
+    wa = @findWindowTree (o) -> o instanceof rpg.WindowItemActorList
     a = wa.actor
-    return if i.scope.type == ITEM_SCOPE.TYPE.ENEMY
-    if i.scope.range == ITEM_SCOPE.RANGE.ONE
-      # 単体なので相手を選択
-      @active = false
-      @addWindow rpg.WindowItemTargetActorList parent: @
-    if i.scope.range == ITEM_SCOPE.RANGE.MULTI
-      # 複数対象なのでこの場で使う
-      @active = false
-      wi = @findWindowTree (o) -> o instanceof rpg.WindowItemList
-      wa = @findWindowTree (o) -> o instanceof rpg.WindowItemActorList
-      wm = @findWindowTree (o) -> o instanceof rpg.WindowItemMenu
-      targets = []
-      rpg.game.party.each (a) -> targets.push a
-      log = rpg.system.temp.log = {}
-      r = a.useItem i, targets, log
-      eg = rpg.EventGenerator()
-      if r
-        eg.itemUseOk a, i, targets, log
-      else
-        eg.itemUseNg a, i, targets, log
-      eg.function ->
-        wm.close()
-        wa.changeActor(wa.actor)
-        if wi.items.length == 0
-          wa.active = true
-          wi.active = false
-        if wi.items.length <= wi.index
-          wi.setIndex(wi.items.length - 1)
-      rpg.system.mapInterpreter.start eg.commands
+    eg = rpg.EventGenerator()
+    @active = false
+    unless i.usable
+      # 使用できないアイテム
+      eg.itemUseError a, i
+    else
+      if i.scope.type == ITEM_SCOPE.TYPE.ENEMY
+        eg.itemUseError a, i
+      if i.scope.type == ITEM_SCOPE.TYPE.FRIEND
+        if i.scope.range == ITEM_SCOPE.RANGE.ONE
+          # 単体なので相手を選択
+          @addWindow rpg.WindowItemTargetActorList parent: @
+          return
+        if i.scope.range == ITEM_SCOPE.RANGE.MULTI
+          # 複数対象なのでこの場で使う
+          targets = []
+          rpg.game.party.each (a) -> targets.push a
+          log = rpg.system.temp.log = {}
+          r = a.useItem i, targets, log
+          if r
+            eg.itemUseOk a, i, targets, log
+          else
+            eg.itemUseNg a, i, targets, log
+    eg.function ->
+      wm.close()
+      wa.changeActor(wa.actor)
+      if wi.items.length == 0
+        wa.active = true
+        wi.active = false
+      if wi.items.length <= wi.index
+        wi.setIndex(wi.items.length - 1)
+    rpg.system.mapInterpreter.start eg.commands
     return
 
   ###* わたすメニュー

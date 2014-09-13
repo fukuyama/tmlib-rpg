@@ -164,6 +164,35 @@ describe 'rpg.WindowItemTest', ->
       it 'キャンセル', (done) -> emulateKey callback:done, key: 'escape'
 
   describe 'アイテムを使う', ->
+    describe '使えないアイテム', ->
+      it 'マップシーンへ移動', (done) ->
+        reloadTestMap(done)
+      it 'wait', (done) ->
+        setTimeout(done,1000)
+      it 'メニュー表示', (done) ->
+        emulate_key('enter',done)
+      it 'どうぐへ移動', (done) ->
+        emulate_key('down',done)
+      it 'メニュー選択', (done) ->
+        emulate_key('enter',done)
+      it 'アクター選択', (done) ->
+        emulate_key('enter',done)
+      it 'アイテム選択', (done) ->
+        emulate_key('enter',done)
+      it 'つかうメニュー選択', (done) ->
+        emulate_key('enter',done)
+      it 'メッセージ表示待ち', (done) ->
+        checkMessage callback:done, msg:'あくたー１ は item 001 を使った。'
+      it '次のメッセージ表示', (done) -> emulateKey callback:done, key: 'enter'
+      it 'メッセージ表示待ち', (done) ->
+        checkMessage
+          callback:done
+          msg:'しかし 効果がなかった。'
+      it '次のメッセージ表示', (done) -> emulateKey callback:done, key: 'enter'
+      it 'キャンセル', (done) -> emulateKey callback:done, key: 'escape'
+      it 'キャンセル', (done) -> emulateKey callback:done, key: 'escape'
+      it 'キャンセル', (done) -> emulateKey callback:done, key: 'escape'
+
     describe '単体アイテム', ->
       describe '効果あり', ->
         it 'マップシーンへ移動', (done) ->

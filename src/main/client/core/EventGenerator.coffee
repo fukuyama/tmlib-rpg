@@ -30,6 +30,10 @@ tm.define 'rpg.EventGenerator',
     #{target.name} に手渡した。
     """
 
+  itemUseError: (user,item) ->
+    @message "#{user.name} は #{item.name} を使った。"
+    @message "しかし 効果がなかった。"
+
   itemUseOk: (user,item,target,log) ->
     msgs = item.message.ok
     return unless msgs?
