@@ -9,6 +9,7 @@ require('../../main/common/State.coffee')
 require('../../main/common/Item.coffee')
 require('../../main/common/ItemContainer.coffee')
 require('../../main/common/UsableItem.coffee')
+require('../../main/common/Effect.coffee')
 
 ITEM_SCOPE = rpg.constants.ITEM_SCOPE
 

@@ -72,7 +72,8 @@ class rpg.UsableItem extends rpg.Item
     for t in targets when @checkScopeType(user, t)
       for effect in @effects
         for effectType, param of effect
-          r = @['effect_'+effectType].call(@, param, user, t, log) or r
+          r = rpg.effect.run(effectType, param, user, t, log) or r
+          #r = @['effect_'+effectType].call(@, param, user, t, log) or r
     r
 
   # 使う

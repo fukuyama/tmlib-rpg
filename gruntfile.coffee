@@ -30,6 +30,7 @@ module.exports = (grunt) ->
       'common/Item'
       'common/UsableItem'
       'common/State'
+      'common/Effect'
       'common/MarkupText'
   ]
   # クライアントのスクリプト
