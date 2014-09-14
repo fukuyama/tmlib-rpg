@@ -49,29 +49,33 @@ tm.define 'rpg.WindowItemMenu',
     i = wi.item
     wa = @findWindowTree (o) -> o instanceof rpg.WindowItemActorList
     a = wa.actor
-    eg = rpg.EventGenerator()
+
     @active = false
-    unless i.usable
-      # 使用できないアイテム
-      eg.itemUseError a, i
-    else
+    if i.usable and
+    i.scope.type == ITEM_SCOPE.TYPE.FRIEND and
+    i.scope.range == ITEM_SCOPE.RANGE.ONE
+      # 単体なので相手を選択
+      @addWindow rpg.WindowItemTargetActorList parent: @
+      return
+
+    eg = rpg.EventGenerator()
+    if i.usable
       if i.scope.type == ITEM_SCOPE.TYPE.ENEMY
         eg.itemUseError a, i
-      if i.scope.type == ITEM_SCOPE.TYPE.FRIEND
-        if i.scope.range == ITEM_SCOPE.RANGE.ONE
-          # 単体なので相手を選択
-          @addWindow rpg.WindowItemTargetActorList parent: @
-          return
-        if i.scope.range == ITEM_SCOPE.RANGE.MULTI
-          # 複数対象なのでこの場で使う
-          targets = []
-          rpg.game.party.each (a) -> targets.push a
-          log = rpg.system.temp.log = {}
-          r = a.useItem i, targets, log
-          if r
-            eg.itemUseOk a, i, targets, log
-          else
-            eg.itemUseNg a, i, targets, log
+      if i.scope.type == ITEM_SCOPE.TYPE.FRIEND and
+      i.scope.range == ITEM_SCOPE.RANGE.MULTI
+        # 複数対象なのでこの場で使う
+        targets = []
+        rpg.game.party.each (a) -> targets.push a
+        log = rpg.system.temp.log = {}
+        r = a.useItem i, targets, log
+        if r
+          eg.itemUseOk a, i, targets, log
+        else
+          eg.itemUseNg a, i, targets, log
+    else
+      # 使用できないアイテム
+      eg.itemUseError a, i
     eg.function ->
       wm.close()
       wa.changeActor(wa.actor)
