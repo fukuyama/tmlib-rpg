@@ -123,4 +123,32 @@ module.exports = [
       ok: EVENT_TEMPLATE.CURE_ALL
       ng: EVENT_TEMPLATE.ITEM_NG
   }
+
+  {
+    type: 'UsableItem'
+   　item: '006'
+    name: 'cure II'
+    price: 10
+    help: '仲間一人を回復する'
+    stack: true
+    maxStack: 99
+    scope: FRIEND_ONE
+    effects: [effect.hp 30]
+    message:
+      ok: EVENT_TEMPLATE.CURE
+      ng: EVENT_TEMPLATE.ITEM_NG
+  }
+
+  {
+    type: 'UsableItem'
+    item: '007'
+    name: 'heal II'
+    price: 40
+    help: '仲間全員を回復する'
+    scope: FRIEND_ALL
+    effects: [effect.hp 30]
+    message:
+      ok: EVENT_TEMPLATE.CURE_ALL
+      ng: EVENT_TEMPLATE.ITEM_NG
+  }
 ]
