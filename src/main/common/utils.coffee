@@ -6,6 +6,7 @@ rpg = _g.rpg = _g.rpg ? {}
 _effectValFunc = {
   fix: (b, p) -> p.val
   rate: (b, p) -> b * p.val / 100
+  range: (b, p) -> Math.floor(Math.random() * p.max) + p.min
 }
 
 _stringifyFunc = (k,v) ->
