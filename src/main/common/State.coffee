@@ -111,10 +111,10 @@ class rpg.State
         if ds.attr? # 対象属性が指定されてる場合
           # 対象属性が指定属性に一致しているか見る
           for a in tgtattrs when ds.attr == a
-            r += rpg.utils.effectVal(atkcx.damage,ds)
+            r += rpg.effect.value(atkcx.damage,ds)
         else # 対象属性が指定されてない場合
           # すべて適用
-          r += rpg.utils.effectVal(atkcx.damage,ds)
+          r += rpg.effect.value(atkcx.damage,ds)
     r
 
   ###* 攻撃ダメージ変化
@@ -144,7 +144,7 @@ class rpg.State
     {ability,base} = param
     r = 0
     for a in @abilities when a[ability]?
-      r += rpg.utils.effectVal(base,a[ability])
+      r += rpg.effect.value(base,a[ability])
     r
   
   ###* ステートガード
@@ -158,7 +158,7 @@ class rpg.State
     {name,base} = param
     r = 0
     for a in @guards when a[name]?
-      r += rpg.utils.effectVal(base,a[name])
+      r += rpg.effect.value(base,a[name])
     r
 
   ###* 定期変化
@@ -170,7 +170,7 @@ class rpg.State
     {target} = param
     for ap in @applies
       for k,v of ap when target[k]?
-        target[k] += rpg.utils.effectVal(target[k],v)
+        target[k] += rpg.effect.value(target[k],v)
     @applyCount += 1
     @
   

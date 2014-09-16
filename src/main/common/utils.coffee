@@ -3,12 +3,6 @@
 _g = window ? global ? @
 rpg = _g.rpg = _g.rpg ? {}
 
-_effectValFunc = {
-  fix: (b, p) -> p.val
-  rate: (b, p) -> b * p.val / 100
-  range: (b, p) -> Math.floor(Math.random() * p.max) + p.min
-}
-
 _stringifyFunc = (k,v) ->
   return undefined unless v?
   if k != 'd' and rpg[v.constructor.name]?
@@ -26,9 +20,6 @@ _parseFunc = (k,v) ->
   
 # Utils
 rpg.utils = {
-  effectVal: (base,param={type:'fix',val:10}) ->
-    _effectValFunc[param.type](base,param)
-  
   createJsonData: (obj) -> JSON.stringify(obj,_stringifyFunc)
   createRpgObject: (json) -> JSON.parse(json,_parseFunc)
 }

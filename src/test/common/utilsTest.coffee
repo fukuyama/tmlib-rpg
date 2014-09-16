@@ -145,21 +145,6 @@ describe 'utils', ->
         a.list.should.deep.equal [1,2,3]
         (typeof a.func1).should.equal 'function'
 
-  describe '汎用増減効果計算', ->
-    it '固定値での増減', ->
-      r = rpg.utils.effectVal 10, {type:'fix',val:20}
-      r.should.equal 20
-      r = rpg.utils.effectVal 10, {type:'fix',val:-4}
-      r.should.equal -4
-    it '率での増減', ->
-      r = rpg.utils.effectVal 50, {type:'rate',val:20}
-      r.should.equal 10
-      r = rpg.utils.effectVal 10, {type:'rate',val:-10}
-      r.should.equal -1
-    it '半減', ->
-      r = rpg.utils.effectVal 88, {type:'rate',val:-50}
-      r.should.equal -44
-
   describe 'JSONデータ関連', ->
     it 'ObjectからJsonへ', ->
       json = rpg.utils.createJsonData {

@@ -4,6 +4,7 @@ require('../../main/common/utils.coffee')
 require('../../main/common/constants.coffee')
 require('../../main/common/State.coffee')
 require('../../main/common/Battler.coffee')
+require('../../main/common/Effect.coffee')
 
 # 価値は何か，誰にとっての価値か，実際の機能は何か
 describe 'rpg.State', () ->
