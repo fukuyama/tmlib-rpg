@@ -70,9 +70,7 @@ class rpg.UsableItem extends rpg.Item
     
     return false unless @checkScopeRange(user, targets)
     for t in targets when @checkScopeType(user, t)
-      for effect in @effects
-        for type, op of effect
-          r = rpg.effect.run(type, user, t, op, log) or r
+      r = rpg.effect.runArray(user, t, @effects, log) or r
     r
 
   # 使う

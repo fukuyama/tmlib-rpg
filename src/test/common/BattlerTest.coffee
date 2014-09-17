@@ -2,6 +2,7 @@ require('chai').should()
 
 require('../../main/common/utils.coffee')
 require('../../main/common/constants.coffee')
+require('../../main/common/Effect.coffee')
 require('../../main/common/Battler.coffee')
 require('../../main/common/State.coffee')
 require('../../main/common/Item.coffee')

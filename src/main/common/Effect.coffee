@@ -24,6 +24,12 @@ class rpg.Effect
   value: (base,param={type:'fix',val:10}) ->
     @valueFunc[param.type](base,param)
 
+  runArray: (user, target, effects, log) ->
+    r = false
+    for e in effects
+      for type, op of e
+        r = @run type, user, target, op, log or r
+    r
   run: (type, user, target, op, log) -> @_effects[type].call @, op, user, target, log
   hp: (user, target, op, log) -> @run 'hp', user, target, op, log
   mp: (user, target, op, log) -> @run 'mp', user, target, op, log

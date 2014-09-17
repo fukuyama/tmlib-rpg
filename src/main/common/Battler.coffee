@@ -76,61 +76,34 @@ class rpg.Battler
       @team
     } = {}.$extendAll(@properties).$extendAll(args)
 
-    # TODO: あとでバフ計算が必要になると思う
-    _ability = (nm) ->
-      r = @_base[nm]
-      for s in states
-        r += s.ability(base:@_base[nm], ability:nm)
-      r
-
-    for nm of @_base
-      Object.defineProperty @, nm,
-        enumerable: false
-        get: _ability.bind(@,nm)
-
-    Object.defineProperty @, 'patk',
-      enumerable: false
-      get: -> Math.floor(@str + @dex / 2)
-    Object.defineProperty @, 'pdef',
-      enumerable: false
-      get: -> Math.floor(@vit + @agi / 2)
-    Object.defineProperty @, 'matk',
-      enumerable: false
-      get: -> Math.floor(@int + @sen / 2)
-    Object.defineProperty @, 'mcur',
-      enumerable: false
-      get: -> Math.floor(@sen + @int / 2)
-    Object.defineProperty @, 'mdef',
-      enumerable: false
-      get: -> Math.floor(@luc / 2 + @sen / 2 + @int / 2)
-
-    Object.defineProperty @, 'maxhp',
-      enumerable: false
-      get: -> Math.floor(@basehp + @vit + @str / 2 + @luc / 2)
-    Object.defineProperty @, 'maxmp',
-      enumerable: false
-      get: -> Math.floor(@basemp + @int / 2 + @sen / 2 + @luc / 2)
-
-    _currenthp = @maxhp
-    _currentmp = @maxmp
-
-    Object.defineProperty @, 'hp',
-      enumerable: true
-      get: -> _currenthp
-      set: (n) ->
-        n = @maxhp if n > @maxhp
-        _currenthp = n
-    Object.defineProperty @, 'mp',
-      enumerable: true
-      get: -> _currentmp
-      set: (n) ->
-        n = @maxmp if n > @maxmp
-        _currentmp = n
-
     Object.defineProperty @, 'states',
       enumerable: true
       get: -> states
       set: (s) -> states = s
+
+    # TODO: あとでバフ計算が必要になると思う
+    _base_ability = (nm) -> @_ability @_base[nm], nm
+
+    for nm of @_base
+      Object.defineProperty @, nm,
+        enumerable: false
+        get: _base_ability.bind(@,nm)
+
+    @_currenthp = @maxhp
+    @_currentmp = @maxmp
+    return
+
+  ###* 能力計算
+  * @method rpg.Battler#addState
+  * @param {number} base 基準値
+  * @param {string} nm 計算する能力名
+  * @return {number} 計算結果
+  * @private
+  ###
+  _ability: (base, nm) ->
+    for s in @states
+      base += s.ability(base:@_base[nm], ability:nm)
+    base
 
   ###* ステート追加
   * @method rpg.Battler#addState
@@ -190,3 +163,39 @@ class rpg.Battler
   ###
   useItem: (item, target, log={}) ->
     item.use @, target, log
+
+Object.defineProperty rpg.Battler.prototype, 'patk',
+  enumerable: false
+  get: -> Math.floor(@str + @dex / 2)
+Object.defineProperty rpg.Battler.prototype, 'pdef',
+  enumerable: false
+  get: -> Math.floor(@vit + @agi / 2)
+Object.defineProperty rpg.Battler.prototype, 'matk',
+  enumerable: false
+  get: -> Math.floor(@int + @sen / 2)
+Object.defineProperty rpg.Battler.prototype, 'mcur',
+  enumerable: false
+  get: -> Math.floor(@sen + @int / 2)
+Object.defineProperty rpg.Battler.prototype, 'mdef',
+  enumerable: false
+  get: -> Math.floor(@luc / 2 + @sen / 2 + @int / 2)
+
+Object.defineProperty rpg.Battler.prototype, 'maxhp',
+  enumerable: false
+  get: -> Math.floor(@basehp + @vit + @str / 2 + @luc / 2)
+Object.defineProperty rpg.Battler.prototype, 'maxmp',
+  enumerable: false
+  get: -> Math.floor(@basemp + @int / 2 + @sen / 2 + @luc / 2)
+
+Object.defineProperty rpg.Battler.prototype, 'hp',
+  enumerable: true
+  get: -> @_currenthp
+  set: (n) ->
+    n = @maxhp if n > @maxhp
+    @_currenthp = n
+Object.defineProperty rpg.Battler.prototype, 'mp',
+  enumerable: true
+  get: -> @_currentmp
+  set: (n) ->
+    n = @maxmp if n > @maxmp
+    @_currentmp = n
