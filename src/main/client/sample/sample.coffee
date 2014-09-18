@@ -23,7 +23,15 @@ fs   = require 'fs'
 jc.base = path.dirname fs.realpathSync(__filename)
 
 outputDir = path.join(target, 'public/client/data')
-for i in ['map','item','state', 'spritesheet', 'actor']
+subdirs = [
+  'map'
+  'item'
+  'state'
+  'spritesheet'
+  'actor'
+  'weapon'
+]
+for i in subdirs
   dirnm = path.join(outputDir,i)
   fs.mkdirSync(dirnm) unless fs.existsSync(dirnm)
 
@@ -43,4 +51,11 @@ jc.compileJsonArray(
   path.join(outputDir,'state')
   require path.join(jc.base,'statelist')
   'state'
+)
+
+# weaponlist
+jc.compileJsonArray(
+  path.join(outputDir,'weapon')
+  require path.join(jc.base,'weaponlist')
+  'weapon'
 )

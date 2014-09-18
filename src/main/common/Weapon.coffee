@@ -18,3 +18,4 @@ class rpg.Weapon extends rpg.EquipItem
   * @param {Object} args
   ###
   constructor: (args={}) ->
+    super args

@@ -48,6 +48,7 @@ class rpg.Battler
       base
       @properties
       states
+      @equips
     } = {
       _base: null
       base: {
@@ -64,6 +65,7 @@ class rpg.Battler
       }
       properties: {}
       states: []
+      equips: []
     }.$extendAll(args)
     @_base = _base ? base # _base が指定されたらそちらを優先
 
@@ -101,6 +103,10 @@ class rpg.Battler
   * @private
   ###
   _ability: (base, nm) ->
+    # 装備アイテム
+    for e in @equips
+      base += e.ability(base:@_base[nm], ability:nm)
+    # ステート
     for s in @states
       base += s.ability(base:@_base[nm], ability:nm)
     base
