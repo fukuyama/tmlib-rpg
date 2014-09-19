@@ -65,7 +65,7 @@ class rpg.Battler
       }
       properties: {}
       states: []
-      equips: []
+      equips: {}
     }.$extendAll(args)
     @_base = _base ? base # _base が指定されたらそちらを優先
 
@@ -103,13 +103,14 @@ class rpg.Battler
   * @private
   ###
   _ability: (base, nm) ->
+    r = base
     # 装備アイテム
-    for e in @equips
-      base += e.ability(base:@_base[nm], ability:nm)
+    for k, v of @equips
+      r += v.ability(base:base, ability:nm)
     # ステート
     for s in @states
-      base += s.ability(base:@_base[nm], ability:nm)
-    base
+      r += s.ability(base:base, ability:nm)
+    r
 
   ###* ステート追加
   * @method rpg.Battler#addState
@@ -172,26 +173,26 @@ class rpg.Battler
 
 Object.defineProperty rpg.Battler.prototype, 'patk',
   enumerable: false
-  get: -> Math.floor(@str + @dex / 2)
+  get: -> @_ability Math.floor(@str + @dex / 2), 'patk'
 Object.defineProperty rpg.Battler.prototype, 'pdef',
   enumerable: false
-  get: -> Math.floor(@vit + @agi / 2)
+  get: -> @_ability Math.floor(@vit + @agi / 2), 'pdef'
 Object.defineProperty rpg.Battler.prototype, 'matk',
   enumerable: false
-  get: -> Math.floor(@int + @sen / 2)
+  get: -> @_ability Math.floor(@int + @sen / 2), 'matk'
 Object.defineProperty rpg.Battler.prototype, 'mcur',
   enumerable: false
-  get: -> Math.floor(@sen + @int / 2)
+  get: -> @_ability Math.floor(@sen + @int / 2), 'mcur'
 Object.defineProperty rpg.Battler.prototype, 'mdef',
   enumerable: false
-  get: -> Math.floor(@luc / 2 + @sen / 2 + @int / 2)
+  get: -> @_ability Math.floor(@luc / 2 + @sen / 2 + @int / 2), 'mdef'
 
 Object.defineProperty rpg.Battler.prototype, 'maxhp',
   enumerable: false
-  get: -> Math.floor(@basehp + @vit + @str / 2 + @luc / 2)
+  get: -> @_ability Math.floor(@basehp + @vit + @str / 2 + @luc / 2), 'maxhp'
 Object.defineProperty rpg.Battler.prototype, 'maxmp',
   enumerable: false
-  get: -> Math.floor(@basemp + @int / 2 + @sen / 2 + @luc / 2)
+  get: -> @_ability Math.floor(@basemp + @int / 2 + @sen / 2 + @luc / 2), 'maxmp'
 
 Object.defineProperty rpg.Battler.prototype, 'hp',
   enumerable: true
@@ -205,3 +206,12 @@ Object.defineProperty rpg.Battler.prototype, 'mp',
   set: (n) ->
     n = @maxmp if n > @maxmp
     @_currentmp = n
+
+
+Object.defineProperty rpg.Battler.prototype, 'weapon',
+  enumerable: false
+  get: ->
+    @equips.left
+  set: (w) ->
+    @equips.left = w
+

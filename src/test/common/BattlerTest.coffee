@@ -8,6 +8,9 @@ require('../../main/common/State.coffee')
 require('../../main/common/Item.coffee')
 require('../../main/common/ItemContainer.coffee')
 require('../../main/common/UsableItem.coffee')
+require('../../main/common/EquipItem.coffee')
+require('../../main/common/Weapon.coffee')
+require('../../main/common/Armor.coffee')
 
 # 価値は何か，誰にとっての価値か，実際の機能は何か
 describe 'rpg.Battler', () ->
@@ -251,3 +254,13 @@ describe 'rpg.Battler', () ->
         battler.str.should.equal 10
         battler.states.length.should.equal 0
 
+
+  describe '装備関連', ->
+    describe '武器', ->
+      it '武器を装備する', ->
+        weapon = new rpg.Weapon
+          name: 'weapon001'
+          patk: 100 # 攻撃力
+        battler = new rpg.Battler
+        battler.weapon = weapon
+        battler.patk.should.equal 115

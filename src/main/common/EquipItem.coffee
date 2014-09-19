@@ -7,6 +7,15 @@
 _g = window ? global ? @
 rpg = _g.rpg = _g.rpg ? {}
 
+ABILITY_KEYS = [
+  'str'
+  'patk'
+  'pdef'
+  'matk'
+  'mcur'
+  'mdef'
+]
+
 # 装備可能アイテムクラス
 class rpg.EquipItem extends rpg.Item
 
@@ -16,14 +25,21 @@ class rpg.EquipItem extends rpg.Item
   * @constructor rpg.EquipItem
   * @extends rpg.Item
   * @param {Object} args
+  * @param {Array} args.abilities effect value のオプション配列
   ###
   constructor: (args={}) ->
+    args.equip = true
     super args
     {
       @abilities
     } = {
       abilities: []
-    } = args
+    }.$extendAll args
+    for k in ABILITY_KEYS
+      if args[k]?
+        a = {}
+        a[k] = {type:'fix',val:args[k]}
+        @abilities.push a
 
   ###* 能力変化
   * @method rpg.State#ability
@@ -38,3 +54,12 @@ class rpg.EquipItem extends rpg.Item
     for a in @abilities when a[ability]?
       r += rpg.effect.value(base,a[ability])
     r
+
+
+for k in ABILITY_KEYS
+  (
+    (nm) ->
+      Object.defineProperty rpg.EquipItem.prototype, nm,
+        enumerable: true
+        get: -> @ability base:0, ability: nm
+  ) k
