@@ -264,3 +264,11 @@ describe 'rpg.Battler', () ->
         battler = new rpg.Battler
         battler.weapon = weapon
         battler.patk.should.equal 115
+      it '力が上がる武器', ->
+        weapon = new rpg.Weapon
+          name: 'weapon001'
+          patk: 100 # 攻撃力
+          str: 5 # 力が5アップ
+        battler = new rpg.Battler
+        battler.weapon = weapon
+        battler.patk.should.equal 120

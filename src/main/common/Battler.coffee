@@ -65,7 +65,14 @@ class rpg.Battler
       }
       properties: {}
       states: []
-      equips: {}
+      equips: {
+        left_hand: null # 左手
+        right_hand: null # 右手
+        head: null # 頭
+        body: null # 体
+        arms: null # 腕
+        legs: null # 脚
+      }
     }.$extendAll(args)
     @_base = _base ? base # _base が指定されたらそちらを優先
 
@@ -105,7 +112,7 @@ class rpg.Battler
   _ability: (base, nm) ->
     r = base
     # 装備アイテム
-    for k, v of @equips
+    for k, v of @equips when v?
       r += v.ability(base:base, ability:nm)
     # ステート
     for s in @states
@@ -208,10 +215,18 @@ Object.defineProperty rpg.Battler.prototype, 'mp',
     @_currentmp = n
 
 
+# TODO: 両手は必要だけど、利き手はする？
 Object.defineProperty rpg.Battler.prototype, 'weapon',
   enumerable: false
   get: ->
-    @equips.left
+    @equips.left_hand
   set: (w) ->
-    @equips.left = w
+    @equips.left_hand = w
+
+Object.defineProperty rpg.Battler.prototype, 'shield',
+  enumerable: false
+  get: ->
+    @equips.right_hand
+  set: (w) ->
+    @equips.right_hand = w
 

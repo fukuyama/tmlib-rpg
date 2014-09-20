@@ -9,6 +9,15 @@ rpg = _g.rpg = _g.rpg ? {}
 
 ABILITY_KEYS = [
   'str'
+  'vit'
+  'dex'
+  'agi'
+  'int'
+  'sen'
+  'luc'
+  'cha'
+  'basehp'
+  'basemp'
   'patk'
   'pdef'
   'matk'
