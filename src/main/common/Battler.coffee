@@ -69,7 +69,8 @@ class rpg.Battler
         left_hand: null # 左手
         right_hand: null # 右手
         head: null # 頭
-        body: null # 体
+        upper_body: null # 体上
+        lower_body: null # 体下
         arms: null # 腕
         legs: null # 脚
       }
@@ -220,13 +221,48 @@ Object.defineProperty rpg.Battler.prototype, 'weapon',
   enumerable: false
   get: ->
     @equips.left_hand
-  set: (w) ->
-    @equips.left_hand = w
+  set: (item) ->
+    @equips.left_hand = item
 
 Object.defineProperty rpg.Battler.prototype, 'shield',
   enumerable: false
   get: ->
     @equips.right_hand
-  set: (w) ->
-    @equips.right_hand = w
+  set: (item) ->
+    @equips.right_hand = item
 
+# 頭
+Object.defineProperty rpg.Battler.prototype, 'head',
+  enumerable: false
+  get: ->
+    @equips.head
+  set: (item) ->
+    @equips.head = item
+# 体上
+Object.defineProperty rpg.Battler.prototype, 'upper_body',
+  enumerable: false
+  get: ->
+    @equips.upper_body
+  set: (item) ->
+    @equips.upper_body = item
+# 体下
+Object.defineProperty rpg.Battler.prototype, 'lower_body',
+  enumerable: false
+  get: ->
+    @equips.lower_body
+  set: (item) ->
+    @equips.lower_body = item
+# 腕
+Object.defineProperty rpg.Battler.prototype, 'arms',
+  enumerable: false
+  get: ->
+    @equips.arms
+  set: (item) ->
+    @equips.arms = item
+# 脚
+Object.defineProperty rpg.Battler.prototype, 'legs',
+  enumerable: false
+  get: ->
+    @equips.legs
+  set: (item) ->
+    @equips.legs = item

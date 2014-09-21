@@ -272,3 +272,39 @@ describe 'rpg.Battler', () ->
         battler = new rpg.Battler
         battler.weapon = weapon
         battler.patk.should.equal 120
+    describe '防具', ->
+      it '兜を装備する', ->
+        head = new rpg.Armor
+          name: 'head001'
+          pdef: 100 # 防御力
+        battler = new rpg.Battler
+        battler.head = head
+        battler.pdef.should.equal 115
+      it '鎧上半身を装備する', ->
+        armor = new rpg.Armor
+          name: 'upper_body001'
+          pdef: 100 # 防御力
+        battler = new rpg.Battler
+        battler.upper_body = armor
+        battler.pdef.should.equal 115
+      it '鎧下半身を装備する', ->
+        armor = new rpg.Armor
+          name: 'lower_body001'
+          pdef: 100 # 防御力
+        battler = new rpg.Battler
+        battler.lower_body = armor
+        battler.pdef.should.equal 115
+      it '腕防具を装備する', ->
+        armor = new rpg.Armor
+          name: 'arms001'
+          pdef: 100 # 防御力
+        battler = new rpg.Battler
+        battler.arms = armor
+        battler.pdef.should.equal 115
+      it '脚防具を装備する', ->
+        armor = new rpg.Armor
+          name: 'legs001'
+          pdef: 100 # 防御力
+        battler = new rpg.Battler
+        battler.legs = armor
+        battler.pdef.should.equal 115
