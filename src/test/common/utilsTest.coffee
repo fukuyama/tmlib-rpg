@@ -175,3 +175,94 @@ describe 'utils', ->
       a.test().should.equal 'test'
       a.abc.constructor.name.should.equal 'Abc'
       a.abc.test().should.equal 'test1'
+
+  describe 'JSON式', ->
+    it '足し算', ->
+      n = rpg.utils.jsonExpression l: 1,e: '+',r: 1
+      n.should.equal 2
+    it '引き算', ->
+      n = rpg.utils.jsonExpression l: 1,e: '-',r: 1
+      n.should.equal 0
+    it '掛け算', ->
+      n = rpg.utils.jsonExpression l: 2,e: '*',r: 1
+      n.should.equal 2
+      n = rpg.utils.jsonExpression l: 1,e: '*',r: 2
+      n.should.equal 2
+    it '割り算', ->
+      n = rpg.utils.jsonExpression l: 2,e: '/',r: 1
+      n.should.equal 2
+      n = rpg.utils.jsonExpression l: 1,e: '/',r: 2
+      n.should.equal 0.5
+    it '組み合わせ', ->
+      n = rpg.utils.jsonExpression
+        l:
+          l: 1
+          e: '-'
+          r: 3
+        e: '+'
+        r:
+          l: 2
+          e: '*'
+          r: 5
+      n.should.equal 8
+    it 'より小さい', ->
+      n = rpg.utils.jsonExpression l: 2,e: '>',r: 1
+      n.should.equal true
+      n = rpg.utils.jsonExpression l: 2,e: '>',r: 4
+      n.should.equal false
+    it 'より大きい', ->
+      n = rpg.utils.jsonExpression l: 1,e: '<',r: 2
+      n.should.equal true
+      n = rpg.utils.jsonExpression l: 4,e: '<',r: 2
+      n.should.equal false
+    it '以下', ->
+      n = rpg.utils.jsonExpression l: 2,e: '>=',r: 2
+      n.should.equal true
+      n = rpg.utils.jsonExpression l: 2,e: '>=',r: 1
+      n.should.equal true
+      n = rpg.utils.jsonExpression l: 2,e: '>=',r: 4
+      n.should.equal false
+    it '以上', ->
+      n = rpg.utils.jsonExpression l: 2,e: '<=',r: 2
+      n.should.equal true
+      n = rpg.utils.jsonExpression l: 1,e: '<=',r: 2
+      n.should.equal true
+      n = rpg.utils.jsonExpression l: 4,e: '<=',r: 2
+      n.should.equal false
+    it '等しい', ->
+      n = rpg.utils.jsonExpression l: 2,e: '==',r: 2
+      n.should.equal true
+      n = rpg.utils.jsonExpression l: 3,e: '==',r: 2
+      n.should.equal false
+    it '等しくない', ->
+      n = rpg.utils.jsonExpression l: 2,e: '!=',r: 2
+      n.should.equal false
+      n = rpg.utils.jsonExpression l: 3,e: '!=',r: 2
+      n.should.equal true
+    it 'and', ->
+      n = rpg.utils.jsonExpression l: true,e: 'and',r: true
+      n.should.equal true
+      n = rpg.utils.jsonExpression l: true,e: 'and',r: false
+      n.should.equal false
+      n = rpg.utils.jsonExpression l: false,e: 'and',r: false
+      n.should.equal false
+    it 'or', ->
+      n = rpg.utils.jsonExpression l: true,e: 'or',r: true
+      n.should.equal true
+      n = rpg.utils.jsonExpression l: true,e: 'or',r: false
+      n.should.equal true
+      n = rpg.utils.jsonExpression l: false,e: 'or',r: false
+      n.should.equal false
+
+    it 'オブジェクト参照', ->
+      op = {
+        test: 10
+        abc:
+          x: 11
+      }
+      n = rpg.utils.jsonExpression {l: 'abc.x',e: '+',r: 'test'},op
+      n.should.equal 21
+
+    it 'Array 引数', ->
+      n = rpg.utils.jsonExpression [1,'+',1]
+      n.should.equal 2

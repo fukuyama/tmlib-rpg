@@ -17,11 +17,44 @@ _parseFunc = (k,v) ->
   if k != 't' and rpg[v.t]?
     return new rpg[v.t](v.d)
   v
-  
+
+_expression = {
+  '+': (l,r) -> l + r
+  '-': (l,r) -> l - r
+  '*': (l,r) -> l * r
+  '/': (l,r) -> l / r
+  '>': (l,r) -> l > r
+  '<': (l,r) -> l < r
+  '>=': (l,r) -> l >= r
+  '<=': (l,r) -> l <= r
+  '==': (l,r) -> l == r
+  '!=': (l,r) -> l != r
+  'and': (l,r) -> l and r
+  'or': (l,r) -> l or r
+}
 # Utils
 rpg.utils = {
   createJsonData: (obj) -> JSON.stringify(obj,_stringifyFunc)
   createRpgObject: (json) -> JSON.parse(json,_parseFunc)
+  jsonExpression: (json,op={}) ->
+    switch typeof json
+      when 'string'
+        path = json
+        obj = op
+        obj = obj[k] for k in path.split /[\[\]\.]/ when obj[k]?
+        return obj
+      when 'number'
+        return json
+      when 'boolean'
+        return json
+    if Array.isArray json
+      json =
+        l: json[0]
+        e: json[1]
+        r: json[2]
+    l = @jsonExpression json.l, op
+    r = @jsonExpression json.r, op
+    return _expression[json.e] l, r
 }
 
 # extendAll 内部関数
