@@ -222,7 +222,19 @@ Object.defineProperty rpg.Battler.prototype, 'weapon',
   get: ->
     @equips.left_hand
   set: (item) ->
-    @equips.left_hand = item
+    # いったん装備をはずす
+    t = @equips.left_hand
+    @equips.left_hand = null
+    # 装備条件確認
+    # TODO:たぶん、装備可能条件だけ調べるメソッドが必要で、ここではそちらを使うべき
+    if item.checkEquip('left_hand') and item.checkRequired(@)
+      # 装備可能な場合は、それを装備
+      @equips.left_hand = item
+      # TODO:両手武器等、複数個所で装備する物は、他の部位の装備をはずす必要がある
+    else
+      # 装備できない場合は、戻す
+      @equips.left_hand = t
+
 
 Object.defineProperty rpg.Battler.prototype, 'shield',
   enumerable: false

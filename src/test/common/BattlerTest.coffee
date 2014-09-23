@@ -261,6 +261,7 @@ describe 'rpg.Battler', () ->
         weapon = new rpg.Weapon
           name: 'weapon001'
           patk: 100 # 攻撃力
+          equips: ['left_hand']
         battler = new rpg.Battler
         battler.weapon = weapon
         battler.patk.should.equal 115
@@ -269,6 +270,7 @@ describe 'rpg.Battler', () ->
           name: 'weapon001'
           patk: 100 # 攻撃力
           str: 5 # 力が5アップ
+          equips: ['left_hand']
         battler = new rpg.Battler
         battler.weapon = weapon
         battler.patk.should.equal 120

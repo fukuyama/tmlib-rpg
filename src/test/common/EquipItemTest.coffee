@@ -85,6 +85,14 @@ describe 'rpg.EquipItem', ->
         r = item.checkEquips ['left_hand','right_hand']
         r.should.equal true
     describe '装備可能条件', ->
+      it '装備可能条件なしは、装備可能と判断', ->
+        item = new rpg.EquipItem
+          name: 'EquipItem001'
+          patk: 50
+          equips: ['left_hand','right_hand']
+        battler = new rpg.Battler base:{str: 10}
+        r = item.checkRequired battler
+        r.should.equal true
       it 'str が 10 以上じゃないとダメ', ->
         item = new rpg.EquipItem
           name: 'EquipItem001'
