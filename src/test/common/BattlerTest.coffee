@@ -310,3 +310,22 @@ describe 'rpg.Battler', () ->
         battler = new rpg.Battler
         battler.legs = armor
         battler.pdef.should.equal 115
+
+    describe '装備解除確認', ->
+      it '普通の装備は外せる', ->
+        armor = new rpg.Armor
+          name: 'upper_body001'
+          pdef: 100 # 防御力
+        battler = new rpg.Battler
+        battler.upper_body = armor
+        r = battler.checkEquipOff 'upper_body'
+        r.should.equal true
+      it '装備固定の場合は外せない', ->
+        armor = new rpg.Armor
+          name: 'upper_body001'
+          pdef: 100 # 防御力
+        battler = new rpg.Battler
+          equipsFix: ['upper_body']
+        battler.upper_body = armor
+        r = battler.checkEquipOff 'upper_body'
+        r.should.equal false

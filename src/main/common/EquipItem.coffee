@@ -43,10 +43,12 @@ class rpg.EquipItem extends rpg.Item
       @abilities
       @equips
       @required
+      @equipOff
     } = {
       abilities: []
       equips: [] # 装備場所
       required: [] # 装備条件
+      equipOff: true # 装備解除フラグ
     }.$extendAll args
     for k in ABILITY_KEYS
       if args[k]?
@@ -59,10 +61,6 @@ class rpg.EquipItem extends rpg.Item
   * @param {Array} equips これから装備する場所の情報
   * @return {boolean} 装備可能ならtrue
   ###
-  checkEquip: (equip) ->
-    for e in @equips when e == equip
-      return true
-    return false
   checkEquips: (equips=[]) ->
     if Array.isArray equips
       return false unless equips.length == @equips.length
@@ -74,6 +72,19 @@ class rpg.EquipItem extends rpg.Item
       return false unless @equips.length == 1
       return @checkEquip equips
     return false
+  checkEquip: (equip) ->
+    for e in @equips when e == equip
+      return true
+    return false
+
+  ###* 装備解除判定（場所）
+  * @method rpg.EquipItem#checkEquipOff
+  * @param {rpg.Battler} battler バトラー
+  * @return {boolean} 装備解除可能ならtrue
+  ###
+  checkEquipOff: (battler) ->
+    # 呪われ装備
+    return @equipOff
 
   ###* 装備可能判定（条件）
   * @method rpg.EquipItem#checkRequired

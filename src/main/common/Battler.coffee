@@ -49,6 +49,7 @@ class rpg.Battler
       @properties
       states
       @equips
+      @equipsFix
     } = {
       _base: null
       base: {
@@ -74,6 +75,7 @@ class rpg.Battler
         arms: null # 腕
         legs: null # 脚
       }
+      equipsFix: [] # 装備固定
     }.$extendAll(args)
     @_base = _base ? base # _base が指定されたらそちらを優先
 
@@ -179,6 +181,36 @@ class rpg.Battler
   useItem: (item, target, log={}) ->
     item.use @, target, log
 
+  ###* 装備確認
+  * @method rpg.Battler#checkEquip
+  * @param {string} equip 装備部位
+  * @param {rpg.Item} item 装備するアイテム
+  * @return {boolean} 装備可能な場合、true
+  ###
+  checkEquip: (equip, item) ->
+    # 装備アイテムかどうか
+    return false unless item instanceof rpg.EquipItem
+    # 装備アイテムを装備するのに必要な部位が空いているかどうか
+    for e in item.equips when @equips[e]?
+      # 空いてない場合、装備が外せるかどうか
+      return false unless @checkEquipOff e # １つでも外せない部位があるとダメ
+    # アイテム自体が装備可能か調べる
+    return item.checkEquip(equip) and item.checkRequired(@)
+
+  ###* 装備解除確認
+  * @method rpg.Battler#checkEquipOff
+  * @param {string} equip 装備部位
+  * @return {boolean} 装備が外せる場合、true
+  ###
+  checkEquipOff: (equip) ->
+    # 元々装備してない部位の場合は、装備可能
+    return true unless @equips[equip]?
+    # 装備部位が固定化された部位の場合は、はずせない。
+    return false for e in @equipsFix when e == equip
+    # TODO:呪われた装備等、装備の条件により外せない。
+    return true
+
+
 Object.defineProperty rpg.Battler.prototype, 'patk',
   enumerable: false
   get: -> @_ability Math.floor(@str + @dex / 2), 'patk'
@@ -222,17 +254,20 @@ Object.defineProperty rpg.Battler.prototype, 'weapon',
   get: ->
     @equips.left_hand
   set: (item) ->
-    # いったん装備をはずす
+    # 装備部位の装備が外せるかどうか
+    return unless @checkEquipOff 'left_hand'
+    # 外せる場合いったん装備をはずす
     t = @equips.left_hand
     @equips.left_hand = null
     # 装備条件確認
-    # TODO:たぶん、装備可能条件だけ調べるメソッドが必要で、ここではそちらを使うべき
-    if item.checkEquip('left_hand') and item.checkRequired(@)
+    if @checkEquip 'left_hand', item
+      # 両手武器等、複数個所で装備する物は、他の部位の装備をはずす
+      for e in item.equips
+        @equips[e] = null
       # 装備可能な場合は、それを装備
       @equips.left_hand = item
-      # TODO:両手武器等、複数個所で装備する物は、他の部位の装備をはずす必要がある
     else
-      # 装備できない場合は、戻す
+      # 装備できない場合は、元の装備に戻す
       @equips.left_hand = t
 
 
