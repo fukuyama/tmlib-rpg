@@ -207,8 +207,33 @@ class rpg.Battler
     return true unless @equips[equip]?
     # 装備部位が固定化された部位の場合は、はずせない。
     return false for e in @equipsFix when e == equip
-    # TODO:呪われた装備等、装備の条件により外せない。
+    # 呪われた装備等、装備の条件により外せない。
+    return false unless @equips[equip].checkEquipOff(@)
     return true
+
+  ###* 装備処理
+  * @method rpg.Battler#_equipItem
+  * @param {string} pos 装備部位
+  * @private
+  ###
+  _equipItem: (pos,item) ->
+    # 装備部位の装備が外せるかどうか
+    return unless @checkEquipOff pos
+    # 外せる場合いったん装備をはずす
+    t = @equips[pos]
+    @equips[pos] = null
+    # 装備条件確認
+    if @checkEquip pos, item
+      # 両手武器等、複数個所で装備する物は、他の部位の装備をはずす
+      for e in item.equips
+        @equips[e] = null
+        # TODO:逆装備外しが必要
+      # 装備可能な場合は、それを装備
+      @equips[pos] = item
+    else
+      # 装備できない場合は、元の装備に戻す
+      @equips[pos] = t
+    return
 
 
 Object.defineProperty rpg.Battler.prototype, 'patk',
@@ -254,21 +279,7 @@ Object.defineProperty rpg.Battler.prototype, 'weapon',
   get: ->
     @equips.left_hand
   set: (item) ->
-    # 装備部位の装備が外せるかどうか
-    return unless @checkEquipOff 'left_hand'
-    # 外せる場合いったん装備をはずす
-    t = @equips.left_hand
-    @equips.left_hand = null
-    # 装備条件確認
-    if @checkEquip 'left_hand', item
-      # 両手武器等、複数個所で装備する物は、他の部位の装備をはずす
-      for e in item.equips
-        @equips[e] = null
-      # 装備可能な場合は、それを装備
-      @equips.left_hand = item
-    else
-      # 装備できない場合は、元の装備に戻す
-      @equips.left_hand = t
+    @_equipItem 'left_hand', item
 
 
 Object.defineProperty rpg.Battler.prototype, 'shield',
@@ -276,7 +287,7 @@ Object.defineProperty rpg.Battler.prototype, 'shield',
   get: ->
     @equips.right_hand
   set: (item) ->
-    @equips.right_hand = item
+    @_equipItem 'right_hand', item
 
 # 頭
 Object.defineProperty rpg.Battler.prototype, 'head',
@@ -284,32 +295,32 @@ Object.defineProperty rpg.Battler.prototype, 'head',
   get: ->
     @equips.head
   set: (item) ->
-    @equips.head = item
+    @_equipItem 'head', item
 # 体上
 Object.defineProperty rpg.Battler.prototype, 'upper_body',
   enumerable: false
   get: ->
     @equips.upper_body
   set: (item) ->
-    @equips.upper_body = item
+    @_equipItem 'upper_body', item
 # 体下
 Object.defineProperty rpg.Battler.prototype, 'lower_body',
   enumerable: false
   get: ->
     @equips.lower_body
   set: (item) ->
-    @equips.lower_body = item
+    @_equipItem 'lower_body', item
 # 腕
 Object.defineProperty rpg.Battler.prototype, 'arms',
   enumerable: false
   get: ->
     @equips.arms
   set: (item) ->
-    @equips.arms = item
+    @_equipItem 'arms', item
 # 脚
 Object.defineProperty rpg.Battler.prototype, 'legs',
   enumerable: false
   get: ->
     @equips.legs
   set: (item) ->
-    @equips.legs = item
+    @_equipItem 'legs', item
