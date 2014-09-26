@@ -47,6 +47,17 @@ describe 'rpg.DataBase', ->
           done()
         )
         
+  describe '武器データ', ->
+    describe '武器のロード', ->
+      it '武器を取得する場合は、取得した後に呼ぶ関数を指定する', (done) ->
+        db.preloadWeapon([2,1],(items) ->
+          # ID は、item プロパティとして、url に使用する
+          items[0].url.should.
+            equal 'http://localhost:3000/client/data/weapon/002.json'
+          items[1].url.should.
+            equal 'http://localhost:3000/client/data/weapon/001.json'
+          done()
+        )
 
   describe 'マップデータ', ->
     describe 'mapUrl', ->

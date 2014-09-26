@@ -330,7 +330,7 @@ describe 'rpg.Battler', () ->
         battler = new rpg.Battler
         battler.legs = armor
         battler.pdef.should.equal 115
-      it.skip '盾を装備すると両手武器がはずれる', -> # TODO:
+      it '盾を装備すると両手武器がはずれる', ->
         shield = new rpg.Armor
           name: 'shield001'
           pdef: 100 # 防御力
@@ -343,6 +343,24 @@ describe 'rpg.Battler', () ->
         battler = new rpg.Battler
         battler.weapon = weapon
         battler.shield = shield
+        battler.shield.name.should.equal 'shield001'
+        (battler.weapon is null).should.equal true
+      it '呪われた盾を装備してるので両手武器が装備できない', ->
+        shield = new rpg.Armor
+          name: 'shield001'
+          pdef: 100 # 防御力
+          equipOff: false
+          equips: ['right_hand']
+        weapon = new rpg.Weapon
+          name: 'weapon001'
+          patk: 100 # 攻撃力
+          str: 5 # 力が5アップ
+          equips: ['left_hand','right_hand']
+        battler = new rpg.Battler
+        battler.weapon = weapon
+        (battler.weapon is null).should.equal false
+        battler.shield = shield
+        battler.weapon = weapon
         battler.shield.name.should.equal 'shield001'
         (battler.weapon is null).should.equal true
 
@@ -376,3 +394,16 @@ describe 'rpg.Battler', () ->
         battler.upper_body = armor
         r = battler.checkEquipOff 'upper_body'
         r.should.equal false
+
+    describe '装備解除する', ->
+      it '普通の装備を外す', ->
+        armor = new rpg.Armor
+          name: 'upper_body001'
+          pdef: 100 # 防御力
+          equips: ['upper_body']
+        battler = new rpg.Battler
+        battler.upper_body = armor
+        battler.upper_body.name.should.equal 'upper_body001'
+        (battler.upper_body isnt null).should.equal true
+        battler.upper_body = null
+        (battler.upper_body is null).should.equal true

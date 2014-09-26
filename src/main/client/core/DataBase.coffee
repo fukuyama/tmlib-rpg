@@ -32,11 +32,13 @@ tm.define 'rpg.DataBase',
       baseUrl: href.substr(0,i) + '/'
       idformat: '000'
       path:
-        data: 'data/'
-        item: 'item/'
-        map: 'map/'
-        state: 'state/'
-        actor: 'actor/'
+        data:   'data/'
+        item:   'item/'
+        weapon: 'weapon/'
+        armor:  'armor/'
+        map:    'map/'
+        state:  'state/'
+        actor:  'actor/'
     }.$extend args
 
     # メタ インタフェース
@@ -44,14 +46,22 @@ tm.define 'rpg.DataBase',
       item:
         url: @_dataUrl.bind @, path.data + path.item
         create: @_create.bind @, 'Item'
+      weapon:
+        url: @_dataUrl.bind @, path.data + path.weapon
+        create: @_create.bind @, 'Weapon'
+      armor:
+        url: @_dataUrl.bind @, path.data + path.armor
+        create: @_create.bind @, 'Armor'
       actor:
         url: @_dataUrl.bind @, path.data + path.actor
         create: @_create.bind @, 'Actor'
     }
 
     # preload 用 公開メソッド
-    @preloadItem = @_preload.bind @, 'item'
-    @preloadActor = @_preload.bind @, 'actor'
+    @preloadItem   = @_preload.bind @, 'item'
+    @preloadWeapon = @_preload.bind @, 'weapon'
+    @preloadArmor  = @_preload.bind @, 'armor'
+    @preloadActor  = @_preload.bind @, 'actor'
 
     @mapUrl   = @_dataUrl.bind @, path.data + path.map
     @stateUrl = @_dataUrl.bind @, path.data + path.state

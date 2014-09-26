@@ -8,6 +8,19 @@ _g = window ? global ? @
 rpg = _g.rpg = _g.rpg ? {}
 
 
+BASE_ABILITIES = [
+  'str'
+  'vit'
+  'dex'
+  'agi'
+  'int'
+  'sen'
+  'luc'
+  'cha'
+  'basehp'
+  'basemp'
+]
+
 # バトラークラス
 class rpg.Battler
 
@@ -92,14 +105,6 @@ class rpg.Battler
       enumerable: true
       get: -> states
       set: (s) -> states = s
-
-    # TODO: あとでバフ計算が必要になると思う
-    _base_ability = (nm) -> @_ability @_base[nm], nm
-
-    for nm of @_base
-      Object.defineProperty @, nm,
-        enumerable: false
-        get: _base_ability.bind(@,nm)
 
     @_currenthp = @maxhp
     @_currentmp = @maxmp
@@ -214,20 +219,29 @@ class rpg.Battler
   ###* 装備処理
   * @method rpg.Battler#_equipItem
   * @param {string} pos 装備部位
+  * @param {rpg.EquipItem} item 装備アイテム。外す場合は、null
   * @private
   ###
-  _equipItem: (pos,item) ->
+  _equipItem: (pos,item=null) ->
     # 装備部位の装備が外せるかどうか
     return unless @checkEquipOff pos
+    if item is null
+      # 装備を外す
+      @equips[pos] = null
+      return
     # 外せる場合いったん装備をはずす
     t = @equips[pos]
     @equips[pos] = null
     # 装備条件確認
     if @checkEquip pos, item
+      # 装備しようとしている部位を必要としている他の部位に装備された物がある場合それを外す
+      for e1, v of @equips when v?
+        for e2 in v.equips when pos is e2
+          if @checkEquipOff e1
+            @equips[e1] = null
       # 両手武器等、複数個所で装備する物は、他の部位の装備をはずす
       for e in item.equips
         @equips[e] = null
-        # TODO:逆装備外しが必要
       # 装備可能な場合は、それを装備
       @equips[pos] = item
     else
@@ -235,6 +249,12 @@ class rpg.Battler
       @equips[pos] = t
     return
 
+for ability in BASE_ABILITIES
+  ((nm) ->
+    Object.defineProperty rpg.Battler.prototype, nm,
+      enumerable: false
+      get: -> @_ability @_base[nm], nm
+  )(ability)
 
 Object.defineProperty rpg.Battler.prototype, 'patk',
   enumerable: false
