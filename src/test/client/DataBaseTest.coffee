@@ -58,6 +58,14 @@ describe 'rpg.DataBase', ->
             equal 'http://localhost:3000/client/data/weapon/001.json'
           done()
         )
+      it '文字列指定でロード', (done) ->
+        db.preloadWeapon(['001'],(items) ->
+          item = items[0]
+          item.url.should.
+            equal 'http://localhost:3000/client/data/weapon/001.json'
+          item.name.should.equal 'Weapon01'
+          done()
+        )
 
   describe 'マップデータ', ->
     describe 'mapUrl', ->
