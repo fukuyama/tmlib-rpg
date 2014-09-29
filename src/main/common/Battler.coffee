@@ -292,55 +292,26 @@ Object.defineProperty rpg.Battler.prototype, 'mp',
     n = @maxmp if n > @maxmp
     @_currentmp = n
 
-
 # TODO: 両手は必要だけど、利き手はする？
-Object.defineProperty rpg.Battler.prototype, 'weapon',
-  enumerable: false
-  get: ->
-    @equips.left_hand
-  set: (item) ->
-    @_equipItem 'left_hand', item
+EQUIP_POS = [
+  {left_hand: 'weapon'}
+  {right_hand: 'shield'}
+  {left_hand: 'left_hand'}
+  {right_hand: 'right_hand'}
+  {head: 'head'}
+  {upper_body: 'upper_body'}
+  {lower_body: 'lower_body'}
+  {arms: 'arms'}
+  {legs: 'legs'}
+]
 
-
-Object.defineProperty rpg.Battler.prototype, 'shield',
-  enumerable: false
-  get: ->
-    @equips.right_hand
-  set: (item) ->
-    @_equipItem 'right_hand', item
-
-# 頭
-Object.defineProperty rpg.Battler.prototype, 'head',
-  enumerable: false
-  get: ->
-    @equips.head
-  set: (item) ->
-    @_equipItem 'head', item
-# 体上
-Object.defineProperty rpg.Battler.prototype, 'upper_body',
-  enumerable: false
-  get: ->
-    @equips.upper_body
-  set: (item) ->
-    @_equipItem 'upper_body', item
-# 体下
-Object.defineProperty rpg.Battler.prototype, 'lower_body',
-  enumerable: false
-  get: ->
-    @equips.lower_body
-  set: (item) ->
-    @_equipItem 'lower_body', item
-# 腕
-Object.defineProperty rpg.Battler.prototype, 'arms',
-  enumerable: false
-  get: ->
-    @equips.arms
-  set: (item) ->
-    @_equipItem 'arms', item
-# 脚
-Object.defineProperty rpg.Battler.prototype, 'legs',
-  enumerable: false
-  get: ->
-    @equips.legs
-  set: (item) ->
-    @_equipItem 'legs', item
+for data in EQUIP_POS
+  ((args) ->
+    for k, v of args
+      Object.defineProperty rpg.Battler.prototype, v,
+        enumerable: false
+        get: ->
+          @equips[k]
+        set: (item) ->
+          @_equipItem k, item
+  )(data)

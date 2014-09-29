@@ -160,6 +160,35 @@ module.exports = {
               }
             ])
         }
+        {
+          type: 'rpg.SpriteCharacter'
+          name: 'Event005'
+          width: 32
+          height: 32
+          properties:
+            init: JSON.stringify([
+              {
+                spriteSheet: 'spritesheet.hiyoko'
+                mapX: 7
+                mapY: 7
+                pages: [
+                  {
+                    name: 'page1'
+                    trigger: ['talk']
+                    commands: [
+                      {type:'message',params: ['アイテム操作。装備入手']}
+                      {type:'gain_weapon',params: [1]}
+                      {type:'gain_armor',params: [1]}
+                      {type:'gain_armor',params: [2]}
+                      {type:'gain_armor',params: [3]}
+                      {type:'gain_armor',params: [4]}
+                      {type:'gain_armor',params: [5]}
+                    ]
+                  }
+                ]
+              }
+            ])
+        }
       ]
     }
   ]

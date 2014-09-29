@@ -192,3 +192,31 @@ describe 'rpg.Interpreter(Item)', () ->
       it '１つ減っている', ->
         actor = rpg.game.party.getAt(0)
         actor.backpack.itemCount.should.equal n
+
+    describe '防具アイテム操作', ->
+      n = 0
+      it 'マップシーンへ移動', (done) ->
+        reloadTestMap(done)
+      it 'ウェイト', (done) ->
+        setTimeout(done,1000)
+      it 'インタープリタ取得', ->
+        interpreter = rpg.system.scene.interpreter
+      it 'アイテム所持数確認', ->
+        actor = rpg.game.party.getAt(0)
+        n = actor.backpack.itemCount
+      it '防具を１つ増やす', (done) ->
+        interpreter.start [
+          {type:'gain_armor',params:[1]}
+          {type:'function',params:[done]}
+        ]
+      it '１つ増えている', ->
+        actor = rpg.game.party.getAt(0)
+        actor.backpack.itemCount.should.equal (n + 1)
+      it '防具を１つ減らす', (done) ->
+        interpreter.start [
+          {type:'lost_armor',params:[1]}
+          {type:'function',params:[done]}
+        ]
+      it '１つ減っている', ->
+        actor = rpg.game.party.getAt(0)
+        actor.backpack.itemCount.should.equal n

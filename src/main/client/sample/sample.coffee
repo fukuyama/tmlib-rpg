@@ -30,6 +30,7 @@ subdirs = [
   'spritesheet'
   'actor'
   'weapon'
+  'armor'
 ]
 for i in subdirs
   dirnm = path.join(outputDir,i)
@@ -58,4 +59,11 @@ jc.compileJsonArray(
   path.join(outputDir,'weapon')
   require path.join(jc.base,'weaponlist')
   'weapon'
+)
+
+# armorlist
+jc.compileJsonArray(
+  path.join(outputDir,'armor')
+  require path.join(jc.base,'armorlist')
+  'armor'
 )
