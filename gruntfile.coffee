@@ -135,6 +135,9 @@ module.exports = (grunt) ->
       tasks: [
         'coffee:client_test'
       ]
+    create_sample:
+      files: ['src/main/client/sample/**']
+      tasks: ['sample']
 
   simplemochaConfig =
     options:

@@ -7,9 +7,9 @@ describe 'rpg.DataBase', ->
 
   describe '初期化', ->
     it '引数なし', ->
-      db = rpg.DataBase()
-      db.baseUrl.should.equal 'http://localhost:3000/client/'
-      db.idformat.should.equal '000'
+      dbd = rpg.DataBase()
+      dbd.baseUrl.should.equal 'http://localhost:3000/client/'
+      dbd.idformat.should.equal '000'
 
   describe 'アイテムデータ', ->
     describe 'アイテムのロード', ->
@@ -66,6 +66,77 @@ describe 'rpg.DataBase', ->
           item.name.should.equal 'Weapon01'
           done()
         )
+
+  describe '防具データ', ->
+    describe '防具のロード', ->
+      it '防具を取得する場合は、取得した後に呼ぶ関数を指定する', (done) ->
+        db.preloadArmor([2,1],(items) ->
+          # ID は、item プロパティとして、url に使用する
+          items[0].url.should.
+            equal 'http://localhost:3000/client/data/armor/002.json'
+          items[1].url.should.
+            equal 'http://localhost:3000/client/data/armor/001.json'
+          done()
+        )
+      it '文字列指定でロード', (done) ->
+        db.preloadArmor(['001'],(items) ->
+          item = items[0]
+          item.url.should.
+            equal 'http://localhost:3000/client/data/armor/001.json'
+          item.name.should.equal '兜'
+          done()
+        )
+
+  describe 'callback　TEST', ->
+    describe 'callback なし', ->
+      it 'アイテム３種', ->
+        db.preloadItem([2,1])
+        db.preloadWeapon([2,1])
+        db.preloadArmor([2,1])
+      it 'wait', (done) ->
+        setTimeout(done,1000)
+    describe 'callback 複数あり', ->
+      it 'アイテム３種順番に読まれる？', (done) ->
+        count = 0
+        db.preloadItem([2,1],(items) ->
+          count.should.equal 0
+          count += 1
+          console.log count
+        )
+        db.preloadWeapon([2,1],(items) ->
+          count.should.equal 1
+          count += 1
+          console.log count
+        )
+        db.preloadArmor([1],(items) ->
+          count.should.equal 2
+          count += 1
+          console.log count
+          done()
+        )
+    describe.skip 'callback 空回しあり？', -> # TODO:むりぽ
+      it 'アイテム３種順番に', (done) ->
+        count = 0
+        db.preloadItem([2,1],(items) ->
+          count.should.equal 0
+          count += 1
+          console.log count
+        )
+        db.preloadWeapon([2,1],(items) ->
+          count.should.equal 1
+          count += 1
+          console.log count
+        )
+        db.preloadArmor([1],(items) ->
+          count.should.equal 2
+          count += 1
+          console.log count
+        )
+        db.preloadItem [], (items) ->
+          count.should.equal 3
+          count += 1
+          console.log count
+          done()
 
   describe 'マップデータ', ->
     describe 'mapUrl', ->

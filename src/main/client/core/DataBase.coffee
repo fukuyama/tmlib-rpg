@@ -93,22 +93,25 @@ tm.define 'rpg.DataBase',
   _preload: (key,ids,func) ->
     mgr = tm.asset.Manager
     urls = for id in ids then @_metaif[key].url id
-    list = for url in urls when mgr.get(url)?
-      @_metaif[key].create mgr.get(url).data
-    if list.length == ids.length
-      func(list)
-      return
-    onload = () ->
-      list = []
-      for url in urls
-        m = mgr.get(url)
-        if m?
-          data = m.data
-          data.url = url
-          list.push @_metaif[key].create data
-      if list.length != 0
+    if func?
+      list = for url in urls when mgr.get(url)?
+        @_metaif[key].create mgr.get(url).data
+      if list.length == ids.length
         func(list)
-    rpg.system.loadAssets urls, onload.bind @
+        return
+      onload = () ->
+        list = []
+        for url in urls
+          m = mgr.get(url)
+          if m?
+            data = m.data
+            data.url = url
+            list.push @_metaif[key].create data
+        if list.length != 0
+          func(list)
+      rpg.system.loadAssets urls, onload.bind @
+    else
+      rpg.system.loadAssets urls
     return
 
   ###* マップデータの読み込み

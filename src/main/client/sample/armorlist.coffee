@@ -36,5 +36,5 @@ module.exports = [
   armor
     name: '盾'
     equips: ['right_hand']
-    pdef: 4
+    pdef: 5
 ]

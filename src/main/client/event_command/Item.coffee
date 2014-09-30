@@ -35,6 +35,22 @@ _removeItemCallback = (num, items, actor, backpack) ->
       target.removeItem(i) if i?
   @waitFlag = false
 
+# TODO:プリロードイベント
+tm.define 'rpg.event_command.PreLoadItem',
+  # コマンド
+  apply_command: (args) ->
+    {
+      items
+      weapons
+      armors
+    } = {
+      items: []
+      weapons: []
+      armors: []
+    }.$extend args
+    # TODO: それぞれのアイテムの preload を呼んで最後に、イベント継続したい
+
+
 # アイテムを増やす
 tm.define 'rpg.event_command.GainItem',
 
