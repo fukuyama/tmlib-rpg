@@ -220,3 +220,48 @@ describe 'rpg.Interpreter(Item)', () ->
       it '１つ減っている', ->
         actor = rpg.game.party.getAt(0)
         actor.backpack.itemCount.should.equal n
+
+    describe 'preload テスト', ->
+      describe 'preload テスト１', ->
+        n = 0
+        it 'マップシーンへ移動', (done) ->
+          reloadTestMap(done)
+        it 'ウェイト', (done) ->
+          setTimeout(done,1000)
+        it 'インタープリタ取得', ->
+          interpreter = rpg.system.scene.interpreter
+        it 'アイテム所持数確認', ->
+          actor = rpg.game.party.getAt(0)
+          n = actor.backpack.itemCount
+        it 'preload アイテム２つ', (done) ->
+          interpreter.start [
+            {type:'preload_item',params:[{
+              items: [1,2]
+            }]}
+            {type:'gain_item',params:[1]}
+            {type:'gain_item',params:[1]}
+            {type:'function',params:[done]}
+          ]
+        it '２つ増えている', ->
+          actor = rpg.game.party.getAt(0)
+          actor.backpack.itemCount.should.equal (n + 2)
+      describe 'preload テスト２', ->
+        n = 0
+        it 'マップシーンへ移動', (done) ->
+          reloadTestMap(done)
+        it 'ウェイト', (done) ->
+          setTimeout(done,1000)
+        it 'インタープリタ取得', ->
+          interpreter = rpg.system.scene.interpreter
+        it 'アイテム所持数確認', ->
+          actor = rpg.game.party.getAt(0)
+          n = actor.backpack.itemCount
+        it 'preload アイテム２つ 武器２つ　防具５つ', (done) ->
+          interpreter.start [
+            {type:'preload_item',params:[{
+              items: [1,2]
+              weapons: [1,2]
+              armors: [1,2,3,4,5]
+            }]}
+            {type:'function',params:[done]}
+          ]

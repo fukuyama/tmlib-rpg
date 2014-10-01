@@ -137,6 +137,31 @@ describe 'rpg.DataBase', ->
           count += 1
           console.log count
           done()
+    describe 'callback 疑似 join', ->
+      it 'アイテム３種を使ってロードされる', (done) ->
+        count = 0
+        console.log 'load start'
+        loadcheck = (items) ->
+          count += 1
+          console.log count
+          if count == 3
+            console.log 'load end'
+            done()
+        db.preloadItem([2,1],loadcheck)
+        db.preloadWeapon([2,1],loadcheck)
+        db.preloadArmor([1],loadcheck)
+      it 'アイテム３種を使ってロードされる２回目', (done) ->
+        count = 0
+        console.log 'load start'
+        loadcheck = (items) ->
+          count += 1
+          console.log count
+          if count == 3
+            console.log 'load end'
+            done()
+        db.preloadItem([2,1],loadcheck)
+        db.preloadWeapon([2,1],loadcheck)
+        db.preloadArmor([1],loadcheck)
 
   describe 'マップデータ', ->
     describe 'mapUrl', ->
