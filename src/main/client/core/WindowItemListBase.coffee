@@ -79,10 +79,22 @@ tm.define 'rpg.WindowItemListBase',
   * @memberof rpg.WindowItemListBase#
   * @param {Arraty} items アイテムインスタンスの配列
   ###
-  setItems: (@items) ->
+  setItems: (items) ->
     @clearMenu()
-    for i in @items
-      @addMenu(i.name,@selectMenu.bind @)
+    if @parentWindow?.actor?
+      @items = []
+      actor = @parentWindow.actor
+      for k, v of actor.equips when v?
+        @items.push v
+        @addMenu('E ' + v.name,@selectMenu.bind @)
+      for i in items when actor[i.position] != i
+        @items.push i
+        @addMenu(i.name,@selectMenu.bind @)
+    else
+      @items = items
+      for i in @items
+        @addMenu(i.name,@selectMenu.bind @)
+    @resizeContent()
     @refresh()
     return
 

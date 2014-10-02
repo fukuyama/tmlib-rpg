@@ -42,8 +42,8 @@ class rpg.Actor extends rpg.Battler
       backpack
     } = {
       backpack: {
-        max:8
-        stack:on
+        max: 20
+        stack: on
       }
     }.$extendAll(@properties).$extendAll(args)
     # バックパック作成

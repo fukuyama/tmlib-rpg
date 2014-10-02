@@ -176,6 +176,10 @@ module.exports = {
                     name: 'page1'
                     trigger: ['talk']
                     commands: [
+                      {type:'preload_item',params: [
+                        weapons: [1,2]
+                        armors: [1,2,3,4,5]
+                      ]}
                       {type:'message',params: ['アイテム操作。装備入手']}
                       {type:'gain_weapon',params: [1]}
                       {type:'gain_armor',params: [1]}

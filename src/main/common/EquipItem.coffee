@@ -119,3 +119,7 @@ for k in ABILITY_KEYS
         enumerable: true
         get: -> @ability base:0, ability: nm
   ) k
+
+Object.defineProperty rpg.EquipItem.prototype, 'position',
+  enumerable: true
+  get: -> @equips[0]

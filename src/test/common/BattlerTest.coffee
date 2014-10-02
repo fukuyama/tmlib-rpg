@@ -261,7 +261,7 @@ describe 'rpg.Battler', () ->
         weapon = new rpg.Weapon
           name: 'weapon001'
           patk: 100 # 攻撃力
-          equips: ['left_hand']
+          equips: ['right_hand']
         battler = new rpg.Battler
         battler.weapon = weapon
         battler.patk.should.equal 115
@@ -270,7 +270,7 @@ describe 'rpg.Battler', () ->
           name: 'weapon001'
           patk: 100 # 攻撃力
           str: 5 # 力が5アップ
-          equips: ['left_hand']
+          equips: ['right_hand']
         battler = new rpg.Battler
         battler.weapon = weapon
         battler.patk.should.equal 120
@@ -278,12 +278,12 @@ describe 'rpg.Battler', () ->
         shield = new rpg.Armor
           name: 'shield001'
           pdef: 100 # 防御力
-          equips: ['right_hand']
+          equips: ['left_hand']
         weapon = new rpg.Weapon
           name: 'weapon001'
           patk: 100 # 攻撃力
           str: 5 # 力が5アップ
-          equips: ['left_hand','right_hand']
+          equips: ['right_hand','left_hand']
         battler = new rpg.Battler
         battler.shield = shield
         battler.weapon = weapon
@@ -334,12 +334,12 @@ describe 'rpg.Battler', () ->
         shield = new rpg.Armor
           name: 'shield001'
           pdef: 100 # 防御力
-          equips: ['right_hand']
+          equips: ['left_hand']
         weapon = new rpg.Weapon
           name: 'weapon001'
           patk: 100 # 攻撃力
           str: 5 # 力が5アップ
-          equips: ['left_hand','right_hand']
+          equips: ['right_hand','left_hand']
         battler = new rpg.Battler
         battler.weapon = weapon
         battler.shield = shield
@@ -350,12 +350,12 @@ describe 'rpg.Battler', () ->
           name: 'shield001'
           pdef: 100 # 防御力
           equipOff: false
-          equips: ['right_hand']
+          equips: ['left_hand']
         weapon = new rpg.Weapon
           name: 'weapon001'
           patk: 100 # 攻撃力
           str: 5 # 力が5アップ
-          equips: ['left_hand','right_hand']
+          equips: ['right_hand','left_hand']
         battler = new rpg.Battler
         battler.weapon = weapon
         (battler.weapon is null).should.equal false

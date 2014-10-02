@@ -12,6 +12,18 @@ tm.define 'rpg.EventGenerator',
   init: (args={}) ->
     @commands = []
 
+  itemEquip: (owner,item) ->
+    @message """
+    #{owner.name} は #{item.name} を
+    そうびした。
+    """
+
+  itemEquipError: (owner,item) ->
+    @message """
+    #{owner.name} は #{item.name} を
+    そうびできなかった。
+    """
+
   itemThrow: (owner,item) ->
     @message """
     #{owner.name} は #{item.name} を

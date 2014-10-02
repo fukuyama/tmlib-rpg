@@ -22,8 +22,19 @@ tm.define 'rpg.WindowItemMenu',
       menus: []
     }.$extend(args)
 
+    wi = parent.findWindowTree (o) -> o instanceof rpg.WindowItemList
+    item = wi.item
+    wa = parent.findWindowTree (o) -> o instanceof rpg.WindowItemActorList
+    actor = wa.actor
+
     m = []
-    m.push name:'つかう', fn: @itemUse.bind @
+    if item instanceof rpg.EquipItem
+      if actor[item.position] == item # インスタンス比較
+        m.push name:'はずす', fn: @itemEquipOff.bind @
+      else
+        m.push name:'そうび', fn: @itemEquip.bind @
+    else
+      m.push name:'つかう', fn: @itemUse.bind @
     m.push name:'わたす', fn: @itemTrade.bind @
     m.push name:'すてる', fn: @itemThrow.bind @
     args.menus = m.concat menus
@@ -99,6 +110,7 @@ tm.define 'rpg.WindowItemMenu',
   * @memberof rpg.WindowItemMenu#
   ###
   itemThrow: ->
+    # TODO: 捨てられなかった時の処理（メッセージを追加）
     @active = false
     wi = @findWindowTree (o) -> o instanceof rpg.WindowItemList
     wa = @findWindowTree (o) -> o instanceof rpg.WindowItemActorList
@@ -115,3 +127,37 @@ tm.define 'rpg.WindowItemMenu',
       if wi.items.length <= wi.index
         wi.setIndex(wi.items.length - 1)
     rpg.system.mapInterpreter.start eg.commands
+    return
+
+  ###* 装備メニュー
+  * @memberof rpg.WindowItemMenu#
+  ###
+  itemEquip: ->
+    @active = false
+    wi = @findWindowTree (o) -> o instanceof rpg.WindowItemList
+    item = wi.item
+    wa = @findWindowTree (o) -> o instanceof rpg.WindowItemActorList
+    actor = wa.actor
+    eg = rpg.EventGenerator()
+    if item instanceof rpg.EquipItem
+      if actor.checkEquip item.position, item
+        # 装備可能
+        actor[item.position] = item
+        eg.itemEquip(actor,item)
+      else
+        # 装備不可
+        eg.itemEquipError(actor,item)
+    self = @
+    eg.function ->
+      self.close()
+      wa.changeActor(wa.actor)
+    rpg.system.mapInterpreter.start eg.commands
+    return
+
+  ###* はずすメニュー
+  * @memberof rpg.WindowItemMenu#
+  ###
+  itemEquipOff: ->
+    console.log 'itemEquipOff'
+    return
+

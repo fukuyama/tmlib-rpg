@@ -154,10 +154,13 @@ tm.define 'rpg.WindowMenu',
   resizeContent: ->
     w = @innerRect.width * @maxPageNum
     h = @innerRect.height
+    if @content.shape.width == w and @content.shape.height == h
+      return
     @content.resize(w,h)
     @content.shape.width = w
     @content.shape.height = h
     @content.shape.canvas.resize(w,h)
+    return
 
   # メニュー再更新
   refreshMenu: ->
@@ -182,9 +185,10 @@ tm.define 'rpg.WindowMenu',
     @refreshWindow()
 
   refreshTitle: () ->
-    @titleContent?.clear()
-    @drawTitle()
-    @drawPageNum()
+    if @titleContent?
+      @titleContent.clear()
+      @drawTitle()
+      @drawPageNum()
 
   ###* ページ数描画処理
   * @memberof rpg.WindowMenu#

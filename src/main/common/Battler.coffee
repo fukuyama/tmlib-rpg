@@ -294,8 +294,8 @@ Object.defineProperty rpg.Battler.prototype, 'mp',
 
 # TODO: 両手は必要だけど、利き手はする？
 EQUIP_POS = [
-  {left_hand: 'weapon'}
-  {right_hand: 'shield'}
+  {right_hand: 'weapon'}
+  {left_hand: 'shield'}
   {left_hand: 'left_hand'}
   {right_hand: 'right_hand'}
   {head: 'head'}
