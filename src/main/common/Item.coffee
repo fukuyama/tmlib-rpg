@@ -42,9 +42,13 @@ class rpg.Item
         @_container = new rpg.ItemContainer(container)
     if @_container?
       Object.defineProperty @, 'itemCount',
-        get: (-> @_container.itemCount).bind(@)
+        get: -> @_container.itemCount
       Object.defineProperty @, 'itemlistCount',
-        get: (-> @_container.itemlistCount).bind(@)
+        get: -> @_container.itemlistCount
+      if @_container.restriction?.max?
+        Object.defineProperty @, 'itemMax',
+          set: (n) -> @_container.restriction.max = n
+          get: -> @_container.restriction.max
 
     if typeof usable is 'string'
       Object.defineProperty @, 'usable',

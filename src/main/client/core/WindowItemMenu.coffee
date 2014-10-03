@@ -9,6 +9,22 @@ tm.define 'rpg.WindowItemMenu',
 
   superClass: rpg.WindowMenu
 
+  wi: (w=@) ->
+    unless @_wi?
+      @_wi = w.findWindowTree (o) -> o instanceof rpg.WindowItemList
+    return @_wi
+
+  wa: (w=@) ->
+    unless @_wa?
+      @_wa = w.findWindowTree (o) -> o instanceof rpg.WindowItemActorList
+    return @_wa
+
+  item: (w=@) ->
+    return @wi(w).item
+
+  actor: (w=@) ->
+    return @wa(w).actor
+
   ###* コンストラクタ
   * @classdesc アイテムメニュークラス
   * @constructor rpg.WindowItemMenu
@@ -22,10 +38,8 @@ tm.define 'rpg.WindowItemMenu',
       menus: []
     }.$extend(args)
 
-    wi = parent.findWindowTree (o) -> o instanceof rpg.WindowItemList
-    item = wi.item
-    wa = parent.findWindowTree (o) -> o instanceof rpg.WindowItemActorList
-    actor = wa.actor
+    item = @item parent
+    actor = @actor parent
 
     m = []
     if item instanceof rpg.EquipItem
@@ -47,48 +61,49 @@ tm.define 'rpg.WindowItemMenu',
       cols: 1
       rows: args.menus.length
     }.$extend(args))
-    w  = parent.findWindowTree (o) -> o instanceof rpg.WindowItemActorList
-    @x = w.right - @width
-    @y = w.bottom
+    wa = @wa parent
+    @x = wa.right - @width
+    @y = wa.bottom
 
   ###* 使うメニュー
   * @memberof rpg.WindowItemMenu#
   ###
   itemUse: ->
-    wm = @
-    wi = @findWindowTree (o) -> o instanceof rpg.WindowItemList
-    i = wi.item
-    wa = @findWindowTree (o) -> o instanceof rpg.WindowItemActorList
-    a = wa.actor
+    @active = false
+    self = @
+    wi = @wi()
+    wa = @wa()
+    item = @item()
+    actor = @actor()
 
     @active = false
-    if i.usable and
-    i.scope.type == ITEM_SCOPE.TYPE.FRIEND and
-    i.scope.range == ITEM_SCOPE.RANGE.ONE
+    if item.usable and
+    item.scope.type == ITEM_SCOPE.TYPE.FRIEND and
+    item.scope.range == ITEM_SCOPE.RANGE.ONE
       # 単体なので相手を選択
       @addWindow rpg.WindowItemTargetActorList parent: @
       return
 
     eg = rpg.EventGenerator()
-    if i.usable
-      if i.scope.type == ITEM_SCOPE.TYPE.ENEMY
-        eg.itemUseError a, i
-      if i.scope.type == ITEM_SCOPE.TYPE.FRIEND and
-      i.scope.range == ITEM_SCOPE.RANGE.MULTI
+    if item.usable
+      if item.scope.type == ITEM_SCOPE.TYPE.ENEMY
+        eg.itemUseError actor, item
+      if item.scope.type == ITEM_SCOPE.TYPE.FRIEND and
+      item.scope.range == ITEM_SCOPE.RANGE.MULTI
         # 複数対象なのでこの場で使う
         targets = []
         rpg.game.party.each (a) -> targets.push a
         log = rpg.system.temp.log = {}
-        r = a.useItem i, targets, log
+        r = actor.useItem item, targets, log
         if r
-          eg.itemUseOk a, i, targets, log
+          eg.itemUseOk actor, item, targets, log
         else
-          eg.itemUseNg a, i, targets, log
+          eg.itemUseNg actor, item, targets, log
     else
       # 使用できないアイテム
-      eg.itemUseError a, i
+      eg.itemUseError actor, item
     eg.function ->
-      wm.close()
+      self.close()
       wa.changeActor(wa.actor)
       if wi.items.length == 0
         wa.active = true
@@ -112,15 +127,18 @@ tm.define 'rpg.WindowItemMenu',
   itemThrow: ->
     # TODO: 捨てられなかった時の処理（メッセージを追加）
     @active = false
-    wi = @findWindowTree (o) -> o instanceof rpg.WindowItemList
-    wa = @findWindowTree (o) -> o instanceof rpg.WindowItemActorList
     self = @
-    wa.actor.backpack.removeItem wi.item
+    wi = @wi()
+    wa = @wa()
+    item = @item()
+    actor = @actor()
+
+    actor.backpack.removeItem item
     eg = rpg.EventGenerator()
-    eg.itemThrow(wa.actor,wi.item)
+    eg.itemThrow(actor,item)
     eg.function ->
       self.close()
-      wa.changeActor(wa.actor)
+      wa.changeActor(actor)
       if wi.items.length == 0
         wa.active = true
         wi.active = false
@@ -134,10 +152,13 @@ tm.define 'rpg.WindowItemMenu',
   ###
   itemEquip: ->
     @active = false
-    wi = @findWindowTree (o) -> o instanceof rpg.WindowItemList
-    item = wi.item
-    wa = @findWindowTree (o) -> o instanceof rpg.WindowItemActorList
-    actor = wa.actor
+    self = @
+    wi = @wi()
+    wa = @wa()
+    item = @item()
+    actor = @actor()
+
+    # メッセージの作成と装備処理
     eg = rpg.EventGenerator()
     if item instanceof rpg.EquipItem
       if actor.checkEquip item.position, item
@@ -147,7 +168,6 @@ tm.define 'rpg.WindowItemMenu',
       else
         # 装備不可
         eg.itemEquipError(actor,item)
-    self = @
     eg.function ->
       self.close()
       wa.changeActor(wa.actor)
@@ -158,6 +178,26 @@ tm.define 'rpg.WindowItemMenu',
   * @memberof rpg.WindowItemMenu#
   ###
   itemEquipOff: ->
-    console.log 'itemEquipOff'
-    return
+    @active = false
+    self = @
+    wi = @wi()
+    wa = @wa()
+    item = @item()
+    actor = @actor()
 
+    # メッセージの作成と装備解除処理
+    eg = rpg.EventGenerator()
+    if item instanceof rpg.EquipItem
+      if actor.checkEquipOff item
+        # 装備解除可能
+        actor[item.position] = null
+        eg.itemEquipOff(actor,item)
+      else
+        # 装備解除不可
+        eg.itemEquipOffError(actor,item)
+    self = @
+    eg.function ->
+      self.close()
+      wa.changeActor(wa.actor)
+    rpg.system.mapInterpreter.start eg.commands
+    return

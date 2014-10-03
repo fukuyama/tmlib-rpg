@@ -208,7 +208,7 @@ class rpg.Battler
   * @return {boolean} 装備が外せる場合、true
   ###
   checkEquipOff: (equip) ->
-    # 元々装備してない部位の場合は、装備可能
+    # 元々装備してない部位の場合は、装備解除する必要なし。
     return true unless @equips[equip]?
     # 装備部位が固定化された部位の場合は、はずせない。
     return false for e in @equipsFix when e == equip

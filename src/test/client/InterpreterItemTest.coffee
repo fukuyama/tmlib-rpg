@@ -87,6 +87,10 @@ describe 'rpg.Interpreter(Item)', () ->
         reloadTestMap(done)
       it 'ウェイト', (done) ->
         setTimeout(done,1000)
+      it 'アクターの所持数限界確認', ->
+        actor = rpg.game.party.getAt(0)
+        actor.backpack.itemMax = 8
+        actor.backpack.itemMax.should.equal 8
       it 'インタープリタ取得', ->
         interpreter = rpg.system.scene.interpreter
       it 'アイテムを１つ増やす', (done) ->

@@ -13,14 +13,17 @@ tm.define 'rpg.WindowItemListBase',
   * @param {Object} param
   * @param {Array} param.items アイテムインスタンスの配列
   * @param {Array} param.menus 追加メニュー
+  * @param {Array} param.help ヘルプウィンドウを使うかどうか
   ###
   init: (args={}) ->
     {
       @items
       help
+      status
     } = {
       items: []
       help: on
+      status: on
     }.$extend(args)
     
     @superInit({
@@ -46,6 +49,37 @@ tm.define 'rpg.WindowItemListBase',
           }
         )
         @addWindow(@window_help)
+    if status and help
+      @on 'addWindow', (e) ->
+        @window_status = rpg.Window(
+          @right
+          @window_help.bottom
+          24 * 5 + 16 * 2
+          rpg.system.lineHeight * 3 + 16 * 2
+          {
+            visible: false
+            active: false
+          }
+        )
+        @addWindow(@window_status)
+    return
+
+  refreshHelp: () ->
+    @window_help.content.clear()
+    if @item?.help?
+      @window_help.drawMarkup(@item.help,0,0)
+    @window_help.refresh()
+    return
+
+  refreshStatus: () ->
+    @window_status.content.clear()
+    if @item? and @item instanceof rpg.EquipItem
+      # TODO: 装備アイテムの場合ステータスを表示
+      text = "TODO: ..."
+      @window_status.drawMarkup(text,0,0)
+    else
+      @window_status.visible = false
+    @window_status.refresh()
     return
 
   ###* インデックス変更時の処理
@@ -55,12 +89,13 @@ tm.define 'rpg.WindowItemListBase',
     if @index >= 0
       if @window_help?
         @window_help.visible = true
-        @window_help.content.clear()
-        if @item?.help?
-          @window_help.drawMarkup(@item.help,0,0)
-        @window_help.refresh()
+        @refreshHelp()
+      if @window_status?
+        @window_status.visible = true
+        @refreshStatus()
     else
       @window_help?.visible = false
+      @window_status?.visible = false
 
   ###* メニュー選択時の処理
   * @memberof rpg.WindowItemListBase#
