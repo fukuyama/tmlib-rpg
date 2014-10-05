@@ -64,6 +64,9 @@ tm.define 'rpg.WindowItemListBase',
         @addWindow(@window_status)
     return
 
+  ###* ヘルプウィンドウの更新
+  * @memberof rpg.WindowItemListBase#
+  ###
   refreshHelp: () ->
     @window_help.content.clear()
     if @item?.help?
@@ -71,11 +74,17 @@ tm.define 'rpg.WindowItemListBase',
     @window_help.refresh()
     return
 
+  ###* ステータスウィンドウの更新
+  * @memberof rpg.WindowItemListBase#
+  ###
   refreshStatus: () ->
     @window_status.content.clear()
     if @item? and @item instanceof rpg.EquipItem
       # TODO: 装備アイテムの場合ステータスを表示
-      text = "TODO: ..."
+      if @item instanceof rpg.Weapon
+        text = "攻撃力：#{@item.patk}"
+      else if @item instanceof rpg.Armor
+        text = "防御力：#{@item.pdef}"
       @window_status.drawMarkup(text,0,0)
     else
       @window_status.visible = false
