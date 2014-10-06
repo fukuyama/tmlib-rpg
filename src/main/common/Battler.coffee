@@ -8,18 +8,7 @@ _g = window ? global ? @
 rpg = _g.rpg = _g.rpg ? {}
 
 
-BASE_ABILITIES = [
-  'str'
-  'vit'
-  'dex'
-  'agi'
-  'int'
-  'sen'
-  'luc'
-  'cha'
-  'basehp'
-  'basemp'
-]
+BASE_ABILITIES = rpg.constants.BASE_ABILITIES
 
 # バトラークラス
 class rpg.Battler

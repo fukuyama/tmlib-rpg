@@ -38,6 +38,7 @@ c.ITEM_SCOPE = {
     MULTI: 2
 }
 
+# メッセージウィンドウの位置
 c.MESSAGE_OPTION = {
   MESSAGE:
     TOP: 1
@@ -52,3 +53,63 @@ c.MESSAGE_OPTION = {
     CENTER: 2
     RIGHT: 3
 }
+
+c.BASE_ABILITIES = [
+  'str'
+  'vit'
+  'dex'
+  'agi'
+  'int'
+  'sen'
+  'luc'
+  'cha'
+  'basehp'
+  'basemp'
+]
+
+c.BATTLE_ABILITIES = [
+  'patk'
+  'pdef'
+  'matk'
+  'mcur'
+  'mdef'
+  'maxhp'
+  'maxmp'
+]
+
+c.WORDS = {
+  'str': 'ちから'
+  'vit': 'たいりょく'
+  'dex': 'きようさ'
+  'agi': 'すばやさ'
+  'int': 'かしこさ'
+  'sen': 'かんせい'
+  'luc': 'うんのよさ'
+  'cha': 'みりょく'
+  'hp': 'HP'
+  'mp': 'MP'
+  'patk': '攻撃力'
+  'pdef': '防御力'
+  'matk': '攻撃魔力'
+  'mcur': '回復魔力'
+  'mdef': '魔法防御'
+  'maxhp': '最大HP'
+  'maxmp': '最大MP'
+  'right_hand': '右手'
+  'left_hand': '左手'
+  'head': '頭'
+  'upper_body': '体上'
+  'lower_body': '体下'
+  'arms': '腕'
+  'legs': '足'
+}
+
+c.EQUIP_POSITONS = [
+  'left_hand'
+  'right_hand'
+  'head'
+  'upper_body'
+  'lower_body'
+  'arms'
+  'legs'
+]

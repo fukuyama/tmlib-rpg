@@ -1,9 +1,17 @@
+###*
+* @file WindowStatusActorList.coffee
+* ステータス表示用メンバーリストウィンドウ
+###
 
-# ステータス表示用メンバーリストウィンドウ
 tm.define 'rpg.WindowStatusActorList',
   superClass: rpg.WindowMemberBase
 
-  # 初期化
+  ###* コンストラクタ
+  * @classdesc ステータス表示用メンバーリストウィンドウ
+  * @constructor rpg.DataBase
+  * @param {Object} args
+  * @param {rpg.Window} args.parent 親ウィンドウ
+  ###
   init: (args={}) ->
     parent = args.parent
     @superInit(args.$extend {
@@ -18,9 +26,23 @@ tm.define 'rpg.WindowStatusActorList',
     @on 'addWindow', ->
       @addWindow rpg.WindowStatusDetail(parent: @)
       @addWindow rpg.WindowStatusInfo(parent: @)
+      @addWindow rpg.WindowStatusEquip(parent: @)
       @changeActor(@actor)
 
-  # アクターが変更された場合
+  ###* アクターが選択された場合
+  * @memberof rpg.WindowStatusActorList#
+  * @param {rpg.Actor} actor 選択されたアクター
+  ###
+  selectActor: (actor) ->
+    if actor?
+      for w in @windows when w.selectActor?
+        # 選択されたアクターを描画
+        w.selectActor(actor)
+
+  ###* アクターが変更された場合
+  * @memberof rpg.WindowStatusActorList#
+  * @param {rpg.Actor} actor 変更されたアクター
+  ###
   changeActor: (actor) ->
     if actor?
       for w in @windows
