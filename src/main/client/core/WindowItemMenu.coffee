@@ -44,13 +44,13 @@ tm.define 'rpg.WindowItemMenu',
     m = []
     if item instanceof rpg.EquipItem
       if actor[item.position] == item # インスタンス比較
-        m.push name:'はずす', fn: @itemEquipOff.bind @
+        m.push name:'はずす', fn: @_menuEquipOff.bind @
       else
-        m.push name:'そうび', fn: @itemEquip.bind @
+        m.push name:'そうび', fn: @_menuEquip.bind @
     else
-      m.push name:'つかう', fn: @itemUse.bind @
-    m.push name:'わたす', fn: @itemTrade.bind @
-    m.push name:'すてる', fn: @itemThrow.bind @
+      m.push name:'つかう', fn: @_menuUse.bind @
+    m.push name:'わたす', fn: @_menuTrade.bind @
+    m.push name:'すてる', fn: @_menuThrow.bind @
     args.menus = m.concat menus
     @superInit({
       title: 'どうする？'
@@ -67,8 +67,9 @@ tm.define 'rpg.WindowItemMenu',
 
   ###* 使うメニュー
   * @memberof rpg.WindowItemMenu#
+  * @private
   ###
-  itemUse: ->
+  _menuUse: ->
     @active = false
     self = @
     wi = @wi()
@@ -115,16 +116,18 @@ tm.define 'rpg.WindowItemMenu',
 
   ###* わたすメニュー
   * @memberof rpg.WindowItemMenu#
+  * @private
   ###
-  itemTrade: ->
+  _menuTrade: ->
     @addWindow rpg.WindowItemTradeActorList parent: @
     @active = false
     return
 
   ###* 捨てるメニュー
   * @memberof rpg.WindowItemMenu#
+  * @private
   ###
-  itemThrow: ->
+  _menuThrow: ->
     # TODO: 捨てられなかった時の処理（メッセージを追加）
     @active = false
     self = @
@@ -149,8 +152,9 @@ tm.define 'rpg.WindowItemMenu',
 
   ###* 装備メニュー
   * @memberof rpg.WindowItemMenu#
+  * @private
   ###
-  itemEquip: ->
+  _menuEquip: ->
     @active = false
     self = @
     wi = @wi()
@@ -176,8 +180,9 @@ tm.define 'rpg.WindowItemMenu',
 
   ###* はずすメニュー
   * @memberof rpg.WindowItemMenu#
+  * @private
   ###
-  itemEquipOff: ->
+  _menuEquipOff: ->
     @active = false
     self = @
     wi = @wi()

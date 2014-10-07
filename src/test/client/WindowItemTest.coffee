@@ -397,3 +397,64 @@ describe 'rpg.WindowItemTest', ->
         it 'キャンセル', (done) -> emulateKey callback:done, key: 'escape'
         it 'キャンセル', (done) -> emulateKey callback:done, key: 'escape'
         it 'キャンセル', (done) -> emulateKey callback:done, key: 'escape'
+
+  describe 'アイテムの装備', ->
+    describe '武器', ->
+      describe '装備する', ->
+        it 'マップシーンへ移動', (done) ->
+          reloadTestMap(done)
+        it 'wait', (done) ->
+          setTimeout(done,1000)
+        it '武器をロード', (done) ->
+          db = rpg.system.db
+          db.preloadWeapon([1],(items) ->
+            actor = rpg.game.party.getAt(0)
+            item = items[0]
+            actor.backpack.addItem item
+            item.url.should.
+              equal 'http://localhost:3000/client/data/weapon/001.json'
+            item.type.should.equal 'Weapon'
+            done()
+          )
+        it 'メニュー表示', (done) ->
+          emulate_key('enter',done)
+        it 'どうぐへ移動', (done) ->
+          emulate_key('down',done)
+        it 'メニュー選択', (done) ->
+          emulate_key('enter',done)
+        it 'アクター選択', (done) ->
+          emulate_key('enter',done)
+        it '２番目のアイテムに移動', (done) ->
+          emulate_key('down',done)
+        it 'アイテム選択', (done) ->
+          emulate_key('enter',done)
+        it 'そうびメニュー選択', (done) ->
+          emulate_key('enter',done)
+        it 'メッセージ表示待ち', (done) ->
+          checkMessage
+            callback:done
+            msg:'あくたー１ は 片手剣 を\\nそうびした。'
+        it '次のメッセージ表示', (done) -> emulateKey callback:done, key: 'enter'
+        it 'キャンセル', (done) -> emulateKey callback:done, key: 'escape'
+        it 'キャンセル', (done) -> emulateKey callback:done, key: 'escape'
+        it 'キャンセル', (done) -> emulateKey callback:done, key: 'escape'
+        it 'メニュー表示', (done) ->
+          emulate_key('enter',done)
+        it 'どうぐへ移動', (done) ->
+          emulate_key('down',done)
+        it 'メニュー選択', (done) ->
+          emulate_key('enter',done)
+        it 'アクター選択', (done) ->
+          emulate_key('enter',done)
+        it 'アイテム選択', (done) ->
+          emulate_key('enter',done)
+        it 'はずすメニュー選択', (done) ->
+          emulate_key('enter',done)
+        it 'メッセージ表示待ち', (done) ->
+          checkMessage
+            callback:done
+            msg:'あくたー１ は 片手剣 を\\nはずした。'
+        it '次のメッセージ表示', (done) -> emulateKey callback:done, key: 'enter'
+        it 'キャンセル', (done) -> emulateKey callback:done, key: 'escape'
+        it 'キャンセル', (done) -> emulateKey callback:done, key: 'escape'
+        it 'キャンセル', (done) -> emulateKey callback:done, key: 'escape'

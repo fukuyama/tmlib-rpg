@@ -171,6 +171,7 @@ class rpg.Battler
   * @method rpg.Battler#useItem
   * @param {rpg.Item} 使用するアイテム
   * @param {rpg.Battler|Array} アイテムを使用する対象
+  * @return {boolean} 使用した場合、true
   ###
   useItem: (item, target, log={}) ->
     item.use @, target, log

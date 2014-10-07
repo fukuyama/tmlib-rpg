@@ -63,7 +63,7 @@ describe 'rpg.DataBase', ->
           item = items[0]
           item.url.should.
             equal 'http://localhost:3000/client/data/weapon/001.json'
-          item.name.should.equal 'Weapon01'
+          item.name.should.equal '片手剣'
           done()
         )
 
@@ -101,17 +101,14 @@ describe 'rpg.DataBase', ->
         db.preloadItem([2,1],(items) ->
           count.should.equal 0
           count += 1
-          console.log count
         )
         db.preloadWeapon([2,1],(items) ->
           count.should.equal 1
           count += 1
-          console.log count
         )
         db.preloadArmor([1],(items) ->
           count.should.equal 2
           count += 1
-          console.log count
           done()
         )
     describe.skip 'callback 空回しあり？', -> # TODO:むりぽ
@@ -120,44 +117,34 @@ describe 'rpg.DataBase', ->
         db.preloadItem([2,1],(items) ->
           count.should.equal 0
           count += 1
-          console.log count
         )
         db.preloadWeapon([2,1],(items) ->
           count.should.equal 1
           count += 1
-          console.log count
         )
         db.preloadArmor([1],(items) ->
           count.should.equal 2
           count += 1
-          console.log count
         )
         db.preloadItem [], (items) ->
           count.should.equal 3
           count += 1
-          console.log count
           done()
     describe 'callback 疑似 join', ->
       it 'アイテム３種を使ってロードされる', (done) ->
         count = 0
-        console.log 'load start'
         loadcheck = (items) ->
           count += 1
-          console.log count
           if count == 3
-            console.log 'load end'
             done()
         db.preloadItem([2,1],loadcheck)
         db.preloadWeapon([2,1],loadcheck)
         db.preloadArmor([1],loadcheck)
       it 'アイテム３種を使ってロードされる２回目', (done) ->
         count = 0
-        console.log 'load start'
         loadcheck = (items) ->
           count += 1
-          console.log count
           if count == 3
-            console.log 'load end'
             done()
         db.preloadItem([2,1],loadcheck)
         db.preloadWeapon([2,1],loadcheck)
@@ -234,6 +221,3 @@ describe 'rpg.DataBase', ->
           equal 'http://localhost:3000/client/data/state/StateAA.json'
         state.name.should.
           equal 'StateAA'
-    describe 'クリア', ->
-      it 'クリア', ->
-        tm.asset.Manager.assets = {}
