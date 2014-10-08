@@ -400,7 +400,7 @@ describe 'rpg.WindowItemTest', ->
 
   describe 'アイテムの装備', ->
     describe '武器', ->
-      describe '装備する', ->
+      describe '装備してから装備解除する', ->
         it 'マップシーンへ移動', (done) ->
           reloadTestMap(done)
         it 'wait', (done) ->
@@ -426,6 +426,8 @@ describe 'rpg.WindowItemTest', ->
           emulate_key('enter',done)
         it '２番目のアイテムに移動', (done) ->
           emulate_key('down',done)
+        it '片手剣', ->
+          getMenu().name.should.equal '片手剣'
         it 'アイテム選択', (done) ->
           emulate_key('enter',done)
         it 'そうびメニュー選択', (done) ->
@@ -446,6 +448,8 @@ describe 'rpg.WindowItemTest', ->
           emulate_key('enter',done)
         it 'アクター選択', (done) ->
           emulate_key('enter',done)
+        it 'そうびした片手剣？', ->
+          getMenu().name.should.equal 'E 片手剣'
         it 'アイテム選択', (done) ->
           emulate_key('enter',done)
         it 'はずすメニュー選択', (done) ->

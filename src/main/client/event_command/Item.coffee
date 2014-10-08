@@ -133,7 +133,15 @@ rpg.event_command.lost_weapon = rpg.event_command.LostWeapon()
 # 防具を増やす
 tm.define 'rpg.event_command.GainArmor',
 
-  # コマンド
+  ###* イベントコマンドの反映。
+  * Interpreter インスタンスのメソッドとして実行される。
+  * イベントコマンド自体のインスタンスは、@event_command で取得する。
+  * @memberof rpg.event_command.GainArmor#
+  * @param {number|string} armor 増やす防具
+  * @param {number} num 増やす数
+  * @param {number} actor 増やす対象アクター（パーティの何番目のアクターかの番号） null の場合、パーティに増やす
+  * @return {boolean} false
+  ###
   apply_command: (armor, num = 1, actor = null) ->
     {armor,num,actor,backpack} = {num: 1}.$extend armor if armor.armor?
     @waitFlag = true
@@ -145,7 +153,15 @@ tm.define 'rpg.event_command.GainArmor',
 # 防具を減らす
 tm.define 'rpg.event_command.LostArmor',
 
-  # コマンド
+  ###* イベントコマンドの反映。
+  * Interpreter インスタンスのメソッドとして実行される。
+  * イベントコマンド自体のインスタンスは、@event_command で取得する。
+  * @memberof rpg.event_command.LostArmor#
+  * @param {number|string} armor 減らす防具
+  * @param {number} num 減らす数
+  * @param {number} actor 減らす対象アクター（パーティの何番目のアクターかの番号） null の場合、パーティから減らす
+  * @return {boolean} false
+  ###
   apply_command: (armor, num = 1, actor = null) ->
     {armor,num,actor,backpack} = {num: 1}.$extend armor if armor.armor?
     @waitFlag = true
@@ -156,3 +172,35 @@ tm.define 'rpg.event_command.LostArmor',
 
 rpg.event_command.gain_armor = rpg.event_command.GainArmor()
 rpg.event_command.lost_armor = rpg.event_command.LostArmor()
+
+# 装備する
+tm.define 'rpg.event_command.EquipItem',
+
+  init: (item_type) ->
+    @preload = ->
+      if item_type is 'weapon'
+        @preload = rpg.system.db.preloadWeapon
+      if item_type is 'armor'
+        @preload = rpg.system.db.preloadArmor
+      @preload.apply @, arguments
+
+  ###* イベントコマンドの反映。
+  * Interpreter インスタンスのメソッドとして実行される。
+  * イベントコマンド自体のインスタンスは、@event_command で取得する。
+  * @memberof rpg.event_command.EquipItem#
+  * @param {number} actor 増やす対象アクター（パーティの何番目のアクターかの番号） null の場合、パーティに増やす
+  * @param {number} equip_item 装備アイテムID
+  * @return {boolean} false
+  ###
+  apply_command: (actor_id, equip_item) ->
+    actor = rpg.game.party.getAt(actor_id)
+    self = @
+    @waitFlag = true
+    @event_command.preload [equip_item], (items) ->
+      item = actor.backpack.getItem(items[0].name)
+      actor[item.position] = item if item?
+      self.waitFlag = false
+    false
+
+rpg.event_command.equip_weapon = rpg.event_command.EquipItem('weapon')
+rpg.event_command.equip_armor = rpg.event_command.EquipItem('armor')

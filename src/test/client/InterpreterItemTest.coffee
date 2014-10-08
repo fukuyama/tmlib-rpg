@@ -225,6 +225,48 @@ describe 'rpg.Interpreter(Item)', () ->
         actor = rpg.game.party.getAt(0)
         actor.backpack.itemCount.should.equal n
 
+    describe '防具アイテム装備', ->
+      n = 0
+      it 'マップシーンへ移動', (done) ->
+        reloadTestMap(done)
+      it 'ウェイト', (done) ->
+        setTimeout(done,1000)
+      it 'インタープリタ取得', ->
+        interpreter = rpg.system.scene.interpreter
+      it 'アイテム所持数確認', ->
+        actor = rpg.game.party.getAt(0)
+        n = actor.backpack.itemCount
+      it '装備してない', ->
+        actor = rpg.game.party.getAt(0)
+        (actor.head is null).should.equal true
+      it '防具を持ってないので装備できない', (done) ->
+        interpreter.start [
+          {type:'equip_armor',params:[0,1]}
+          {type:'function',params:[done]}
+        ]
+      it '装備してない', ->
+        actor = rpg.game.party.getAt(0)
+        (actor.head is null).should.equal true
+      it '防具を１つ増やす', (done) ->
+        interpreter.start [
+          {type:'gain_armor',params:[1]}
+          {type:'function',params:[done]}
+        ]
+      it '１つ増えている', ->
+        actor = rpg.game.party.getAt(0)
+        actor.backpack.itemCount.should.equal (n + 1)
+      it '装備してない', ->
+        actor = rpg.game.party.getAt(0)
+        (actor.head is null).should.equal true
+      it '防具を装備する', (done) ->
+        interpreter.start [
+          {type:'equip_armor',params:[0,1]}
+          {type:'function',params:[done]}
+        ]
+      it '装備している', ->
+        actor = rpg.game.party.getAt(0)
+        actor.head.name.should.equal '兜'
+
     describe 'preload テスト', ->
       describe 'preload テスト１', ->
         n = 0
