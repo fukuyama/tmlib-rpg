@@ -70,3 +70,11 @@ _g.checkMessage = (callback,msg) ->
   checkWait callback, ->
     w = rpg.system.scene?.windowMessage
     return w? and w.currentMessage == msg and w.isPause()
+
+_g.getMenu = () ->
+  w = rpg.system.scene.windowMapMenu
+  if w?
+    w = w.findWindowTree (w) -> w.active
+  if w instanceof rpg.WindowMenu
+    return w.menus[w.index]
+  return ''
