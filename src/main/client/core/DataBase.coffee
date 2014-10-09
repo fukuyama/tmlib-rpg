@@ -196,6 +196,36 @@ tm.define 'rpg.DataBase',
       @_states[data.name] = data.url
     return
 
+  ###* まとめてアイテムのロード
+  * @memberof rpg.DataBase#
+  * @param {Object} args
+  * @param {rpg.DataBase~preloaditemscallback} callback
+  ###
+  preloadItems: (args,callback) ->
+    {
+      items
+      weapons
+      armors
+    } = {
+      items: []
+      weapons: []
+      armors: []
+    }.$extend args
+    endCount = 0
+    endCount++ if items.length != 0
+    endCount++ if weapons.length != 0
+    endCount++ if armors.length != 0
+    count = 0
+    allitems = []
+    _loadcheck = (items) ->
+      count += 1
+      allitems = allitems.concat items
+      if count == endCount
+        callback(allitems)
+    @preloadItem   items,   _loadcheck if items.length != 0
+    @preloadWeapon weapons, _loadcheck if weapons.length != 0
+    @preloadArmor  armors,  _loadcheck if armors.length != 0
+
 
 ###* ステート読み込み時のコールバック関数
 * @callback rpg.DataBase~statecallback
