@@ -17,7 +17,7 @@ tm.define 'rpg.WindowItemListBase',
   ###
   init: (args={}) ->
     {
-      @items
+      items
       help
       status
     } = {
@@ -62,6 +62,7 @@ tm.define 'rpg.WindowItemListBase',
           }
         )
         @addWindow(@window_status)
+    @setItems(items)
     return
 
   ###* ヘルプウィンドウの更新
@@ -110,6 +111,7 @@ tm.define 'rpg.WindowItemListBase',
   * @memberof rpg.WindowItemListBase#
   ###
   selectMenu: ->
+    console.log 'selectMenu'
     @selectItem @items[@index]
     return
 
@@ -149,7 +151,7 @@ tm.define 'rpg.WindowItemListBase',
     # 選択解除
     @setIndex -1
     # 親(アクターリスト)をアクティブに
-    @parentWindow.active = true
+    @parentWindow?.active = true
     # 自分は非アクティブに
     @active = false
     # クローズ（非表示）には、しない

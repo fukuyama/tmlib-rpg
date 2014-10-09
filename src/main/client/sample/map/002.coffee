@@ -193,7 +193,81 @@ module.exports = {
               }
             ])
         }
-      ]
+        {
+          type: 'rpg.SpriteCharacter'
+          name: 'Event006'
+          width: 32
+          height: 32
+          properties:
+            init: JSON.stringify([
+              {
+                spriteSheet: 'spritesheet.hiyoko'
+                mapX: 9
+                mapY: 5
+                pages: [
+                  {
+                    name: 'page1'
+                    trigger: ['talk']
+                    commands: [
+                      {type:'preload_item',params:[
+                        items: [1,2,3,4]
+                        weapons: [1,2]
+                        armors: [1,2,3,4,5]
+                      ]}
+                      {type:'option',params:[{
+                        message:
+                          close: off
+                      }]}
+                      {type:'message',params:[
+                        'いらっしゃいませ。'
+                      ]}
+                      {type:'message',params:[
+                        'ここは雑貨屋です。\n'+
+                        'どの様なご用件でしょうか？'
+                      ]}
+                      {type:'select',params:[['買う','売る']]}
+                      {type:'block',params:[
+                        {type:'loop'}
+                        {type:'block',params:[
+                          {type:'message',params:[
+                            '何をお探しですか？'
+                          ]}
+                          {type:'shop_item_menu',params:[{
+                            items: [1,2,3,4]
+                            weapons: [1,2]
+                            armors: [1,2,3,4,5]
+                          }]}
+                          {type:'message',params:[
+                            '\#{item.name} ですね。\n'
+                            '\#{item.price} になります。'
+                          ]}
+                          {type:'select',params:[['はい','いいえ']]}
+                          {type:'block',params:[
+                            {type:'message',params:['TODO: 買う処理を作成']}
+                            {type:'break'}
+                          ]}
+                          {type:'block',params:[
+                            {type:'message',params:['TODO: キャンセル処理を作成']}
+                          ]}
+                          {type:'end'}
+                        ]}
+                        {type:'end'}
+                      ]}
+                      {type:'block',params:[
+                        {type:'message',params:['TODO: 売る処理は作成中。']}
+                      ]}
+                      {type:'end'}
+                      {type:'option',params:[{
+                        message:
+                          close: on
+                      }]}
+                    ]
+                  }
+                ]
+              }
+            ])
+        }
+      ] # objects
     }
   ]
 }

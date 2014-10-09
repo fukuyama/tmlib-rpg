@@ -35,7 +35,7 @@ tm.define 'rpg.WindowMessage',
       options:
         message:
           position: MSG_OPT.MESSAGE.BOTTOM # メッセージウィンドウ位置
-          close: on
+          close: on # 表示毎にクローズする場合 on(true)
         select:
           position: MSG_OPT.SELECT.RIGHT # 選択肢ウィンドウ位置
         input_num:
@@ -92,6 +92,7 @@ tm.define 'rpg.WindowMessage',
   ###
   terminate: ->
     @fire rpg.WindowMessage.EVENT_TERMINATE
+    @active = false
     if @options.message.close
       @close()
     return
@@ -111,6 +112,7 @@ tm.define 'rpg.WindowMessage',
   * @private
   ###
   _nextMessage: ->
+    @active = true
     if @_dx != 0
       @_dx = 0
       @_dy += rpg.system.lineHeight
