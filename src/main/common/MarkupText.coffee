@@ -150,6 +150,26 @@ rpg.MarkupText.MARKUP_COLOR = {
     false
 }
 
+###* ポーズスキップ
+* @var {Object} rpg.MarkupText.MARKUP_SKIP
+###
+rpg.MarkupText.MARKUP_SKIP = {
+  mark: '\\'
+  name: 'skip'
+  func: ->
+    if @obj instanceof rpg.WindowMessage
+      e = @message[@i .. ].indexOf(']')
+      if e > 0
+        e += @i
+        m = @message[@i .. e]
+        s = @i + m.indexOf('[') + 1
+        @obj.pauseSkip(@message[s .. e - 1])
+        @i = e + 1
+      else
+        @obj.pauseSkip()
+        @i += 5
+    false
+}
 
 ###* フラグ置き換え(\F[any])
 * @var {Object} rpg.MarkupText.REPLACE_FLAG
@@ -178,6 +198,7 @@ _default = new rpg.MarkupText()
 # マークアップ
 _default.addMarkup rpg.MarkupText.MARKUP_NEW_LINE
 _default.addMarkup rpg.MarkupText.MARKUP_COLOR
+_default.addMarkup rpg.MarkupText.MARKUP_SKIP
 
 # 置き換え
 _default.addReplace rpg.MarkupText.REPLACE_FLAG

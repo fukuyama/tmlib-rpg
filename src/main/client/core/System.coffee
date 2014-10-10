@@ -38,6 +38,7 @@ tm.define 'rpg.System',
         se: false
         bgm: false
         messageSpeed: 4
+        autoSpeed: 4
       }
       title: 'tmlib-rpg'
       assets: {}

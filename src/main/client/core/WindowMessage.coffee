@@ -24,6 +24,7 @@ tm.define 'rpg.WindowMessage',
       @active
       @messageSpeed
       @scrollSpeed
+      @autoSpeed
       @maxLine
       @options
     } = {
@@ -31,6 +32,7 @@ tm.define 'rpg.WindowMessage',
       active: false
       messageSpeed: 4 # メッセージスピード
       scrollSpeed: 5 # スクロールスピード
+      autoSpeed: 0 # 自動送りスピード
       maxLine: 3
       options:
         message:
@@ -42,7 +44,7 @@ tm.define 'rpg.WindowMessage',
           position: MSG_OPT.NUMBER.RIGHT # 数値入力ウィンドウ位置
     }.$extend(args)
 
-    # 1-8
+    # メッセージスピード 1-8
     if @messageSpeed >= 4
       @_waitCountMax = @messageSpeed - 3
       @_drawCount = 0
@@ -84,6 +86,7 @@ tm.define 'rpg.WindowMessage',
     @_py = 0 # ポーズ時座標
     @_ay = 0 # スクロール差分用座標
     @_waitCount = 0 # 描画時のウェイトカウント
+    @_autoCount = 0 # 自動ページ送りのカウント
     @content.clear()
     return
 
@@ -118,9 +121,32 @@ tm.define 'rpg.WindowMessage',
       @_dy += rpg.system.lineHeight
     @_py = @_dy
     @_waitCount = 0
+    @_autoCount = 0
     @_message = @markup.replace(@_messages.shift().replace /\n/g, '\\n')
     @_messageIndex = 0
+    @_autoCountMax = @_message.length * @autoSpeed
     return
+
+  ###* 自動ページ送りモードの設定。
+  * @memberof rpg.WindowMessage#
+  * @params {boolean} args true だと、システムの自動送りスピードを設定して、オートモードON。false だと、オートモードOFF
+  * @params {number} args 指定された値を、自動送りスピードにする。オートモードON
+  ###
+  setAutoMode: (args) ->
+    if typeof args is 'boolean'
+      if args
+        @autoSpeed = rpg.system.setting.autoSpeed
+      else
+        @autoSpeed = 0
+    if typeof args is 'number'
+      @autoSpeed = args
+    @_autoCountMax = @_message.length * @autoSpeed
+
+  ###* ポーズスキップ。
+  * @memberof rpg.WindowMessage#
+  ###
+  pauseSkip: (n=1) ->
+    @_autoCountMax = n
 
   ###* 表示位置設定。
   * @memberof rpg.WindowMessage#
@@ -217,7 +243,16 @@ tm.define 'rpg.WindowMessage',
   ###
   countDrawTiming: ->
     @_waitCount = ++@_waitCount % @_waitCountMax
-    @_waitCount != 0
+    return @_waitCount != 0
+
+  ###* 自動ページ送りの計算。
+  * @memberof rpg.WindowMessage#
+  * @return {boolean} 自動ページ送りする場合 false
+  ###
+  countAutoTiming: ->
+    return true if @_autoCountMax == 0
+    @_autoCount = ++@_autoCount % @_autoCountMax
+    return @_autoCount != 0
 
   ###* 選択肢ウィンドウの作成
   * @memberof rpg.WindowMessage#
@@ -361,7 +396,13 @@ tm.define 'rpg.WindowMessage',
     return if @isClose()
     return if @isSelect()
     return if @isInput()
-    return if @isPause()
+    # ポーズ中
+    if @isPause()
+      # 自動送り
+      unless @countAutoTiming()
+        @pauseCancel()
+      else
+        return
     return if @countDrawTiming()
     @drawMessage() for num in [0 .. @_drawCount]
     @refresh()

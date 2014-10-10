@@ -236,3 +236,68 @@ describe 'rpg.WindowMessage', ->
         'A\\C[1]A\\C[2]A\\C[3]A\\C[4]A\\C[5]A\\C[6]A\\C[7]A\\C[0]'
     it '次のメッセージ表示1', (done) ->
       emulate_key('enter',done)
+
+  describe 'ポーズ処理', ->
+    describe '自動ページ送り', ->
+      commands = [
+        {
+          type:'message',
+          params:[
+            '自動でページが送られるよ。'
+            'OK'
+          ]
+        }
+      ]
+      it 'マップシーンへ移動', (done) ->
+        loadTestMap(done)
+      it '自動送りモード10', ->
+        rpg.system.scene.windowMessage.setAutoMode 10
+      it 'コマンド実行', ->
+        interpreter = rpg.system.scene.interpreter
+        interpreter.start commands
+      it 'メッセージ表示待ち1', (done) ->
+        checkMessage done, 'OK'
+      it '自動送りモードOFF', ->
+        rpg.system.scene.windowMessage.setAutoMode off
+      it '次のメッセージ表示1', (done) ->
+        emulate_key('enter',done)
+
+    describe 'ポーズスキップ待ちなし', ->
+      commands = [
+        {
+          type:'message',
+          params:[
+            'ポーズがスキップされるよ。\\skip'
+            'OK'
+          ]
+        }
+      ]
+      it 'マップシーンへ移動', (done) ->
+        loadTestMap(done)
+      it 'コマンド実行', ->
+        interpreter = rpg.system.scene.interpreter
+        interpreter.start commands
+      it 'メッセージ表示待ち1', (done) ->
+        checkMessage done, 'OK'
+      it '次のメッセージ表示1', (done) ->
+        emulate_key('enter',done)
+
+    describe 'ポーズスキップ１秒', ->
+      commands = [
+        {
+          type:'message',
+          params:[
+            'ポーズがスキップされるよ。\\skip[30]'
+            'OK'
+          ]
+        }
+      ]
+      it 'マップシーンへ移動', (done) ->
+        loadTestMap(done)
+      it 'コマンド実行', ->
+        interpreter = rpg.system.scene.interpreter
+        interpreter.start commands
+      it 'メッセージ表示待ち1', (done) ->
+        checkMessage done, 'OK'
+      it '次のメッセージ表示1', (done) ->
+        emulate_key('enter',done)
