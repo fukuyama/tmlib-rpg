@@ -166,17 +166,16 @@ tm.define 'rpg.WindowMenu',
   refreshMenu: ->
     @content.clear()
     for m, i in @menus
-      [x,y] = @calcMenuPosition(i)
-      @drawText(m.name, x, y)
+      w = @menuWidth + @colPadding
+      h = rpg.system.lineHeight
+      n = Math.floor(i / @maxPageItems)
+      x = (i % @cols) * w + n * @innerRect.width
+      y = Math.floor((i % @maxPageItems)/ @cols) * h
+      @drawMenu(i, x, y, @menuWidth, h)
 
-  # メニュー描画位置
-  calcMenuPosition: (i) ->
-    w = @menuWidth + @colPadding
-    h = rpg.system.lineHeight
-    n = Math.floor(i / @maxPageItems)
-    x = (i % @cols) * w + n * @innerRect.width
-    y = Math.floor((i % @maxPageItems)/ @cols) * h
-    [x,y]
+  # メニューを１つ描画
+  drawMenu: (i,x,y,w,h) ->
+    @drawText(@menus[i].name, x, y)
 
   # Window再更新
   refresh: ->
