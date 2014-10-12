@@ -45,3 +45,9 @@ tm.define 'rpg.WindowItemShop',
     # クローズ
     @close()
     return
+
+  # メニューを１つ描画
+  drawMenu: (i,x,y,w,h) ->
+    item = @items[i]
+    @drawText(item.name, x, y)
+    @drawText("#{item.price}", x + w, y , {align:'right'})
