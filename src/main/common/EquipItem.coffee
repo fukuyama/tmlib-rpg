@@ -44,6 +44,7 @@ class rpg.EquipItem extends rpg.Item
       @equips
       @required
       @equipOff
+      price
     } = {
       abilities: []
       equips: [] # 装備場所
@@ -55,6 +56,13 @@ class rpg.EquipItem extends rpg.Item
         a = {}
         a[k] = {type:'fix',val:args[k]}
         @abilities.push a
+    # 価格が設定されてなかったら自動計算
+    unless price?
+      price = 0
+      # TODO: とりあえず版。あとで、計算方法を検討～
+      for k in ABILITY_KEYS
+        price += @[k] * 50
+      @price = price
 
   ###* 装備可能判定（場所）
   * @method rpg.EquipItem#checkEquips

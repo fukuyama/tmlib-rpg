@@ -31,6 +31,7 @@ describe 'rpg.EquipItem', ->
         patk: 50
       item.patk.should.equal 50
       item.str.should.equal 0
+      item.price.should.equal 2500
     it '力アップ', ->
       item = new rpg.EquipItem
         name: 'EquipItem001'
