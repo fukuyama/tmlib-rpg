@@ -171,6 +171,20 @@ rpg.MarkupText.MARKUP_SKIP = {
     false
 }
 
+###* コンテンツクリア
+* @var {Object} rpg.MarkupText.MARKUP_CLEAR
+###
+rpg.MarkupText.MARKUP_CLEAR = {
+  mark: '\\'
+  name: 'clear'
+  func: ->
+    if @obj instanceof rpg.WindowMessage
+      @obj.clearContent()
+      @x = @y = 0
+      @i += 6
+    false
+}
+
 ###* フラグ置き換え(\F[any])
 * @var {Object} rpg.MarkupText.REPLACE_FLAG
 ###
@@ -199,6 +213,7 @@ _default = new rpg.MarkupText()
 _default.addMarkup rpg.MarkupText.MARKUP_NEW_LINE
 _default.addMarkup rpg.MarkupText.MARKUP_COLOR
 _default.addMarkup rpg.MarkupText.MARKUP_SKIP
+_default.addMarkup rpg.MarkupText.MARKUP_CLEAR
 
 # 置き換え
 _default.addReplace rpg.MarkupText.REPLACE_FLAG

@@ -90,6 +90,14 @@ tm.define 'rpg.WindowMessage',
     @content.clear()
     return
 
+  ###* コンテンツクリア
+  * @memberof rpg.WindowMessage#
+  ###
+  clearContent: ->
+    @content.oy = @_ay = @_dy = @_py = @_sy = 0 # 初期化
+    @content.clear()
+    return
+
   ###* 終了処理。最後のメッセージを表示してプレイヤーが読み終わったときに呼ばれる。
   * @memberof rpg.WindowMessage#
   ###

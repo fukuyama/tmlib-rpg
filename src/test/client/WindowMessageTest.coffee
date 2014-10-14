@@ -28,6 +28,26 @@ describe 'rpg.WindowMessage', ->
       emulate_key('enter',done)
     it 'おわり', (done) ->
       checkMessage(done,'')
+  describe '文章表示クリア', ->
+    commands = [
+      {type:'message',params:['TEST2\\nTEST3']}
+      {type:'message',params:['\\clearTEST1']}
+    ]
+    it 'マップシーンへ移動', (done) ->
+      loadTestMap(done)
+    it 'ウェイト', (done) ->
+      setTimeout(done,1000)
+    it 'コマンド実行', ->
+      interpreter = rpg.system.scene.interpreter
+      interpreter.start commands
+    it 'メッセージ表示待ち1', (done) ->
+      checkMessage(done,'TEST2\\nTEST3')
+    it '次のメッセージ表示1', (done) ->
+      emulate_key('enter',done)
+    it 'メッセージ表示待ち2', (done) ->
+      checkMessage(done,'\\clearTEST1')
+    it '次のメッセージ表示2', (done) ->
+      emulate_key('enter',done)
   describe '文章表示２行', ->
     commands = [
       {type:'message',params:['TEST1\\nTEST2']}

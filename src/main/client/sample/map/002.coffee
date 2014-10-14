@@ -230,7 +230,7 @@ module.exports = {
                         {type:'loop'}
                         {type:'block',params:[
                           {type:'message',params:[
-                            '何をお探しですか？\\skip'
+                            '\\clear何をお探しですか？\\skip'
                           ]}
                           {type:'shop_item_menu',params:[{
                             items: [1,2,3,4]

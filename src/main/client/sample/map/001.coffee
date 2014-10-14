@@ -39,6 +39,7 @@ for x in [0..29] when x % 2 == 1 and t <= 15
     data[x+y*30] = t++
 
 data[1+5*30]=17
+data[0+3*30]=0
 
 module.exports = {
   name: '001'
@@ -322,7 +323,7 @@ module.exports = {
                 direction:
                   fix: true
                 mapX: 0
-                mapY: 4
+                mapY: 3
                 pages: [
                   {
                     name: 'page1'

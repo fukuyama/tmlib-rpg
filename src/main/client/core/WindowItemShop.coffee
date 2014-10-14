@@ -16,8 +16,10 @@ tm.define 'rpg.WindowItemShop',
   ###
   init: (param={}) ->
     @superInit {
+      title: '買う'
       active: true
       visible: true
+      rows: 8
     }.$extend param
     return
 
@@ -25,7 +27,6 @@ tm.define 'rpg.WindowItemShop',
   * @memberof rpg.WindowItemShop#
   ###
   selectItem: (item) ->
-    console.log item
     rpg.system.temp.log = {
       item:
         name: item.name
