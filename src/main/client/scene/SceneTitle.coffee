@@ -74,6 +74,7 @@ tm.define 'SceneTitle',
   addTitleMenu: ->
     menu.fn = @selectMenu.bind(@) for menu in @menus
     @menu_title = rpg.WindowMenu
+      name: 'Title'
       menus: @menus
       active: true
       visible: true
