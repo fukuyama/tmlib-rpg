@@ -257,6 +257,7 @@ module.exports = {
                         {type:'message',params:['TODO: 売る処理は作成中。']}
                       ]}
                       {type:'end'}
+                      {type:'message',params:['TODO: END']}
                       {type:'option',params:[{
                         message:
                           close: on

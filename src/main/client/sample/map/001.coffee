@@ -179,6 +179,62 @@ module.exports = {
         }
         {
           type: 'rpg.SpriteCharacter'
+          name: 'Event003b'
+          width: 32
+          height: 32
+          properties:
+            init: JSON.stringify([
+              {
+                spriteSheet: 'spritesheet.hiyoko'
+                mapX: 10
+                mapY: 6
+                pages: [
+                  {
+                    name: 'page1'
+                    trigger: ['talk']
+                    commands: [
+                      {type:'preload_item',params:[
+                        items: [1,2,3,4]
+                        weapons: [1,2]
+                        armors: [1,2,3,4,5]
+                      ]}
+                      {type:'option',params:[{
+                        message:
+                          close: off
+                      }]}
+                      {
+                        type:'message'
+                        params: [
+                          'ほえほえ'
+                        ]
+                      }
+                      {type:'select',params:[['はい','いいえ']]}
+                      {type:'block',params:[
+                        {type:'message',params:['TODO: 買う処理を作成']}
+                        {
+                          type:'message'
+                          params: [
+                            'ほえほえほ'
+                          ]
+                        }
+                        {type:'break'}
+                      ]}
+                      {type:'block',params:[
+                        {type:'message',params:['TODO: キャンセル処理を作成']}
+                      ]}
+                      {type:'end'}
+                      {type:'option',params:[{
+                        message:
+                          close: on
+                      }]}
+                    ]
+                  }
+                ]
+              }
+            ])
+        }
+        {
+          type: 'rpg.SpriteCharacter'
           name: 'Event004'
           width: 32
           height: 32

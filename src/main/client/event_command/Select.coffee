@@ -4,6 +4,7 @@ tm.define 'rpg.event_command.Select',
 
   # コマンド
   apply_command: (menus, options) ->
+    console.log 'select'
     rpg.system.temp.selectArgs = {
       menus: [].concat menus
       options: {}.$extend options

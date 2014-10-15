@@ -17,6 +17,7 @@ tm.define 'rpg.WindowMessage',
   ###
   init: (args={}) ->
     delete args[k] for k, v of args when not v?
+    args.name = 'Message'
     @superInit(0,0,0,0,args)
     # args からのインスタンス変数初期化
     {
@@ -63,6 +64,7 @@ tm.define 'rpg.WindowMessage',
     @markup = rpg.MarkupText.default
     
     @addOpenListener((->
+      @active = false
       @setDisplayPosition()
     ).bind(@))
 
@@ -113,6 +115,7 @@ tm.define 'rpg.WindowMessage',
   * @params {string|Array} msg メッセージ。
   ###
   setMessage: (msg) ->
+    @active = false
     @open() if @isClose()
     @_messages = if Array.isArray msg then [].concat(msg) else [msg]
     @_nextMessage()
@@ -123,7 +126,6 @@ tm.define 'rpg.WindowMessage',
   * @private
   ###
   _nextMessage: ->
-    @active = true
     if @_dx != 0
       @_dx = 0
       @_dy += rpg.system.lineHeight
@@ -276,6 +278,7 @@ tm.define 'rpg.WindowMessage',
     menuAndFuncs = ({name:name,fn:fn.bind(@)} for name in menus)
 
     @windowMenu = rpg.WindowMenu({
+      name: 'Select'
       visible: false
       active: false
       cols: 1
@@ -300,6 +303,7 @@ tm.define 'rpg.WindowMessage',
       options
       callback
     } = args
+    options.name = 'Select'
     
     @windowInputNum = rpg.WindowInputNum(options)
     @windowInputNum.addCloseListener((->
@@ -356,7 +360,7 @@ tm.define 'rpg.WindowMessage',
     @options = @options.$extendAll rpg.system.temp.options
     rpg.system.temp.options = null
     if @options.message.close and @isOpen()
-      @close()
+      @terminate()
     return
 
   ###* スクロール処理
@@ -406,6 +410,7 @@ tm.define 'rpg.WindowMessage',
     return if @isInput()
     # ポーズ中
     if @isPause()
+      @active = true
       # 自動送り
       unless @countAutoTiming()
         @pauseCancel()
@@ -446,9 +451,11 @@ tm.define 'rpg.WindowMessage',
   * @memberof rpg.WindowMessage#
   ###
   input_ok_up: ->
-    if @isPause()
-      rpg.system.app.keyboard.clear()
+    console.log @active
+    if @isPause() and not @isSelect()
+      console.log 'pauseCancel input'
       @pauseCancel()
+    rpg.system.app.keyboard.clear()
 
 Object.defineProperty rpg.WindowMessage.prototype, 'currentMessage',
   enumerable: true, get: -> @_message ? ''

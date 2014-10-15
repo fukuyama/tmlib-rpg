@@ -19,6 +19,7 @@ tm.define 'rpg.Window',
     delete args[k] for k, v of args when not v?
     @superInit()
     {
+      name
       @active     # アクティブフラグ
       @visible    # 表示状態
       @textColor  # テキスト描画時のカラー
@@ -73,7 +74,7 @@ tm.define 'rpg.Window',
     @refreshWindow()
 
     # イベントハンドラ用メソッド
-    @eventHandler = rpg.EventHandler({active:true})
+    @eventHandler = rpg.EventHandler({active:true,name:name})
     @setupHandler = -> @eventHandler.setupHandler(@) # bind は、まずい気がする。
     @addInputHandler = @eventHandler.addInputHandler # まるまる delegate するならこう？
     @addRepeatHandler = @eventHandler.addRepeatHandler

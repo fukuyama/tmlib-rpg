@@ -224,6 +224,8 @@ tm.define 'rpg.WindowMenu',
 
   # 上
   input_up: ->
+    if @index < 0
+      @index = 0
     if @rows == 1 and @maxPageNum == 1
       # 行１
       @index -= 1
@@ -256,7 +258,9 @@ tm.define 'rpg.WindowMenu',
 
   # 左
   input_left: ->
-    if @currentIndexCols == 1 and @maxPageNum == 1
+    if @index < 0
+      @index = 0
+    else if @currentIndexCols == 1 and @maxPageNum == 1
       # カラム１
       @index -= 1
     else if @currentIndexCol == 1
@@ -281,7 +285,9 @@ tm.define 'rpg.WindowMenu',
 
   # 右
   input_right: ->
-    if @cols == 1 and @maxPageNum == 1
+    if @index < 0
+      @index = 0
+    else if @cols == 1 and @maxPageNum == 1
       # カラム１
       @index += 1
     else if @currentIndexCol == @cols or

@@ -6,6 +6,7 @@ tm.define 'rpg.WindowMapMenu',
   # 初期化
   init: (args={}) ->
     args.$extend {
+      name:'MapMenu'
       active: false
       visible: false
       x: 16
@@ -22,6 +23,10 @@ tm.define 'rpg.WindowMapMenu',
       ]
     }
     @superInit(args)
+    @talk = false
+    @on 'close', (->
+      rpg.system.player.talk() if @talk
+    ).bind @
 
   _next: (w) ->
     @addWindow w
@@ -29,7 +34,8 @@ tm.define 'rpg.WindowMapMenu',
     @visible = false
   
   menuTalk: ->
-    rpg.system.player.talk()
+    console.log 'talk'
+    @talk = true
     @close()
     return
   menuSkill: ->

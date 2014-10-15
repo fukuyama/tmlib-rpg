@@ -30,6 +30,7 @@ tm.define 'rpg.EventHandler',
   # 初期化
   init: (args={}) ->
     {
+      @name
       inputHandlers
       repeatHandlers
       @eventKeys
@@ -51,7 +52,6 @@ tm.define 'rpg.EventHandler',
       repeatDelay: 10
       repeatIntarval: 0
     }.$extend args
-
     @repeatCount = 0
 
     # メソッド作成
@@ -131,3 +131,4 @@ tm.define 'rpg.EventHandler',
       for key in @eventUpKeys when kb.getKeyUp(key)
         @repeatCount = 0
         @callInputHandler key + '_up'
+        console.log key + '_up' + " #{@name}"

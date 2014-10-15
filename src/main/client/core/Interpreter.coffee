@@ -2,8 +2,11 @@
 # イベントのインタプリタ
 tm.define 'rpg.Interpreter',
 
+  superClass: tm.event.EventDispatcher
+
   # 初期化
   init: (args={}) ->
+    @superInit()
     {
       @index
       @blocks
@@ -28,6 +31,7 @@ tm.define 'rpg.Interpreter',
 
   # イベント開始
   start: (args) ->
+    console.log "Interpreter start #{@index}"
     if args instanceof rpg.Event
       @event = args
       @commands = [].concat args.commands
@@ -39,11 +43,13 @@ tm.define 'rpg.Interpreter',
     
   # イベント終了
   end: ->
+    console.log "Interpreter end #{@index}"
     @event.end() if @event? and @event.end?
     @clear()
+    @fire rpg.Interpreter.EVENT_END
 
   # イベント実行中かどうか
-  isRunning: -> @commands.length isnt 0
+  isRunning: -> @commands.length isnt 0 or @blocks.length isnt 0
 
   # 更新
   update: ->
@@ -139,3 +145,5 @@ tm.define 'rpg.Interpreter',
         log = log[i] for i in log when log[i]?
         result = log
     result
+
+rpg.Interpreter.EVENT_END = tm.event.Event 'end'

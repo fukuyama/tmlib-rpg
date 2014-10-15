@@ -10,6 +10,7 @@ tm.define 'rpg.WindowItemShop',
   * @classdesc アイテム販売用ウィンドウクラス
   * @constructor rpg.WindowItemShop
   * @param {Object} param
+  * @param {string} param.title ウィンドウタイトル（defult:買う）
   * @param {Array} param.items アイテムID配列
   * @param {Array} param.weapons 武器ID配列
   * @param {Array} param.armors 防具ID配列
