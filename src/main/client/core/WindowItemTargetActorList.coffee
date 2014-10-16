@@ -15,6 +15,7 @@ tm.define 'rpg.WindowItemTargetActorList',
   ###
   init: (args={}) ->
     @superInit(args.$extend {
+      name: 'ItemTargetActorList'
       title: 'だれに？'
     })
     parent = args.parent

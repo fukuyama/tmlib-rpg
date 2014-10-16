@@ -31,7 +31,6 @@ tm.define 'rpg.Interpreter',
 
   # イベント開始
   start: (args) ->
-    console.log "Interpreter start #{@index}"
     if args instanceof rpg.Event
       @event = args
       @commands = [].concat args.commands
@@ -40,10 +39,10 @@ tm.define 'rpg.Interpreter',
     # console.log "event start"
     # console.log @commands
     @index = 0
+    @fire rpg.Interpreter.EVENT_START
     
   # イベント終了
   end: ->
-    console.log "Interpreter end #{@index}"
     @event.end() if @event? and @event.end?
     @clear()
     @fire rpg.Interpreter.EVENT_END
@@ -146,4 +145,5 @@ tm.define 'rpg.Interpreter',
         result = log
     result
 
+rpg.Interpreter.EVENT_START = tm.event.Event 'start'
 rpg.Interpreter.EVENT_END = tm.event.Event 'end'

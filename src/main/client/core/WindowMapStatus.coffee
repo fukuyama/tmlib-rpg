@@ -24,7 +24,10 @@ tm.define 'rpg.WindowMapStatus',
     x = rpg.system.screen.width - w - 16
     y = rpg.system.screen.height - h - 16
 
-    @superInit(x,y,w,h,{visible:false}.$extend args)
+    @superInit(x,y,w,h,{
+      name: 'MapStatus'
+      visible: false
+    }.$extend args)
     @fontSize = '24px'
     @drawStatus()
 

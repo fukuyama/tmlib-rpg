@@ -6,6 +6,7 @@ tm.define 'rpg.WindowOperation',
   init: (args={}) ->
     parent = args.parent
     args.$extend {
+      name: 'Operation'
       x: parent.right
       y: parent.top
       active: true

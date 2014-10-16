@@ -53,6 +53,7 @@ tm.define 'rpg.WindowItemMenu',
     m.push name:'すてる', fn: @_menuThrow.bind @
     args.menus = m.concat menus
     @superInit({
+      name: 'ItemMenu'
       title: 'どうする？'
       active: true
       visible: true

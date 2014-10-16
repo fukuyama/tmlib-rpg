@@ -23,10 +23,6 @@ tm.define 'rpg.WindowMapMenu',
       ]
     }
     @superInit(args)
-    @talk = false
-    @on 'close', (->
-      rpg.system.player.talk() if @talk
-    ).bind @
 
   _next: (w) ->
     @addWindow w
@@ -34,9 +30,8 @@ tm.define 'rpg.WindowMapMenu',
     @visible = false
   
   menuTalk: ->
-    console.log 'talk'
-    @talk = true
     @close()
+    rpg.system.player.talk()
     return
   menuSkill: ->
     self = @

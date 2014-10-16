@@ -15,6 +15,7 @@ tm.define 'rpg.WindowStatusActorList',
   init: (args={}) ->
     parent = args.parent
     @superInit(args.$extend {
+      name: 'StatusActorList'
       title: 'つよさ'
       menus: [
         {name:'ぜんいん',fn: @allStatus}

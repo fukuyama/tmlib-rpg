@@ -219,45 +219,54 @@ module.exports = {
                           close: off
                       }]}
                       {type:'message',params:[
-                        'いらっしゃいませ。'
+                        'いらっしゃいませ。\n'+
+                        'ここは雑貨屋です。'
                       ]}
-                      {type:'message',params:[
-                        'ここは雑貨屋です。\n'+
-                        'どの様なご用件でしょうか？'
-                      ]}
-                      {type:'select',params:[['買う','売る']]}
+                      {type:'loop'}
                       {type:'block',params:[
-                        {type:'loop'}
+                        {type:'message',params:[
+                          'どの様なご用件でしょうか？'
+                        ]}
+                        {type:'select',params:[['買う','売る'],{cancelIndex:2}]}
                         {type:'block',params:[
-                          {type:'message',params:[
-                            '\\clear何をお探しですか？\\skip'
-                          ]}
-                          {type:'shop_item_menu',params:[{
-                            items: [1,2,3,4]
-                            weapons: [1,2]
-                            armors: [1,2,3,4,5]
-                          }]}
-                          {type:'message',params:[
-                            '\#{item.name} ですね。\n'
-                            '\#{item.price} になります。'
-                          ]}
-                          {type:'select',params:[['はい','いいえ']]}
+                          {type:'loop'}
                           {type:'block',params:[
-                            {type:'message',params:['TODO: 買う処理を作成']}
-                            {type:'break'}
-                          ]}
-                          {type:'block',params:[
-                            {type:'message',params:['TODO: キャンセル処理を作成']}
+                            {type:'message',params:[
+                              '\\clear何をお探しですか？\\skip'
+                            ]}
+                            {type:'shop_item_menu',params:[{
+                              items: [1,2,3,4]
+                              weapons: [1,2]
+                              armors: [1,2,3,4,5]
+                            }]}
+                            {type:'if',params:['log','item.index','!=',-1]}
+                            {type:'block',params:[
+                              {type:'message',params:[
+                                '\#{item.name} ですね。\n'+
+                                '\#{item.price} になります。'
+                              ]}
+                              {type:'select',params:[['はい','いいえ']]}
+                              {type:'block',params:[
+                                {type:'message',params:['TODO: 買う処理を作成']}
+                              ]}
+                              {type:'end'}
+                            ]}
+                            {type:'else'}
+                            {type:'block',params:[{type:'break'}]}
+                            {type:'end'}
                           ]}
                           {type:'end'}
                         ]}
+                        {type:'block',params:[
+                          {type:'message',params:['TODO: 売る処理は作成中。']}
+                        ]}
+                        {type:'block',params:[{type:'break'}]}
                         {type:'end'}
                       ]}
-                      {type:'block',params:[
-                        {type:'message',params:['TODO: 売る処理は作成中。']}
-                      ]}
                       {type:'end'}
-                      {type:'message',params:['TODO: END']}
+                      {type:'message',params:[
+                        'ありがとうございました。'
+                      ]}
                       {type:'option',params:[{
                         message:
                           close: on

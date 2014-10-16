@@ -34,7 +34,6 @@ tm.define 'rpg.WindowItemListBase',
       cols: 1
       rows: 10
       menuWidthFix: 24 * 9
-      close: false
     }.$extend(args))
     if help
       @on 'addWindow', (e) ->
@@ -111,7 +110,6 @@ tm.define 'rpg.WindowItemListBase',
   * @memberof rpg.WindowItemListBase#
   ###
   selectMenu: ->
-    console.log 'selectMenu'
     @selectItem @items[@index]
     return
 

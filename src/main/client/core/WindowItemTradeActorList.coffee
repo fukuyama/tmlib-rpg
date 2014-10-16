@@ -15,6 +15,7 @@ tm.define 'rpg.WindowItemTradeActorList',
   ###
   init: (args={}) ->
     @superInit(args.$extend {
+      name :'ItemTradeActorList'
       title: 'だれに？'
       menus: [
         {name:'ふくろ',fn: -> console.log 'ふくろ'}

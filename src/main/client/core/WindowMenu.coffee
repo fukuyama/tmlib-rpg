@@ -29,7 +29,6 @@ tm.define 'rpg.WindowMenu',
       @colPadding
       @menuWidthFix
       @menuHeightFix
-      close
     } = {
       menus: [] # {name:'name',fn:menuFunc} の配列
       index: 0
@@ -39,7 +38,6 @@ tm.define 'rpg.WindowMenu',
       rows: 2
       cursor: DEFAULT_CURSOR_ASSET
       colPadding: 4
-      close: true
       menuWidthFix: null
       menuHeightFix: null
     }.$extend(rpg.system.windowDefault).$extend args
@@ -47,11 +45,6 @@ tm.define 'rpg.WindowMenu',
     @rows = 2 if @rows <= 0
     index = -1 if menus.length == 0
     @index = index # インデックスの初期化関連でローカル変数も使う
-    if close
-      @cancel = ->
-        rpg.system.se.menuCancel()
-        @index = @cancelIndex
-        @close()
 
     # カーソル作成
     @cursorInstance = @createCursor(@cursor)
@@ -221,6 +214,10 @@ tm.define 'rpg.WindowMenu',
   input_cancel_up: ->
     if @cancel instanceof Function
       @cancel()
+    else unless typeof @cancel is 'boolean' and not @cancel
+      rpg.system.se.menuCancel()
+      @index = @cancelIndex
+      @close()
 
   # 上
   input_up: ->

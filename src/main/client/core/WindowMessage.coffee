@@ -451,9 +451,7 @@ tm.define 'rpg.WindowMessage',
   * @memberof rpg.WindowMessage#
   ###
   input_ok_up: ->
-    console.log @active
     if @isPause() and not @isSelect()
-      console.log 'pauseCancel input'
       @pauseCancel()
     rpg.system.app.keyboard.clear()
 

@@ -193,11 +193,6 @@ module.exports = {
                     name: 'page1'
                     trigger: ['talk']
                     commands: [
-                      {type:'preload_item',params:[
-                        items: [1,2,3,4]
-                        weapons: [1,2]
-                        armors: [1,2,3,4,5]
-                      ]}
                       {type:'option',params:[{
                         message:
                           close: off
@@ -210,23 +205,54 @@ module.exports = {
                       }
                       {type:'select',params:[['はい','いいえ']]}
                       {type:'block',params:[
-                        {type:'message',params:['TODO: 買う処理を作成']}
-                        {
-                          type:'message'
-                          params: [
-                            'ほえほえほ'
-                          ]
-                        }
+                        {type:'message',params:['はい']}
                         {type:'break'}
                       ]}
                       {type:'block',params:[
-                        {type:'message',params:['TODO: キャンセル処理を作成']}
+                        {type:'message',params:['いいえ']}
                       ]}
                       {type:'end'}
                       {type:'option',params:[{
                         message:
                           close: on
                       }]}
+                    ]
+                  }
+                ]
+              }
+            ])
+        }
+        {
+          type: 'rpg.SpriteCharacter'
+          name: 'Event003c'
+          width: 32
+          height: 32
+          properties:
+            init: JSON.stringify([
+              {
+                spriteSheet: 'spritesheet.hiyoko'
+                mapX: 11
+                mapY: 6
+                pages: [
+                  {
+                    name: 'page1'
+                    trigger: ['talk']
+                    commands: [
+                      {
+                        type:'message'
+                        params: [
+                          'ほえほえ'
+                        ]
+                      }
+                      {type:'select',params:[['はい','いいえ']]}
+                      {type:'block',params:[
+                        {type:'message',params:['はい']}
+                        {type:'break'}
+                      ]}
+                      {type:'block',params:[
+                        {type:'message',params:['いいえ']}
+                      ]}
+                      {type:'end'}
                     ]
                   }
                 ]

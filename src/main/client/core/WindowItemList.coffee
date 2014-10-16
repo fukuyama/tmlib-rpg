@@ -15,6 +15,7 @@ tm.define 'rpg.WindowItemList',
   * @param {Array} param.menus 追加メニュー
   ###
   init: (args={}) ->
+    args.name = 'ItemList'
     @superInit(args)
     return
 

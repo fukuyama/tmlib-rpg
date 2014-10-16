@@ -131,4 +131,3 @@ tm.define 'rpg.EventHandler',
       for key in @eventUpKeys when kb.getKeyUp(key)
         @repeatCount = 0
         @callInputHandler key + '_up'
-        console.log key + '_up' + " #{@name}"

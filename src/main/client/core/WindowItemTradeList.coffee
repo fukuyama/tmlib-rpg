@@ -16,7 +16,10 @@ tm.define 'rpg.WindowItemTradeList',
   * @param {Array} param.menus 追加メニュー
   ###
   init: (args={}) ->
-    @superInit {help:off}.$extend args
+    @superInit {
+      name: 'ItemTradeList'
+      help: off
+    }.$extend args
     return
 
   ###* アイテム選択時の処理

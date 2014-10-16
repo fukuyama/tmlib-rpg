@@ -6,6 +6,7 @@ tm.define 'rpg.WindowInputNum',
   init: (args={}) ->
     delete args[k] for k, v of args when not v?
     args.initSizeContent = true
+    args.name = 'InputNum'
     @superInit(0, 0, 0, 0, args)
     {
       @visible
