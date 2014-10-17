@@ -24,5 +24,5 @@ tm.define 'rpg.event_command.ShopItemMenu',
     @_shop_window = null
     return false
 
-# イベントの削除
+# お店イベント
 rpg.event_command.shop_item_menu = rpg.event_command.ShopItemMenu()

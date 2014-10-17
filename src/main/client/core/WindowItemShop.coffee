@@ -33,6 +33,8 @@ tm.define 'rpg.WindowItemShop',
       item:
         index: @index
         name: item.name
+        id: item.url
+        num: 1
         price: item.price
     }
     @close()

@@ -247,7 +247,7 @@ module.exports = {
                               ]}
                               {type:'select',params:[['はい','いいえ']]}
                               {type:'block',params:[
-                                {type:'message',params:['TODO: 買う処理を作成']}
+                                {type:'buy_item'}
                               ]}
                               {type:'end'}
                             ]}

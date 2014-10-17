@@ -27,7 +27,7 @@ describe 'rpg.Interpreter(Item)', () ->
         actor.backpack.itemCount.should.equal 2
       it '２番目のアクターにアイテムを渡す', (done) ->
         interpreter.start [
-          {type:'gain_item',params:[{item:1,actor:1}]}
+          {type:'gain_item',params:[{id:1,actor:1}]}
           {type:'function',params:[done]}
         ]
       it '２番目のアクターのアイテムが増える', ->
@@ -37,7 +37,7 @@ describe 'rpg.Interpreter(Item)', () ->
         actor.backpack.itemCount.should.equal 2
       it 'パーティの袋にアイテムを入れる', (done) ->
         interpreter.start [
-          {type:'gain_item',params:[{item:2,num:2,backpack:0}]}
+          {type:'gain_item',params:[{id:2,num:2,backpack:0}]}
           {type:'function',params:[done]}
         ]
       it 'パーティの袋のアイテムが増える', ->
@@ -49,7 +49,7 @@ describe 'rpg.Interpreter(Item)', () ->
         backpack.itemCount.should.equal 2
       it 'パーティの袋のアイテムを削除', (done) ->
         interpreter.start [
-          {type:'lost_item',params:[{item:2,backpack:0}]}
+          {type:'lost_item',params:[{id:2,backpack:0}]}
           {type:'function',params:[done]}
         ]
       it 'パーティの袋のアイテムが減る', ->
@@ -61,7 +61,7 @@ describe 'rpg.Interpreter(Item)', () ->
         backpack.itemCount.should.equal 1
       it '２番目のアクターのアイテムを捨てる', (done) ->
         interpreter.start [
-          {type:'lost_item',params:[{item:1,actor:1}]}
+          {type:'lost_item',params:[{id:1,actor:1}]}
           {type:'function',params:[done]}
         ]
       it '２番目のアクターのアイテムが減る', ->
@@ -95,7 +95,7 @@ describe 'rpg.Interpreter(Item)', () ->
         interpreter = rpg.system.scene.interpreter
       it 'アイテムを１つ増やす', (done) ->
         interpreter.start [
-          {type:'gain_item',params:[{item:2}]}
+          {type:'gain_item',params:[{id:2}]}
           {type:'function',params:[done]}
         ]
       it '先頭プレイヤーのアイテムが１つ増える', ->
@@ -150,7 +150,7 @@ describe 'rpg.Interpreter(Item)', () ->
         actor.backpack.itemCount.should.equal 1
       it 'アイテムを2こ増やす', (done) ->
         interpreter.start [
-          {type:'gain_item',params:[{item:2,num:2}]}
+          {type:'gain_item',params:[{id:2,num:2}]}
           {type:'function',params:[done]}
         ]
       it '２こ増えている', ->
@@ -182,7 +182,7 @@ describe 'rpg.Interpreter(Item)', () ->
         n = actor.backpack.itemCount
       it '武器を１つ増やす', (done) ->
         interpreter.start [
-          {type:'gain_weapon',params:[{weapon:1}]}
+          {type:'gain_weapon',params:[{id:1}]}
           {type:'function',params:[done]}
         ]
       it '１つ増えている', ->
@@ -190,7 +190,7 @@ describe 'rpg.Interpreter(Item)', () ->
         actor.backpack.itemCount.should.equal (n + 1)
       it '武器を１つ減らす', (done) ->
         interpreter.start [
-          {type:'lost_weapon',params:[{weapon:1}]}
+          {type:'lost_weapon',params:[{id:1}]}
           {type:'function',params:[done]}
         ]
       it '１つ減っている', ->

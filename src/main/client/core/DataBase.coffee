@@ -90,7 +90,11 @@ tm.define 'rpg.DataBase',
   * @return {String} データをロードするためのURL
   * @private
   ###
-  _dataUrl: (path, id=0) -> @baseUrl + path + @_filename(id) + '.json'
+  _dataUrl: (path, id=0) ->
+    if typeof id is 'string'
+      if id.match /^http:\/\//
+        return id
+    @baseUrl + path + @_filename(id) + '.json'
 
   _preload: (key,ids,func) ->
     mgr = tm.asset.Manager

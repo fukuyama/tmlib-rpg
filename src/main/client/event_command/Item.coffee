@@ -2,7 +2,7 @@
 # アイテム操作関連
 
 # アイテム増やす処理
-_addItemCallback = (num, items, actor, backpack) ->
+_gain_callback = (num, items, actor, backpack) ->
   # 誰かのアイテム
   target = rpg.game.party
   if actor?
@@ -15,10 +15,9 @@ _addItemCallback = (num, items, actor, backpack) ->
   # 対象のアイテムを増やす
   for n in [0 ... num]
     target.addItem(i) for i in items
-  @waitFlag = false
 
 # アイテムを削除する処理
-_removeItemCallback = (num, items, actor, backpack) ->
+_lost_callback = (num, items, actor, backpack) ->
   # 誰かのアイテム
   target = rpg.game.party
   if actor?
@@ -33,8 +32,8 @@ _removeItemCallback = (num, items, actor, backpack) ->
     for i in items
       i = target.getItem(i.name)
       target.removeItem(i) if i?
-  @waitFlag = false
 
+# アイテム事前読み込み
 tm.define 'rpg.event_command.PreloadItem',
   # コマンド
   apply_command: (args) ->
@@ -44,111 +43,49 @@ tm.define 'rpg.event_command.PreloadItem',
 
 rpg.event_command.preload_item = rpg.event_command.PreloadItem()
 
-# アイテムを増やす
-tm.define 'rpg.event_command.GainItem',
+# アイテムの増減
+tm.define 'rpg.event_command.GainLostItem',
+  # 初期化
+  init: (item_type,call_type) ->
+    @preload = ->
+      if item_type is 'item'
+        @preload = rpg.system.db.preloadItem
+      if item_type is 'weapon'
+        @preload = rpg.system.db.preloadWeapon
+      if item_type is 'armor'
+        @preload = rpg.system.db.preloadArmor
+      @preload.apply @, arguments
+    if call_type is 'gain'
+      @_callback = _gain_callback
+    if call_type is 'lost'
+      @_callback = _lost_callback
 
   # コマンド
-  apply_command: (item, num = 1, actor = null) ->
-    {item,num,actor,backpack} = {num: 1}.$extend item if item.item?
-    @waitFlag = true
+  apply_command: (id, num = 1, actor = null) ->
+    {id,num,actor,backpack} = {num: 1}.$extend id if typeof id is 'object'
     self = @
-    rpg.system.db.preloadItem [item], (items) ->
-      _addItemCallback.call self, num, items, actor, backpack
+    self.waitFlag = true
+    ec = @event_command
+    ec.preload [id], (items) ->
+      ec._callback.call self, num, items, actor, backpack
+      self.waitFlag = false
     false
 
-# アイテムを減らす
-tm.define 'rpg.event_command.LostItem',
-
-  # コマンド
-  apply_command: (item, num = 1, actor = null) ->
-    {item,num,actor,backpack} = {num: 1}.$extend item if item.item?
-    @waitFlag = true
-    self = @
-    rpg.system.db.preloadItem [item], (items) ->
-      _removeItemCallback.call self, num, items, actor, backpack
-    false
+rpg.event_command.gain_item = rpg.event_command.GainLostItem('item','gain')
+rpg.event_command.gain_weapon = rpg.event_command.GainLostItem('weapon','gain')
+rpg.event_command.gain_armor = rpg.event_command.GainLostItem('armor','gain')
+rpg.event_command.lost_item = rpg.event_command.GainLostItem('item','lost')
+rpg.event_command.lost_weapon = rpg.event_command.GainLostItem('weapon','lost')
+rpg.event_command.lost_armor = rpg.event_command.GainLostItem('armor','lost')
 
 # アイテムをすべて捨てる
 tm.define 'rpg.event_command.ClearItem',
-
   # コマンド
   apply_command: () ->
     rpg.game.party.clearItem()
     false
 
-rpg.event_command.gain_item = rpg.event_command.GainItem()
-rpg.event_command.lost_item = rpg.event_command.LostItem()
 rpg.event_command.clear_item = rpg.event_command.ClearItem()
-
-# 武器を増やす
-tm.define 'rpg.event_command.GainWeapon',
-
-  # コマンド
-  apply_command: (weapon, num = 1, actor = null) ->
-    {weapon,num,actor,backpack} = {num: 1}.$extend weapon if weapon.weapon?
-    @waitFlag = true
-    self = @
-    rpg.system.db.preloadWeapon [weapon], (items) ->
-      _addItemCallback.call self, num, items, actor, backpack
-    false
-
-# 武器を減らす
-tm.define 'rpg.event_command.LostWeapon',
-
-  # コマンド
-  apply_command: (weapon, num = 1, actor = null) ->
-    {weapon,num,actor,backpack} = {num: 1}.$extend weapon if weapon.weapon?
-    @waitFlag = true
-    self = @
-    rpg.system.db.preloadWeapon [weapon], (items) ->
-      _removeItemCallback.call self, num, items, actor, backpack
-    false
-
-rpg.event_command.gain_weapon = rpg.event_command.GainWeapon()
-rpg.event_command.lost_weapon = rpg.event_command.LostWeapon()
-
-# 防具を増やす
-tm.define 'rpg.event_command.GainArmor',
-
-  ###* イベントコマンドの反映。
-  * Interpreter インスタンスのメソッドとして実行される。
-  * イベントコマンド自体のインスタンスは、@event_command で取得する。
-  * @memberof rpg.event_command.GainArmor#
-  * @param {number|string} armor 増やす防具
-  * @param {number} num 増やす数
-  * @param {number} actor 増やす対象アクター（パーティの何番目のアクターかの番号） null の場合、パーティに増やす
-  * @return {boolean} false
-  ###
-  apply_command: (armor, num = 1, actor = null) ->
-    {armor,num,actor,backpack} = {num: 1}.$extend armor if armor.armor?
-    @waitFlag = true
-    self = @
-    rpg.system.db.preloadArmor [armor], (items) ->
-      _addItemCallback.call self, num, items, actor, backpack
-    false
-
-# 防具を減らす
-tm.define 'rpg.event_command.LostArmor',
-
-  ###* イベントコマンドの反映。
-  * Interpreter インスタンスのメソッドとして実行される。
-  * イベントコマンド自体のインスタンスは、@event_command で取得する。
-  * @memberof rpg.event_command.LostArmor#
-  * @param {number|string} armor 減らす防具
-  * @param {number} num 減らす数
-  * @param {number} actor 減らす対象アクター（パーティの何番目のアクターかの番号） null の場合、パーティから減らす
-  * @return {boolean} false
-  ###
-  apply_command: (armor, num = 1, actor = null) ->
-    {armor,num,actor,backpack} = {num: 1}.$extend armor if armor.armor?
-    @waitFlag = true
-    self = @
-    rpg.system.db.preloadArmor [armor], (items) ->
-      _removeItemCallback.call self, num, items, actor, backpack
-    false
-
-rpg.event_command.gain_armor = rpg.event_command.GainArmor()
-rpg.event_command.lost_armor = rpg.event_command.LostArmor()
 
 # 装備する
 tm.define 'rpg.event_command.EquipItem',
@@ -181,3 +118,48 @@ tm.define 'rpg.event_command.EquipItem',
 
 rpg.event_command.equip_weapon = rpg.event_command.EquipItem('weapon')
 rpg.event_command.equip_armor = rpg.event_command.EquipItem('armor')
+
+
+
+tm.define 'rpg.event_command.BuyItem',
+
+  init: (item_type) ->
+    @item_type = item_type
+
+  ###* 購入イベントコマンドの反映。
+  * Interpreter インスタンスのメソッドとして実行される。
+  * イベントコマンド自体のインスタンスは、@event_command で取得する。
+  * @memberof rpg.event_command.BuyItem#
+  * @param {string} id アイテムのID(URL)か、オブジェクト引数
+  * @param {number} num 購入する個数
+  * @param {number} price 合計金額
+  * @return {boolean} このコマンドで繰り返し止める場合は、true
+  ###
+  apply_command: (id, num, price) ->
+    type = null
+    data = null
+    data = rpg.system.temp.log.item if arguments.length == 0
+    data = id if arguments.length == 1
+    if data?
+      {
+        type
+        id
+        num
+        price
+      } = {
+        num: 1
+      }.$extend data
+    type = @item_type unless type?
+    load = (items) ->
+      @waitFlag = false
+    switch type
+      when 'item' then rpg.system.db.preloadItem [id], load.bind @
+      when 'weapon' then rpg.system.db.preloadWeapon [id], load.bind @
+      when 'armor' then rpg.system.db.preloadArmor [id], load.bind @
+    @waitFlag = true
+    return false
+
+# 購入処理
+rpg.event_command.buy_item = rpg.event_command.BuyItem('item')
+rpg.event_command.buy_weapon = rpg.event_command.BuyItem('weapon')
+rpg.event_command.buy_armor = rpg.event_command.BuyItem('armor')
