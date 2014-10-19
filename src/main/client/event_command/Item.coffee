@@ -2,14 +2,20 @@
 # アイテム操作関連
 
 # アイテム増やす処理
-_gain_callback = (num, items, actor, backpack) ->
+_gain_callback = (items, args) ->
+  {
+    num
+    actor
+    backpack
+  } = args
+  console.log items
   # 誰かのアイテム
   target = rpg.game.party
   if actor?
     # アクターのアイテム
     actor = rpg.game.party.getAt(actor)
     target = actor.backpack if actor?
-  else if backpack?
+  else if backpack? and backpack
     # バックパックのアイテム
     target = rpg.game.party.backpack
   # 対象のアイテムを増やす
@@ -17,14 +23,19 @@ _gain_callback = (num, items, actor, backpack) ->
     target.addItem(i) for i in items
 
 # アイテムを削除する処理
-_lost_callback = (num, items, actor, backpack) ->
+_lost_callback = (items, args) ->
+  {
+    num
+    actor
+    backpack
+  } = args
   # 誰かのアイテム
   target = rpg.game.party
   if actor?
     # アクターのアイテム
     actor = rpg.game.party.getAt(actor)
     target = actor.backpack if actor?
-  else if backpack?
+  else if backpack? and backpack
     # バックパックのアイテム
     target = rpg.game.party.backpack
   # 対象のアイテムを増やす
@@ -32,6 +43,16 @@ _lost_callback = (num, items, actor, backpack) ->
     for i in items
       i = target.getItem(i.name)
       target.removeItem(i) if i?
+
+# アイテム買う処理処理
+_buy_callback = (args) ->
+  _gain_callback(args)
+  {
+    num
+    items
+    actor
+    backpack
+  } = args
 
 # アイテム事前読み込み
 tm.define 'rpg.event_command.PreloadItem',
@@ -59,24 +80,50 @@ tm.define 'rpg.event_command.GainLostItem',
       @_callback = _gain_callback
     if call_type is 'lost'
       @_callback = _lost_callback
+    if call_type is 'buy'
+      @_callback = _buy_callback
 
-  # コマンド
-  apply_command: (id, num = 1, actor = null) ->
-    {id,num,actor,backpack} = {num: 1}.$extend id if typeof id is 'object'
+  ###* コマンド
+  * @params {Object} args オブジェクトじゃない場合は、以下の引数の順番
+  * @params {string} args.id
+  * @params {number} args.num
+  * @params {number} args.actor アクターのパーティインデックス
+  * @params {boolean} args.backpack 袋に入れる場合 true （アクター優先？)
+  * @params {price} args.price 値段
+  ###
+  apply_command: (id, num = 1, actor = null, backpack = false, price = 0) ->
+    data = null
+    if typeof id is 'object'
+      data = {num: 1}.$extend id
+    else
+      data = {
+        id: id
+        num: num
+        actor: actor
+        backpack: backpack
+        price: price
+      }
+    console.log data
     self = @
     self.waitFlag = true
     ec = @event_command
-    ec.preload [id], (items) ->
-      ec._callback.call self, num, items, actor, backpack
+    ec.preload [data.id], (items) ->
+      ec._callback.call self, items, data
       self.waitFlag = false
     false
 
 rpg.event_command.gain_item = rpg.event_command.GainLostItem('item','gain')
 rpg.event_command.gain_weapon = rpg.event_command.GainLostItem('weapon','gain')
 rpg.event_command.gain_armor = rpg.event_command.GainLostItem('armor','gain')
+
 rpg.event_command.lost_item = rpg.event_command.GainLostItem('item','lost')
 rpg.event_command.lost_weapon = rpg.event_command.GainLostItem('weapon','lost')
 rpg.event_command.lost_armor = rpg.event_command.GainLostItem('armor','lost')
+
+rpg.event_command.buy_item = rpg.event_command.GainLostItem('item','buy')
+rpg.event_command.buy_weapon = rpg.event_command.GainLostItem('weapon','buy')
+rpg.event_command.buy_armor = rpg.event_command.GainLostItem('armor','buy')
+
 
 # アイテムをすべて捨てる
 tm.define 'rpg.event_command.ClearItem',

@@ -37,7 +37,7 @@ describe 'rpg.Interpreter(Item)', () ->
         actor.backpack.itemCount.should.equal 2
       it 'パーティの袋にアイテムを入れる', (done) ->
         interpreter.start [
-          {type:'gain_item',params:[{id:2,num:2,backpack:0}]}
+          {type:'gain_item',params:[{id:2,num:2,backpack:true}]}
           {type:'function',params:[done]}
         ]
       it 'パーティの袋のアイテムが増える', ->
@@ -49,7 +49,7 @@ describe 'rpg.Interpreter(Item)', () ->
         backpack.itemCount.should.equal 2
       it 'パーティの袋のアイテムを削除', (done) ->
         interpreter.start [
-          {type:'lost_item',params:[{id:2,backpack:0}]}
+          {type:'lost_item',params:[{id:2,backpack:true}]}
           {type:'function',params:[done]}
         ]
       it 'パーティの袋のアイテムが減る', ->
