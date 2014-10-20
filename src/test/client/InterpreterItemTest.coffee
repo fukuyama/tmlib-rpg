@@ -311,3 +311,54 @@ describe 'rpg.Interpreter(Item)', () ->
             }]}
             {type:'function',params:[done]}
           ]
+    describe '購入処理', ->
+      describe '基本', ->
+        n = 0
+        c = 0
+        it 'マップシーンへ移動', (done) ->
+          reloadTestMap(done)
+        it 'ウェイト', (done) ->
+          setTimeout(done,1000)
+        it 'インタープリタ取得', ->
+          interpreter = rpg.system.scene.interpreter
+        it 'アイテム所持数確認', ->
+          actor = rpg.game.party.getAt(0)
+          n = actor.backpack.itemCount
+        it '所持金を増やす', ->
+          rpg.game.party.cash += 10
+          c = rpg.game.party.cash
+        it 'アイテムを１つ購入', (done) ->
+          interpreter.start [
+            {type:'buy_item',params:[1]}
+            {type:'function',params:[done]}
+          ]
+        it '１つ増えている', ->
+          actor = rpg.game.party.getAt(0)
+          actor.backpack.itemCount.should.equal (n + 1)
+        it '所持金が減っている', ->
+          rpg.game.party.cash.should.equal (c - 10)
+      describe 'プライス違い', ->
+        n = 0
+        c = 0
+        it 'マップシーンへ移動', (done) ->
+          reloadTestMap(done)
+        it 'ウェイト', (done) ->
+          setTimeout(done,1000)
+        it 'インタープリタ取得', ->
+          interpreter = rpg.system.scene.interpreter
+        it 'アイテム所持数確認', ->
+          actor = rpg.game.party.getAt(0)
+          n = actor.backpack.itemCount
+        it '所持金を増やす', ->
+          rpg.game.party.cash += 100
+          c = rpg.game.party.cash
+        it 'アイテムを１つ購入（ただし値段は、100）', (done) ->
+          interpreter.start [
+            {type:'buy_item',params:[id:1,price:100]}
+            {type:'function',params:[done]}
+          ]
+        it '１つ増えている', ->
+          actor = rpg.game.party.getAt(0)
+          actor.backpack.itemCount.should.equal (n + 1)
+        it '所持金が減っている', ->
+          rpg.game.party.cash.should.equal (c - 100)

@@ -12,7 +12,13 @@ rpg = _g.rpg = _g.rpg ? {}
 class rpg.Party
 
   # コンストラクタ
-  constructor: ->
+  constructor: (args={}) ->
+    {
+      @cash
+    } = {
+      cash: 0
+    }.$extendAll args
+
     # メンバーリスト（プライベートぽくしたいけれど…）
     @_members = []
 

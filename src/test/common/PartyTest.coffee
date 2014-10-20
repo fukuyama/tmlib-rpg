@@ -19,6 +19,17 @@ describe 'rpg.Party', () ->
       party = new rpg.Party()
     it '初期メンバー数は０', ->
       party.length.should.equal 0
+    it '所持金は０', ->
+      party.cash.should.equal 0
+  describe '引数有', () ->
+    it '初期化', ->
+      party = new rpg.Party({cash:100})
+    it '所持金は０', ->
+      party.cash.should.equal 100
+    it 'セーブロード', ->
+      json = rpg.utils.createJsonData(party)
+      party = rpg.utils.createRpgObject(json)
+      party.cash.should.equal 100
   describe 'メンバー操作', () ->
     a1 = null
     a2 = null
