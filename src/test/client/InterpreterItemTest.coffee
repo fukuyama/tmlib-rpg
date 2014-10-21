@@ -362,3 +362,71 @@ describe 'rpg.Interpreter(Item)', () ->
           actor.backpack.itemCount.should.equal (n + 1)
         it '所持金が減っている', ->
           rpg.game.party.cash.should.equal (c - 100)
+
+    describe '販売処理', ->
+      describe '基本', ->
+        n = 0
+        c = 0
+        it 'マップシーンへ移動', (done) ->
+          reloadTestMap(done)
+        it 'ウェイト', (done) ->
+          setTimeout(done,1000)
+        it 'インタープリタ取得', ->
+          interpreter = rpg.system.scene.interpreter
+        it 'アイテム所持数確認', ->
+          actor = rpg.game.party.getAt(0)
+          n = actor.backpack.itemCount
+        it '所持金を確認', ->
+          c = rpg.game.party.cash
+        it 'アイテムを１つ増やす', (done) ->
+          interpreter.start [
+            {type:'gain_item',params:[1]}
+            {type:'function',params:[done]}
+          ]
+        it '１つ増えている', ->
+          actor = rpg.game.party.getAt(0)
+          actor.backpack.itemCount.should.equal (n + 1)
+          n = actor.backpack.itemCount
+        it 'アイテムを１つ売る', (done) ->
+          interpreter.start [
+            {type:'sell_item',params:[1]}
+            {type:'function',params:[done]}
+          ]
+        it '１つ減っている', ->
+          actor = rpg.game.party.getAt(0)
+          actor.backpack.itemCount.should.equal (n - 1)
+        it '所持金が増えている', ->
+          rpg.game.party.cash.should.equal (c + 2)
+      describe 'プライス違い', ->
+        n = 0
+        c = 0
+        it 'マップシーンへ移動', (done) ->
+          reloadTestMap(done)
+        it 'ウェイト', (done) ->
+          setTimeout(done,1000)
+        it 'インタープリタ取得', ->
+          interpreter = rpg.system.scene.interpreter
+        it 'アイテム所持数確認', ->
+          actor = rpg.game.party.getAt(0)
+          n = actor.backpack.itemCount
+        it '所持金を確認', ->
+          c = rpg.game.party.cash
+        it 'アイテムを１つ増やす', (done) ->
+          interpreter.start [
+            {type:'gain_item',params:[1]}
+            {type:'function',params:[done]}
+          ]
+        it '１つ増えている', ->
+          actor = rpg.game.party.getAt(0)
+          actor.backpack.itemCount.should.equal (n + 1)
+          n = actor.backpack.itemCount
+        it 'アイテムを１つ売る（100で売る）', (done) ->
+          interpreter.start [
+            {type:'sell_item',params:[id:1,price:100]}
+            {type:'function',params:[done]}
+          ]
+        it '１つ減っている', ->
+          actor = rpg.game.party.getAt(0)
+          actor.backpack.itemCount.should.equal (n - 1)
+        it '所持金が増えている', ->
+          rpg.game.party.cash.should.equal (c + 100)

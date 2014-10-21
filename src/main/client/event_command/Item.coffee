@@ -21,14 +21,15 @@ _gain_callback = (items, args) ->
   gain = true
   # 値段がある場合
   if price > 0
+    # 値段の分、所持金を減らす
     if rpg.game.party.cash >= price
       rpg.game.party.cash -= price
     else
       gain = false
   if gain
     # 対象のアイテムを増やす
-    for n in [0 ... num]
-      for i in items
+    for i in items
+      for n in [0 ... num]
         target.addItem(i)
 
 # アイテムを削除する処理
@@ -37,6 +38,7 @@ _lost_callback = (items, args) ->
     num
     actor
     backpack
+    price
   } = args
   # 誰かのアイテム
   target = rpg.game.party
@@ -47,9 +49,13 @@ _lost_callback = (items, args) ->
   else if backpack? and backpack
     # バックパックのアイテム
     target = rpg.game.party.backpack
-  # 対象のアイテムを増やす
-  for n in [0 ... num]
-    for i in items
+  # 値段がある場合
+  if price > 0
+    # 値段の分、所持金を増やす
+    rpg.game.party.cash += price
+  # 対象のアイテムを減らす
+  for i in items
+    for n in [0 ... num]
       i = target.getItem(i.name)
       target.removeItem(i) if i?
 
@@ -62,15 +68,14 @@ _buy_callback = (items, args) ->
         args.price += i.price
   _gain_callback(items, args)
 
-# アイテム事前読み込み
-tm.define 'rpg.event_command.PreloadItem',
-  # コマンド
-  apply_command: (args) ->
-    @waitFlag = true
-    rpg.system.db.preloadItems args, (-> @waitFlag = false).bind @
-    false
-
-rpg.event_command.preload_item = rpg.event_command.PreloadItem()
+# アイテム売る処理処理
+_sell_callback = (items, args) ->
+  # 値段を計算
+  if args.price == 0
+    for n in [0 ... args.num]
+      for i in items
+        args.price += i.price / 5 # TODO: 値段どしよ
+  _lost_callback(items, args)
 
 # アイテムの増減
 tm.define 'rpg.event_command.GainLostItem',
@@ -90,6 +95,8 @@ tm.define 'rpg.event_command.GainLostItem',
       @_callback = _lost_callback
     if call_type is 'buy'
       @_callback = _buy_callback
+    if call_type is 'sell'
+      @_callback = _sell_callback
 
   ###* コマンド
   * @params {Object} args オブジェクトじゃない場合は、以下の引数の順番
@@ -136,6 +143,20 @@ rpg.event_command.buy_item = rpg.event_command.GainLostItem('item','buy')
 rpg.event_command.buy_weapon = rpg.event_command.GainLostItem('weapon','buy')
 rpg.event_command.buy_armor = rpg.event_command.GainLostItem('armor','buy')
 
+rpg.event_command.sell_item = rpg.event_command.GainLostItem('item','sell')
+rpg.event_command.sell_weapon = rpg.event_command.GainLostItem('weapon','sell')
+rpg.event_command.sell_armor = rpg.event_command.GainLostItem('armor','sell')
+
+
+# アイテム事前読み込み
+tm.define 'rpg.event_command.PreloadItem',
+  # コマンド
+  apply_command: (args) ->
+    @waitFlag = true
+    rpg.system.db.preloadItems args, (-> @waitFlag = false).bind @
+    false
+
+rpg.event_command.preload_item = rpg.event_command.PreloadItem()
 
 # アイテムをすべて捨てる
 tm.define 'rpg.event_command.ClearItem',
