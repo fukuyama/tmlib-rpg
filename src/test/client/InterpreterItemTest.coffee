@@ -324,17 +324,20 @@ describe 'rpg.Interpreter(Item)', () ->
         it 'アイテム所持数確認', ->
           actor = rpg.game.party.getAt(0)
           n = actor.backpack.itemCount
+          item = actor.backpack.getItem('item 003')
+          (item is undefined).should.equal true
         it '所持金を増やす', ->
           rpg.game.party.cash += 10
           c = rpg.game.party.cash
         it 'アイテムを１つ購入', (done) ->
           interpreter.start [
-            {type:'buy_item',params:[1]}
+            {type:'buy_item',params:[3]}
             {type:'function',params:[done]}
           ]
         it '１つ増えている', ->
           actor = rpg.game.party.getAt(0)
           actor.backpack.itemCount.should.equal (n + 1)
+          actor.backpack.getItem('item 003').name.should.equal 'item 003'
         it '所持金が減っている', ->
           rpg.game.party.cash.should.equal (c - 10)
       describe 'プライス違い', ->
@@ -362,6 +365,36 @@ describe 'rpg.Interpreter(Item)', () ->
           actor.backpack.itemCount.should.equal (n + 1)
         it '所持金が減っている', ->
           rpg.game.party.cash.should.equal (c - 100)
+      describe '武器', ->
+        n = 0
+        c = 0
+        it 'マップシーンへ移動', (done) ->
+          reloadTestMap(done)
+        it 'ウェイト', (done) ->
+          setTimeout(done,1000)
+        it 'インタープリタ取得', ->
+          interpreter = rpg.system.scene.interpreter
+        it 'アイテム所持数確認', ->
+          actor = rpg.game.party.getAt(0)
+          n = actor.backpack.itemCount
+          item = actor.backpack.getItem('片手剣')
+          (item is undefined).should.equal true
+        it '所持金を増やす', ->
+          rpg.game.party.cash += 1000
+          c = rpg.game.party.cash
+        it 'アイテムを１つ購入', (done) ->
+          interpreter.start [
+            {type:'buy_weapon',params:[1]}
+            {type:'function',params:[done]}
+          ]
+        it '１つ増えている', ->
+          actor = rpg.game.party.getAt(0)
+          actor.backpack.itemCount.should.equal (n + 1)
+          actor.backpack.getItem('片手剣').name.should.equal '片手剣'
+        it '所持金が減っている', ->
+          actor = rpg.game.party.getAt(0)
+          item = actor.backpack.getItem('片手剣')
+          rpg.game.party.cash.should.equal (c - item.price)
 
     describe '販売処理', ->
       describe '基本', ->
@@ -380,21 +413,24 @@ describe 'rpg.Interpreter(Item)', () ->
           c = rpg.game.party.cash
         it 'アイテムを１つ増やす', (done) ->
           interpreter.start [
-            {type:'gain_item',params:[1]}
+            {type:'gain_item',params:[3]}
             {type:'function',params:[done]}
           ]
         it '１つ増えている', ->
           actor = rpg.game.party.getAt(0)
           actor.backpack.itemCount.should.equal (n + 1)
+          actor.backpack.getItem('item 003').name.should.equal 'item 003'
           n = actor.backpack.itemCount
         it 'アイテムを１つ売る', (done) ->
           interpreter.start [
-            {type:'sell_item',params:[1]}
+            {type:'sell_item',params:[3]}
             {type:'function',params:[done]}
           ]
         it '１つ減っている', ->
           actor = rpg.game.party.getAt(0)
           actor.backpack.itemCount.should.equal (n - 1)
+          item = actor.backpack.getItem('item 003')
+          (item is undefined).should.equal true
         it '所持金が増えている', ->
           rpg.game.party.cash.should.equal (c + 2)
       describe 'プライス違い', ->

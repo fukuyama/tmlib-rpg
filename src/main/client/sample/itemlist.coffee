@@ -92,7 +92,7 @@ module.exports = [
     type: 'Item'
    　item: '003'
    　name: 'item 003'
-    price: 1
+    price: 10
     help: 'help 003'
   }
 
