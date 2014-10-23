@@ -14,21 +14,23 @@ class rpg.Party
   # コンストラクタ
   constructor: (args={}) ->
     {
-      @cash
+      cash
     } = {
       cash: 0
     }.$extendAll args
+    @_cash = cash
+
+    # 所持金
+    Object.defineProperty @, 'cash',
+      enumerable: true
+      get: -> @_cash
+      set: (n)-> @_cash = if n >= 0 then n else 0
 
     # メンバーリスト（プライベートぽくしたいけれど…）
     @_members = []
 
     # パーティ用バックパック作成
     @backpack = new rpg.Item(name:'バックパック',container:{stack:on})
-
-    # メンバー数
-    Object.defineProperty @, 'length',
-      enumerable: false
-      get: -> @_members.length
 
   # メンバー追加
   add: (actor) ->
@@ -78,3 +80,8 @@ class rpg.Party
     for a in @_members
       a.backpack.clearItem()
     @backpack.clearItem()
+
+# メンバー数
+Object.defineProperty rpg.Party.prototype, 'length',
+  enumerable: false
+  get: -> @_members.length

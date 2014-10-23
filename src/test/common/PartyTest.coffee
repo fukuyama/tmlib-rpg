@@ -24,12 +24,20 @@ describe 'rpg.Party', () ->
   describe '引数有', () ->
     it '初期化', ->
       party = new rpg.Party({cash:100})
-    it '所持金は０', ->
+    it '所持金は100', ->
       party.cash.should.equal 100
-    it 'セーブロード', ->
+    it 'セーブロード後も100', ->
       json = rpg.utils.createJsonData(party)
       party = rpg.utils.createRpgObject(json)
       party.cash.should.equal 100
+  describe '所持金', () ->
+    it '初期化', ->
+      party = new rpg.Party({cash:100})
+    it '所持金は100', ->
+      party.cash.should.equal 100
+    it '所持金は０以下にならない', ->
+      party.cash -= 999
+      party.cash.should.equal 0
   describe 'メンバー操作', () ->
     a1 = null
     a2 = null
