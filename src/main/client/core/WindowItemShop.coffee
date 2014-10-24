@@ -29,9 +29,13 @@ tm.define 'rpg.WindowItemShop',
   * @memberof rpg.WindowItemShop#
   ###
   selectItem: (item) ->
+    type = 'item'
+    type = 'weapon' if item instanceof rpg.Weapon
+    type = 'armor' if item instanceof rpg.Armor
     rpg.system.temp.log = {
       item:
         index: @index
+        type: type
         name: item.name
         id: item.url
         num: 1

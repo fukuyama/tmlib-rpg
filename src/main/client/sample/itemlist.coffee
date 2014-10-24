@@ -171,7 +171,7 @@ module.exports = [
     type: 'UsableItem'
     item: '009'
     name: 'heal III'
-    price: 40
+    price: 52
     help: '仲間全員を回復する'
     scope: FRIEND_ALL
     effects: [effect.hp 70]

@@ -74,7 +74,7 @@ _sell_callback = (items, args) ->
   if args.price == 0
     for n in [0 ... args.num]
       for i in items
-        args.price += i.price / 5 # TODO: 値段どしよ
+        args.price += Math.floor(i.price / 5) # TODO: 値段どしよ
   _lost_callback(items, args)
 
 # アイテムの増減
@@ -82,13 +82,20 @@ tm.define 'rpg.event_command.GainLostItem',
   # 初期化
   init: (item_type,call_type) ->
     @_preload = ->
-      if item_type is 'item'
-        @_preload = rpg.system.db.preloadItem
-      if item_type is 'weapon'
-        @_preload = rpg.system.db.preloadWeapon
-      if item_type is 'armor'
-        @_preload = rpg.system.db.preloadArmor
-      @_preload.apply @, arguments
+      if item_type is 'auto'
+        switch rpg.system.temp.log.item.type
+          when 'item'
+            rpg.system.db.preloadItem.apply @, arguments
+          when 'weapon'
+            rpg.system.db.preloadWeapon.apply @, arguments
+          when 'armor'
+            rpg.system.db.preloadArmor.apply @, arguments
+      else
+        switch item_type
+          when 'item' then @_preload = rpg.system.db.preloadItem
+          when 'weapon' then @_preload = rpg.system.db.preloadWeapon
+          when 'armor' then @_preload = rpg.system.db.preloadArmor
+        @_preload.apply @, arguments
     if call_type is 'gain'
       @_callback = _gain_callback
     if call_type is 'lost'
@@ -142,6 +149,8 @@ rpg.event_command.lost_armor = rpg.event_command.GainLostItem('armor','lost')
 rpg.event_command.buy_item = rpg.event_command.GainLostItem('item','buy')
 rpg.event_command.buy_weapon = rpg.event_command.GainLostItem('weapon','buy')
 rpg.event_command.buy_armor = rpg.event_command.GainLostItem('armor','buy')
+
+rpg.event_command.buy_shop_item = rpg.event_command.GainLostItem('auto','buy')
 
 rpg.event_command.sell_item = rpg.event_command.GainLostItem('item','sell')
 rpg.event_command.sell_weapon = rpg.event_command.GainLostItem('weapon','sell')

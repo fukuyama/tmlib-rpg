@@ -70,7 +70,9 @@ tm.define 'rpg.DataBase',
 
     @_states = {} # ステートのキャッシュ
 
-  _create: (klass,data) -> new rpg[data.type ? klass](data)
+  _create: (klass,data) ->
+    data.type = data.type ? klass
+    new rpg[data.type](data)
 
   ###* ファイル名の作成
   * @memberof rpg.DataBase#

@@ -26,7 +26,8 @@ describe 'rpg.WindowItemShopTest', ->
         it 'ログが設定される', ->
           data = rpg.system.temp.log.item
           data.name.should.equal 'item 001'
-          data.price.should.equal 1
+          data.type.should.equal 'item'
+          data.price.should.equal 10
           data.index.should.equal 0
           data.id.should.equal 'http://localhost:3000/client/data/item/001.json'
       describe '購入アイテム一覧表示２', ->
@@ -51,6 +52,69 @@ describe 'rpg.WindowItemShopTest', ->
         it 'ログが設定される', ->
           data = rpg.system.temp.log.item
           data.name.should.equal 'cure I'
+          data.type.should.equal 'item'
           data.price.should.equal 10
           data.index.should.equal 3
           data.id.should.equal 'http://localhost:3000/client/data/item/004.json'
+      describe '購入アイテム一覧表示３', ->
+        commands = [
+          {type:'shop_item_menu',params:[{
+            items: [1]
+            weapons: [1]
+            armors: [1]
+          }]}
+        ]
+        it 'マップシーンへ移動', (done) ->
+          reloadTestMap(done)
+        it 'wait', (done) ->
+          setTimeout(done,1000)
+        it 'コマンド実行', ->
+          interpreter = rpg.system.scene.interpreter
+          interpreter.start commands
+        it 'wait', (done) ->
+          setTimeout(done,1000)
+        it '下に１回', (done) ->
+          emulate_key('down',done)
+        it '下に１回', (done) ->
+          emulate_key('down',done)
+        it '選択', (done) ->
+          emulate_key('enter',done)
+        it 'ログが設定される', ->
+          data = rpg.system.temp.log.item
+          data.name.should.equal '片手剣'
+          data.type.should.equal 'weapon'
+          data.price.should.equal 500
+          data.index.should.equal 1
+          data.id.should.equal 'http://localhost:3000/client/data/weapon/001.json'
+      describe '購入アイテム一覧表示４', ->
+        commands = [
+          {type:'shop_item_menu',params:[{
+            items: [1]
+            weapons: [1]
+            armors: [1]
+          }]}
+        ]
+        it 'マップシーンへ移動', (done) ->
+          reloadTestMap(done)
+        it 'wait', (done) ->
+          setTimeout(done,1000)
+        it 'コマンド実行', ->
+          interpreter = rpg.system.scene.interpreter
+          interpreter.start commands
+        it 'wait', (done) ->
+          setTimeout(done,1000)
+        it '下に１回', (done) ->
+          emulate_key('down',done)
+        it '下に１回', (done) ->
+          emulate_key('down',done)
+        it '下に１回', (done) ->
+          emulate_key('down',done)
+        it '選択', (done) ->
+          emulate_key('enter',done)
+        it 'ログが設定される', ->
+          data = rpg.system.temp.log.item
+          data.name.should.equal '兜'
+          data.type.should.equal 'armor'
+          data.price.should.equal 250
+          data.index.should.equal 2
+          data.id.should.equal 'http://localhost:3000/client/data/armor/001.json'
