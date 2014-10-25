@@ -426,6 +426,46 @@ describe 'rpg.Interpreter(Item)', () ->
           item = actor.backpack.getItem('兜')
           rpg.game.party.cash.should.equal (c - item.price)
 
+      describe 'ショップアイテムの購入', ->
+        n = 0
+        c = 0
+        it 'マップシーンへ移動', (done) ->
+          reloadTestMap(done)
+        it 'ウェイト', (done) ->
+          setTimeout(done,1000)
+        it 'インタープリタ取得', ->
+          interpreter = rpg.system.scene.interpreter
+        it 'アイテム所持数確認', ->
+          actor = rpg.game.party.getAt(0)
+          n = actor.backpack.itemCount
+          item = actor.backpack.getItem('兜')
+          (item is undefined).should.equal true
+        it '所持金を増やす', ->
+          rpg.game.party.cash += 1000
+          c = rpg.game.party.cash
+        it 'アイテムを１つ購入', (done) ->
+          rpg.system.temp.log = {
+            item:
+              index: 1
+              type: 'armor'
+              name: '兜'
+              url: 'http://localhost:3000/client/data/armor/001.json'
+              num: 1
+              price: 100
+          }
+          interpreter.start [
+            {type:'buy_shop_item'}
+            {type:'function',params:[done]}
+          ]
+        it '１つ増えている', ->
+          actor = rpg.game.party.getAt(0)
+          actor.backpack.itemCount.should.equal (n + 1)
+          actor.backpack.getItem('兜').name.should.equal '兜'
+        it '所持金が減っている', ->
+          actor = rpg.game.party.getAt(0)
+          item = actor.backpack.getItem('兜')
+          rpg.game.party.cash.should.equal (c - 100)
+
     describe '販売処理', ->
       describe '基本', ->
         n = 0

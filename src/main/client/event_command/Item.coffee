@@ -115,7 +115,16 @@ tm.define 'rpg.event_command.GainLostItem',
   ###
   apply_command: (id, num=1, actor=null, backpack=false, price=0) ->
     data = null
-    if typeof id is 'object'
+    if arguments.length == 0
+      data = {
+        num: 1
+        actor: null
+        backpack: false
+        price: 0
+      }.$extend rpg.system.temp.log.item
+      console.log rpg.system.temp.log.item
+      data.id = rpg.system.temp.log.item.url
+    else if typeof id is 'object'
       data = {
         num: 1
         actor: null
