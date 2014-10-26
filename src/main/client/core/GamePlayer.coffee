@@ -1,10 +1,16 @@
+###*
+* @file GamePlayer.coffee
+* プレイヤークラス
+###
 
-# プレイヤークラス
 tm.define 'rpg.GamePlayer',
 
   superClass: tm.app.Element
 
-  # 初期化
+  ###* コンストラクタ
+  * @classdesc プレイヤークラス
+  * @constructor rpg.GamePlayer
+  ###
   init: () ->
     @superInit()
 
@@ -25,17 +31,24 @@ tm.define 'rpg.GamePlayer',
       enumerable: true
       get: -> rpg.game.pc
 
-  # イベントリスナーセットアップ
+  ###* イベントリスナーセットアップ
+  * @memberof rpg.GamePlayer#
+  * @param {Object} arg k=input key v=callback handlar
+  ###
   setupEventListener: (arg) ->
     for k, v of arg
       @clearEventListener(k)
       @addEventListener(k,v)
 
-  # 更新
+  ###* 更新
+  * @memberof rpg.GamePlayer#
+  ###
   update: ->
     @eventHandler.updateInput()
 
-  # タッチイベントチェック
+  ###* タッチイベントチェック
+  * @memberof rpg.GamePlayer#
+  ###
   checkTouched: ->
     # タッチイベントチェック
     if @character.isMoved()
@@ -44,35 +57,49 @@ tm.define 'rpg.GamePlayer',
         # 反応がある場合はイベントを実行
         c.start('touched')
 
-  # 上入力処理
+  ###* 上入力処理
+  * @memberof rpg.GamePlayer#
+  ###
   input_up: ->
     if not @character.isMove()
       @character.moveUp()
 
-  # 下入力処理
+  ###* 下入力処理
+  * @memberof rpg.GamePlayer#
+  ###
   input_down: ->
     if not @character.isMove()
       @character.moveDown()
 
-  # 左入力処理
+  ###* 左入力処理
+  * @memberof rpg.GamePlayer#
+  ###
   input_left: ->
     if not @character.isMove()
       @character.moveLeft()
 
-  # 右入力処理
+  ###* 右入力処理
+  * @memberof rpg.GamePlayer#
+  ###
   input_right: ->
     if not @character.isMove()
       @character.moveRight()
 
-  # 決定処理
+  ###* 決定処理
+  * @memberof rpg.GamePlayer#
+  ###
   input_ok_up: ->
     @dispatchEvent rpg.GamePlayer.EVENT_INPUT_OK
 
-  # キャンセル処理
+  ###* キャンセル処理
+  * @memberof rpg.GamePlayer#
+  ###
   input_cancel_up: ->
     @dispatchEvent rpg.GamePlayer.EVENT_INPUT_CANCEL
 
-  # はなすイベント処理
+  ###* はなすイベント処理
+  * @memberof rpg.GamePlayer#
+  ###
   talk: ->
     # 目の前のキャラクターを探す
     c = @character.findFrontCharacter()
