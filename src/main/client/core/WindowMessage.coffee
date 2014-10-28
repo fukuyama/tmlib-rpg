@@ -32,7 +32,7 @@ tm.define 'rpg.WindowMessage',
       visible: false
       active: false
       messageSpeed: 4 # メッセージスピード
-      scrollSpeed: 5 # スクロールスピード
+      scrollSpeed: 6 # スクロールスピード
       autoSpeed: 0 # 自動送りスピード
       maxLine: 3
       options:

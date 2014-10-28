@@ -23,6 +23,8 @@ tm.define 'rpg.WindowItemShop',
       visible: true
       rows: 8
     }.$extend param
+    @cash = rpg.WindowCash().addChildTo(rpg.system.scene)
+    @on 'close', -> @cash.close()
     return
 
   ###* アイテム選択時の処理
@@ -37,7 +39,7 @@ tm.define 'rpg.WindowItemShop',
         index: @index
         type: type
         name: item.name
-        id: item.url
+        url: item.url
         num: 1
         price: item.price
     }

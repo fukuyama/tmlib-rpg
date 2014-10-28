@@ -246,9 +246,7 @@ module.exports = {
                                 '\#{item.price} になります。'
                               ]}
                               {type:'select',params:[['はい','いいえ']]}
-                              {type:'block',params:[
-                                {type:'buy_item'}
-                              ]}
+                              {type:'block',params:[{type:'buy_shop_item'}]}
                               {type:'end'}
                             ]}
                             {type:'else'}

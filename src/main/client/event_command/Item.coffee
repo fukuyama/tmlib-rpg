@@ -122,7 +122,6 @@ tm.define 'rpg.event_command.GainLostItem',
         backpack: false
         price: 0
       }.$extend rpg.system.temp.log.item
-      console.log rpg.system.temp.log.item
       data.id = rpg.system.temp.log.item.url
     else if typeof id is 'object'
       data = {
