@@ -25,5 +25,7 @@ tm.define 'rpg.WindowCash',
       width: w
       height: rpg.system.lineHeight + 16 * 2
     }.$extend args
+    args.visible = true
+    args.active = false
     @superInit(x,y,width,height,args)
 
