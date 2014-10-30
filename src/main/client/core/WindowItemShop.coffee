@@ -24,7 +24,10 @@ tm.define 'rpg.WindowItemShop',
       rows: 8
     }.$extend param
     @cash = rpg.WindowCash().addChildTo(rpg.system.scene)
-    @on 'close', -> @cash.close()
+    @on 'close', ->
+      @cash.close()
+      @cash.remove()
+      @cash = undefined
     return
 
   ###* アイテム選択時の処理

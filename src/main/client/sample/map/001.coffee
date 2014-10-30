@@ -443,6 +443,7 @@ module.exports = {
                     commands: [
                       {type:'flag',params: ['init',on]}
                       {type:'gain_item',params: [1]}
+                      {type:'gain_cash',params: [1000]}
                     ]
                   }
                   {

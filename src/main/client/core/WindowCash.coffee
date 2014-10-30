@@ -28,4 +28,14 @@ tm.define 'rpg.WindowCash',
     args.visible = true
     args.active = false
     @superInit(x,y,width,height,args)
+    @refresh()
 
+  refresh: ->
+    @cash = rpg.game.party.cash
+    @drawText(@cash, 24 * 5, 0, {align:'right'})
+    @refreshWindow()
+
+  update: ->
+    rpg.Window.prototype.update.call @
+    if @cash != rpg.game.party.cash
+      @refresh()
