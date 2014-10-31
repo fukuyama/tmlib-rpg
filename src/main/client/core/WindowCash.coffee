@@ -3,6 +3,8 @@
 * 所持金ウィンドウ
 ###
 
+WORDS = rpg.constants.WORDS
+
 tm.define 'rpg.WindowCash',
   superClass: rpg.Window
 
@@ -32,7 +34,7 @@ tm.define 'rpg.WindowCash',
 
   refresh: ->
     @cash = rpg.game.party.cash
-    @drawText(@cash, 24 * 5, 0, {align:'right'})
+    @drawText(@cash + ' ' + WORDS.cash.unit, 24 * 5, 0, {align:'right'})
     @refreshWindow()
 
   update: ->

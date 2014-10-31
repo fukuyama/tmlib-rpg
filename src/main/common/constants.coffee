@@ -102,6 +102,10 @@ c.WORDS = {
   'lower_body': '体下'
   'arms': '腕'
   'legs': '足'
+  'cash': {
+    'unit':'G'
+    'name':'ゴールド'
+  }
 }
 
 c.EQUIP_POSITONS = [
