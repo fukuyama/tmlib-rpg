@@ -1,5 +1,6 @@
 
 require('chai').should()
+require('../../main/common/constants.coffee')
 require('../../main/common/utils.coffee')
 require('../../main/common/MarkupText.coffee')
 require('../../main/common/Flag.coffee')
@@ -170,3 +171,9 @@ describe 'rpg.MarkupText', ->
         """
         m = mt.replace(msg)
         m.should.equal 'hoehoe 10up tgt 10'
+    describe 'ワード', ->
+      it 'cash.name', ->
+        mt = rpg.MarkupText.default
+        msg = 'test \\W[cash.name] test'
+        m = mt.replace(msg)
+        m.should.equal 'test ゴールド test'

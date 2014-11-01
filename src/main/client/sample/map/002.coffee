@@ -243,7 +243,7 @@ module.exports = {
                             {type:'block',params:[
                               {type:'message',params:[
                                 '\#{item.name} ですね。\n'+
-                                '\#{item.price} になります。'
+                                '\#{item.price} \\W[cash.name] になります。'
                               ]}
                               {type:'select',params:[['はい','いいえ']]}
                               {type:'block',params:[{type:'buy_shop_item'}]}

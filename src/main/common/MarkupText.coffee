@@ -205,6 +205,16 @@ rpg.MarkupText.REPLACE_LOG = {
     log
 }
 
+###* ワード置き換え(\W[any])
+* @var {Object} rpg.MarkupText.REPLACE_WORD
+###
+rpg.MarkupText.REPLACE_WORD = {
+  regexp: /\\W\[([^\\]+?)\]/g
+  func: (reg, path) ->
+    word = rpg.constants.WORDS
+    word = word[k] for k in path.split /[\[\]\.]/ when word[k]?
+    word
+}
 
 # デフォルトのMarkupText
 _default = new rpg.MarkupText()
@@ -218,6 +228,7 @@ _default.addMarkup rpg.MarkupText.MARKUP_CLEAR
 # 置き換え
 _default.addReplace rpg.MarkupText.REPLACE_FLAG
 _default.addReplace rpg.MarkupText.REPLACE_LOG
+_default.addReplace rpg.MarkupText.REPLACE_WORD
 
 rpg.MarkupText.default = _default
 
