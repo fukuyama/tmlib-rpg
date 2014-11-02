@@ -23,6 +23,11 @@ tm.define 'rpg.WindowMapMenu',
       ]
     }
     @superInit(args)
+    @on 'open', ->
+      @cash = rpg.WindowCash()
+      @addWindow @cash
+    @on 'close', ->
+      @removeWindow @cash
 
   _next: (w) ->
     @addWindow w

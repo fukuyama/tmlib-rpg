@@ -320,14 +320,15 @@ tm.define 'rpg.Window',
   * @memberof rpg.Window#
   * @param {rpg.Window} w 追加するウィンドウ
   ###
-  addWindow: (w) ->
+  addWindow: (w,flag=true) ->
     w.parentWindow = @
-    w.addCloseListener (e) ->
-      p = @parentWindow
-      if p?
-        p.removeWindow(e.target)
-        p.active = true
-        p.visible = true
+    if flag
+      w.addCloseListener (e) ->
+        p = @parentWindow
+        if p?
+          p.removeWindow(e.target)
+          p.active = true
+          p.visible = true
     @windows.push w
     @parent.addChild(w)
     w.dispatchEvent rpg.Window.EVENT_ADD_WINDOW
