@@ -28,6 +28,9 @@ tm.define 'rpg.WindowMapMenu',
       @addWindow @cash
     @on 'close', ->
       @removeWindow @cash
+  update: ->
+    rpg.Window.prototype.update.call @
+    @cash?.visible = @visible
 
   _next: (w) ->
     @addWindow w
