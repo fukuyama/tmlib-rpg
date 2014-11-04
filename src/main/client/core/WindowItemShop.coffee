@@ -15,19 +15,21 @@ tm.define 'rpg.WindowItemShop',
   * @param {Array} param.weapons 武器ID配列
   * @param {Array} param.armors 防具ID配列
   ###
-  init: (param={}) ->
+  init: (param={},op={}) ->
     @superInit {
       name: 'ItemShop'
       title: '買う'
       active: true
       visible: true
       rows: 8
-    }.$extend param
+    }.$extend(op).$extend(param)
     @cash = rpg.WindowCash().addChildTo(rpg.system.scene)
     @on 'close', ->
       @cash.close()
       @cash.remove()
       @cash = undefined
+    if op.index?
+      @setIndex(op.index)
     return
 
   ###* アイテム選択時の処理
