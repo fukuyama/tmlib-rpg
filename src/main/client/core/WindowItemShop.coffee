@@ -39,6 +39,21 @@ tm.define 'rpg.WindowItemShop',
     type = 'item'
     type = 'weapon' if item instanceof rpg.Weapon
     type = 'armor' if item instanceof rpg.Armor
+    if item instanceof rpg.Item and item.stack
+      @createInputNumWindow {
+        callback: (n) ->
+          rpg.system.temp.log = {
+            item:
+              index: @index
+              type: type
+              name: item.name
+              url: item.url
+              num: n
+              price: item.price
+          }
+          @close()
+      }
+      return
     rpg.system.temp.log = {
       item:
         index: @index
@@ -79,3 +94,25 @@ tm.define 'rpg.WindowItemShop',
     item = @items[i]
     @drawText(item.name, x, y)
     @drawText("#{item.price}", x + w, y , {align:'right'})
+
+  ###* 数値入力ウィンドウの作成
+  * @memberof rpg.WindowItemShop#
+  ###
+  createInputNumWindow: (args={}) ->
+    {
+      flag
+      options
+      callback
+    } = {
+      options: {}
+    }.$extend args
+    options.name = 'Select'
+    
+    @windowInputNum = rpg.WindowInputNum(options)
+    @windowInputNum.addCloseListener((->
+      callback.call(@,@windowInputNum.value) if callback?
+      @windowInputNum = null
+    ).bind(@)).open()
+    @addWindow(@windowInputNum)
+    @active = false
+    return

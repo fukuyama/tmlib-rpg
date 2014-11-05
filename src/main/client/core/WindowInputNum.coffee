@@ -23,7 +23,7 @@ tm.define 'rpg.WindowInputNum',
       min: 0
       max: 99
       value: 0
-      cancel: -1
+      cancel: -1 # キャンセルフラグ(数字の場合はキャンセル時値、falseの場合は、キャンセルOFF)
       step: 1
       cursor: 'sample.cursor'
     }.$extend(rpg.system.windowDefault).$extend args
