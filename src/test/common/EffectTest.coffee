@@ -50,14 +50,6 @@ describe 'rpg.Effect', ->
       rpg.effect.run 'hp', user1, user2, op, log
       user1.hp.should.equals 100
       user2.hp.should.equals 110
-    it 'hp method', ->
-      user1 = {hp: 100}
-      user2 = {hp: 100}
-      log = {}
-      op = {type:'fix',val:10}
-      rpg.effect.hp user1, user2, op, log
-      user1.hp.should.equals 100
-      user2.hp.should.equals 110
     it 'mp', ->
       user1 = {mp: 100}
       user2 = {mp: 100}
@@ -66,6 +58,14 @@ describe 'rpg.Effect', ->
       rpg.effect.run 'mp', user1, user2, op, log
       user1.mp.should.equals 100
       user2.mp.should.equals 110
+    it 'hp method', ->
+      user1 = {hp: 100}
+      user2 = {hp: 100}
+      log = {}
+      op = {type:'fix',val:10}
+      rpg.effect.hp user1, user2, op, log
+      user1.hp.should.equals 100
+      user2.hp.should.equals 110
     it 'mp method', ->
       user1 = {mp: 100}
       user2 = {mp: 100}
@@ -74,3 +74,48 @@ describe 'rpg.Effect', ->
       rpg.effect.mp user1, user2, op, log
       user1.mp.should.equals 100
       user2.mp.should.equals 110
+
+  describe 'run array method', ->
+    it 'hp method', ->
+      user1 = {hp: 100}
+      user2 = {hp: 100}
+      log = {}
+      efs = [
+        {hp: {type:'fix',val:10}}
+      ]
+      rpg.effect.runArray user1, user2, efs, log
+      user1.hp.should.equals 100
+      user2.hp.should.equals 110
+
+  describe 'run user method', ->
+    it 'mp 2 を消費して、対象の hp を、10 回復する', ->
+      user1 = {hp: 200, mp: 100}
+      user2 = {hp: 150, mp: 120}
+      log = {}
+      op = {
+        user: [
+          {mp: {type:'fix',val:-2}}
+        ]
+        target: [
+          {hp: {type:'fix',val:10}}
+        ]
+      }
+      rpg.effect.runUser user1, user2, op, log
+      user1.hp.should.equals 200
+      user2.hp.should.equals 160
+      user1.mp.should.equals 98
+      user2.mp.should.equals 120
+      log.targets[0].hp.should.equals 10
+      log.users[0].mp.should.equals -2
+    it.skip 'attack 効果', ->
+      user1 = {hp: 200, mp: 100}
+      user2 = {hp: 150, mp: 120}
+      log = {}
+      op = rpg.effect.create user1, user2, op, log
+      rpg.effect.runUser user1, user2, op, log
+      user1.hp.should.equals 200
+      user2.hp.should.equals 160
+      user1.mp.should.equals 98
+      user2.mp.should.equals 120
+      log.targets[0].hp.should.equals 10
+      log.users[0].mp.should.equals -2

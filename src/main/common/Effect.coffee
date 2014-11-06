@@ -24,6 +24,28 @@ class rpg.Effect
   value: (base,param={type:'fix',val:10}) ->
     @valueFunc[param.type](base,param)
 
+
+  createFunc: {
+    attack: (user, targets, effects, log) ->
+      {}
+  }
+
+  # @return {Object} runUserの引数として使用する、エフェクトデータ
+  create: (users, targets, op, log) ->
+    @createFunc[op.type](users, targets, op, log)
+
+  runUser: (user, targets, effects, log) ->
+    targets = if Array.isArray targets then targets else [targets]
+    res = {}
+    # TODO: effects.target 配列と、targets 配列を１：１で適用するパターンもほしいかも
+    for target in targets
+      @runArray user, target, effects.target, res
+    log.targets = res.targets
+    res = {}
+    # 使用者が自分で、自分に影響がある場合
+    @runArray user, user, effects.user, res
+    log.users = res.targets
+
   runArray: (user, target, effects, log) ->
     r = false
     for e in effects
