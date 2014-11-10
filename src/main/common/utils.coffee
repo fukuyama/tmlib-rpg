@@ -52,6 +52,16 @@ rpg.utils = {
         l: json[0]
         e: json[1]
         r: json[2]
+    if json.e is '='
+      r = @jsonExpression json.r, op
+      path = json.l
+      obj = op
+      ret = null
+      for k in path.split /[\[\]\.]/ when obj[k]?
+        ret = obj
+        obj = obj[k]
+      ret[k] = r
+      return r
     l = @jsonExpression json.l, op
     r = @jsonExpression json.r, op
     return _expression[json.e] l, r

@@ -266,3 +266,37 @@ describe 'utils', ->
     it 'Array 引数', ->
       n = rpg.utils.jsonExpression [1,'+',1]
       n.should.equal 2
+
+    it 'Array 引数 ネスト', ->
+      n = rpg.utils.jsonExpression [1,'+',[3,'*',2]]
+      n.should.equal 7
+
+    it 'Array 引数 ネスト オブジェクト', ->
+      op = {
+        test: 10
+        abc:
+          x: 11
+      }
+      n = rpg.utils.jsonExpression [1,'+',['abc.x','*',2]], op
+      n.should.equal 23
+
+    it '代入', ->
+      op = {
+        test: 10
+        abc:
+          x: 11
+      }
+      n = rpg.utils.jsonExpression ['test','=',['abc.x','*',2]], op
+      n.should.equal 22
+      op.test.should.equal 22
+
+    it '属性代入', ->
+      op = {
+        test:
+          n: 0
+        abc:
+          x: 11
+      }
+      n = rpg.utils.jsonExpression ['test.n','=',['abc.x','*',2]], op
+      n.should.equal 22
+      op.test.n.should.equal 22

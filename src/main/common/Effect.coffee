@@ -25,15 +25,6 @@ class rpg.Effect
     @valueFunc[param.type](base,param)
 
 
-  createFunc: {
-    attack: (user, targets, effects, log) ->
-      {}
-  }
-
-  # @return {Object} runUserの引数として使用する、エフェクトデータ
-  create: (users, targets, op, log) ->
-    @createFunc[op.type](users, targets, op, log)
-
   runUser: (user, targets, effects, log) ->
     targets = if Array.isArray targets then targets else [targets]
     res = {}
@@ -56,17 +47,8 @@ class rpg.Effect
   hp: (user, target, op, log) -> @run 'hp', user, target, op, log
   mp: (user, target, op, log) -> @run 'mp', user, target, op, log
 
-  # 効果
-  # 基本的に、effect 以外では、user と target の状態は変化させない。
-  # （使ったアイテムを減らす等は、Actor側の処理で）
-  # 参照はあり
-  # user: rpg.Actor
-  # target: rpg.Actor or Array<rpg.Actor>
-  # return: 効果あり true
-  _effect_default: (op, user, target, log) -> false
-
-  # ダメージ（回復）関連エフェクト
-  _effect_damage: (attr, op, user, target, log) ->
+  # 能力変化系(hp/mp)関連エフェクト
+  _effect_attr: (attr, op, user, target, log) ->
     r = false
     val = target[attr] # 変化前の値
     target[attr] += @value(target[attr],op)
@@ -81,10 +63,21 @@ class rpg.Effect
     r
 
   _effects: {
+    # 効果
+    # 基本的に、effect 以外では、user と target の状態は変化させない。
+    # （使ったアイテムを減らす等は、Actor側の処理で）
+    # 参照はあり
+    # user: rpg.Actor
+    # target: rpg.Actor or Array<rpg.Actor>
+    # return: 効果あり true
+    default: (op, user, target, log) -> false
+
+    calc: (op, user, target, log) -> false
+
     # HP効果
-    hp: (op, user, target, log) -> @_effect_damage('hp', op, user, target, log)
+    hp: (op, user, target, log) -> @_effect_attr('hp', op, user, target, log)
     # MP効果
-    mp: (op, user, target, log) -> @_effect_damage('mp', op, user, target, log)
+    mp: (op, user, target, log) -> @_effect_attr('mp', op, user, target, log)
     # ステート効果
     state: (op, user, target, log) ->
       # TODO: 確率(rate)をつける？
