@@ -33,14 +33,13 @@ describe 'rpg.State', () ->
     describe '固定値増減', ->
       it '力が１０あがるステート', ->
         state = new rpg.State(name:'State1',abilities:[
-          {str:{type:'fix',val:10}}
+          {str:10}
         ])
       it 'データ変換確認', ->
         json = rpg.utils.createJsonData(state)
         s = rpg.utils.createRpgObject(json)
         s.name.should.equal 'State1'
-        s.abilities[0].str.type.should.equal 'fix'
-        s.abilities[0].str.val.should.equal 10
+        s.abilities[0].str.should.equal 10
       it 'baseを無視する', ->
         r = state.ability base:20, ability:'str'
         r.should.equal 10
@@ -52,9 +51,9 @@ describe 'rpg.State', () ->
     describe '割合増減', ->
       it '力が１０％あがるステート', ->
         state = new rpg.State(name:'State1',abilities:[
-          {str:{type:'rate',val:10}}
+          {str:['base','/',10]}
         ])
-      it 'baseから算出する', ->
+      it 'baseから算出する 10% up', ->
         r = state.ability base:20, ability:'str'
         r.should.equal 2
         r = state.ability base:10, ability:'str'
@@ -64,9 +63,9 @@ describe 'rpg.State', () ->
         r.should.equal 0
       it '力が５０％下がるステート（半減する', ->
         state = new rpg.State(name:'State1',abilities:[
-          {str:{type:'rate',val:-50}}
+          {str:['base','*',[-50,'/',100]]}
         ])
-      it 'baseから算出する', ->
+      it 'baseから算出する 50% down', ->
         r = state.ability base:20, ability:'str'
         r.should.equal -10
         r = state.ability base:10, ability:'str'
@@ -195,7 +194,7 @@ describe 'rpg.State', () ->
           defcx = {attrs:['炎']}
         it '炎属性に対して５０％アップのダメージステート', ->
           state = new rpg.State(name:'State1',damages:[
-            {attack:{type:'rate',val:50,attr:'炎',cond:'物理'}}
+            {attack:{exp:['damage','/',2],attr:'炎',cond:'物理'}}
           ])
         it '増加ダメージ量が５０', ->
           state.attackDamage(atkcx,defcx).should.equal 50
@@ -211,7 +210,7 @@ describe 'rpg.State', () ->
           defcx = {attrs:['炎']}
         it 'ダメージが倍になるステート、大抵の対象が持つ物理属性で判定', ->
           state = new rpg.State(name:'State1',damages:[
-            {attack:{type:'rate',val:100,cond:'物理'}}
+            {attack:{exp:'damage',cond:'物理'}}
           ])
         it '増加ダメージ量が100', ->
           state.attackDamage(atkcx,defcx).should.equal 100
@@ -232,7 +231,7 @@ describe 'rpg.State', () ->
           defcx = {attrs:['炎']}
         it 'ダメージが倍になるステート、大抵の対象が持つ物理属性で判定', ->
           state = new rpg.State(name:'State1',damages:[
-            {attack:{type:'rate',val:100}}
+            {attack:{exp:100}}
           ])
         it '増加ダメージ量が100', ->
           state.attackDamage(atkcx,defcx).should.equal 100
@@ -299,7 +298,7 @@ describe 'rpg.State', () ->
           atkcx = {damage:100,attrs:[]}
           defcx = {attrs:[]}
           state = new rpg.State(name:'State1',damages:[
-            {defence:{type:'fix',val:10}}
+            {defence:{exp:10}}
           ])
         it 'ダメージカットが10', ->
           state.defenceDamage(atkcx,defcx).should.equal 10
@@ -315,7 +314,7 @@ describe 'rpg.State', () ->
       describe '炎属性の攻撃を半減させるステート', ->
         it '炎属性半減ステート', ->
           state = new rpg.State(name:'State1',damages:[
-            {defence:{type:'rate',val:50,attr:'炎'}}
+            {defence:{exp:['damage','/',2],attr:'炎'}}
           ])
         it '防御側属性なし', ->
           defcx = {attrs:[]}
@@ -338,7 +337,7 @@ describe 'rpg.State', () ->
           state.defenceDamage(atkcx,defcx).should.equal 0
         it '炎属性半減ステート（物理のみ）', ->
           state = new rpg.State(name:'State1',damages:[
-            {defence:{type:'rate',val:50,attr:'炎',cond:'物理'}}
+            {defence:{exp:['damage','/',2],attr:'炎',cond:'物理'}}
           ])
         it '防御側属性なし', ->
           defcx = {attrs:[]}
@@ -359,7 +358,7 @@ describe 'rpg.State', () ->
           state.defenceDamage(atkcx,defcx).should.equal 0
         it '炎属性半減ステート（魔法のみ）', ->
           state = new rpg.State(name:'State1',damages:[
-            {defence:{type:'rate',val:50,attr:'炎',cond:'魔法'}}
+            {defence:{exp:['damage','/',2],attr:'炎',cond:'魔法'}}
           ])
         it '防御側属性なし', ->
           defcx = {attrs:[]}
@@ -427,7 +426,7 @@ describe 'rpg.State', () ->
     describe '毒ガードを付加するステート', ->
       it '毒を10%ガード', ->
         state = new rpg.State(name:'毒ガード',guards:[
-          {'毒':{type:'fix',val:10}}
+          {'毒':10}
         ])
       it 'カード率を取得', ->
         r = state.stateGuard(name:'毒')
@@ -437,7 +436,7 @@ describe 'rpg.State', () ->
     describe '状態異常ステート毒', ->
       it '毒のステート', ->
         state = new rpg.State(name:'毒',applies:[
-          {hp:{type:'fix',val:-10}}
+          {hp:-10}
         ])
       it '毒のステートを実行', ->
         # TODO: attack context にする必要があるかも
@@ -495,7 +494,7 @@ describe 'rpg.State', () ->
         atkcx = {damage:100,attrs:['魔法']}
         state.checkRemove(attack:atkcx).should.equal true
         state.valid.should.equal false
-    describe '衝撃（物理攻撃）を受けた時に一定確率で消えるステート', ->
+    describe.skip '衝撃（物理攻撃）を受けた時に一定確率で消えるステート', ->
       it '８０％で解除されるステート', ->
         state = new rpg.State(name:'State1',remove:{
           attack:{damage:1,attr:'物理'}
@@ -520,7 +519,7 @@ describe 'rpg.State', () ->
         state.valid.should.equal true
       it '行動できない', ->
         state.checkAction().should.equal false
-    describe '一定確率で行動できないステート', ->
+    describe.skip '一定確率で行動できないステート', ->
       it '80%行動不能ステート', ->
         state = new rpg.State(name:'State1',action:{
           rate: 80

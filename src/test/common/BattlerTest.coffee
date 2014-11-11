@@ -191,8 +191,8 @@ describe 'rpg.Battler', () ->
         battler.str.should.equal 10
         battler.dex.should.equal 10
         battler.addState new rpg.State(name:'ability up 1',abilities:[
-          {str:{type:'fix',val:2}}
-          {dex:{type:'fix',val:3}}
+          {str:2}
+          {dex:3}
         ])
         battler.str.should.equal 12
         battler.dex.should.equal 13
@@ -200,7 +200,7 @@ describe 'rpg.Battler', () ->
       it 'ステート追加', ->
         battler = new rpg.Battler()
         state = new rpg.State(name:'毒',applies:[
-          {hp:{type:'fix',val:-1}}
+          {hp:-1}
         ])
         battler.addState state
       it 'セーブロード', ->
@@ -230,7 +230,7 @@ describe 'rpg.Battler', () ->
         state = new rpg.State {
           name:'力アップ'
           abilities:[
-            {str:{type:'fix',val:5}}
+            {str:5}
           ]
           cancel:{
             states:['力ダウン']
@@ -274,6 +274,17 @@ describe 'rpg.Battler', () ->
         battler = new rpg.Battler
         battler.weapon = weapon
         battler.patk.should.equal 120
+      it '力が倍になる武器', ->
+        weapon = new rpg.Weapon
+          name: 'weapon001'
+          patk: 100 # 攻撃力
+          str: 'base' # 力が倍（武器のstrアップ量が、キャラクターのstrの量）
+          equips: ['right_hand']
+        battler = new rpg.Battler
+        battler.str.should.equal 10
+        battler.weapon = weapon
+        battler.str.should.equal 20
+        battler.patk.should.equal 125
       it '両手武器を装備すると盾がはずれる', ->
         shield = new rpg.Armor
           name: 'shield001'

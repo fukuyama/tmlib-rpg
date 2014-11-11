@@ -72,8 +72,6 @@ class rpg.Effect
     # return: 効果あり true
     default: (op, user, target, log) -> false
 
-    calc: (op, user, target, log) -> false
-
     # HP効果
     hp: (op, user, target, log) -> @_effect_attr('hp', op, user, target, log)
     # MP効果

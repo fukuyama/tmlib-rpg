@@ -8,7 +8,6 @@ require('../../main/common/State.coffee')
 require('../../main/common/Item.coffee')
 require('../../main/common/ItemContainer.coffee')
 require('../../main/common/EquipItem.coffee')
-require('../../main/common/Effect.coffee')
 
 describe 'rpg.EquipItem', ->
   item = null
@@ -21,7 +20,7 @@ describe 'rpg.EquipItem', ->
       item = new rpg.EquipItem
         name: 'EquipItem001'
         abilities: [
-          {str:{type:'fix',val:10}}
+          {str:10}
         ]
       n = item.ability base:5, ability:'str'
       n.should.equal 10

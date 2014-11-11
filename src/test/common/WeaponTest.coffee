@@ -20,7 +20,7 @@ describe 'rpg.Weapon', ->
     item = new rpg.Weapon
       name: 'Weapon001'
       abilities: [
-        {str:{type:'fix',val:10}}
+        {str:10}
       ]
     n = item.ability base:5, ability:'str'
     n.should.equal 10

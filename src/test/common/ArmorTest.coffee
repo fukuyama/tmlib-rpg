@@ -20,7 +20,7 @@ describe 'rpg.Armor', ->
     item = new rpg.Armor
       name: 'Armor001'
       abilities: [
-        {vit:{type:'fix',val:10}}
+        {vit:10}
       ]
     n = item.ability base:5, ability:'vit'
     n.should.equal 10

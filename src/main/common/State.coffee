@@ -111,10 +111,10 @@ class rpg.State
         if ds.attr? # 対象属性が指定されてる場合
           # 対象属性が指定属性に一致しているか見る
           for a in tgtattrs when ds.attr == a
-            r += rpg.effect.value(atkcx.damage,ds)
+            r += rpg.utils.jsonExpression(ds.exp, {damage:atkcx.damage,state:@})
         else # 対象属性が指定されてない場合
           # すべて適用
-          r += rpg.effect.value(atkcx.damage,ds)
+          r += rpg.utils.jsonExpression(ds.exp, {damage:atkcx.damage,state:@})
     r
 
   ###* 攻撃ダメージ変化
@@ -138,13 +138,13 @@ class rpg.State
   * @param {Object} param
   * @param {number} param.base 基本値
   * @param {String} param.ability 能力
-  * @return {number} ダメージ変化量
+  * @return {number} 能力変化量
   ###
   ability: (param={}) ->
     {ability,base} = param
     r = 0
     for a in @abilities when a[ability]?
-      r += rpg.effect.value(base,a[ability])
+      r += rpg.utils.jsonExpression(a[ability], {base:base,state:@})
     r
   
   ###* ステートガード
@@ -158,7 +158,7 @@ class rpg.State
     {name,base} = param
     r = 0
     for a in @guards when a[name]?
-      r += rpg.effect.value(base,a[name])
+      r += rpg.utils.jsonExpression(a[name], {base:base,state:@})
     r
 
   ###* 定期変化
@@ -170,7 +170,7 @@ class rpg.State
     {target} = param
     for ap in @applies
       for k,v of ap when target[k]?
-        target[k] += rpg.effect.value(target[k],v)
+        target[k] += rpg.utils.jsonExpression(v, {base:target[k],state:@})
     @applyCount += 1
     @
   

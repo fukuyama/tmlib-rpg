@@ -54,7 +54,7 @@ class rpg.EquipItem extends rpg.Item
     for k in ABILITY_KEYS
       if args[k]?
         a = {}
-        a[k] = {type:'fix',val:args[k]}
+        a[k] = args[k]
         @abilities.push a
     # 価格が設定されてなかったら自動計算
     unless price?
@@ -110,13 +110,13 @@ class rpg.EquipItem extends rpg.Item
   * @param {Object} param
   * @param {number} param.base 基本値
   * @param {String} param.ability 能力
-  * @return {number} ダメージ変化量
+  * @return {number} 計算結果
   ###
   ability: (param={}) ->
     {ability,base} = param
     r = 0
     for a in @abilities when a[ability]?
-      r += rpg.effect.value(base,a[ability])
+      r += rpg.utils.jsonExpression(a[ability], {base:base,item:@})
     r
 
 
