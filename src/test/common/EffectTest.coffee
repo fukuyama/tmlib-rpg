@@ -46,7 +46,7 @@ describe 'rpg.Effect', ->
       user1 = {hp: 100}
       user2 = {hp: 100}
       log = {}
-      op = {type:'fix',val:10}
+      op = 10
       rpg.effect.run 'hp', user1, user2, op, log
       user1.hp.should.equals 100
       user2.hp.should.equals 110
@@ -54,7 +54,7 @@ describe 'rpg.Effect', ->
       user1 = {mp: 100}
       user2 = {mp: 100}
       log = {}
-      op = {type:'fix',val:10}
+      op = 10
       rpg.effect.run 'mp', user1, user2, op, log
       user1.mp.should.equals 100
       user2.mp.should.equals 110
@@ -62,7 +62,7 @@ describe 'rpg.Effect', ->
       user1 = {hp: 100}
       user2 = {hp: 100}
       log = {}
-      op = {type:'fix',val:10}
+      op = 10
       rpg.effect.hp user1, user2, op, log
       user1.hp.should.equals 100
       user2.hp.should.equals 110
@@ -70,7 +70,7 @@ describe 'rpg.Effect', ->
       user1 = {mp: 100}
       user2 = {mp: 100}
       log = {}
-      op = {type:'fix',val:10}
+      op = 10
       rpg.effect.mp user1, user2, op, log
       user1.mp.should.equals 100
       user2.mp.should.equals 110
@@ -81,7 +81,7 @@ describe 'rpg.Effect', ->
       user2 = {hp: 100}
       log = {}
       efs = [
-        {hp: {type:'fix',val:10}}
+        {hp: 10}
       ]
       rpg.effect.runArray user1, user2, efs, log
       user1.hp.should.equals 100
@@ -94,10 +94,10 @@ describe 'rpg.Effect', ->
       log = {}
       op = {
         user: [
-          {mp: {type:'fix',val:-2}}
+          {mp: -2}
         ]
         target: [
-          {hp: {type:'fix',val:10}}
+          {hp: 10}
         ]
       }
       rpg.effect.runUser user1, user2, op, log

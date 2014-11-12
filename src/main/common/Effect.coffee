@@ -51,7 +51,7 @@ class rpg.Effect
   _effect_attr: (attr, op, user, target, log) ->
     r = false
     val = target[attr] # 変化前の値
-    target[attr] += @value(target[attr],op)
+    target[attr] += rpg.utils.jsonExpression(op,base:target[attr])
     val = target[attr] - val # 変化した量を計算
     r = val != 0 or r
     log.targets = [] unless log.targets?
