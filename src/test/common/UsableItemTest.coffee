@@ -96,7 +96,7 @@ describe 'rpg.UsableItem', ->
   describe '回復アイテムを使う（足りない場合）', ->
     it 'HPを１０回復する１度使えるアイテム', ->
       item = new rpg.UsableItem(lost:{max:1},effects:[
-        {hp: {type:'fix',val:10}}
+        {hp: 10}
       ])
       item.isLost().should.equal false
     it '１１ダメージを受けてるので１０回復する', ->
@@ -113,7 +113,7 @@ describe 'rpg.UsableItem', ->
   describe '回復アイテムを使う（あふれる場合）', ->
     it 'HPを１０回復する１度使えるアイテム', ->
       item = new rpg.UsableItem(lost:{max:1},effects:[
-        {hp: {type:'fix',val:10}}
+        {hp: 10}
       ])
       item.isLost().should.equal false
     it '９ダメージを受けてるので９回復して全快する', ->
@@ -139,7 +139,7 @@ describe 'rpg.UsableItem', ->
         name: '10up'
         lost:{max:1}
         effects:[
-          {hp: {type:'fix',val:10}}
+          {hp: 10}
         ]
       )
       item.isLost().should.equal false
@@ -164,7 +164,7 @@ describe 'rpg.UsableItem', ->
   describe '回復アイテムを使う（ダメージなしの場合）', ->
     it 'HPを１０回復する１度使えるアイテム', ->
       item = new rpg.UsableItem(lost:{max:1},effects:[
-        {hp: {type:'fix',val:10}}
+        {hp: 10}
       ])
       item.isLost().should.equal false
     it 'ダメージが無い場合は、アイテムは使用されない', ->
@@ -182,7 +182,7 @@ describe 'rpg.UsableItem', ->
       item.isLost().should.equal false
     it 'HPを１０回復する１度使えるアイテム（回復しなくてもロスト）', ->
       item = new rpg.UsableItem(lost:{type:'count',max:1},effects:[
-        {hp: {type:'fix',val:10}}
+        {hp: 10}
       ])
       item.isLost().should.equal false
     it 'ダメージが無い場合は、アイテムは効果が無い', ->
@@ -201,7 +201,7 @@ describe 'rpg.UsableItem', ->
   describe 'MP回復アイテムを使う（足りない場合）', ->
     it 'MPを１０回復する１度使えるアイテム', ->
       item = new rpg.UsableItem(lost:{max:1},effects:[
-        {mp: {type:'fix',val:10}}
+        {mp: 10}
       ])
       item.isLost().should.equal false
     it '１１ダメージを受けてるので１０回復する', ->
@@ -229,7 +229,7 @@ describe 'rpg.UsableItem', ->
           range: ITEM_SCOPE.RANGE.ONE
         },
         effects:[
-          {hp: {type:'fix',val:10}}
+          {hp: 10}
         ])
         item.isLost().should.equal false
       it 'チームが違う人を回復させる', ->
@@ -255,7 +255,7 @@ describe 'rpg.UsableItem', ->
           range: ITEM_SCOPE.RANGE.ONE
         },
         effects:[
-          {hp: {type:'fix',val:10}}
+          {hp: 10}
         ])
         item.isLost().should.equal false
       it '複数の人を回復させようとすると使えない', ->
@@ -278,7 +278,7 @@ describe 'rpg.UsableItem', ->
           range: ITEM_SCOPE.RANGE.ONE
         },
         effects:[
-          {hp: {type:'fix',val:10}}
+          {hp: 10}
         ])
         item.isLost().should.equal false
       it 'チームが違う人には使えない', ->
@@ -306,7 +306,7 @@ describe 'rpg.UsableItem', ->
           range: ITEM_SCOPE.RANGE.MULTI
         },
         effects:[
-          {hp: {type:'fix',val:10}}
+          {hp: 10}
         ])
         item.isLost().should.equal false
       it 'チームが違っても複数の人を回復できる', ->
@@ -339,7 +339,7 @@ describe 'rpg.UsableItem', ->
           range: ITEM_SCOPE.RANGE.MULTI
         },
         effects:[
-          {hp: {type:'fix',val:10}}
+          {hp: 10}
         ])
         item.isLost().should.equal false
       it '対象に仲間が一人もいない場合は失敗する', ->
@@ -386,7 +386,7 @@ describe 'rpg.UsableItem', ->
           range: ITEM_SCOPE.RANGE.MULTI
         },
         effects:[
-          {hp: {type:'fix',val:10}}
+          {hp: 10}
         ])
         item.isLost().should.equal false
       it '全員味方なので全員が回復する', ->
