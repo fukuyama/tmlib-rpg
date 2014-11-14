@@ -111,7 +111,7 @@ describe 'rpg.DataBase', ->
           count += 1
           done()
         )
-    describe.skip 'callback 空回しあり？', -> # TODO:むりぽ
+    describe 'callback 空回しあり？', -> # TODO:むりぽ
       it 'アイテム３種順番に', (done) ->
         count = 0
         db.preloadItem([2,1],(items) ->
@@ -159,7 +159,7 @@ describe 'rpg.DataBase', ->
         db.mapUrl(1).should.
           equal 'http://localhost:3000/client/data/map/001.json'
 
-    describe 'マップのロード', ->
+    describe.skip 'マップのロード', ->
       it 'マップを取得する場合は、取得した後に呼ぶ関数を指定する', (done) ->
         db.preloadMap(1,(map) ->
           # ID は、map プロパティに、url が入る
@@ -169,6 +169,9 @@ describe 'rpg.DataBase', ->
             equal '001'
           done()
         )
+      it 'ウェイト', (done) ->
+        tm.asset.Manager.assets = {}
+        setTimeout(done,1000)
 
   describe 'ステートデータ', ->
     describe '基本ステート', ->

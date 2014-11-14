@@ -2,7 +2,17 @@
 describe 'rpg.Interpreter(Item)', () ->
   interpreter = null
   @timeout(10000)
-  describe 'アイテム関連のイベント', ->
+  describe '個別のアイテム操作', ->
+    it 'マップシーンへ移動', (done) ->
+      reloadTestMap(done)
+    it 'ウェイト', (done) ->
+      setTimeout(done,1000)
+    it 'アクターチェック', ->
+      actor = rpg.game.party.getAt(1)
+      actor.backpack.itemCount.should.equal 0
+      actor = rpg.game.party.getAt(0)
+      actor.backpack.itemCount.should.equal 1
+  describe.skip 'アイテム関連のイベント', ->
     describe '個別のアイテム操作', ->
       it 'マップシーンへ移動', (done) ->
         reloadTestMap(done)
