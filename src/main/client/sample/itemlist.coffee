@@ -70,7 +70,7 @@ ENEMY_ALL =
   hp0: false
 
 effect = {
-  hp: (n) -> hp:{type:'fix',val:n}
+  hp: (n) -> hp:n
 }
 
 
