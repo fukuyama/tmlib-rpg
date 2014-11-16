@@ -49,6 +49,12 @@ describe 'rpg.WindowItemShopTest', ->
           emulate_key('up',done)
         it 'アイテム４を選択（一覧の一番下を選択する）', (done) ->
           emulate_key('enter',done)
+        it 'wait', (done) ->
+          setTimeout(done,1000)
+        it '数値入力で１に', (done) ->
+          emulate_key('up',done)
+        it '決定', (done) ->
+          emulate_key('enter',done)
         it 'ログが設定される', ->
           data = rpg.system.temp.log.item
           data.name.should.equal 'cure I'
