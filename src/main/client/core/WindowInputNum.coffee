@@ -17,6 +17,8 @@ tm.define 'rpg.WindowInputNum',
       step
       @cancel
       @cursor
+      @x
+      @y
     } = {
       visible: false
       active: false
@@ -26,6 +28,8 @@ tm.define 'rpg.WindowInputNum',
       cancel: -1 # キャンセルフラグ(数字の場合はキャンセル時値、falseの場合は、キャンセルOFF)
       step: 1
       cursor: 'sample.cursor'
+      x: 0
+      y: 0
     }.$extend(rpg.system.windowDefault).$extend args
     # 描画サイズ計算
     @rows = 1
@@ -38,9 +42,18 @@ tm.define 'rpg.WindowInputNum',
     if @steps.length < @cols
       @steps.unshift(1) for i in [0...(@cols - @steps.length)]
     # リサイズ
-    @resize(
-      @menuWidth * @cols + @borderWidth * 2
-      @menuHeight + @borderHeight * 2)
+    if args.title?
+      w1 = @measureTextWidth(args.title) + @borderWidth * 2
+      w2 = @menuWidth * @cols + @borderWidth * 2
+      w = if w1 > w2 then w1 else w2
+      h = @menuHeight + @borderHeight * 2 + @titleHeight
+      @resizeWindow(w,h)
+      @drawTitle()
+    else
+      @resizeWindow(
+        @menuWidth * @cols + @borderWidth * 2
+        @menuHeight + @borderHeight * 2
+      )
     # カーソル作成
     @cursorInstance = rpg.SpriteCursor(@,@cursor)
     @addChild @cursorInstance

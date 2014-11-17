@@ -33,6 +33,37 @@ describe 'rpg.WindowInputNum', () ->
       it '決定', (done) -> emulate_key('enter',done)
       it 'val01が 90 になる', ->
         rpg.game.flag.get('val01').should.equal 90
+    describe '通常入力テスト、titleつき', ->
+      interpreter = null
+      commands = [
+        {type:'input_num',params:['val01',{min:0,max:99,title:'TEST'}]}
+      ]
+      it 'マップシーンへ移動', (done) ->
+        loadTestMap(done)
+      it '初期化', ->
+        rpg.game.flag.set('val01',10)
+        rpg.game.flag.get('val01').should.equal 10
+      it 'コマンド実行', ->
+        interpreter = rpg.system.scene.interpreter
+        interpreter.start commands
+      it '実行中', (done) ->
+        emulate_key('enter',done)
+      it 'val01が 0 になる', ->
+        rpg.game.flag.get('val01').should.equal 0
+      it 'コマンド実行', ->
+        interpreter.start commands
+      it '上', (done) -> emulate_key('up',done)
+      it '上', (done) -> emulate_key('up',done)
+      it '決定', (done) -> emulate_key('enter',done)
+      it 'val01が 2 になる', ->
+        rpg.game.flag.get('val01').should.equal 2
+      it 'コマンド実行', ->
+        interpreter.start commands
+      it '左', (done) -> emulate_key('left',done)
+      it '下', (done) -> emulate_key('down',done)
+      it '決定', (done) -> emulate_key('enter',done)
+      it 'val01が 90 になる', ->
+        rpg.game.flag.get('val01').should.equal 90
     describe '初期値が最初に設定される', ->
       interpreter = null
       commands = [

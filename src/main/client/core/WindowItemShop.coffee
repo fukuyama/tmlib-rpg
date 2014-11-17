@@ -104,7 +104,11 @@ tm.define 'rpg.WindowItemShop',
       options
       callback
     } = {
-      options: {}
+      options: {
+        title: 'いくつ？'
+        x: @right
+        y: @top
+      }
     }.$extend args
     options.name = 'Select'
     
