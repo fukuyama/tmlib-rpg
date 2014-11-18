@@ -8,7 +8,7 @@ describe 'rpg.WindowInputNum', () ->
         {type:'input_num',params:['val01',{min:0,max:99}]}
       ]
       it 'マップシーンへ移動', (done) ->
-        loadTestMap(done)
+        reloadTestMap(done)
       it '初期化', ->
         rpg.game.flag.set('val01',10)
         rpg.game.flag.get('val01').should.equal 10

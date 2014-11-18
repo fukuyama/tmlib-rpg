@@ -4,7 +4,7 @@ describe 'rpg.Interpreter(Message)', () ->
   @timeout(10000)
   describe '文章表示', ->
     it 'マップシーンへ移動', (done) ->
-      loadTestMap(done)
+      reloadTestMap(done)
     it 'インタープリタ取得', ->
       rpg.system.scene.name.should.equal 'SceneMap'
       interpreter = rpg.system.scene.interpreter
