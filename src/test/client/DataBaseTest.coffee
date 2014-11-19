@@ -66,6 +66,15 @@ describe 'rpg.DataBase', ->
           item.name.should.equal '片手剣'
           done()
         )
+      it '武器を取得する場合は、取得した後に呼ぶ関数を指定する２回目', (done) ->
+        db.preloadWeapon([2,1],(items) ->
+          # ID は、item プロパティとして、url に使用する
+          items[0].url.should.
+            equal 'http://localhost:3000/client/data/weapon/002.json'
+          items[1].url.should.
+            equal 'http://localhost:3000/client/data/weapon/001.json'
+          done()
+        )
 
   describe '防具データ', ->
     describe '防具のロード', ->
@@ -87,8 +96,8 @@ describe 'rpg.DataBase', ->
           done()
         )
 
-  describe 'callback　TEST', ->
-    describe 'callback なし', ->
+  describe 'callback　のテスト', ->
+    describe.skip 'callback なし', ->
       it 'アイテム３種', ->
         db.preloadItem([2,1])
         db.preloadWeapon([2,1])
@@ -224,3 +233,20 @@ describe 'rpg.DataBase', ->
           equal 'http://localhost:3000/client/data/state/StateAA.json'
         state.name.should.
           equal 'StateAA'
+
+  describe 'TEST', ->
+    describe '装備してから装備解除する', ->
+      it 'マップシーンへ移動', (done) ->
+        reloadTestMap(done)
+      it 'wait', (done) ->
+        setTimeout(done,1000)
+      it '武器をロード', (done) ->
+        db = rpg.system.db
+        db.preloadWeapon([1],(items) ->
+          console.log items
+          item = items[0]
+          item.url.should.
+            equal 'http://localhost:3000/client/data/weapon/001.json'
+          item.type.should.equal 'Weapon'
+          done()
+        )

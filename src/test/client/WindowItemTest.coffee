@@ -1,6 +1,7 @@
 
 describe 'rpg.WindowItemTest', ->
   @timeout(10000)
+
   describe 'アイテムを捨てる', ->
     it 'マップシーンへ移動', (done) ->
       reloadTestMap(done)
