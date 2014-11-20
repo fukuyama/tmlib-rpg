@@ -119,7 +119,13 @@ tm.define 'rpg.DataBase',
           func(list)
       rpg.system.loadAssets urls, onload.bind @
     else
-      rpg.system.loadAssets urls
+      onload = () ->
+        for url in urls
+          m = mgr.get(url)
+          if m?
+            data = m.data
+            data.url = url
+      rpg.system.loadAssets urls, onload.bind @
     return
 
   ###* マップデータの読み込み

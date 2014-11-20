@@ -97,7 +97,7 @@ describe 'rpg.DataBase', ->
         )
 
   describe 'callback　のテスト', ->
-    describe.skip 'callback なし', ->
+    describe 'callback なし', ->
       it 'アイテム３種', ->
         db.preloadItem([2,1])
         db.preloadWeapon([2,1])
@@ -243,7 +243,6 @@ describe 'rpg.DataBase', ->
       it '武器をロード', (done) ->
         db = rpg.system.db
         db.preloadWeapon([1],(items) ->
-          console.log items
           item = items[0]
           item.url.should.
             equal 'http://localhost:3000/client/data/weapon/001.json'
