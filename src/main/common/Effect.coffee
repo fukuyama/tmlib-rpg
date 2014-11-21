@@ -5,6 +5,7 @@
 _g = window ? global ? @
 rpg = _g.rpg = _g.rpg ? {}
 
+ITEM_SCOPE = rpg.constants.ITEM_SCOPE
 
 # ゲーム内の効果をまとめたクラス
 class rpg.Effect
@@ -13,7 +14,61 @@ class rpg.Effect
   constructor: (args={}) ->
     {
       @name
-    } = args
+      @scope
+      @effects
+    } = {
+      scope: {
+        type: ITEM_SCOPE.TYPE.FRIEND
+        range: ITEM_SCOPE.RANGE.ONE
+        hp0: false
+      }
+      effects: []
+    }.$extendAll args
+
+  ###* スコープ range の確認
+  * @param {rpg.Battler} user 使用者
+  * @param {Array} target 対象者(rpg.Battler配列)
+  * @return {boolean} スコープ外だったら、false
+  * @private
+  ###
+  _checkScopeRange: (user, targets) ->
+    (@scope.range == ITEM_SCOPE.RANGE.ONE and targets.length == 1) or
+    (@scope.range == ITEM_SCOPE.RANGE.MULTI)
+
+  ###* スコープ type の確認
+  * @param {rpg.Battler} user 使用者
+  * @param {rpg.Battler} target 対象者
+  * @return {boolean} スコープ外だったら、false
+  * @private
+  ###
+  _checkScopeType: (user, target) ->
+    if @scope.type == ITEM_SCOPE.TYPE.FRIEND
+      return user.iff(target)
+    if @scope.type == ITEM_SCOPE.TYPE.ENEMY
+      return ! user.iff(target)
+    true
+
+  ###* 効果メソッド
+  * @param {rpg.Battler} user 使用者
+  * @param {Array} target 対象者(rpg.Battler配列)
+  * @param {Object} log 効果ログ情報
+  * @return {boolean} 効果ある場合 true
+  ###
+  effect: (user,targets = [],log = {}) ->
+    r = false
+    log.user = {
+      name: user.name # 使った人
+    }
+    log.item = {
+      name: @name
+    }
+    log.targets = [] # 誰がどれくらい回復したか
+    # TODO: effect と target の組み合わせのリザルトをどうするか…悩み中
+    
+    return false unless @_checkScopeRange(user, targets)
+    for t in targets when @_checkScopeType(user, t)
+      r = @runArray(user, t, @effects, log) or r
+    r
 
   valueFunc: {
     fix: (b, p) -> p.val
@@ -98,5 +153,3 @@ class rpg.Effect
         return true
       false
   }
-
-rpg.effect = new rpg.Effect()

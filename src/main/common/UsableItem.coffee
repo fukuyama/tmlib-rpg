@@ -17,18 +17,11 @@ class rpg.UsableItem extends rpg.Item
     }.$extendAll args
     super args
     {
-      @scope
-      @effects
       @lost
     } = {
-      scope: {
-        type: ITEM_SCOPE.TYPE.FRIEND
-        range: ITEM_SCOPE.RANGE.ONE
-        hp0: false
-      }
-      effects: []
       lost: {type:'ok_count',max: 1}
     }.$extendAll args
+    @_effect = new rpg.Effect args
     # 消費確認メソッド
     @isLost = @['lost_'+@lost.type].bind @, @lost
     # 再利用メソッド（lostを打ち消す）
@@ -40,38 +33,15 @@ class rpg.UsableItem extends rpg.Item
     @count = 0 # 使用回数
     @ok_count = 0 # 使用成功回数
     @ng_count = 0 # 使用失敗回数
-  
-  # スコープ range の確認
-  # スコープ外だったら、false
-  checkScopeRange: (user, targets) ->
-    (@scope.range == ITEM_SCOPE.RANGE.ONE and targets.length == 1) or
-    (@scope.range == ITEM_SCOPE.RANGE.MULTI)
 
-  # スコープ type の確認
-  # スコープ外だったら、false
-  checkScopeType: (user, target) ->
-    if @scope.type == ITEM_SCOPE.TYPE.FRIEND
-      return user.iff(target)
-    if @scope.type == ITEM_SCOPE.TYPE.ENEMY
-      return ! user.iff(target)
-    true
-
-  # 効果メソッド
+  ###* 効果メソッド
+  * @param {rpg.Battler} user 使用者
+  * @param {Array} target 対象者(rpg.Battler配列)
+  * @param {Object} log 効果ログ情報
+  * @return {boolean} 効果ある場合 true
+  ###
   effect: (user,targets = [],log = {}) ->
-    r = false
-    log.user = {
-      name: user.name # 使った人
-    }
-    log.item = {
-      name: @name
-    }
-    log.targets = [] # 誰がどれくらい回復したか
-    # TODO: effect と target の組み合わせのリザルトをどうするか…悩み中
-    
-    return false unless @checkScopeRange(user, targets)
-    for t in targets when @checkScopeType(user, t)
-      r = rpg.effect.runArray(user, t, @effects, log) or r
-    r
+    @_effect.effect(user,targets,log)
 
   # 使う
   # user: rpg.Actor
@@ -101,3 +71,7 @@ class rpg.UsableItem extends rpg.Item
   reuse_ok_count: (args) -> @reset()
 
   reuse_ng_count: (args) -> @reset()
+
+Object.defineProperty rpg.UsableItem.prototype, 'scope',
+  enumerable: true
+  get: -> @_effect.scope
