@@ -70,14 +70,15 @@ class rpg.Effect
       r = @runArray(user, t, @effects, log) or r
     r
 
-  valueFunc: {
-    fix: (b, p) -> p.val
-    rate: (b, p) -> b * p.val / 100
-    range: (b, p) -> Math.floor(Math.random() * p.max) + p.min
-  }
-
-  value: (base,param={type:'fix',val:10}) ->
-    @valueFunc[param.type](base,param)
+  ###* ダメージ計算
+  * @return {Object} ダメージコンテキスト
+  ###
+  damage: (user, target, log ={}) ->
+    ret = {
+      damage: 0 # ダメージ値
+      attrs: [] # ダメージ属性
+    }
+    return ret
 
 
   runUser: (user, targets, effects, log) ->
