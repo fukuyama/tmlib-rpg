@@ -70,6 +70,23 @@ class rpg.Effect
       r = @runArray(user, t, @effects, log) or r
     r
 
+  ###* 攻撃コンテキストの取得
+  * @param {rpg.Battler} user 攻撃者
+  * @return {Object} 攻撃コンテキスト
+  ###
+  attackContext: (user) ->
+    atkcx = {
+      damage: 0 # ダメージ値
+      attrs: [] # ダメージ属性
+    }
+    for e in @effects
+      for type, op of e
+        if type is 'damage'
+          atkcx.damage += rpg.utils.jsonExpression(op,user:user)
+        if type is 'attrs'
+          atkcx.attrs.push a for a in op
+    return atkcx
+
   ###* ダメージ計算
   * @return {Object} ダメージコンテキスト
   ###

@@ -114,3 +114,16 @@ describe 'rpg.Effect', ->
       user2.mp.should.equals 120
       log.targets[0].hp.should.equals 10
       log.users[0].mp.should.equals -2
+
+  describe '攻撃コンテキスト', ->
+    it '通常攻撃（物理）', ->
+      effect = new rpg.Effect(effects:[
+        {damage:['user.atk','*',2],attrs:['物理']}
+      ])
+      user = {
+        atk: 100
+      }
+      atkcx = effect.attackContext(user)
+      atkcx.damage.should.equals 200
+      atkcx.attrs[0].should.equals '物理'
+
