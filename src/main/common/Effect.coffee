@@ -90,7 +90,7 @@ class rpg.Effect
   ###* ダメージ計算
   * @return {Object} ダメージコンテキスト
   ###
-  damage: (user, target, log ={}) ->
+  damage: (user, target, log={}) ->
     ret = {
       damage: 0 # ダメージ値
       attrs: [] # ダメージ属性

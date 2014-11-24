@@ -40,9 +40,12 @@ rpg.utils = {
     switch typeof json
       when 'string'
         path = json
+        last = path
         obj = op
-        obj = obj[k] for k in path.split /[\[\]\.]/ when obj[k]?
-        return obj
+        for k in path.split /[\[\]\.]/ when obj[k]?
+          obj = obj[k]
+          last = obj
+        return last
       when 'number'
         return json
       when 'boolean'

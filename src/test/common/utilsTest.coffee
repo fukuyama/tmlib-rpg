@@ -300,3 +300,25 @@ describe 'utils', ->
       n = rpg.utils.jsonExpression ['test.n','=',['abc.x','*',2]], op
       n.should.equal 22
       op.test.n.should.equal 22
+
+    it '文字列配列１', ->
+      op = {
+        attrs: ['abc','def']
+      }
+      r = []
+      r = r.concat rpg.utils.jsonExpression 'op.attrs', op:op
+      r[0].should.equals 'abc'
+
+    it '文字列配列２', ->
+      op = {
+        attrs: 'abc'
+      }
+      r = []
+      r = r.concat rpg.utils.jsonExpression 'op.attrs', op:op
+      r[0].should.equals 'abc'
+
+    it '文字列配列３', ->
+      op = {}
+      r = []
+      r = r.concat rpg.utils.jsonExpression 'abc', op:op
+      r[0].should.equals 'abc'
