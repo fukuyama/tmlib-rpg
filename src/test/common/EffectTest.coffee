@@ -115,15 +115,54 @@ describe 'rpg.Effect', ->
       log.targets[0].hp.should.equals 10
       log.users[0].mp.should.equals -2
 
+  describe '回復エフェクト', ->
+    effect = null
+    user = {
+      name: 'user1'
+      iff: -> true
+    }
+    targets = [
+      {
+        hp:50
+        name:'user2'
+        iff: -> true
+      }
+    ]
+    it 'エフェクトの作成', ->
+      effect = new rpg.Effect(
+        user:
+          effects:[
+          ]
+        target:
+          effects:[
+            {hp:10,attrs:['魔法','回復']}
+          ]
+      )
+    it 'エフェクトの取得', ->
+      log = {}
+      cx = effect.effect(user,targets,log)
+      cx.targets[0].hp.should.equals 10
+    it 'エフェクトの反映', ->
+      targets[0].hp.should.equals 50
+      log = {}
+      effect.effectApply(user,targets,log)
+      log.user.name.should.equals 'user1'
+      log.targets[0].name.should.equals 'user2'
+      log.targets[0].hp.should.equals 10
+      targets[0].hp.should.equals 60
+
   describe '攻撃コンテキスト', ->
     it '通常攻撃（物理）', ->
-      effect = new rpg.Effect(effects:[
-        {damage:['user.atk','*',2],attrs:['物理']}
-      ])
+      effect = new rpg.Effect(
+        target:
+          effects:[
+            {hp:['user.atk','*',-2],attrs:['物理']}
+          ]
+      )
       user = {
         atk: 100
       }
       atkcx = effect.attackContext(user)
-      atkcx.damage.should.equals 200
+      atkcx.hp.should.equals -200
       atkcx.attrs[0].should.equals '物理'
 

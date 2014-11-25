@@ -15,15 +15,16 @@ class rpg.Effect
     {
       @name
       @scope
-      @effects
     } = {
       scope: {
         type: ITEM_SCOPE.TYPE.FRIEND
         range: ITEM_SCOPE.RANGE.ONE
         hp0: false
       }
-      effects: []
     }.$extendAll args
+    @_effect = {}
+    for n in ['user','target','users','targets'] when args[n]?
+      @_effect[n] = args[n]
 
   ###* スコープ range の確認
   * @param {rpg.Battler} user 使用者
@@ -52,23 +53,61 @@ class rpg.Effect
   * @param {rpg.Battler} user 使用者
   * @param {Array} target 対象者(rpg.Battler配列)
   * @param {Object} log 効果ログ情報
-  * @return {boolean} 効果ある場合 true
+  * @return {Object} 結果
   ###
   effect: (user,targets = [],log = {}) ->
+    cx = {
+    }
+    param = {
+      user: user
+      targets: targets
+    }
+    return cx unless @_checkScopeRange(user, targets)
+    if @_effect.user?
+      cx.user = {attrs:[]}
+      @_makeContext(cx.user,@_effect.user.effects,param)
+    if @_effect.target?
+      cx.targets = []
+      for t in targets when @_checkScopeType(user, t)
+        param.target = t
+        cxt = {attrs:[]}
+        @_makeContext(cxt,@_effect.target.effects,param)
+        cx.targets.push cxt
+    return cx
+
+  effectApply: (user,targets = [],log = {}) ->
     r = false
     log.user = {
       name: user.name # 使った人
     }
-    log.item = {
-      name: @name
-    }
     log.targets = [] # 誰がどれくらい回復したか
     # TODO: effect と target の組み合わせのリザルトをどうするか…悩み中
-    
-    return false unless @_checkScopeRange(user, targets)
+    cx = @effect(user,targets,log)
+    return r unless @_checkScopeRange(user, targets)
+    i = 0
     for t in targets when @_checkScopeType(user, t)
-      r = @runArray(user, t, @effects, log) or r
+      log.targets[i] = {}
+      log.targets[i].name = t.name
+      for type, val of cx.targets[i] when type isnt 'attrs'
+        t[type] += val
+        log.targets[i][type] = if log.targets[i][type]? then log.targets[i][type] + val else val
+        r = true
+      i++
     r
+
+  ###* コンテキスト作成
+  * @param {rpg.Battler} user 攻撃者
+  * @return {Object} 攻撃コンテキスト
+  ###
+  _makeContext: (cx,effects,param) ->
+    for e in effects
+      for type, op of e
+        if type is 'attrs'
+          cx.attrs.push a for a in op
+        else
+          n = rpg.utils.jsonExpression(op,param)
+          if cx[type]? then cx[type] += n else cx[type] = n
+    return cx
 
   ###* 攻撃コンテキストの取得
   * @param {rpg.Battler} user 攻撃者
@@ -76,15 +115,9 @@ class rpg.Effect
   ###
   attackContext: (user) ->
     atkcx = {
-      damage: 0 # ダメージ値
       attrs: [] # ダメージ属性
     }
-    for e in @effects
-      for type, op of e
-        if type is 'damage'
-          atkcx.damage += rpg.utils.jsonExpression(op,user:user)
-        if type is 'attrs'
-          atkcx.attrs.push a for a in op
+    @_makeContext(atkcx,@_effect.target.effects,user:user)
     return atkcx
 
   ###* ダメージ計算
@@ -116,7 +149,7 @@ class rpg.Effect
       for type, op of e
         r = @run type, user, target, op, log or r
     r
-  run: (type, user, target, op, log) -> @_effects[type].call @, op, user, target, log
+  run: (type, user, target, op, log) -> @_func_effects[type].call @, op, user, target, log
   hp: (user, target, op, log) -> @run 'hp', user, target, op, log
   mp: (user, target, op, log) -> @run 'mp', user, target, op, log
 
@@ -135,7 +168,7 @@ class rpg.Effect
       log.targets.push o # 結果に保存
     r
 
-  _effects: {
+  _func_effects: {
     # 効果
     # 基本的に、effect 以外では、user と target の状態は変化させない。
     # （使ったアイテムを減らす等は、Actor側の処理で）
