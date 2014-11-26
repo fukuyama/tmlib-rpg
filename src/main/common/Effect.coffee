@@ -55,7 +55,7 @@ class rpg.Effect
   * @param {Object} log 効果ログ情報
   * @return {Object} 結果
   ###
-  effect: (user,targets = [],log = {}) ->
+  effect: (user,targets = []) ->
     cx = {
     }
     param = {
@@ -73,6 +73,7 @@ class rpg.Effect
         cxt = {attrs:[]}
         @_makeContext(cxt,@_effect.target.effects,param)
         cx.targets.push cxt
+        cx.target = cxt
     return cx
 
   effectApply: (user,targets = [],log = {}) ->
@@ -80,15 +81,17 @@ class rpg.Effect
     log.user = {
       name: user.name # 使った人
     }
-    log.targets = [] # 誰がどれくらい回復したか
+    log.targets = [] # 誰がどれくらいの効果だったか
     # TODO: effect と target の組み合わせのリザルトをどうするか…悩み中
-    cx = @effect(user,targets,log)
+    cx = @effect(user,targets)
     return r unless @_checkScopeRange(user, targets)
     i = 0
     for t in targets when @_checkScopeType(user, t)
       log.targets[i] = {}
       log.targets[i].name = t.name
-      for type, val of cx.targets[i] when type isnt 'attrs'
+      defcx = cx.targets[i]
+      # TODO: 属性効果の適用
+      for type, val of defcx when type isnt 'attrs'
         t[type] += val
         log.targets[i][type] = if log.targets[i][type]? then log.targets[i][type] + val else val
         r = true
@@ -108,28 +111,6 @@ class rpg.Effect
           n = rpg.utils.jsonExpression(op,param)
           if cx[type]? then cx[type] += n else cx[type] = n
     return cx
-
-  ###* 攻撃コンテキストの取得
-  * @param {rpg.Battler} user 攻撃者
-  * @return {Object} 攻撃コンテキスト
-  ###
-  attackContext: (user) ->
-    atkcx = {
-      attrs: [] # ダメージ属性
-    }
-    @_makeContext(atkcx,@_effect.target.effects,user:user)
-    return atkcx
-
-  ###* ダメージ計算
-  * @return {Object} ダメージコンテキスト
-  ###
-  damage: (user, target, log={}) ->
-    ret = {
-      damage: 0 # ダメージ値
-      attrs: [] # ダメージ属性
-    }
-    return ret
-
 
   runUser: (user, targets, effects, log) ->
     targets = if Array.isArray targets then targets else [targets]

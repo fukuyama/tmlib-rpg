@@ -6,6 +6,8 @@ require('../../main/common/Battler.coffee')
 require('../../main/common/Actor.coffee')
 require('../../main/common/Effect.coffee')
 
+ITEM_SCOPE = rpg.constants.ITEM_SCOPE
+
 # 価値は何か，誰にとっての価値か，実際の機能は何か
 describe 'rpg.Effect', ->
 
@@ -139,9 +141,9 @@ describe 'rpg.Effect', ->
           ]
       )
     it 'エフェクトの取得', ->
-      log = {}
-      cx = effect.effect(user,targets,log)
+      cx = effect.effect(user,targets)
       cx.targets[0].hp.should.equals 10
+      (cx.user isnt null).should.equals true
     it 'エフェクトの反映', ->
       targets[0].hp.should.equals 50
       log = {}
@@ -152,17 +154,30 @@ describe 'rpg.Effect', ->
       targets[0].hp.should.equals 60
 
   describe '攻撃コンテキスト', ->
+    effect = null
+    user = {
+      name: 'user1'
+      atk: 100
+      iff: -> false
+    }
+    targets = [
+      {
+        hp:50
+        name:'user2'
+        iff: -> true
+      }
+    ]
     it '通常攻撃（物理）', ->
       effect = new rpg.Effect(
+        scope: {
+          type: ITEM_SCOPE.TYPE.ENEMY
+          range: ITEM_SCOPE.RANGE.ONE
+        }
         target:
           effects:[
             {hp:['user.atk','*',-2],attrs:['物理']}
           ]
       )
-      user = {
-        atk: 100
-      }
-      atkcx = effect.attackContext(user)
-      atkcx.hp.should.equals -200
-      atkcx.attrs[0].should.equals '物理'
-
+      atkcx = effect.effect(user,targets)
+      atkcx.target.hp.should.equals -200
+      atkcx.target.attrs[0].should.equals '物理'
