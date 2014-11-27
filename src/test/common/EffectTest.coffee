@@ -158,6 +158,7 @@ describe 'rpg.Effect', ->
     user = {
       name: 'user1'
       atk: 100
+      matk: 50
       iff: -> false
     }
     targets = [
@@ -181,3 +182,19 @@ describe 'rpg.Effect', ->
       atkcx = effect.effect(user,targets)
       atkcx.target.hp.should.equals -200
       atkcx.target.attrs[0].should.equals '物理'
+
+    it '魔法攻撃', ->
+      effect = new rpg.Effect(
+        name: '炎の矢'
+        scope: {
+          type: ITEM_SCOPE.TYPE.ENEMY
+          range: ITEM_SCOPE.RANGE.ONE
+        }
+        target:
+          effects:[
+            {hp:['user.matk','*',-1.5],attrs:['魔法','炎']}
+          ]
+      )
+      atkcx = effect.effect(user,targets)
+      atkcx.target.hp.should.equals -75
+      atkcx.target.attrs[0].should.equals '魔法'
