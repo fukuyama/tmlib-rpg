@@ -137,12 +137,12 @@ describe 'rpg.Effect', ->
           ]
         target:
           effects:[
-            {hp:10,attrs:['魔法','回復']}
+            {hp:-10,attrs:['魔法','回復']}
           ]
       )
     it 'エフェクトの取得', ->
       cx = effect.effect(user,targets)
-      cx.targets[0].hp.should.equals 10
+      cx.targets[0].hp.should.equals -10
       (cx.user isnt null).should.equals true
     it 'エフェクトの反映', ->
       targets[0].hp.should.equals 50
@@ -150,7 +150,7 @@ describe 'rpg.Effect', ->
       effect.effectApply(user,targets,log)
       log.user.name.should.equals 'user1'
       log.targets[0].name.should.equals 'user2'
-      log.targets[0].hp.should.equals 10
+      log.targets[0].hp.should.equals -10
       targets[0].hp.should.equals 60
 
   describe '攻撃コンテキスト', ->
@@ -176,11 +176,11 @@ describe 'rpg.Effect', ->
         }
         target:
           effects:[
-            {hp:['user.atk','*',-2],attrs:['物理']}
+            {hp:['user.atk','*',2],attrs:['物理']}
           ]
       )
       atkcx = effect.effect(user,targets)
-      atkcx.target.hp.should.equals -200
+      atkcx.target.hp.should.equals 200
       atkcx.target.attrs[0].should.equals '物理'
 
     it '魔法攻撃', ->
@@ -192,9 +192,9 @@ describe 'rpg.Effect', ->
         }
         target:
           effects:[
-            {hp:['user.matk','*',-1.5],attrs:['魔法','炎']}
+            {hp:['user.matk','*',1.5],attrs:['魔法','炎']}
           ]
       )
       atkcx = effect.effect(user,targets)
-      atkcx.target.hp.should.equals -75
+      atkcx.target.hp.should.equals 75
       atkcx.target.attrs[0].should.equals '魔法'

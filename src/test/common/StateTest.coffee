@@ -190,11 +190,11 @@ describe 'rpg.State', () ->
       defcx = null
       describe '属性キラー系', ->
         it '通常攻撃ダメージ100を、炎属性の相手にあたえる', ->
-          atkcx = {damage:100,attrs:['物理']}
+          atkcx = {hp:100,attrs:['物理']}
           defcx = {attrs:['炎']}
         it '炎属性に対して５０％アップのダメージステート', ->
           state = new rpg.State(name:'State1',damages:[
-            {attack:{exp:['damage','/',2],attr:'炎',cond:'物理'}}
+            {attack:{exp:['hp','/',2],attr:'炎',cond:'物理'}}
           ])
         it '増加ダメージ量が５０', ->
           state.attackDamage(atkcx,defcx).should.equal 50
@@ -206,11 +206,11 @@ describe 'rpg.State', () ->
           state.attackDamage(atkcx,defcx).should.equal 0
       describe '物理ダメージを倍化するステート', ->
         it '通常攻撃ダメージ100を、炎属性の相手にあたえる', ->
-          atkcx = {damage:100,attrs:['物理']}
+          atkcx = {hp:100,attrs:['物理']}
           defcx = {attrs:['炎']}
         it 'ダメージが倍になるステート、大抵の対象が持つ物理属性で判定', ->
           state = new rpg.State(name:'State1',damages:[
-            {attack:{exp:'damage',cond:'物理'}}
+            {attack:{exp:'hp',cond:'物理'}}
           ])
         it '増加ダメージ量が100', ->
           state.attackDamage(atkcx,defcx).should.equal 100
@@ -221,46 +221,46 @@ describe 'rpg.State', () ->
           defcx = {attrs:['水']}
           state.attackDamage(atkcx,defcx).should.equal 100
         it '魔法攻撃ダメージ100を、炎属性の相手にあたえる', ->
-          atkcx = {damage:100,attrs:['魔法']}
+          atkcx = {hp:100,attrs:['魔法']}
           defcx = {attrs:['炎']}
         it '攻撃属性が合って無いので増加ダメージ量が0', ->
           state.attackDamage(atkcx,defcx).should.equal 0
       describe 'すべてのダメージを倍化するステート', ->
-        it '通常攻撃ダメージ100を、炎属性の相手にあたえる', ->
-          atkcx = {damage:100,attrs:['物理']}
+        it '通常攻撃ダメージ50を、炎属性の相手にあたえる', ->
+          atkcx = {hp:50,attrs:['物理']}
           defcx = {attrs:['炎']}
         it 'ダメージが倍になるステート、大抵の対象が持つ物理属性で判定', ->
           state = new rpg.State(name:'State1',damages:[
-            {attack:{exp:100}}
+            {attack:{exp:'hp'}}
           ])
-        it '増加ダメージ量が100', ->
-          state.attackDamage(atkcx,defcx).should.equal 100
-        it '炎属性が無くても、100', ->
+        it '増加ダメージ量が50', ->
+          state.attackDamage(atkcx,defcx).should.equal 50
+        it '炎属性が無くても、50', ->
           defcx = {attrs:[]}
-          state.attackDamage(atkcx,defcx).should.equal 100
-        it '水属性の場合でも100', ->
+          state.attackDamage(atkcx,defcx).should.equal 50
+        it '水属性の場合でも50', ->
           defcx = {attrs:['水']}
-          state.attackDamage(atkcx,defcx).should.equal 100
+          state.attackDamage(atkcx,defcx).should.equal 50
         it '物理属性が無くても倍化', ->
           defcx = {attrs:[]}
-          state.attackDamage(atkcx,defcx).should.equal 100
-        it '魔法攻撃ダメージ100を、炎属性の相手にあたえる', ->
-          atkcx = {damage:100,attrs:['魔法']}
+          state.attackDamage(atkcx,defcx).should.equal 50
+        it '魔法攻撃ダメージ50を、炎属性の相手にあたえる', ->
+          atkcx = {hp:120,attrs:['魔法']}
           defcx = {attrs:['炎']}
-        it '攻撃属性が合って無くても 100', ->
-          state.attackDamage(atkcx,defcx).should.equal 100
+        it '攻撃属性が合って無くても 120', ->
+          state.attackDamage(atkcx,defcx).should.equal 120
       describe '攻撃に属性を付加するためのステート', ->
         it '炎属性を物理攻撃に追加するステート', ->
           state = new rpg.State(name:'State1',attrs:[
             {attack:{attr:'炎',cond:'物理'}}
           ])
         it 'ステートから物理攻撃時の属性を取得', ->
-          atkcx = {damage:100,attrs:['物理']}
+          atkcx = {hp:100,attrs:['物理']}
           attr = state.attackAttr(atkcx)
           attr.length.should.equal 1
           attr[0].should.equal '炎'
         it '魔法攻撃には付加されない', ->
-          atkcx = {damage:100,attrs:['魔法']}
+          atkcx = {hp:100,attrs:['魔法']}
           attr = state.attackAttr(atkcx)
           attr.length.should.equal 0
         it '炎属性を魔法攻撃に追加するステート', ->
@@ -268,11 +268,11 @@ describe 'rpg.State', () ->
             {attack:{attr:'炎',cond:'魔法'}}
           ])
         it '物理攻撃には付加されない', ->
-          atkcx = {damage:100,attrs:['物理']}
+          atkcx = {hp:100,attrs:['物理']}
           attr = state.attackAttr(atkcx)
           attr.length.should.equal 0
         it '魔法攻撃には付加される', ->
-          atkcx = {damage:100,attrs:['魔法']}
+          atkcx = {hp:100,attrs:['魔法']}
           attr = state.attackAttr(atkcx)
           attr.length.should.equal 1
           attr[0].should.equal '炎'
@@ -281,12 +281,12 @@ describe 'rpg.State', () ->
             {attack:{attr:'炎'}}
           ])
         it 'ステートから物理攻撃時の属性を取得', ->
-          atkcx = {damage:100,attrs:['物理']}
+          atkcx = {hp:100,attrs:['物理']}
           attr = state.attackAttr(atkcx)
           attr.length.should.equal 1
           attr[0].should.equal '炎'
         it '魔法攻撃にも付加される', ->
-          atkcx = {damage:100,attrs:['魔法']}
+          atkcx = {hp:100,attrs:['魔法']}
           attr = state.attackAttr(atkcx)
           attr.length.should.equal 1
           attr[0].should.equal '炎'
@@ -295,7 +295,7 @@ describe 'rpg.State', () ->
       defcx = null
       describe 'ダメージ値変化', ->
         it '一律１０ダメージカット（無属性ダメージ）', ->
-          atkcx = {damage:100,attrs:[]}
+          atkcx = {hp:100,attrs:[]}
           defcx = {attrs:[]}
           state = new rpg.State(name:'State1',damages:[
             {defence:{exp:10}}
@@ -303,79 +303,79 @@ describe 'rpg.State', () ->
         it 'ダメージカットが10', ->
           state.defenceDamage(atkcx,defcx).should.equal 10
         it '物理攻撃でもカット10', ->
-          atkcx = {damage:100,attrs:['物理']}
+          atkcx = {hp:100,attrs:['物理']}
           state.defenceDamage(atkcx,defcx).should.equal 10
         it '魔法攻撃でもカット10', ->
-          atkcx = {damage:100,attrs:['魔法']}
+          atkcx = {hp:100,attrs:['魔法']}
           state.defenceDamage(atkcx,defcx).should.equal 10
         it 'ダメージ量に関係なくカット10', ->
-          atkcx = {damage:5,attrs:[]}
+          atkcx = {hp:5,attrs:[]}
           state.defenceDamage(atkcx,defcx).should.equal 10
       describe '炎属性の攻撃を半減させるステート', ->
         it '炎属性半減ステート', ->
           state = new rpg.State(name:'State1',damages:[
-            {defence:{exp:['damage','/',2],attr:'炎'}}
+            {defence:{exp:['hp','/',2],attr:'炎'}}
           ])
         it '防御側属性なし', ->
           defcx = {attrs:[]}
         it '炎属性ダメージ（物理）は半減', ->
-          atkcx = {damage:100,attrs:['炎','物理']}
+          atkcx = {hp:100,attrs:['炎','物理']}
           state.defenceDamage(atkcx,defcx).should.equal 50
         it '炎属性ダメージ（魔法）は半減', ->
-          atkcx = {damage:100,attrs:['炎','魔法']}
+          atkcx = {hp:100,attrs:['炎','魔法']}
           state.defenceDamage(atkcx,defcx).should.equal 50
         it '水属性ダメージは半減しない', ->
-          atkcx = {damage:100,attrs:['水','物理']}
+          atkcx = {hp:100,attrs:['水','物理']}
           state.defenceDamage(atkcx,defcx).should.equal 0
-          atkcx = {damage:100,attrs:['水','魔法']}
+          atkcx = {hp:100,attrs:['水','魔法']}
           state.defenceDamage(atkcx,defcx).should.equal 0
         it '物理攻撃のみはカットなし', ->
-          atkcx = {damage:100,attrs:['物理']}
+          atkcx = {hp:100,attrs:['物理']}
           state.defenceDamage(atkcx,defcx).should.equal 0
         it '魔法攻撃のみはカットなし', ->
-          atkcx = {damage:100,attrs:['魔法']}
+          atkcx = {hp:100,attrs:['魔法']}
           state.defenceDamage(atkcx,defcx).should.equal 0
         it '炎属性半減ステート（物理のみ）', ->
           state = new rpg.State(name:'State1',damages:[
-            {defence:{exp:['damage','/',2],attr:'炎',cond:'物理'}}
+            {defence:{exp:['hp','/',2],attr:'炎',cond:'物理'}}
           ])
         it '防御側属性なし', ->
           defcx = {attrs:[]}
         it '炎属性ダメージ（物理）は半減', ->
-          atkcx = {damage:100,attrs:['炎','物理']}
+          atkcx = {hp:100,attrs:['炎','物理']}
           state.defenceDamage(atkcx,defcx).should.equal 50
         it '水属性ダメージ（物理）は半減しない', ->
-          atkcx = {damage:100,attrs:['水','物理']}
+          atkcx = {hp:100,attrs:['水','物理']}
           state.defenceDamage(atkcx,defcx).should.equal 0
         it '炎属性ダメージ（魔法）は半減できない', ->
-          atkcx = {damage:100,attrs:['炎','魔法']}
+          atkcx = {hp:100,attrs:['炎','魔法']}
           state.defenceDamage(atkcx,defcx).should.equal 0
         it '物理攻撃のみはカットなし', ->
-          atkcx = {damage:100,attrs:['物理']}
+          atkcx = {hp:100,attrs:['物理']}
           state.defenceDamage(atkcx,defcx).should.equal 0
         it '魔法攻撃のみはカットなし', ->
-          atkcx = {damage:100,attrs:['魔法']}
+          atkcx = {hp:100,attrs:['魔法']}
           state.defenceDamage(atkcx,defcx).should.equal 0
         it '炎属性半減ステート（魔法のみ）', ->
           state = new rpg.State(name:'State1',damages:[
-            {defence:{exp:['damage','/',2],attr:'炎',cond:'魔法'}}
+            {defence:{exp:['hp','/',2],attr:'炎',cond:'魔法'}}
           ])
         it '防御側属性なし', ->
           defcx = {attrs:[]}
         it '炎属性ダメージ（物理）は半減できない', ->
-          atkcx = {damage:100,attrs:['炎','物理']}
+          atkcx = {hp:100,attrs:['炎','物理']}
           state.defenceDamage(atkcx,defcx).should.equal 0
         it '炎属性ダメージ（魔法）は半減', ->
-          atkcx = {damage:100,attrs:['炎','魔法']}
+          atkcx = {hp:100,attrs:['炎','魔法']}
           state.defenceDamage(atkcx,defcx).should.equal 50
         it '水属性ダメージ（魔法）は半減しない', ->
-          atkcx = {damage:100,attrs:['水','魔法']}
+          atkcx = {hp:100,attrs:['水','魔法']}
           state.defenceDamage(atkcx,defcx).should.equal 0
         it '物理攻撃のみはカットなし', ->
-          atkcx = {damage:100,attrs:['物理']}
+          atkcx = {hp:100,attrs:['物理']}
           state.defenceDamage(atkcx,defcx).should.equal 0
         it '魔法攻撃のみはカットなし', ->
-          atkcx = {damage:100,attrs:['魔法']}
+          atkcx = {hp:100,attrs:['魔法']}
           state.defenceDamage(atkcx,defcx).should.equal 0
       describe '防御属性を付加するためのステート', ->
         describe '対物理攻撃', ->
@@ -384,12 +384,12 @@ describe 'rpg.State', () ->
               {defence:{attr:'炎',cond:'物理'}}
             ])
           it 'ステートから物理攻撃時の属性を取得', ->
-            atkcx = {damage:100,attrs:['物理']}
+            atkcx = {hp:100,attrs:['物理']}
             attr = state.defenceAttr(atkcx)
             attr.length.should.equal 1
             attr[0].should.equal '炎'
           it '魔法攻撃には付加されない', ->
-            atkcx = {damage:100,attrs:['魔法']}
+            atkcx = {hp:100,attrs:['魔法']}
             attr = state.defenceAttr(atkcx)
             attr.length.should.equal 0
         describe '対魔法攻撃', ->
@@ -398,11 +398,11 @@ describe 'rpg.State', () ->
               {defence:{attr:'炎',cond:'魔法'}}
             ])
           it '物理攻撃には付加されない', ->
-            atkcx = {damage:100,attrs:['物理']}
+            atkcx = {hp:100,attrs:['物理']}
             attr = state.defenceAttr(atkcx)
             attr.length.should.equal 0
           it '魔法攻撃には付加される', ->
-            atkcx = {damage:100,attrs:['魔法']}
+            atkcx = {hp:100,attrs:['魔法']}
             attr = state.defenceAttr(atkcx)
             attr.length.should.equal 1
             attr[0].should.equal '炎'
@@ -412,12 +412,12 @@ describe 'rpg.State', () ->
               {defence:{attr:'炎'}}
             ])
           it 'ステートから物理攻撃時の属性を取得', ->
-            atkcx = {damage:100,attrs:['物理']}
+            atkcx = {hp:100,attrs:['物理']}
             attr = state.defenceAttr(atkcx)
             attr.length.should.equal 1
             attr[0].should.equal '炎'
           it '魔法攻撃にも付加される', ->
-            atkcx = {damage:100,attrs:['魔法']}
+            atkcx = {hp:100,attrs:['魔法']}
             attr = state.defenceAttr(atkcx)
             attr.length.should.equal 1
             attr[0].should.equal '炎'
@@ -479,30 +479,30 @@ describe 'rpg.State', () ->
     describe '衝撃（物理攻撃）で消えるステート', ->
       it '作成', ->
         state = new rpg.State(name:'State1',remove:{
-          attack:{damage:1,attr:'物理'}
+          attack:{hp:1,attr:'物理'}
         })
         state.valid.should.equal true
       it '魔法ダメージを受ける', ->
-        atkcx = {damage:100,attrs:['魔法']}
+        atkcx = {hp:100,attrs:['魔法']}
         state.checkRemove(attack:atkcx).should.equal false
         state.valid.should.equal true
       it '物理ダメージを受ける', ->
-        atkcx = {damage:100,attrs:['物理']}
+        atkcx = {hp:100,attrs:['物理']}
         state.checkRemove(attack:atkcx).should.equal true
         state.valid.should.equal false
       it '物理ダメージ後に魔法ダメージをもう一度', ->
-        atkcx = {damage:100,attrs:['魔法']}
+        atkcx = {hp:100,attrs:['魔法']}
         state.checkRemove(attack:atkcx).should.equal true
         state.valid.should.equal false
     describe.skip '衝撃（物理攻撃）を受けた時に一定確率で消えるステート', ->
       it '８０％で解除されるステート', ->
         state = new rpg.State(name:'State1',remove:{
-          attack:{damage:1,attr:'物理'}
+          attack:{hp:1,attr:'物理'}
           rate: 80
         })
         state.valid.should.equal true
       it '物理ダメージを２００回あたえて確率を確かめる', ->
-        atkcx = {damage:200,attrs:['物理']}
+        atkcx = {hp:200,attrs:['物理']}
         n = 0
         for i in [0 ... 200] when state.checkRemove(attack:atkcx)
           n += 1

@@ -111,10 +111,10 @@ class rpg.State
         if ds.attr? # 対象属性が指定されてる場合
           # 対象属性が指定属性に一致しているか見る
           for a in tgtattrs when ds.attr == a
-            r += rpg.utils.jsonExpression(ds.exp, {damage:atkcx.damage,state:@})
+            r += rpg.utils.jsonExpression(ds.exp, atkcx)
         else # 対象属性が指定されてない場合
           # すべて適用
-          r += rpg.utils.jsonExpression(ds.exp, {damage:atkcx.damage,state:@})
+          r += rpg.utils.jsonExpression(ds.exp, atkcx)
     r
 
   ###* 攻撃ダメージ変化
@@ -242,7 +242,7 @@ class rpg.State
     ra = @remove.attack
     if attack? and ra?
       atkcx = attack
-      if atkcx.damage >= ra.damage
+      if atkcx.hp >= ra.hp
         for a in atkcx.attrs when a == ra.attr
           @valid = false
           return true

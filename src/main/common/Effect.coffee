@@ -92,8 +92,8 @@ class rpg.Effect
       defcx = cx.targets[i]
       # TODO: 属性効果の適用
       for type, val of defcx when type isnt 'attrs'
-        t[type] += val
-        log.targets[i][type] = if log.targets[i][type]? then log.targets[i][type] + val else val
+        t[type] -= val
+        log.targets[i][type] = if log.targets[i][type]? then log.targets[i][type] - val else val
         r = true
       i++
     r
