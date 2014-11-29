@@ -241,9 +241,8 @@ class rpg.State
     # 被ダメージ時解除
     ra = @remove.attack
     if attack? and ra?
-      atkcx = attack
-      if atkcx.hp >= ra.hp
-        for a in atkcx.attrs when a == ra.attr
+      for a in attack.attrs when a == ra.attr
+        if rpg.utils.jsonExpression(ra.exp, attack)
           @valid = false
           return true
     # 時間解除

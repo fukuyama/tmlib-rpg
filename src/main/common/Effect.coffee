@@ -63,9 +63,11 @@ class rpg.Effect
       targets: targets
     }
     return cx unless @_checkScopeRange(user, targets)
+    # 使用者に対する効果
     if @_effect.user?
       cx.user = {attrs:[]}
       @_makeContext(cx.user,@_effect.user.effects,param)
+    # 対象者に対する効果
     if @_effect.target?
       cx.targets = []
       for t in targets when @_checkScopeType(user, t)

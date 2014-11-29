@@ -462,7 +462,7 @@ describe 'rpg.State', () ->
         state.checkRemove().should.equal true
         state.valid.should.equal false
     describe '戦闘終了時に消えるステート', ->
-      it '作成', ->
+      it '作成 戦闘中のみのステート', ->
         state = new rpg.State(name:'State1',remove:{
           battle:true
         })
@@ -477,9 +477,9 @@ describe 'rpg.State', () ->
         state.checkRemove().should.equal true
         state.valid.should.equal false
     describe '衝撃（物理攻撃）で消えるステート', ->
-      it '作成', ->
+      it '作成 hpにダメージが１以上で解除', ->
         state = new rpg.State(name:'State1',remove:{
-          attack:{hp:1,attr:'物理'}
+          attack:{exp:['hp','>=',1],attr:'物理'}
         })
         state.valid.should.equal true
       it '魔法ダメージを受ける', ->
@@ -497,7 +497,7 @@ describe 'rpg.State', () ->
     describe.skip '衝撃（物理攻撃）を受けた時に一定確率で消えるステート', ->
       it '８０％で解除されるステート', ->
         state = new rpg.State(name:'State1',remove:{
-          attack:{hp:1,attr:'物理'}
+          attack:{exp:['hp','>=',1],attr:'物理'}
           rate: 80
         })
         state.valid.should.equal true
