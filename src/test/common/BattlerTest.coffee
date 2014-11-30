@@ -253,6 +253,23 @@ describe 'rpg.Battler', () ->
         battler.addState state
         battler.str.should.equal 10
         battler.states.length.should.equal 0
+    describe.skip '攻撃ステート', ->
+      it '', ->
+        s
+    describe '防御ステート', ->
+      it '防御属性', ->
+        battler = new rpg.Battler()
+        state = new rpg.State {
+          name:'炎属性防御'
+          attrs:[
+            {defence:{attr:'炎'}}
+          ]
+        }
+        battler.addState state
+        atkcx = {hp:100,attrs:['物理']}
+        attrs = battler.defenceAttrs(atkcx)
+        attrs[0].should.equals '炎'
+
 
 
   describe '装備関連', ->

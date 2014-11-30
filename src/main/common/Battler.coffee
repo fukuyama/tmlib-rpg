@@ -146,6 +146,18 @@ class rpg.Battler
       @removeState a for a in args
     @
 
+  ###* 防御属性
+  * @param {Object} atkcx 攻撃コンテキスト
+  * @return {Array} 属性配列
+  ###
+  defenceAttrs: (atkcx) ->
+    r = []
+    for s in @states
+      for a in s.defenceAttr atkcx
+        r.push a
+    return r
+
+
   ###* 敵味方識別
   * 味方だと true を返す
   * チームが違うと敵

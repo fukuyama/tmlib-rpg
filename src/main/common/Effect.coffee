@@ -91,9 +91,10 @@ class rpg.Effect
     for t in targets when @_checkScopeType(user, t)
       log.targets[i] = {}
       log.targets[i].name = t.name
-      defcx = cx.targets[i]
+      atkcx = cx.targets[i]
+      defcx = {attrs:t.attrs}
       # TODO: 属性効果の適用
-      for type, val of defcx when type isnt 'attrs'
+      for type, val of atkcx when type isnt 'attrs'
         t[type] -= val
         log.targets[i][type] = if log.targets[i][type]? then log.targets[i][type] - val else val
         r = true
