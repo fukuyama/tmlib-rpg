@@ -215,9 +215,13 @@ describe 'rpg.Battler', () ->
         battler.hp.should.equal 28
       it 'アイテムで解毒', ->
         battler.states.length.should.equal 1
-        item = new rpg.UsableItem(name:'どくけし',effects:[
-          {state:{type:'remove',name:'毒'}}
-        ])
+        item = new rpg.UsableItem(
+          name:'どくけし'
+          target:
+            effects:[
+              {state:{type:'remove',name:'毒'}}
+            ]
+        )
         battler.useItem(item,battler)
         battler.states.length.should.equal 0
       it '３ターン目は解毒されて減らない', ->

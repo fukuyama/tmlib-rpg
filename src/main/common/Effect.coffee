@@ -49,6 +49,23 @@ class rpg.Effect
       return ! user.iff(target)
     true
 
+  ###* コンテキスト作成
+  * @param {rpg.Battler} user 攻撃者
+  * @return {Object} 攻撃コンテキスト
+  ###
+  _makeContext: (cx,effects,param) ->
+    for e in effects
+      for type, op of e
+        if type is 'attrs'
+          cx.attrs.push a for a in op
+        else if type is 'state'
+          cx.states = [] unless cx.states?
+          cx.states.push op
+        else
+          n = rpg.utils.jsonExpression(op,param)
+          if cx[type]? then cx[type] += n else cx[type] = n
+    return cx
+
   ###* 効果メソッド
   * @param {rpg.Battler} user 使用者
   * @param {Array} target 対象者(rpg.Battler配列)
@@ -89,102 +106,38 @@ class rpg.Effect
     return r unless @_checkScopeRange(user, targets)
     i = 0
     for t in targets when @_checkScopeType(user, t)
-      log.targets[i] = {}
-      log.targets[i].name = t.name
       atkcx = cx.targets[i]
       defcx = {attrs:t.attrs}
       # TODO: 属性効果の適用
       for type, val of atkcx when type isnt 'attrs'
-        t[type] -= val
-        log.targets[i][type] = if log.targets[i][type]? then log.targets[i][type] - val else val
-        r = true
+        if type is 'states'
+          for op in val
+            # TODO: 確率(rate)をつける？
+            if op.type == 'add'
+              state = rpg.system.db.state(op.name)
+              t.addState(state)
+              log.targets.push state: {
+                name: t.name
+                type: 'add'
+                state: state.name
+              }
+              r = true
+            if op.type == 'remove'
+              t.removeState(name:op.name)
+              log.targets.push state: {
+                name: t.name
+                type: 'remove'
+                state: op.name
+              }
+              r = true
+        else
+          v1 = t[type]
+          t[type] -= val
+          val = t[type] - v1
+          lt = log.targets[i] ? {name:t.name}
+          if val != 0
+            lt[type] = if lt[type]? then lt[type] - val else val
+            r = true
+          log.targets[i] = lt if r
       i++
     r
-
-  ###* コンテキスト作成
-  * @param {rpg.Battler} user 攻撃者
-  * @return {Object} 攻撃コンテキスト
-  ###
-  _makeContext: (cx,effects,param) ->
-    for e in effects
-      for type, op of e
-        if type is 'attrs'
-          cx.attrs.push a for a in op
-        else
-          n = rpg.utils.jsonExpression(op,param)
-          if cx[type]? then cx[type] += n else cx[type] = n
-    return cx
-
-  runUser: (user, targets, effects, log) ->
-    targets = if Array.isArray targets then targets else [targets]
-    res = {}
-    # TODO: effects.target 配列と、targets 配列を１：１で適用するパターンもほしいかも
-    for target in targets
-      @runArray user, target, effects.target, res
-    log.targets = res.targets
-    res = {}
-    # 使用者が自分で、自分に影響がある場合
-    @runArray user, user, effects.user, res
-    log.users = res.targets
-
-  runArray: (user, target, effects, log) ->
-    r = false
-    for e in effects
-      for type, op of e
-        r = @run type, user, target, op, log or r
-    r
-  run: (type, user, target, op, log) -> @_func_effects[type].call @, op, user, target, log
-  hp: (user, target, op, log) -> @run 'hp', user, target, op, log
-  mp: (user, target, op, log) -> @run 'mp', user, target, op, log
-
-  # 能力変化系(hp/mp)関連エフェクト
-  _effect_attr: (attr, op, user, target, log) ->
-    r = false
-    val = target[attr] # 変化前の値
-    target[attr] += rpg.utils.jsonExpression(op,base:target[attr])
-    val = target[attr] - val # 変化した量を計算
-    r = val != 0 or r
-    log.targets = [] unless log.targets?
-    if r # 効果があったら結果を保存
-      o = {}
-      o.name = target.name
-      o[attr] = val
-      log.targets.push o # 結果に保存
-    r
-
-  _func_effects: {
-    # 効果
-    # 基本的に、effect 以外では、user と target の状態は変化させない。
-    # （使ったアイテムを減らす等は、Actor側の処理で）
-    # 参照はあり
-    # user: rpg.Actor
-    # target: rpg.Actor or Array<rpg.Actor>
-    # return: 効果あり true
-    default: (op, user, target, log) -> false
-
-    # HP効果
-    hp: (op, user, target, log) -> @_effect_attr('hp', op, user, target, log)
-    # MP効果
-    mp: (op, user, target, log) -> @_effect_attr('mp', op, user, target, log)
-    # ステート効果
-    state: (op, user, target, log) ->
-      # TODO: 確率(rate)をつける？
-      if op.type == 'add'
-        state = rpg.system.db.state(op.name)
-        target.addState(state)
-        log.targets.push state: {
-          name: target.name
-          type: 'add'
-          state: state.name
-        }
-        return true
-      if op.type == 'remove'
-        target.removeState(name:op.name)
-        log.targets.push state: {
-          name: target.name
-          type: 'remove'
-          state: op.name
-        }
-        return true
-      false
-  }

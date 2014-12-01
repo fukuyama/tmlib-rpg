@@ -41,7 +41,7 @@ class rpg.UsableItem extends rpg.Item
   * @return {boolean} 効果ある場合 true
   ###
   effect: (user,targets = [],log = {}) ->
-    @_effect.effect(user,targets,log)
+    @_effect.effectApply(user,targets,log)
 
   # 使う
   # user: rpg.Actor
@@ -49,6 +49,7 @@ class rpg.UsableItem extends rpg.Item
   use: (user, target, log = {}) ->
     return false if @isLost()
     r = @effect(user, [].concat(target), log)
+    log.item = {name:@name}
     if r then @ok_count += 1 else @miss_count += 1
     @count += 1
     r

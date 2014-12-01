@@ -494,7 +494,7 @@ describe 'rpg.State', () ->
         atkcx = {hp:100,attrs:['魔法']}
         state.checkRemove(attack:atkcx).should.equal true
         state.valid.should.equal false
-    describe.skip '衝撃（物理攻撃）を受けた時に一定確率で消えるステート', ->
+    describe '衝撃（物理攻撃）を受けた時に一定確率で消えるステート', ->
       it '８０％で解除されるステート', ->
         state = new rpg.State(name:'State1',remove:{
           attack:{exp:['hp','>=',1],attr:'物理'}
@@ -519,7 +519,7 @@ describe 'rpg.State', () ->
         state.valid.should.equal true
       it '行動できない', ->
         state.checkAction().should.equal false
-    describe.skip '一定確率で行動できないステート', ->
+    describe '一定確率で行動できないステート', ->
       it '80%行動不能ステート', ->
         state = new rpg.State(name:'State1',action:{
           rate: 80
