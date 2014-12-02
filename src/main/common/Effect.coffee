@@ -116,18 +116,20 @@ class rpg.Effect
             if op.type == 'add'
               state = rpg.system.db.state(op.name)
               t.addState(state)
-              log.targets.push state: {
+              log.targets.push {
                 name: t.name
-                type: 'add'
-                state: state.name
+                state:
+                  type: 'add'
+                  name: op.name
               }
               r = true
             if op.type == 'remove'
               t.removeState(name:op.name)
-              log.targets.push state: {
+              log.targets.push {
                 name: t.name
-                type: 'remove'
-                state: op.name
+                state:
+                  type: 'remove'
+                  name: op.name
               }
               r = true
         else

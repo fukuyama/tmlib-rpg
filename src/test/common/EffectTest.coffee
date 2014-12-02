@@ -134,8 +134,13 @@ describe 'rpg.Effect', ->
       unless target.addState?
         target.addState = (state) ->
           target.states.push state
-      effect.effectApply(user,targets)
+      log = {}
+      effect.effectApply(user,targets,log)
       target.states[0].name.should.equals 'State1'
+      log.user.name.should.equals 'user1'
+      log.targets[0].name.should.equals 'user2'
+      log.targets[0].state.name.should.equals 'State1'
+      log.targets[0].state.type.should.equals 'add'
     it 'ステート削除する', ->
       effect = new rpg.Effect(
         scope: {
@@ -152,8 +157,14 @@ describe 'rpg.Effect', ->
         target.removeState = (state) ->
           state.name.should.equals 'State1'
           target.states.pop()
-      effect.effectApply(user,targets)
+      log = {}
+      effect.effectApply(user,targets,log)
+      console.log log
       target.states.length.should.equals 0
+      log.user.name.should.equals 'user1'
+      log.targets[0].name.should.equals 'user2'
+      log.targets[0].state.name.should.equals 'State1'
+      log.targets[0].state.type.should.equals 'remove'
 
   describe '効果なしエフェクト', ->
     effect = new rpg.Effect(
