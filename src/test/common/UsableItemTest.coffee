@@ -486,9 +486,9 @@ describe 'rpg.UsableItem', ->
       it '結果確認', ->
         log.user.name.should.equal 'user'
         log.targets.length.should.equal 1
-        log.targets[0].state.name.should.equal 'target1'
+        log.targets[0].name.should.equal 'target1'
         log.targets[0].state.type.should.equal 'add'
-        log.targets[0].state.state.should.equal 'State1'
+        log.targets[0].state.name.should.equal 'State1'
 
     describe 'ステート解除アイテム', ->
       it '作成', ->
@@ -511,9 +511,9 @@ describe 'rpg.UsableItem', ->
       it '結果確認', ->
         log.user.name.should.equal 'user'
         log.targets.length.should.equal 1
-        log.targets[0].state.name.should.equal 'target1'
+        log.targets[0].name.should.equal 'target1'
         log.targets[0].state.type.should.equal 'remove'
-        log.targets[0].state.state.should.equal 'State1'
+        log.targets[0].state.name.should.equal 'State1'
     describe 'ステート解除アイテム（複数のステートから１つ解除）', ->
       it '作成', ->
         item = new rpg.UsableItem(
@@ -537,6 +537,6 @@ describe 'rpg.UsableItem', ->
       it '結果確認', ->
         log.user.name.should.equal 'user'
         log.targets.length.should.equal 1
-        log.targets[0].state.name.should.equal 'target1'
+        log.targets[0].name.should.equal 'target1'
         log.targets[0].state.type.should.equal 'remove'
-        log.targets[0].state.state.should.equal 'State2'
+        log.targets[0].state.name.should.equal 'State2'

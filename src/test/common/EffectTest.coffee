@@ -159,7 +159,6 @@ describe 'rpg.Effect', ->
           target.states.pop()
       log = {}
       effect.effectApply(user,targets,log)
-      console.log log
       target.states.length.should.equals 0
       log.user.name.should.equals 'user1'
       log.targets[0].name.should.equals 'user2'
