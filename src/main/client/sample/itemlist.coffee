@@ -105,7 +105,8 @@ module.exports = [
     stack: true
     maxStack: 99
     scope: FRIEND_ONE
-    effects: [effect.hp 10]
+    target:
+      effects: [effect.hp -10]
     message:
       ok: EVENT_TEMPLATE.CURE
       ng: EVENT_TEMPLATE.ITEM_NG
@@ -118,7 +119,8 @@ module.exports = [
     price: 40
     help: '仲間全員を少し回復する'
     scope: FRIEND_ALL
-    effects: [effect.hp 10]
+    target:
+      effects: [effect.hp -10]
     message:
       ok: EVENT_TEMPLATE.CURE_ALL
       ng: EVENT_TEMPLATE.ITEM_NG
@@ -133,7 +135,8 @@ module.exports = [
     stack: true
     maxStack: 99
     scope: FRIEND_ONE
-    effects: [effect.hp 30]
+    target:
+      effects: [effect.hp -30]
     message:
       ok: EVENT_TEMPLATE.CURE
       ng: EVENT_TEMPLATE.ITEM_NG
@@ -146,7 +149,8 @@ module.exports = [
     price: 40
     help: '仲間全員を回復する'
     scope: FRIEND_ALL
-    effects: [effect.hp 30]
+    target:
+      effects: [effect.hp -30]
     message:
       ok: EVENT_TEMPLATE.CURE_ALL
       ng: EVENT_TEMPLATE.ITEM_NG
@@ -161,7 +165,8 @@ module.exports = [
     stack: true
     maxStack: 99
     scope: FRIEND_ONE
-    effects: [effect.hp 70]
+    target:
+      effects: [effect.hp -70]
     message:
       ok: EVENT_TEMPLATE.CURE
       ng: EVENT_TEMPLATE.ITEM_NG
@@ -174,7 +179,8 @@ module.exports = [
     price: 52
     help: '仲間全員を回復する'
     scope: FRIEND_ALL
-    effects: [effect.hp 70]
+    target:
+      effects: [effect.hp -70]
     message:
       ok: EVENT_TEMPLATE.CURE_ALL
       ng: EVENT_TEMPLATE.ITEM_NG
