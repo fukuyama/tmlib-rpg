@@ -130,9 +130,11 @@ tm.define 'rpg.Window',
 
   ###* テキスト描画
   * @memberof rpg.Window#
-  * @param {String} text 描画文字列
+  * @param {string} text 描画文字列
   * @param {number} x 描画X座標
   * @param {number} y 描画Y座標
+  * @param {object} op オプション
+  * @param {string} op.align 行揃え(left|right)
   ###
   drawText: (text, x, y, op={}) ->
     {

@@ -35,13 +35,19 @@ tm.define 'rpg.SpriteCursor',
     @canvas.resize(@width = width, @height = height)
 
   # 再設定
-  reset: () ->
+  reset: (args={}) ->
+    {
+      basex
+    } = {
+      basex: 0
+    }.$extend args
     cols = @parent.cols
     rows = @parent.rows
     w = @parent.menuWidth
     h = @parent.menuHeight
     @resize(w + @padding, h + @padding)
     @refresh()
+    # カーソル位置再計算
     @_indexPositions = []
     pw = (@parent.width - @parent.innerRect.width) / 2 - @padding / 2
     ph = (@parent.height - @parent.titleHeight - @parent.innerRect.height)
@@ -52,7 +58,7 @@ tm.define 'rpg.SpriteCursor',
       for r in [0...rows]
         for c in [0...cols]
           @_indexPositions.push
-            x: pw + c * w + c * @parent.colPadding
+            x: pw + c * w + c * @parent.colPadding + basex
             y: ph + r * h
     @setIndex()
 

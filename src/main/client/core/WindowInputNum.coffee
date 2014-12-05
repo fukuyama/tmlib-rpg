@@ -54,8 +54,10 @@ tm.define 'rpg.WindowInputNum',
         @menuWidth * @cols + @borderWidth * 2
         @menuHeight + @borderHeight * 2
       )
+    cursorx = @content.width - @menuWidth * @cols
     # カーソル作成
     @cursorInstance = rpg.SpriteCursor(@,@cursor)
+    @cursorInstance.reset basex:cursorx
     @addChild @cursorInstance
     @cursorInstance.setIndex(@cols - 1)
     while @steps[@cursorInstance.index] == 0
@@ -76,7 +78,9 @@ tm.define 'rpg.WindowInputNum',
   # Window再更新
   refresh: ->
     @content.clear()
-    @drawText(@values.join(''),0,0)
+    @drawText(@values.join(''),@content.width,0,{
+      align: 'right'
+    })
     rpg.Window.prototype.refresh.call(@)
     
   setValues: (v)->
