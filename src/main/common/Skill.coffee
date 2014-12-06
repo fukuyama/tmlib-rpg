@@ -18,11 +18,13 @@ class rpg.Skill
   * @param {Object} args
   ###
   constructor: (args={}) ->
+    @_effect = new rpg.Effect args
 
-  ###* 攻撃コンテキスト作成
-  * @method rpg.Skill#createAttackContext
-  * @param {rpg.Actor} user 使用者
-  * @param {rpg.Actor} target 使用する対象
+  ###* 効果メソッド
+  * @param {rpg.Battler} user 使用者
+  * @param {Array} target 対象者(rpg.Battler配列)
+  * @param {Object} log 効果ログ情報
+  * @return {boolean} 効果ある場合 true
   ###
-  createAttackContext: (user, target) ->
-    atkcx = {damage:100,attrs:['物理']}
+  effect: (user,targets = [],log = {}) ->
+    @_effect.effect(user,targets,log)

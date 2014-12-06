@@ -29,6 +29,7 @@ module.exports = (grunt) ->
       'common/ItemContainer'
       'common/Item'
       'common/UsableItem'
+      'common/Skill'
       'common/EquipItem'
       'common/Weapon'
       'common/Armor'
