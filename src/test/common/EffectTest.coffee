@@ -26,6 +26,7 @@ describe 'rpg.Effect', ->
     user = {
       name: 'user1'
       iff: -> true
+      attackAttrs: -> []
     }
     targets = [
       {
@@ -46,16 +47,16 @@ describe 'rpg.Effect', ->
       )
     it 'エフェクトの取得', ->
       cx = effect.effect(user,targets)
-      cx.targets[0].hp.should.equals -10
-      (cx.user isnt null).should.equals true
+      cx.targets[0].hp.should.equal -10
+      (cx.user isnt null).should.equal true
     it 'エフェクトの反映', ->
-      targets[0].hp.should.equals 50
+      targets[0].hp.should.equal 50
       log = {}
       effect.effectApply(user,targets,log)
-      log.user.name.should.equals 'user1'
-      log.targets[0].name.should.equals 'user2'
-      log.targets[0].hp.should.equals 10
-      targets[0].hp.should.equals 60
+      log.user.name.should.equal 'user1'
+      log.targets[0].name.should.equal 'user2'
+      log.targets[0].hp.should.equal 10
+      targets[0].hp.should.equal 60
 
   describe '攻撃コンテキスト', ->
     effect = null
@@ -64,6 +65,7 @@ describe 'rpg.Effect', ->
       atk: 100
       matk: 50
       iff: -> false
+      attackAttrs: -> []
     }
     targets = [
       {
@@ -84,8 +86,8 @@ describe 'rpg.Effect', ->
           ]
       )
       atkcx = effect.effect(user,targets)
-      atkcx.target.hp.should.equals 200
-      atkcx.target.attrs[0].should.equals '物理'
+      atkcx.target.hp.should.equal 200
+      atkcx.target.attrs[0].should.equal '物理'
 
     it '魔法攻撃', ->
       effect = new rpg.Effect(
@@ -100,8 +102,9 @@ describe 'rpg.Effect', ->
           ]
       )
       atkcx = effect.effect(user,targets)
-      atkcx.target.hp.should.equals 75
-      atkcx.target.attrs[0].should.equals '魔法'
+      atkcx.target.hp.should.equal 75
+      atkcx.target.attrs[0].should.equal '魔法'
+      atkcx.target.attrs[1].should.equal '炎'
 
   describe 'ステートエフェクト', ->
     effect = null
@@ -110,6 +113,7 @@ describe 'rpg.Effect', ->
       atk: 100
       matk: 50
       iff: -> false
+      attackAttrs: -> []
     }
     targets = [
       {
@@ -136,11 +140,11 @@ describe 'rpg.Effect', ->
           target.states.push state
       log = {}
       effect.effectApply(user,targets,log)
-      target.states[0].name.should.equals 'State1'
-      log.user.name.should.equals 'user1'
-      log.targets[0].name.should.equals 'user2'
-      log.targets[0].state.name.should.equals 'State1'
-      log.targets[0].state.type.should.equals 'add'
+      target.states[0].name.should.equal 'State1'
+      log.user.name.should.equal 'user1'
+      log.targets[0].name.should.equal 'user2'
+      log.targets[0].state.name.should.equal 'State1'
+      log.targets[0].state.type.should.equal 'add'
     it 'ステート削除する', ->
       effect = new rpg.Effect(
         scope: {
@@ -155,15 +159,15 @@ describe 'rpg.Effect', ->
       target = targets[0]
       unless target.removeState?
         target.removeState = (state) ->
-          state.name.should.equals 'State1'
+          state.name.should.equal 'State1'
           target.states.pop()
       log = {}
       effect.effectApply(user,targets,log)
-      target.states.length.should.equals 0
-      log.user.name.should.equals 'user1'
-      log.targets[0].name.should.equals 'user2'
-      log.targets[0].state.name.should.equals 'State1'
-      log.targets[0].state.type.should.equals 'remove'
+      target.states.length.should.equal 0
+      log.user.name.should.equal 'user1'
+      log.targets[0].name.should.equal 'user2'
+      log.targets[0].state.name.should.equal 'State1'
+      log.targets[0].state.type.should.equal 'remove'
 
   describe '効果なしエフェクト', ->
     effect = new rpg.Effect(
@@ -178,6 +182,7 @@ describe 'rpg.Effect', ->
     user = {
       name: 'user1'
       iff: -> true
+      attackAttrs: -> []
     }
     targets = [
       {
@@ -188,9 +193,9 @@ describe 'rpg.Effect', ->
     ]
     it 'エフェクトの取得', ->
       cx = effect.effect(user,targets)
-      cx.targets[0].hp.should.equals 0
-      (cx.user isnt null).should.equals true
+      cx.targets[0].hp.should.equal 0
+      (cx.user isnt null).should.equal true
     it 'エフェクトの反映', ->
       log = {}
       r = effect.effectApply(user,targets,log)
-      r.should.equals false
+      r.should.equal false

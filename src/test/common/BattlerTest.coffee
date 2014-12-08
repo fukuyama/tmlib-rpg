@@ -152,6 +152,14 @@ describe 'rpg.Battler', () ->
         battler.states.length.should.equal 0
         battler.addState new rpg.State(name:'State1')
         battler.states.length.should.equal 1
+      it '追加(文字列指定)', ->
+        battler = new rpg.Battler()
+        battler.states.length.should.equal 0
+        rpg.system = rpg.system ? {}
+        rpg.system.db = rpg.system.db ? {}
+        rpg.system.db.state = (name) -> new rpg.State(name:name)
+        battler.addState 'State1'
+        battler.states.length.should.equal 1
       it '削除', ->
         battler.states.length.should.equal 1
         battler.removeState name:'State1'
@@ -257,9 +265,19 @@ describe 'rpg.Battler', () ->
         battler.addState state
         battler.str.should.equal 10
         battler.states.length.should.equal 0
-    describe.skip '攻撃ステート', ->
-      it '', ->
-        s
+    describe '攻撃ステート', ->
+      it '攻撃属性', ->
+        battler = new rpg.Battler()
+        state = new rpg.State {
+          name:'炎属性攻撃'
+          attrs:[
+            {attack:{attr:'炎'}}
+          ]
+        }
+        battler.addState state
+        atkcx = {hp:100,attrs:['物理']}
+        attrs = battler.attackAttrs(atkcx)
+        attrs[0].should.equal '炎'
     describe '防御ステート', ->
       it '防御属性', ->
         battler = new rpg.Battler()
@@ -272,7 +290,7 @@ describe 'rpg.Battler', () ->
         battler.addState state
         atkcx = {hp:100,attrs:['物理']}
         attrs = battler.defenceAttrs(atkcx)
-        attrs[0].should.equals '炎'
+        attrs[0].should.equal '炎'
 
 
 

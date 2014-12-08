@@ -40,22 +40,25 @@ class rpg.EquipItem extends rpg.Item
     args.equip = true
     super args
     {
-      @abilities
+      abilities
       @equips
       @required
       @equipOff
+      @states
       price
     } = {
       abilities: []
       equips: [] # 装備場所
       required: [] # 装備条件
       equipOff: true # 装備解除フラグ
+      states: [] # 装備時ステート
     }.$extendAll args
     for k in ABILITY_KEYS
       if args[k]?
         a = {}
         a[k] = args[k]
-        @abilities.push a
+        abilities.push a
+    @_ability_state = new rpg.State abilities:abilities
     # 価格が設定されてなかったら自動計算
     unless price?
       price = 0
@@ -112,14 +115,9 @@ class rpg.EquipItem extends rpg.Item
   * @param {String} param.ability 能力
   * @return {number} 計算結果
   ###
-  ability: (param={}) ->
-    {ability,base} = param
-    r = 0
-    for a in @abilities when a[ability]?
-      r += rpg.utils.jsonExpression(a[ability], {base:base,item:@})
-    r
+  ability: -> @_ability_state.ability.apply @_ability_state, arguments
 
-
+# 装備の能力を見る時に使う（バトラーのability計算に含まれるので、戦闘計算では、以下のメソッドは使用しない。）
 for k in ABILITY_KEYS
   (
     (nm) ->

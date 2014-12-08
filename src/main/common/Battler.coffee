@@ -122,6 +122,8 @@ class rpg.Battler
   * @return this
   ###
   addState: (state) ->
+    if typeof state is 'string'
+      state = rpg.system.db.state state
     # 追加確認
     if state.checkAddTo @states
       @states.push state
@@ -146,11 +148,24 @@ class rpg.Battler
       @removeState a for a in args
     @
 
+  ###* 攻撃属性
+  * @param {Object} atkcx 攻撃コンテキスト
+  * @return {Array} 属性配列
+  ###
+  attackAttrs: (atkcx) ->
+    # TODO: キャッシュした方が良いかも
+    r = []
+    for s in @states
+      for a in s.attackAttr atkcx
+        r.push a
+    return r
+
   ###* 防御属性
   * @param {Object} atkcx 攻撃コンテキスト
   * @return {Array} 属性配列
   ###
   defenceAttrs: (atkcx) ->
+    # TODO: キャッシュした方が良いかも
     r = []
     for s in @states
       for a in s.defenceAttr atkcx
@@ -229,27 +244,43 @@ class rpg.Battler
     return unless @checkEquipOff pos
     if item is null
       # 装備を外す
-      @equips[pos] = null
+      @_equipItemOff pos
       return
     # 外せる場合いったん装備をはずす
     t = @equips[pos]
-    @equips[pos] = null
+    @_equipItemOff pos
     # 装備条件確認
     if @checkEquip pos, item
       # 装備しようとしている部位を必要としている他の部位に装備された物がある場合それを外す
       for e1, v of @equips when v?
         for e2 in v.equips when pos is e2
           if @checkEquipOff e1
-            @equips[e1] = null
+            @_equipItemOff e1
       # 両手武器等、複数個所で装備する物は、他の部位の装備をはずす
       for e in item.equips
-        @equips[e] = null
+        @_equipItemOff e
       # 装備可能な場合は、それを装備
-      @equips[pos] = item
+      @_equipItemOn pos, item
     else
       # 装備できない場合は、元の装備に戻す
-      @equips[pos] = t
+      @_equipItemOn pos, t
     return
+
+  ###* 装備する
+  * @param {string} pos 装備部位
+  ###
+  _equipItemOn: (pos, item) ->
+    if item?
+      @equips[pos] = item
+      @addState s for s in item.states
+
+  ###* 装備外す
+  * @param {string} pos 装備部位
+  ###
+  _equipItemOff: (pos) ->
+    if @equips[pos]?
+      @removeState s for s in @equips[pos].states
+    @equips[pos] = null
 
 for ability in BASE_ABILITIES
   ((nm) ->

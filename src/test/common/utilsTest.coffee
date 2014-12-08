@@ -307,7 +307,7 @@ describe 'utils', ->
       }
       r = []
       r = r.concat rpg.utils.jsonExpression 'op.attrs', op:op
-      r[0].should.equals 'abc'
+      r[0].should.equal 'abc'
 
     it '文字列配列２', ->
       op = {
@@ -315,10 +315,10 @@ describe 'utils', ->
       }
       r = []
       r = r.concat rpg.utils.jsonExpression 'op.attrs', op:op
-      r[0].should.equals 'abc'
+      r[0].should.equal 'abc'
 
     it '文字列配列３', ->
       op = {}
       r = []
       r = r.concat rpg.utils.jsonExpression 'abc', op:op
-      r[0].should.equals 'abc'
+      r[0].should.equal 'abc'

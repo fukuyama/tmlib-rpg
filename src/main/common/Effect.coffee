@@ -50,8 +50,10 @@ class rpg.Effect
     true
 
   ###* コンテキスト作成
-  * @param {rpg.Battler} user 攻撃者
-  * @return {Object} 攻撃コンテキスト
+  * @param {Object} cx コンテキスト
+  * @param {Array} effects エフェクト配列
+  * @param {Object} param 計算時のパラメータ
+  * @return {Object} コンテキスト
   ###
   _makeContext: (cx,effects,param) ->
     for e in effects
@@ -92,6 +94,8 @@ class rpg.Effect
         param.target = t
         cxt = {attrs:[]}
         @_makeContext(cxt,@_effect.target.effects,param)
+        for a in user.attackAttrs(cxt)
+          cxt.attrs.push a
         cx.targets.push cxt
         cx.target = cxt
     return cx
