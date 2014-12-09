@@ -16,18 +16,19 @@ require('../../main/common/Effect.coffee')
 
 SKILL_SCOPE = rpg.constants.SKILL_SCOPE
 
+TEST_STATES = {
+  '武器攻撃時炎': new rpg.State {
+    name: '武器攻撃時炎'
+    attrs: [
+      {attack:{attr:'炎',cond:'武器'}}
+    ]
+  }
+}
+
 # 価値は何か，誰にとっての価値か，実際の機能は何か
 describe 'rpg.Skill', ->
   rpg.system = rpg.system ? {}
-  rpg.system.db = rpg.system.db ? {}
-  states = {
-    '炎': new rpg.State {
-      attrs: [
-        {attack:{attr:'炎',cond:'物理'}}
-      ]
-    }
-  }
-  rpg.system.db.state = (name) -> states[name]
+  rpg.system.db = {}
   skills =
     attack: new rpg.Skill
       name: '攻撃'
@@ -36,7 +37,7 @@ describe 'rpg.Skill', ->
         range: SKILL_SCOPE.RANGE.ONE
       target:
         effects: [
-          {hp:[['user.patk','/',2],'-',['target.pdef','/',4]],attrs:['物理']}
+          {hp:[['user.patk','/',2],'-',['target.pdef','/',4]],attrs:['物理','武器']}
         ]
 
   describe '攻撃', ->
@@ -86,11 +87,12 @@ describe 'rpg.Skill', ->
         atkcx.targets[0].attrs[0].should.equal '物理'
     describe '属性攻撃', ->
       it '武器防具装備時(炎属性武器)', ->
+        rpg.system.db.state = (name) -> TEST_STATES[name]
         user = new rpg.Actor(name:'user',team:'a')
         user.weapon = new rpg.Weapon
           name: 'Weapon001'
           patk: 10
-          states: ['炎']
+          states: ['武器攻撃時炎']
         targets = [
           new rpg.Actor(name:'target1',team:'b')
         ]
@@ -103,9 +105,10 @@ describe 'rpg.Skill', ->
         user.patk.should.equal 25
         targets[0].pdef.should.equal 25
         atkcx.targets[0].hp.should.equal 6.25
-        atkcx.targets[0].attrs.length.should.equal 2
+        atkcx.targets[0].attrs.length.should.equal 3
         atkcx.targets[0].attrs[0].should.equal '物理'
-        atkcx.targets[0].attrs[1].should.equal '炎'
+        atkcx.targets[0].attrs[1].should.equal '武器'
+        atkcx.targets[0].attrs[2].should.equal '炎'
 
   describe.skip '回復スキル', ->
     it 'HPを１０回復する１度使えるアイテム', ->

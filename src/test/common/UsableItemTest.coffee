@@ -13,6 +13,10 @@ require('../../main/common/Effect.coffee')
 
 ITEM_SCOPE = rpg.constants.ITEM_SCOPE
 
+TEST_STATES = {
+  'State1': new rpg.State({name:'State1'})
+  'State2': new rpg.State({name:'State2'})
+}
 describe 'rpg.UsableItem', ->
   item = null
   log = null
@@ -20,12 +24,6 @@ describe 'rpg.UsableItem', ->
   rpg.system.temp = rpg.system.temp ? {}
   rpg.system.db = rpg.system.db ? {}
   
-  states = {
-    'State1': new rpg.State({name:'State1'})
-    'State2': new rpg.State({name:'State2'})
-  }
-  rpg.system.db.state = (key) -> states[key]
-
   describe '基本属性', ->
     it 'アイテムの初期化', ->
       item = new rpg.UsableItem()
@@ -476,6 +474,7 @@ describe 'rpg.UsableItem', ->
         )
         item.isLost().should.equal false
       it '使うとステートが追加される', ->
+        rpg.system.db.state = (name) -> TEST_STATES[name]
         target = new rpg.Actor(name:'target1',team:'a')
         target.states.length.should.equal 0
         user = new rpg.Actor(name:'user',team:'a')

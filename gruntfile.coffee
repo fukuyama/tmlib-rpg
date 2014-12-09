@@ -193,11 +193,11 @@ module.exports = (grunt) ->
           (genPath + sec + '.js' for sec in common_sections)
           (genPath + 'client/' + sec + '.js' for sec in client_sections)
         ]
-        dest: 'target/public/client/main.js'
+        dest: 'target/public/client/tmlib-rpg.js'
     uglify:
       client_scripts:
         files:
-          'target/public/client/main.min.js': ['target/public/client/main.js']
+          'target/public/client/tmlib-rpg.min.js': ['target/public/client/tmlib-rpg.js']
     jsdoc:
       dist:
         src: [
