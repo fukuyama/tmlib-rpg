@@ -143,7 +143,7 @@ module.exports = (grunt) ->
       ]
     create_sample:
       files: ['src/main/client/sample/**']
-      tasks: ['sample']
+      tasks: ['create_sample']
 
   simplemochaConfig =
     options:
@@ -240,26 +240,28 @@ module.exports = (grunt) ->
       target: ['target','doc']
 
     execute:
-      call_sample:
-        call: (grunt, op) ->
-          grunt.log.writeln('Hello!')
-
-    exec:
       create_sample:
-        cmd: 'coffee src/main/client/sample/sample.coffee'
-
+        options:
+          inputDir: './src/main/client/sample'
+          outputDir: './target/public/client/data'
+        call: (grunt, op) ->
+          op.src = grunt.file.expand({cwd:op.inputDir},'*/*.coffee')
+          op.src.push 'system.coffee'
+          rpgc = require './src/main/tools/RPGCompiler'
+          rpgc.compile(op)
+          return
 
   for o of pkg.devDependencies
     grunt.loadNpmTasks o if /grunt-/.test o
   
   grunt.registerTask 'server', ['express:dev', 'watch']
   grunt.registerTask 'test', ['coffeelint','simplemocha:all']
-  grunt.registerTask 'sample', ['exec:create_sample']
+  grunt.registerTask 'create_sample', ['execute:create_sample']
   grunt.registerTask 'doc', ['jsdoc']
   grunt.registerTask 'default', [
     'coffeelint','coffee', 'simplemocha:all'
-    'concat', 'uglify', 'copy', 'exec:create_sample'
+    'concat', 'uglify', 'copy', 'create_sample'
   ]
   grunt.registerTask 'skiptest', [
-    'coffeelint','coffee', 'concat', 'uglify', 'copy', 'exec:create_sample'
+    'coffeelint','coffee', 'concat', 'uglify', 'copy', 'create_sample'
   ]
