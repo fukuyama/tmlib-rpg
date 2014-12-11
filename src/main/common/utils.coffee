@@ -72,7 +72,7 @@ rpg.utils = {
 
 # extendAll 内部関数
 _extendAll = (a, b) ->
-  return {} unless b?
+  return null unless b?
   r = null
   if Array.isArray b
     r = []

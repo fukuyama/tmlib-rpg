@@ -11,8 +11,11 @@ tm.main ->
   init = ->
     # システムオブジェクト
     rpg.system = rpg.System()
-    # ユーザ定義アセットロード
-    load(rpg.system.assets, run)
+    if rpg.system.assets.length > 0
+      # ユーザ定義アセットロード
+      load(rpg.system.assets, run)
+    else
+      run()
 
   # ゲーム開始
   run = ->

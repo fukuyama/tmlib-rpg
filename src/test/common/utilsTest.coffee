@@ -35,6 +35,15 @@ describe 'utils', ->
       10000.formatString('99').should.equal '10000'
 
   describe '$extendAll', ->
+    describe 'nullオブジェクトのマージ', ->
+      h = {}
+      a = {
+        obj:
+          name: null
+      }
+      h = h.$extendAll a
+      it 'nullになる', ->
+        (h.obj.name is null).should.equal true
     describe '空のオブジェクトのマージ', ->
       h = {}
       a = {}

@@ -37,7 +37,7 @@ tm.define 'SceneTitle',
   init: (args='sample.scene.title') ->
     # 親の初期化
     @superInit(name:'SceneTitle')
-    args = tm.asset.AssetManager.get(args).data if typeof args is 'string'
+    args = tm.asset.Manager.get(args).data if typeof args is 'string'
     {
       background
       @menus
