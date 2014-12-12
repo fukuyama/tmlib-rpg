@@ -47,14 +47,7 @@ tm.define 'rpg.System',
         key: 'scene.title'
         src: {}
       canvasId: 'game_screen'
-      loadingSceneDefault:
-        gauge:
-          x: 0
-          y: 0
-          width: 640
-          height: 10
-          color: 'blue'
-          direction: 'left'
+      loadingSceneDefault: {}
       windowDefault:
         windowskin: {} # WindowSkin クラスのデフォルトを使う
         textColor: 'rgb(255,255,255)'

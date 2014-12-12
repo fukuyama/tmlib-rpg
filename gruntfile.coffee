@@ -262,6 +262,22 @@ module.exports = (grunt) ->
             rpgc = require './src/main/tools/RPGCompiler'
             rpgc.compile(op)
           return
+      makedemo:
+        options:
+          inputDir: './src/demo'
+          outputDir: './target/public/client'
+        call: (grunt, op) ->
+          path = require 'path'
+          op.inputDir = grunt.option 'inputDir'
+          op.outputDir = path.join(op.outputDir,path.basename(op.inputDir))
+          grunt.file.mkdir(op.outputDir)
+          fs = require 'fs'
+          if fs.existsSync(op.inputDir) and fs.existsSync(op.outputDir)
+            op.src = grunt.file.expand({cwd:op.inputDir},'*/*.coffee')
+            op.src.push 'system.coffee'
+            rpgc = require './src/main/tools/RPGCompiler'
+            rpgc.compile(op)
+          return
 
 
   for o of pkg.devDependencies
@@ -270,7 +286,8 @@ module.exports = (grunt) ->
   grunt.registerTask 'server', ['express:dev', 'watch']
   grunt.registerTask 'test', ['coffeelint','simplemocha:all']
   grunt.registerTask 'create_sample', ['execute:create_sample']
-  grunt.registerTask 'mkrpg', ['execute:makerpg']
+  grunt.registerTask 'makerpg', ['execute:makerpg']
+  grunt.registerTask 'makedemo', ['execute:makedemo']
   grunt.registerTask 'doc', ['jsdoc']
   grunt.registerTask 'default', [
     'coffeelint','coffee', 'simplemocha:all'
