@@ -52,7 +52,7 @@ _g.checkWait = (done,fn) ->
 _g.checkMapMove =  (mapid,x,y,dir,done) ->
   checkWait done, ->
     map = rpg.system.scene.map
-    pc = rpg.system.player.character
+    pc = rpg.game.player.character
     url = "http://localhost:3000/client/data/map/#{mapid}.json"
     return map?.url == url and
       pc.mapX == x and

@@ -105,7 +105,7 @@ tm.define 'rpg.Interpreter',
   # キャラクター検索
   findCharacter: (chara) ->
     if chara == 'player'
-      return rpg.system.player.character
+      return rpg.game.player.character
     return rpg.system.scene?.map?.events[chara]
 
   ###* イベントコマンドパラメータの正規化。

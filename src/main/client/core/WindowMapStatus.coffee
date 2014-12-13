@@ -32,7 +32,7 @@ tm.define 'rpg.WindowMapStatus',
     @drawStatus()
 
   update: ->
-    player = rpg.system.player
+    player = rpg.game.player
     pc = player.character
     if not player.active
       @visible = true

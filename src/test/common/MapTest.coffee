@@ -21,12 +21,12 @@ describe 'rpg.Mapの仕様', () ->
         m.events[obj.name] = new rpg.Event(params)
     m
   rpg.system = rpg.system ? {}
-  rpg.system.player = {}
-  rpg.system.player.character = new rpg.Character({
+  rpg.game = {}
+  rpg.game.player = {}
+  rpg.game.player.character = new rpg.Character({
     mapX: 0
     mapY: 0
   })
-  rpg.game = {}
   rpg.game.flag = new rpg.Flag()
 
   describe '初期化', ->
@@ -65,8 +65,8 @@ describe 'rpg.Mapの仕様', () ->
   '、タイルＩＤが全て 0 で、全方向移動可能な場合', ->
     m = debug new rpg.Map()
     it 'プレイヤー位置設定', ->
-      rpg.system.player.character.mapX = 0
-      rpg.system.player.character.mapY = 0
+      rpg.game.player.character.mapX = 0
+      rpg.game.player.character.mapY = 0
     it '5,5 から下(2)へ移動可能(true)', ->
       m.isPassable(5,5,2).should.equal true
     it '5,5 から左(4)へ移動可能(true)', ->
@@ -104,8 +104,8 @@ describe 'rpg.Mapの仕様', () ->
   'にプレイヤーがいる', ->
     m = debug new rpg.Map()
     it 'プレイヤー位置設定', ->
-      rpg.system.player.character.mapX = 5
-      rpg.system.player.character.mapY = 5
+      rpg.game.player.character.mapX = 5
+      rpg.game.player.character.mapY = 5
     it '5,5 から下(2)へ移動不可能(false)', ->
       m.isPassable(5,5,2).should.equal false
     it '5,5 から左(4)へ移動不可能(false)', ->

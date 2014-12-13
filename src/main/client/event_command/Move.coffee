@@ -30,10 +30,12 @@ tm.define 'rpg.event_command.MoveMap',
     x = @normalizeEventValue 'flag', x
     y = @normalizeEventValue 'flag', y
     d = @normalizeEventValue 'flag', d
-    rpg.system.loadMap mapid, ->
-      c = rpg.system.player.character
-      c.moveTo x, y
-      c.direction = d
+    rpg.system.loadMap {
+      id: mapid
+      x: x
+      y: y
+      d: d
+    }
     @next()
     true
 

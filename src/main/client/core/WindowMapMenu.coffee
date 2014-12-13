@@ -39,7 +39,7 @@ tm.define 'rpg.WindowMapMenu',
   
   menuTalk: ->
     @close()
-    rpg.system.player.talk()
+    rpg.game.player.talk()
     return
   menuSkill: ->
     self = @
@@ -54,7 +54,7 @@ tm.define 'rpg.WindowMapMenu',
     @_next rpg.WindowItemActorList parent: @
     return
   menuCheck: ->
-    rpg.system.player.checkEvent()
+    rpg.game.player.checkEvent()
     @close()
     return
   menuStatus: ->

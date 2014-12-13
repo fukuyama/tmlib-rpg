@@ -10,7 +10,7 @@ describe 'rpg.Interpreter(Trigger)', () ->
       it 'wait', (done) ->
         setTimeout(done,1000)
       it '移動', ->
-        rpg.system.player.character.moveTo 19, 5
+        rpg.game.player.character.moveTo 19, 5
       it 'right', (done) ->
         emulate_key 'right', done
       it 'メッセージ表示待ち', (done) ->

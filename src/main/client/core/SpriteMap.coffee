@@ -26,7 +26,7 @@ tm.define 'rpg.SpriteMap',
     @updatePosition()
 
   updatePosition: () ->
-    pc = rpg.system.player.character
+    pc = rpg.game.player.character
 
     if pc.x < @_screenCX
       @x = 0

@@ -61,7 +61,7 @@ class rpg.Map
   # 座標位置のプレイヤーを検索
   # character: 検索を行ったキャラクター
   findPlayer: (x, y, character = null) ->
-    pc = rpg.system.player.character
+    pc = rpg.game.player.character
     if pc? and
     pc isnt character and
     pc.mapX == x and pc.mapY == y

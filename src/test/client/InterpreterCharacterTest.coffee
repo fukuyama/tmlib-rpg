@@ -26,10 +26,10 @@ describe 'rpg.Interpreter(Character)', () ->
           checkWait done, -> interpreter.isEnd()
         it '移動完了待ち', (done) ->
           checkWait done, ->
-            pc = rpg.system.player.character
+            pc = rpg.game.player.character
             pc.mapX == 2 and pc.mapY == 1
         it '状態確認 transparent=true', ->
-          pc = rpg.system.player.character
+          pc = rpg.game.player.character
           pc.transparent.should.equal true
           pc.mapX.should.equal 2
           pc.mapY.should.equal 1
@@ -39,7 +39,7 @@ describe 'rpg.Interpreter(Character)', () ->
         it 'インタープリタ取得', ->
           interpreter = rpg.system.scene.interpreter
         it '状態確認 visible=on', ->
-          pc = rpg.system.player.character
+          pc = rpg.game.player.character
           pc.visible.should.equal true
         it 'interpreter を開始する visible off に', (done)->
           commands = [
@@ -49,7 +49,7 @@ describe 'rpg.Interpreter(Character)', () ->
           interpreter.start commands
           checkWait done, -> interpreter.isEnd()
         it '状態確認 visible=off', ->
-          pc = rpg.system.player.character
+          pc = rpg.game.player.character
           pc.visible.should.equal false
         it 'メッセージ表示待ち2', (done) ->
           setTimeout(done,2000)
@@ -62,7 +62,7 @@ describe 'rpg.Interpreter(Character)', () ->
           interpreter.start commands
           checkWait done, -> interpreter.isEnd()
         it '状態確認 visible=on', ->
-          pc = rpg.system.player.character
+          pc = rpg.game.player.character
           pc.visible.should.equal true
     describe '場所移動', ->
       describe 'プレイヤーの場所を移動 20,20', ->
@@ -78,11 +78,11 @@ describe 'rpg.Interpreter(Character)', () ->
           checkWait done, -> interpreter.isEnd()
         it '移動確認', (done) ->
           checkWait done, ->
-            pc = rpg.system.player.character
+            pc = rpg.game.player.character
             pc.mapX == 20 and pc.mapY == 20
         it '移動確認', ->
-          rpg.system.player.character.mapX.should.equal 20
-          rpg.system.player.character.mapY.should.equal 20
+          rpg.game.player.character.mapX.should.equal 20
+          rpg.game.player.character.mapY.should.equal 20
       describe 'プレイヤーの場所を移動 2,1', ->
         commands = [
           {type:'move_to',params:['player',2,1]}
@@ -96,11 +96,11 @@ describe 'rpg.Interpreter(Character)', () ->
           checkWait done, -> interpreter.isEnd()
         it '移動確認', (done) ->
           checkWait done, ->
-            pc = rpg.system.player.character
+            pc = rpg.game.player.character
             pc.mapX == 2 and pc.mapY == 1
         it '移動確認', ->
-          rpg.system.player.character.mapX.should.equal 2
-          rpg.system.player.character.mapY.should.equal 1
+          rpg.game.player.character.mapX.should.equal 2
+          rpg.game.player.character.mapY.should.equal 1
       describe 'キャラクターの場所を移動 2,2', ->
         commands = [
           {type:'move_to',params:['Event001',1,1]}
@@ -145,7 +145,7 @@ describe 'rpg.Interpreter(Character)', () ->
         ]
         routeIndex = 0
         _routeCheck = (done) ->
-          c  = rpg.system.player.character
+          c  = rpg.game.player.character
           if route[routeIndex]?
             [x,y] = route[routeIndex]
             if c.mapX == x and c.mapY == y
@@ -241,7 +241,7 @@ describe 'rpg.Interpreter(Character)', () ->
         it '移動確認', (done) ->
           checkMapMove '002',5,5,'up',done
           map = rpg.system.scene.map
-          pc = rpg.system.player.character
+          pc = rpg.game.player.character
           map.url.should.equal 'http://localhost:3000/client/data/map/002.json'
           pc.mapX.should.equal 5
           pc.mapY.should.equal 5
@@ -264,7 +264,7 @@ describe 'rpg.Interpreter(Character)', () ->
         it '移動確認', (done) ->
           checkMapMove '002',5,5,'up',done
           map = rpg.system.scene.map
-          pc = rpg.system.player.character
+          pc = rpg.game.player.character
           map.url.should.equal 'http://localhost:3000/client/data/map/002.json'
           pc.mapX.should.equal 5
           pc.mapY.should.equal 5

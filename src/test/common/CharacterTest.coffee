@@ -19,8 +19,9 @@ describe 'rpg.Character', () ->
   rpg.system.scene = {
     map: map
   }
-  rpg.system.player = {}
-  rpg.system.player.character = new rpg.Character({
+  rpg.game = {}
+  rpg.game.player = {}
+  rpg.game.player.character = new rpg.Character({
     mapX: 0
     mapY: 0
   })
@@ -668,7 +669,7 @@ describe 'rpg.Character', () ->
       event.mapX.should.equal 5
       event.mapY.should.equal 10
     it '引数なし場所は、5 9 向き下', ->
-      pc = rpg.system.player.character
+      pc = rpg.game.player.character
       pc.mapX = 0
       pc.mapY = 0
       c.mapX = 5
@@ -680,28 +681,28 @@ describe 'rpg.Character', () ->
 
   describe 'プレイヤーで移動確認', ->
     it '0,0 から右に移動可能(true)', ->
-      pc = rpg.system.player.character
+      pc = rpg.game.player.character
       pc.mapX = 0
       pc.mapY = 0
       pc.direction = 'right'
       pc.isPassable().should.equal true
     it '0,0 から右に移動可能(true)', ->
-      pc = rpg.system.player.character
+      pc = rpg.game.player.character
       pc.mapX = 1
       pc.mapY = 1
       pc.direction = 'up'
       pc.isPassable(0,0,'right').should.equal true
     it '1,0 から左に移動可能(true)', ->
-      pc = rpg.system.player.character
+      pc = rpg.game.player.character
       pc.isPassable(1,0,'left').should.equal true
     it '1,0 から上に移動不可能(false)', ->
-      pc = rpg.system.player.character
+      pc = rpg.game.player.character
       pc.isPassable(1,0,'up').should.equal false
     it '0,0 から下に移動可能(true)', ->
-      pc = rpg.system.player.character
+      pc = rpg.game.player.character
       pc.isPassable(0,0,'down').should.equal true
     it '1,1 から左に移動不可能(false)', ->
-      pc = rpg.system.player.character
+      pc = rpg.game.player.character
       pc.isPassable(1,1,'left').should.equal false
 
   describe '移動ルート設定', ->

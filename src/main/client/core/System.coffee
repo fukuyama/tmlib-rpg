@@ -67,9 +67,13 @@ tm.define 'rpg.System',
       se: SE_METHOD
       start:
         actors: []
+        map:
+          id: 1
+          x: 0
+          y: 0
+          d: 2
     }.$extendAll(args)
     @clearTemp()
-    @player = rpg.GamePlayer()
     @db = rpg.DataBase()
 
     # Audio 関連のメソッド作成
@@ -315,6 +319,7 @@ tm.define 'rpg.System',
     @clearTemp()
     game = rpg.game = {}
     game.flag = new rpg.Flag()
+    game.player = rpg.GamePlayer()
     # TODO: プレイヤーキャラクターとりあえず版
     game.pc = new rpg.Character()
     game.pc.moveSpeed = 6
@@ -338,17 +343,35 @@ tm.define 'rpg.System',
     )
 
     # Map
-    @loadMap(1)
+    @loadMap @start.map
     return
 
   # マップのロード
-  loadMap: (mapid,enter) ->
+  loadMap: (args) ->
+    {
+      id
+      x
+      y
+      d
+      enter
+    } = {
+      id: 1
+      x: 0
+      y: 0
+      d: 2
+      enter: null
+    }.$extend args
+    if enter is null
+      enter = ->
+        c = rpg.game.player.character
+        c.moveTo x, y
+        c.direction = d
     # 現在のシーンをキャプチャー
     @captureScreenBitmap()
     # マップのロードと切替
-    @db.preloadMap mapid, ((map) ->
+    @db.preloadMap id, ((map) ->
       scene = SceneMap(map: map)
-      if enter?
+      if enter isnt null
         scene.on 'enter', enter
       @replaceScene scene: scene
     ).bind @
