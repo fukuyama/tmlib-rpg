@@ -27,7 +27,7 @@ module.exports = {
         src:
           menus: [
             {
-              name:'NewGame'
+              name:'NewGame (push enter key!)'
               action: 'NewGame'
             }
             {
@@ -43,5 +43,8 @@ module.exports = {
       'character.object001':
         type:'tmss'
         src: '001/spritesheet/object001.json'
+      'character.object002':
+        type:'tmss'
+        src: '001/spritesheet/object002.json'
     }
 }

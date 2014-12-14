@@ -54,7 +54,7 @@ tm.define 'rpg.WindowMapMenu',
     @_next rpg.WindowItemActorList parent: @
     return
   menuCheck: ->
-    rpg.game.player.checkEvent()
+    rpg.game.player.checkTouched()
     @close()
     return
   menuStatus: ->

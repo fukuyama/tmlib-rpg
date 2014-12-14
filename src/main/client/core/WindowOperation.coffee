@@ -7,7 +7,7 @@ tm.define 'rpg.WindowOperation',
     parent = args.parent
     args.$extend {
       name: 'Operation'
-      x: parent.right
+      x: parent.left
       y: parent.top
       active: true
       visible: true
@@ -15,6 +15,10 @@ tm.define 'rpg.WindowOperation',
       rows: 5
       menus: [
         {name:'まんたん',fn:@menuCuraAll.bind(@)}
+        {name:'TEST',fn:@menuTest001.bind(@)}
+        {name:'TEST',fn:@menuTest001.bind(@)}
+        {name:'TEST',fn:@menuTest001.bind(@)}
+        {name:'TEST',fn:@menuTest001.bind(@)}
         {name:'TEST',fn:@menuTest001.bind(@)}
       ]
     }
@@ -26,6 +30,8 @@ tm.define 'rpg.WindowOperation',
     console.log w
   menuTest001: ->
     console.log 'menuTest001'
+    ###
     rpg.system.db.preloadItem(['001','002'],(items)->
       console.log items
     )
+    ###
