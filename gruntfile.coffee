@@ -218,6 +218,11 @@ module.exports = (grunt) ->
         cwd: 'src/test/public/'
         src: ['**']
         dest: 'target/public/'
+      client_demo:
+        expand: true
+        cwd: 'src/demo/001/img/'
+        src: ['**']
+        dest: 'target/public/client/img/'
       tmlib_build:
         expand: true
         cwd: '../tmlib.js/build'

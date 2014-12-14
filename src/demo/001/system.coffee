@@ -9,6 +9,15 @@ module.exports = {
     bgm: false
     messageSpeed: 3
   }
+  start:
+    actors: [1]
+    map:
+      id: 1
+      x: 14
+      y: 5
+  database:
+    path:
+      data: '001/'
   main:
     nextScene: 'SceneTitle'
     param: ['scene.title']
@@ -28,13 +37,11 @@ module.exports = {
       'system.se.menu_decision': 'audio/se/fin.mp3'
       'system.se.menu_cursor_move': 'audio/se/fon.mp3'
       'windowskin.image': 'img/test_windowskin2.png'
-      'spritesheet.hiyoko':
+      'character.hiyoko':
         type:'tmss'
         src: '001/spritesheet/hiyoko.json'
-      'spritesheet.object001':
+      'character.object001':
         type:'tmss'
         src: '001/spritesheet/object001.json'
     }
-  start:
-    actors: [1]
 }

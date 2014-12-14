@@ -33,10 +33,12 @@ tm.define 'rpg.System',
       @mapChipSize
       @setting
       @start
+      @database
     } = {
       setting: {
         se: false
         bgm: false
+        moveSpeed: 5
         messageSpeed: 4
         autoSpeed: 4
       }
@@ -72,9 +74,10 @@ tm.define 'rpg.System',
           x: 0
           y: 0
           d: 2
+      database: {}
     }.$extendAll(args)
     @clearTemp()
-    @db = rpg.DataBase()
+    @db = rpg.DataBase(@database)
 
     # Audio 関連のメソッド作成
     # menu_decision -> rpg.system.se.menuDecision()
@@ -320,10 +323,6 @@ tm.define 'rpg.System',
     game = rpg.game = {}
     game.flag = new rpg.Flag()
     game.player = rpg.GamePlayer()
-    # TODO: プレイヤーキャラクターとりあえず版
-    game.pc = new rpg.Character()
-    game.pc.moveSpeed = 6
-    
     @mapInterpreter = rpg.Interpreter()
 
     # パーティ編成
@@ -332,16 +331,21 @@ tm.define 'rpg.System',
     # TODO: アクターデータ
     # game.actors = []
 
+    _load = (actors) ->
+      for a in actors
+        rpg.game.party.add(a)
+      op = {}
+      op.spriteSheet = actors[0].character if actors[0].character?
+      op.moveSpeed = @setting.moveSpeed if @setting.moveSpeed?
+      console.log op
+      game.player.character = new rpg.Character op
+      return
 
     # Actors
     @db.preloadActor(
       @start.actors
-      (actors) ->
-        for a in actors
-          rpg.game.party.add(a)
-        return
+      _load.bind @
     )
-
     # Map
     @loadMap @start.map
     return

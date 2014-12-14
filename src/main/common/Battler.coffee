@@ -88,6 +88,7 @@ class rpg.Battler
     {
       @name
       @team
+      @character
     } = {}.$extendAll(@properties).$extendAll(args)
 
     Object.defineProperty @, 'states',

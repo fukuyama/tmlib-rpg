@@ -5,6 +5,7 @@ require path.relative(base,'./src/main/common/constants')
 
 module.exports = {
   name: 'ひよこ'
+  character: 'character.hiyoko'
   base:
     str: 10 # ちから
     vit: 10 # たいりょく

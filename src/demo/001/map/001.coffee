@@ -6,50 +6,78 @@ require path.relative(base,'./src/main/common/constants')
 
 MOVE_RESTRICTION = rpg.constants.MOVE_RESTRICTION
 
-xmax = 640 / 32
-ymax = 480 / 32
-# dummy map data. テスト用
-data = (->
-  data = []
-  for i in [0...(xmax*ymax)]
-    data.push 0
-  data
-)()
-
 module.exports = {
   name: '001'
-  width: xmax
-  height: ymax
+  width: 20
+  height: 15
   tilewidth: 32
   tileheight: 32
   tilesets: [
     {
-      image: 'img/test_tileset.png'
+      image: 'img/pipo-map001.png'
       restriction: [
         MOVE_RESTRICTION.ALLOK
+        MOVE_RESTRICTION.ALLOK
+        MOVE_RESTRICTION.ALLOK
+        MOVE_RESTRICTION.ALLOK
+        MOVE_RESTRICTION.ALLOK
+        MOVE_RESTRICTION.ALLOK
+        MOVE_RESTRICTION.ALLOK
+        MOVE_RESTRICTION.ALLOK
+        MOVE_RESTRICTION.ALLOK
+        MOVE_RESTRICTION.ALLOK
         MOVE_RESTRICTION.ALLNG
-        MOVE_RESTRICTION.UPOK
-        MOVE_RESTRICTION.DOWNOK
-        MOVE_RESTRICTION.LEFTOK
-        MOVE_RESTRICTION.RIGHTOK
-        MOVE_RESTRICTION.HORIZON
-        MOVE_RESTRICTION.VERTICAL
-        MOVE_RESTRICTION.CORNER1
-        MOVE_RESTRICTION.CORNER3
-        MOVE_RESTRICTION.CORNER7
-        MOVE_RESTRICTION.CORNER9
-        MOVE_RESTRICTION.UPNG
-        MOVE_RESTRICTION.DOWNNG
-        MOVE_RESTRICTION.LEFTNG
-        MOVE_RESTRICTION.RIGHTNG
+        MOVE_RESTRICTION.ALLOK
+        MOVE_RESTRICTION.ALLOK
+        MOVE_RESTRICTION.ALLOK
+        MOVE_RESTRICTION.ALLOK
+        MOVE_RESTRICTION.ALLOK
+        MOVE_RESTRICTION.ALLOK
       ]
     }
   ]
   layers: [
     {
       type: 'layer'
-      name: 'layer1'
-      data: data
+      name: '地面'
+      data: [
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+      ]
+    }
+    {
+      type: 'layer'
+      name: '地上'
+      data: [
+        -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+        -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+        -1,-1,-1,-1,-1,-1,-1,-1,10,-1,-1,-1,-1,-1,10,10,-1,-1,-1,-1,
+        -1,-1,-1,-1,-1,-1,-1,10,10,-1,-1,-1,-1,10,-1,-1,10,-1,-1,-1,
+        -1,-1,-1,-1,-1,-1,-1,-1,10,-1,-1,-1,10,-1,-1,-1,-1,10,-1,-1,
+        -1,-1,-1,-1,-1,-1,-1,-1,10,-1,-1,-1,10,-1,-1,-1,-1,10,-1,-1,
+        -1,-1,-1,-1,-1,-1,-1,-1,10,-1,-1,-1,10,-1,-1,-1,-1,10,-1,-1,
+        -1,-1,-1,-1,-1,-1,-1,-1,10,-1,-1,-1,10,-1,-1,-1,-1,10,-1,-1,
+        -1,-1,-1,-1,-1,-1,-1,-1,10,-1,-1,-1,10,-1,-1,-1,-1,10,-1,-1,
+        -1,-1,-1,-1,-1,-1,-1,-1,10,-1,-1,-1,-1,10,-1,-1,10,-1,-1,-1,
+        -1,-1,-1,-1,-1,-1,-1,10,10,10,-1,-1,-1,-1,10,10,-1,-1,-1,-1,
+        -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+        -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+        -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+        -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1
+      ]
     }
     {
       type: 'objectgroup'

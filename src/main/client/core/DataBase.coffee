@@ -41,7 +41,7 @@ tm.define 'rpg.DataBase',
         map:    'map/'
         state:  'state/'
         actor:  'actor/'
-    }.$extend args
+    }.$extendAll args
 
     # メタ インタフェース
     @_metaif = {

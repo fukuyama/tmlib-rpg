@@ -13,6 +13,7 @@ tm.define 'rpg.GamePlayer',
   ###
   init: () ->
     @superInit()
+    @character = null
 
     @eventHandler = rpg.EventHandler(active:true,repeatDelay:0)
     @eventHandler.setupHandler(@)
@@ -27,9 +28,6 @@ tm.define 'rpg.GamePlayer',
       enumerable: true
       get: -> @eventHandler.active
       set: (b) -> @eventHandler.active = b if typeof b is 'boolean'
-    Object.defineProperty @, 'character',
-      enumerable: true
-      get: -> rpg.game.pc
 
   ###* イベントリスナーセットアップ
   * @memberof rpg.GamePlayer#
