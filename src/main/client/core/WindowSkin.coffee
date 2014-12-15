@@ -3,6 +3,8 @@
 * ウィンドウスキン
 ###
 
+dummyCanvas = null
+
 ASSETS =
   'windowskin.config.original':
     type: 'json'
@@ -148,6 +150,24 @@ tm.define 'rpg.WindowSkin',
     o.canvas.resize(r[2], r[3])
     o.canvas.drawTexture(@texture, s[0], s[1], s[2], s[3], 0, 0, r[2], r[3])
 
+  _refreshTexturePattern: (o,s,r) ->
+    return unless o?
+    return unless s?
+    if dummyCanvas is null
+      dummyCanvas = tm.graphics.Canvas()
+    dummyCanvas.resize(s[2], s[3])
+    dummyCanvas.drawTexture(@texture, s[0], s[1], s[2], s[3], 0, 0, s[2], s[3])
+    o.x = r[0]
+    o.y = r[1]
+    o.width = r[2]
+    o.height = r[3]
+    o.canvas.resize(r[2], r[3])
+    pattern = o.canvas.context.createPattern(dummyCanvas.canvas, 'repeat')
+    o.canvas.beginPath()
+    o.canvas.rect(0, 0, r[2], r[3])
+    o.canvas.setFillStyle(pattern)
+    o.canvas.fill()
+
   ###* 再更新
   * ウィンドウスキン自体を設定に従って再作成する
   * @memberof rpg.WindowSkin#
@@ -155,7 +175,7 @@ tm.define 'rpg.WindowSkin',
   refresh: ->
     skin = @createSkinConfig()
     for s in @spec.backgrounds
-      @_refreshTexture(@_background, s, skin.background)
+      @_refreshTexturePattern(@_background, s, skin.background)
     for k, d of skin.rects
       @_refreshTexture(@_border[k], @spec[k], d)
     for k, d of skin.titles
