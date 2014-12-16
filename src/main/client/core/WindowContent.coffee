@@ -22,7 +22,7 @@ tm.define 'rpg.WindowContent',
 
     @clearColor('rgba(0,0,0,0)')
 
-    @shape.update = @update
+    #@shape.update = @update # FIXME: たぶん必要ないはず
 
   drawTo: ->
     @shape.x = @innerRect.x
