@@ -39,6 +39,7 @@ describe 'rpg.Skill', ->
         effects: [
           {hp:[['user.patk','/',2],'-',['target.pdef','/',4]],attrs:['物理','武器']}
         ]
+  skill = null
 
   describe '攻撃', ->
     describe '通常攻撃', ->
@@ -110,21 +111,28 @@ describe 'rpg.Skill', ->
         atkcx.targets[0].attrs[1].should.equal '武器'
         atkcx.targets[0].attrs[2].should.equal '炎'
 
-  describe.skip '回復スキル', ->
-    it 'HPを１０回復する１度使えるアイテム', ->
-      item = new rpg.Skill(
-        target:
-          effects:[
-            {hp: -10}
-          ]
-      )
-      item.isLost().should.equal false
-    it '１１ダメージを受けてるので１０回復する', ->
-      user = new rpg.Actor(name:'user')
-      target = new rpg.Actor(name:'target')
-      target.hp.should.equal target.maxhp
-      target.hp -= 11
-      target.hp.should.equal target.maxhp - 11
-      r = item.use user, target
-      r.should.equal true
-      target.hp.should.equal target.maxhp - 1
+  describe '回復スキル', ->
+    describe '単体回復', ->
+      it '回復量１０の単体回復スキル', ->
+        skill = new rpg.Skill
+          scope:
+            type: SKILL_SCOPE.TYPE.FRIEND
+            range: SKILL_SCOPE.RANGE.ONE
+          user:
+            effects:[
+              {map: 2}
+            ]
+          target:
+            effects:[
+              {hp: -10}
+            ]
+      it '１１ダメージを受けてるので１０回復する', ->
+        user = new rpg.Actor(name:'user')
+        target = new rpg.Actor(name:'target')
+        target.hp.should.equal target.maxhp
+        target.hp -= 11
+        target.hp.should.equal target.maxhp - 11
+        log = {}
+        r = skill.effectApply user, [target], log
+        r.should.equal true
+        target.hp.should.equal target.maxhp - 1

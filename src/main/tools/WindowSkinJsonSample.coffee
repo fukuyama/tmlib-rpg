@@ -1,10 +1,11 @@
 # ウィンドウスキン素材の仕様(VXAce 風)
 sys = require 'sys'
 sys.print JSON.stringify({
-  image: 'windowskin.vxace'
+  image: 'windowskin.image'
   borderWidth: 16
   borderHeight: 16
   backgroundPadding: 2
+  backgroundColor: 'rgba(0,0,0,0.9)'
   spec:
     backgrounds: [
       [0,0,64,64]

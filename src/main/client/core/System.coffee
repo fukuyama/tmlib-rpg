@@ -337,7 +337,6 @@ tm.define 'rpg.System',
       op = {}
       op.spriteSheet = actors[0].character if actors[0].character?
       op.moveSpeed = @setting.moveSpeed if @setting.moveSpeed?
-      console.log op
       game.player.character = new rpg.Character op
       return
 

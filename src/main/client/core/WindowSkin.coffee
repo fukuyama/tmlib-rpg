@@ -17,6 +17,7 @@ ASSETS =
       titlePadding: -8
       backgroundPadding: 2
       backgroundColor: 'rgba(0,0,0,0)'
+      backgroundStyle: 'pattern'
       spec:
         backgrounds: [
           [16,16,32,32]
@@ -32,49 +33,6 @@ ASSETS =
         titleLeft: [0,64,16,27]
         titleRight: [64-16,64,16,27]
         titleBorder: [16,64,32,27]
-  'windowskin.vxace': 'img/window.png'
-  'windowskin.config.vxace':
-    type: 'json'
-    src:
-      image: 'windowskin.image'
-      borderWidth: 16
-      borderHeight: 16
-      backgroundPadding: 2
-      backgroundColor: 'rgba(0,0,0,0.9)'
-      spec:
-        backgrounds: [
-          [0,0,64,64]
-          [0,64,64,64]
-        ]
-        topLeft: [64, 0, 16, 16]
-        topRight: [128 - 16, 0, 16, 16]
-        bottomLeft: [64, 64 - 16, 16, 16]
-        bottomRight: [128 - 16, 64 - 16, 16, 16]
-        borderTop: [64 + 16, 0, 16, 16]
-        borderBottom: [64 + 16, 64 - 16, 16, 16]
-        borderLeft: [64, 16, 16, 16]
-        borderRight: [128 - 16, 16, 16, 16]
-  'windowskin.hiyoko': 'img/Frame320.png'
-  'windowskin.config.hiyoko':
-    type: 'json'
-    src:
-      image: 'windowskin.image'
-      borderWidth: 32
-      borderHeight: 32
-      backgroundPadding: 2
-      backgroundColor: 'rgba(255,255,255,1.0)'
-      spec:
-        backgrounds: [
-          [32,32,64,64]
-        ]
-        topLeft: [0, 0, 32, 32]
-        topRight: [320 - 32, 0, 32, 32]
-        bottomLeft: [0, 320 - 32, 32, 32]
-        bottomRight: [320 - 32, 320 - 32, 32, 32]
-        borderTop: [32, 0, 32, 32]
-        borderBottom: [32, 320 - 32, 32, 32]
-        borderLeft: [0, 32, 32, 32]
-        borderRight: [320 - 32, 32, 32, 32]
 
 tm.define 'rpg.WindowSkin',
   superClass: tm.display.CanvasElement
@@ -100,6 +58,7 @@ tm.define 'rpg.WindowSkin',
       @titlePadding
       @backgroundPadding
       @backgroundColor
+      @backgroundStyle
       @spec
     } = {}.$extend(ASSETS['windowskin.config.original'].src).$extend(args)
 
@@ -133,14 +92,14 @@ tm.define 'rpg.WindowSkin',
     @height = height
     @refresh()
 
-  ###* 各テクスチャの更新
+  ###* 各テクスチャの更新(Fit)
   * @memberof rpg.WindowSkin#
   * @param {tm.display.Shape} o 書き込み先のシェイプ
   * @param {Array} s 転送元座標配列 [x,y,width,height]
   * @param {Array} r 転送先座標配列 [x,y,width,height]
   * @private
   ###
-  _refreshTexture: (o,s,r) ->
+  _refreshTextureFit: (o,s,r) ->
     return unless o?
     return unless s?
     o.x = r[0]
@@ -150,6 +109,13 @@ tm.define 'rpg.WindowSkin',
     o.canvas.resize(r[2], r[3])
     o.canvas.drawTexture(@texture, s[0], s[1], s[2], s[3], 0, 0, r[2], r[3])
 
+  ###* 各テクスチャの更新(Pattern)
+  * @memberof rpg.WindowSkin#
+  * @param {tm.display.Shape} o 書き込み先のシェイプ
+  * @param {Array} s 転送元座標配列 [x,y,width,height]
+  * @param {Array} r 転送先座標配列 [x,y,width,height]
+  * @private
+  ###
   _refreshTexturePattern: (o,s,r) ->
     return unless o?
     return unless s?
@@ -174,14 +140,19 @@ tm.define 'rpg.WindowSkin',
   ###
   refresh: ->
     skin = @createSkinConfig()
-    for s in @spec.backgrounds
-      @_refreshTexturePattern(@_background, s, skin.background)
+    switch @backgroundStyle
+      when 'fit'
+        for s in @spec.backgrounds
+          @_refreshTextureFit(@_background, s, skin.background)
+      when 'pattern'
+        for s in @spec.backgrounds
+          @_refreshTexturePattern(@_background, s, skin.background)
     for k, d of skin.rects
-      @_refreshTexture(@_border[k], @spec[k], d)
+      @_refreshTextureFit(@_border[k], @spec[k], d)
     for k, d of skin.titles
       if @title
         @_border[k].show()
-        @_refreshTexture(@_border[k], @spec[k], d)
+        @_refreshTextureFit(@_border[k], @spec[k], d)
       else
         @_border[k].hide()
 

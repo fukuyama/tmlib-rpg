@@ -23,8 +23,16 @@ class rpg.Skill
   ###* 効果メソッド
   * @param {rpg.Battler} user 使用者
   * @param {Array} target 対象者(rpg.Battler配列)
+  * @return {Object} 効果コンテキスト
+  ###
+  effect: (user,targets = []) ->
+    @_effect.effect(user,targets)
+
+  ###* 効果反映メソッド
+  * @param {rpg.Battler} user 使用者
+  * @param {Array} target 対象者(rpg.Battler配列)
   * @param {Object} log 効果ログ情報
   * @return {boolean} 効果ある場合 true
   ###
-  effect: (user,targets = [],log = {}) ->
-    @_effect.effect(user,targets,log)
+  effectApply: (user,targets = [],log = {}) ->
+    @_effect.effectApply(user,targets,log)
