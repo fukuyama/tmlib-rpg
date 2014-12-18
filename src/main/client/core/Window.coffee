@@ -57,8 +57,21 @@ tm.define 'rpg.Window',
     @addChild @_windowskin
 
     # ウィンドウコンテンツ
-    @content = rpg.WindowContent(@_calcInnerRect())
-    @addChild @content.shape
+    #@content = rpg.WindowContent(@_calcInnerRect())
+    #@addChild @content.shape
+
+    @innerRect = @_calcInnerRect()
+    @contentShape = tm.display.Shape(@innerRect.width,@innerRect.height)
+    @contentShape.origin.set(0,0)
+    @content = @contentShape.canvas
+    @contentView = tm.display.Shape(@innerRect.width,@innerRect.height)
+    @contentView.origin.set(0,0)
+    @contentView.clipping = true
+    @contentView.x = @innerRect.x
+    @contentView.y = @innerRect.y
+
+    @contentView.addChildTo @
+    @contentShape.addChildTo @contentView
 
     # タイトル
     if title?
@@ -126,7 +139,7 @@ tm.define 'rpg.Window',
   ###
   refreshWindow: ->
     @titleContent?.drawTo()
-    @content?.drawTo()
+    #@content?.drawTo()
 
   ###* テキスト描画
   * @memberof rpg.Window#
@@ -236,8 +249,9 @@ tm.define 'rpg.Window',
   * @param {number} height 高さ
   ###
   resizeInnerRect: (width = @width, height = @height) ->
-    ir = @_calcInnerRect(width, height)
-    @innerRect.set.apply(@innerRect, ir.toArray())
+    @innerRect = @_calcInnerRect(width, height)
+    #ir = @_calcInnerRect(width, height)
+    #@innerRect.set.apply(@innerRect, ir.toArray())
 
   ###* コンテンツリサイズ
   * @memberof rpg.Window#
@@ -245,6 +259,8 @@ tm.define 'rpg.Window',
   * @param {number} height 高さ
   ###
   resizeContent: (w = @innerRect.width,h = @innerRect.height)->
+    @contentShape.width = w
+    @contentShape.height = h
     @content.resize(w,h)
 
   ###* タイトルコンテンツリサイズ
@@ -275,7 +291,7 @@ tm.define 'rpg.Window',
       @visible = false
       @active = false
       @dispatchEvent rpg.Window.EVENT_CLOSE
-    @content.update()
+    #@content.update()
 
   ###* 表示位置調整（中央に配置する）
   * @memberof rpg.Window#
@@ -414,7 +430,7 @@ rpg.Window.EVENT_OPEN       = tm.event.Event 'open'
 rpg.Window.EVENT_CLOSE      = tm.event.Event 'close'
 rpg.Window.EVENT_ADD_WINDOW = tm.event.Event 'addWindow'
 
-rpg.Window.prototype.getter 'innerRect', -> @content.innerRect
+# rpg.Window.prototype.getter 'innerRect', -> @content.innerRect
 rpg.Window.prototype.getter 'borderWidth', -> @_windowskin.borderWidth
 rpg.Window.prototype.getter 'borderHeight', -> @_windowskin.borderHeight
 rpg.Window.prototype.getter 'titleHeight', -> @_windowskin.titleHeight

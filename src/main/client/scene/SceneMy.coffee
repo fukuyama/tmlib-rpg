@@ -6,6 +6,16 @@ tm.define "SceneMy",
     # 親の初期化
     @superInit()
 
+    @win = w = rpg.Window(50, 50, 100, 100)
+    @addChild(w)
+    w.drawText("Hello",0,0)
+    w.refresh()
+
+    @onpointingmove = (e) ->
+      p = e.app.pointing
+      @win.contentShape.x += p.dx
+      @win.contentShape.y += p.dy
+
     #w = rpg.Window(50, 50, 200, 200,title: 'title')
     #@addChild(w)
     #w.drawText("Hello",0,0)
@@ -15,6 +25,7 @@ tm.define "SceneMy",
     #w.addCloseListener((-> console.log w.value))
     #@addChild(w)
 
+    ###
     w = rpg.WindowMenu(
       title: 'Menu?'
       active: true
@@ -34,3 +45,4 @@ tm.define "SceneMy",
       ]
     )
     @addChild(w)
+    ###
