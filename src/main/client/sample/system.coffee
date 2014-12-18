@@ -10,6 +10,7 @@ module.exports = {
     se: false
     bgm: false
     messageSpeed: 3
+    moveSpeed: 6
   }
   main:
     nextScene: 'SceneTitle'
