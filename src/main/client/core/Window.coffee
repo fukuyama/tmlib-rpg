@@ -250,6 +250,8 @@ tm.define 'rpg.Window',
   ###
   resizeInnerRect: (width = @width, height = @height) ->
     @innerRect = @_calcInnerRect(width, height)
+    @contentView.width = @innerRect.width
+    @contentView.height = @innerRect.height
     #ir = @_calcInnerRect(width, height)
     #@innerRect.set.apply(@innerRect, ir.toArray())
 

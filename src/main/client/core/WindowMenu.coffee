@@ -142,17 +142,17 @@ tm.define 'rpg.WindowMenu',
     height = @menuHeight * @rows + @titleHeight
     @resize(width + @borderWidth * 2, height + @borderHeight * 2)
     @cursorInstance.reset()
+    return
 
   # コンテキストのリサイズ
   resizeContent: ->
     w = @innerRect.width * @maxPageNum
     h = @innerRect.height
-    if @content.shape.width == w and @content.shape.height == h
+    if @content.width == w and @content.height == h
       return
+    @contentShape.width = w
+    @contentShape.height = h
     @content.resize(w,h)
-    @content.shape.width = w
-    @content.shape.height = h
-    @content.shape.canvas.resize(w,h)
     return
 
   # メニュー再更新
@@ -165,10 +165,12 @@ tm.define 'rpg.WindowMenu',
       x = (i % @cols) * w + n * @innerRect.width
       y = Math.floor((i % @maxPageItems)/ @cols) * h
       @drawMenu(i, x, y, @menuWidth, h)
+    return
 
   # メニューを１つ描画
   drawMenu: (i,x,y,w,h) ->
     @drawText(@menus[i].name, x, y)
+    return
 
   # Window再更新
   refresh: ->
@@ -199,7 +201,6 @@ tm.define 'rpg.WindowMenu',
 
   # ----------------------------------------------------
   # 入力処理
-  # とりあえず
 
   # 決定
   input_ok_up: ->
@@ -276,8 +277,7 @@ tm.define 'rpg.WindowMenu',
     else
       @index -= 1
     @setIndex (@index + @menus.length) % @menus.length
-    @content.ox = (@currentPageNum - 1) * @innerRect.width
-    @content.drawTo()
+    @contentShape.x = (@currentPageNum - 1) * @innerRect.width * -1
     rpg.system.se.menuCursorMove()
 
   # 右
@@ -302,8 +302,7 @@ tm.define 'rpg.WindowMenu',
     else
       @index += 1
     @setIndex (@index + @menus.length) % @menus.length
-    @content.ox = (@currentPageNum - 1) * @innerRect.width
-    @content.drawTo()
+    @contentShape.x = (@currentPageNum - 1) * @innerRect.width * -1
     rpg.system.se.menuCursorMove()
 
   # メニュー選択
