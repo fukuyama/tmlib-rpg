@@ -63,6 +63,8 @@ tm.define 'rpg.Window',
     @innerRect = @_calcInnerRect()
     @contentShape = tm.display.Shape(@innerRect.width,@innerRect.height)
     @contentShape.origin.set(0,0)
+    @contentShape.x = 0
+    @contentShape.y = 0
     @content = @contentShape.canvas
     @contentView = tm.display.Shape(@innerRect.width,@innerRect.height)
     @contentView.origin.set(0,0)
@@ -70,18 +72,33 @@ tm.define 'rpg.Window',
     @contentView.x = @innerRect.x
     @contentView.y = @innerRect.y
 
-    @contentView.addChildTo @
-    @contentShape.addChildTo @contentView
+    @contentView.addChild @contentShape
+    @addChild @contentView
 
     # タイトル
     if title?
       # タイトルコンテンツ
-      @titleContent = rpg.WindowContent(@_calcInnerTitleRect())
-      @addChild @titleContent.shape
+      @titleRect = @_calcTitleRect()
+      @titleShape = tm.display.Shape(@titleRect.width,@titleRect.height)
+      @titleShape.origin.set(0,0)
+      @titleShape.x = 0
+      @titleShape.y = 0
+      @titleContent = @titleShape.canvas
+      @titleView = tm.display.Shape(@titleRect.width,@titleRect.height)
+      @titleView.origin.set(0,0)
+      @titleView.clipping = true
+      @titleView.x = @titleRect.x
+      @titleView.y = @titleRect.y
+
+      @titleView.addChild @titleShape
+      @addChild @titleView
+
       @_windowskin.title = true
       @height += @titleHeight
       @resizeWindow(@width,@height)
       @drawTitle(title)
+      @contentView.x = @innerRect.x
+      @contentView.y = @innerRect.y
 
     # 最初の更新（自分のだけ呼ぶ…OOP的にどなんだろ）
     @refreshWindow()
@@ -106,7 +123,7 @@ tm.define 'rpg.Window',
   * @param {number} height=@height 高さ
   * @private
   ###
-  _calcInnerTitleRect: (width = @width, height = @height)->
+  _calcTitleRect: (width = @width, height = @height)->
     tm.geom.Rect(
       @borderWidth
       @borderHeight + @titlePadding
@@ -138,7 +155,7 @@ tm.define 'rpg.Window',
   * @memberof rpg.Window#
   ###
   refreshWindow: ->
-    @titleContent?.drawTo()
+    #@titleContent?.drawTo()
     #@content?.drawTo()
 
   ###* テキスト描画
@@ -271,11 +288,11 @@ tm.define 'rpg.Window',
   * @param {number} height 高さ
   ###
   resizeTitleContent: (width = @width, height = @height) ->
-    ir = @_calcInnerTitleRect(width,height)
+    ir = @_calcTitleRect(width,height)
     w = ir.width
     h = ir.height
-    @titleContent.innerRect.width = w
-    @titleContent.innerRect.height = h
+    @titleShape.width = w
+    @titleShape.height = h
     @titleContent.resize(w,h)
 
   ###* 更新処理

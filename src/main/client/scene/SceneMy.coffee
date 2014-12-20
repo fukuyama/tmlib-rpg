@@ -27,9 +27,11 @@ tm.define "SceneMy",
     #w.addCloseListener((-> console.log w.value))
     #@addChild(w)
 
-    # title: 'Menu?'
     w = rpg.WindowMenu(
+      title: 'Menu?'
       active: true
+      x: 50
+      y: 50
       cols: 3
       rows: 2
       menus: [
