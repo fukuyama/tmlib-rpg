@@ -136,3 +136,28 @@ describe 'rpg.Skill', ->
         r = skill.effectApply user, [target], log
         r.should.equal true
         target.hp.should.equal target.maxhp - 1
+    describe '全体回復', ->
+      it '回復量１０の全体回復スキル', ->
+        skill = new rpg.Skill
+          scope:
+            type: SKILL_SCOPE.TYPE.FRIEND
+            range: SKILL_SCOPE.RANGE.MULTI
+          user:
+            effects:[
+              {map: 2}
+            ]
+          target:
+            effects:[
+              {hp: -10}
+            ]
+      it '１１ダメージを受けてるので１０回復する', ->
+        user = new rpg.Actor(name:'user')
+        target1 = new rpg.Actor(name:'target1')
+        target1.hp -= 11
+        target2 = new rpg.Actor(name:'target2')
+        target2.hp -= 12
+        log = {}
+        r = skill.effectApply user, [target1,target2], log
+        r.should.equal true
+        target1.hp.should.equal target1.maxhp - 1
+        target2.hp.should.equal target2.maxhp - 2
