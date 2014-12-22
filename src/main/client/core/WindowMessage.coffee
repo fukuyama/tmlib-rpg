@@ -96,7 +96,7 @@ tm.define 'rpg.WindowMessage',
   * @memberof rpg.WindowMessage#
   ###
   clearContent: ->
-    @content.oy = @_ay = @_dy = @_py = @_sy = 0 # 初期化
+    @contentShape.y = @_ay = @_dy = @_py = @_sy = 0 # 初期化
     @content.clear()
     return
 
@@ -370,23 +370,20 @@ tm.define 'rpg.WindowMessage',
     # スクロール処理
     if @_sy > 0
       n = Math.pow(2, @scrollSpeed) / 256.0 * rpg.system.lineHeight
-      @content.oy += n
+      @contentShape.y -= n
       @_sy -= n
       return true
     # ポーズしててページ位置までスクロールしてなかったらスクロールさせる
-    if @isPause() and @_py > @content.oy
-      @_sy = @_py - @content.oy
+    if @isPause() and @_py > (@contentShape.y * -1)
+      @_sy = @_py
       return true
     # ポーズしてて表示がずれている場合は位置調整（@content初期化）
-    if @isPause() and @content.oy > 0
-      @_ay = @_dy -= @content.oy # 描画位置を、現在の表示位置分戻して
-      @content.oy = @_py = @_sy = 0 # 初期化
+    if @isPause() and @contentShape.y < 0
+      bmp = @content.getBitmap(0, @_py)
+      @_ay = @_dy -= @contentShape.y * -1 # 描画位置を、現在の表示位置分戻して
+      @contentShape.y = @_py = @_sy = 0 # 初期化
       @content.clear()
-      @content.drawImage(
-        @content.shape.canvas.canvas
-        0, 0, @innerRect.width, @innerRect.height
-        0, 0, @innerRect.width, @innerRect.height
-      )
+      @content.drawBitmap(bmp,0,0)
       return false
     # 描画位置が範囲を超えたら
     if @_ay != @_dy and @_dy >= rpg.system.lineHeight * @maxLine

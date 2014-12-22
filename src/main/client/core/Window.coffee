@@ -288,11 +288,9 @@ tm.define 'rpg.Window',
   * @param {number} height 高さ
   ###
   resizeTitleContent: (width = @width, height = @height) ->
-    ir = @_calcTitleRect(width,height)
-    w = ir.width
-    h = ir.height
-    @titleShape.width = w
-    @titleShape.height = h
+    @titleRect = @_calcTitleRect(width,height)
+    w = @titleShape.width = @titleView.width = @titleRect.width
+    h = @titleShape.height = @titleView.height = @titleRect.height
     @titleContent.resize(w,h)
 
   ###* 更新処理

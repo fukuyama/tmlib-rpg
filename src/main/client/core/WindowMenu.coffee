@@ -196,6 +196,7 @@ tm.define 'rpg.WindowMenu',
     @titleContent.textBaseline = 'top'
     @titleContent.setFillStyle(@textColor)
     x = @titleContent.width - @measureTextWidth(pageText)
+    console.log x
     @titleContent.fillText(pageText, x, 3)
     @titleContent.context.restore()
 
