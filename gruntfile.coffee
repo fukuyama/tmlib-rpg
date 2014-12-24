@@ -49,7 +49,6 @@ module.exports = (grunt) ->
       'core/SpriteMap'
       'core/EventHandler'
       'core/WindowSkin'
-      'core/WindowContent'
       'core/Window'
       'core/WindowMenu'
       'core/WindowInputNum'
