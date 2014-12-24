@@ -54,7 +54,7 @@ tm.define 'rpg.WindowInputNum',
         @menuWidth * @cols + @borderWidth * 2
         @menuHeight + @borderHeight * 2
       )
-    cursorx = @content.width - @menuWidth * @cols
+    cursorx = @innerRect.width - @menuWidth * @cols
     # カーソル作成
     @cursorInstance = rpg.SpriteCursor(@,@cursor)
     @cursorInstance.reset basex:cursorx
