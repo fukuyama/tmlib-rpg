@@ -35,7 +35,6 @@ tm.define 'rpg.WindowCash',
   refresh: ->
     @cash = rpg.game.party.cash
     @drawText(@cash + ' ' + WORDS.cash.unit, 24 * 5, 0, {align:'right'})
-    @refreshWindow()
 
   update: ->
     rpg.Window.prototype.update.call @

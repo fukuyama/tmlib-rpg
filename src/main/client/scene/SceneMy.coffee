@@ -6,6 +6,7 @@ tm.define "SceneMy",
     # 親の初期化
     @superInit()
 
+    ###
     @win = w = rpg.Window(50, 50, 100, 100)
     @addChild(w)
     w.drawText("Hello",0,0)
@@ -16,6 +17,7 @@ tm.define "SceneMy",
       @win.content.translate(p.dx,p.dy)
       #@win.contentShape.x += p.dx
       #@win.contentShape.y += p.dy
+    ###
 
     #w = rpg.Window(50, 50, 200, 200,title: 'title')
     #@addChild(w)
@@ -49,3 +51,8 @@ tm.define "SceneMy",
     )
     @addChild(w)
     ###
+
+    rpg.WindowInputNum(
+      title: 'TEST'
+      unit: 'こ'
+    ).addChildTo(@).open()

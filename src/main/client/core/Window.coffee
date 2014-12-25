@@ -96,9 +96,6 @@ tm.define 'rpg.Window',
       @_contentView.x = @innerRect.x
       @_contentView.y = @innerRect.y
 
-    # 最初の更新（自分のだけ呼ぶ…OOP的にどなんだろ）
-    @refreshWindow()
-
     # イベントハンドラ用メソッド
     @eventHandler = rpg.EventHandler({active:true,name:name})
     @setupHandler = -> @eventHandler.setupHandler(@) # bind は、まずい気がする。
@@ -144,15 +141,7 @@ tm.define 'rpg.Window',
   ###* 再更新
   * @memberof rpg.Window#
   ###
-  refresh: ->
-    @refreshWindow()
-
-  ###* 再更新(派生用)
-  * @memberof rpg.Window#
-  ###
-  refreshWindow: ->
-    #@titleContent?.drawTo()
-    #@content?.drawTo()
+  refresh: -> return
 
   ###* テキスト描画
   * @memberof rpg.Window#

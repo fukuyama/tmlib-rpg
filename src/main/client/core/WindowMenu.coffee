@@ -95,7 +95,6 @@ tm.define 'rpg.WindowMenu',
     if @titleText? and @_page != @currentPageNum
       @_page = @currentPageNum
       @refreshTitle()
-      @refreshWindow()
 
   # カーソルの作成
   createCursor: (param = DEFAULT_CURSOR_ASSET) ->
@@ -176,7 +175,6 @@ tm.define 'rpg.WindowMenu',
   refresh: ->
     @refreshMenu()
     @refreshTitle()
-    @refreshWindow()
 
   refreshTitle: () ->
     if @titleContent?

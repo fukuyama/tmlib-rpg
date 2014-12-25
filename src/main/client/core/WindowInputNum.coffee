@@ -19,6 +19,8 @@ tm.define 'rpg.WindowInputNum',
       @cursor
       @x
       @y
+      @unit
+      title
     } = {
       visible: false
       active: false
@@ -30,6 +32,7 @@ tm.define 'rpg.WindowInputNum',
       cursor: 'sample.cursor'
       x: 0
       y: 0
+      unit: null # 単位
     }.$extend(rpg.system.windowDefault).$extend args
     # 描画サイズ計算
     @rows = 1
@@ -42,22 +45,22 @@ tm.define 'rpg.WindowInputNum',
     if @steps.length < @cols
       @steps.unshift(1) for i in [0...(@cols - @steps.length)]
     # リサイズ
-    if args.title?
-      w1 = @measureTextWidth(args.title) + @borderWidth * 2
-      w2 = @menuWidth * @cols + @borderWidth * 2
-      w = if w1 > w2 then w1 else w2
-      h = @menuHeight + @borderHeight * 2 + @titleHeight
-      @resizeWindow(w,h)
-      @drawTitle()
-    else
-      @resizeWindow(
-        @menuWidth * @cols + @borderWidth * 2
-        @menuHeight + @borderHeight * 2
-      )
-    cursorx = @innerRect.width - @menuWidth * @cols
+    w = @menuWidth * @cols
+    h = @menuHeight
+    if title?
+      t = @measureTextWidth(title)
+      w = if t > w then t else w
+      h += @titleHeight
+    @unitWidth = 0
+    if @unit isnt null
+      w += (@unitWidth = @measureTextWidth(@unit))
+    w += @borderWidth * 2
+    h += @borderHeight * 2
+    @resizeWindow(w,h)
+    @drawTitle(title) if title?
     # カーソル作成
     @cursorInstance = rpg.SpriteCursor(@,@cursor)
-    @cursorInstance.reset basex:cursorx
+    @cursorInstance.reset basex:(@innerRect.width - @menuWidth * @cols - @unitWidth)
     @addChild @cursorInstance
     @cursorInstance.setIndex(@cols - 1)
     while @steps[@cursorInstance.index] == 0
@@ -78,10 +81,8 @@ tm.define 'rpg.WindowInputNum',
   # Window再更新
   refresh: ->
     @content.clear()
-    @drawText(@values.join(''),@content.width,0,{
-      align: 'right'
-    })
-    rpg.Window.prototype.refresh.call(@)
+    @drawText(@values.join(''),@content.width - @unitWidth,0,{align: 'right'})
+    @drawText(@unit,@content.width,0,{align: 'right'})
     
   setValues: (v)->
     @values[@cursorInstance.index] = v
