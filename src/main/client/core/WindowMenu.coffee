@@ -157,13 +157,22 @@ tm.define 'rpg.WindowMenu',
   # メニュー再更新
   refreshMenu: ->
     @content.clear()
+    @menuRects = [] unless @menuRects?
+    r.remove() for r in @menuRects
     for m, i in @menus
-      w = @menuWidth + @colPadding
-      h = rpg.system.lineHeight
       n = Math.floor(i / @maxPageItems)
-      x = (i % @cols) * w + n * @innerRect.width
+      w = @menuWidth
+      h = rpg.system.lineHeight
+      x = (i % @cols) * (w + @colPadding) + n * @innerRect.width
       y = Math.floor((i % @maxPageItems)/ @cols) * h
-      @drawMenu(i, x, y, @menuWidth, h)
+      @menuRects.push(
+        tm.display.Shape(w, h)
+          .addChildTo(@contentShape)
+          .setPosition(x,y)
+          .addChild tm.display.Label(m.name)
+            .setAlign('left')
+            .setY(h/2)
+      )
     return
 
   # メニューを１つ描画
@@ -194,7 +203,6 @@ tm.define 'rpg.WindowMenu',
     @titleContent.textBaseline = 'top'
     @titleContent.setFillStyle(@textColor)
     x = @titleContent.width - @measureTextWidth(pageText)
-    console.log x
     @titleContent.fillText(pageText, x, 3)
     @titleContent.context.restore()
 
