@@ -1,7 +1,7 @@
 # constant
 root = window ? global ? @
 
-###
+
 root.SYSTEM_ASSETS =
   system: 'data/system.json'
 ###
@@ -14,3 +14,4 @@ root.SYSTEM_ASSETS =
         assets: {
           'windowskin.image': 'img/test_windowskin2.png'
         }
+###

@@ -159,6 +159,7 @@ tm.define 'rpg.WindowMenu',
     @content.clear()
     @menuRects = [] unless @menuRects?
     r.remove() for r in @menuRects
+    @menuRects.clear()
     for m, i in @menus
       n = Math.floor(i / @maxPageItems)
       w = @menuWidth
