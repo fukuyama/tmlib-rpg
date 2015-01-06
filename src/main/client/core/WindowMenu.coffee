@@ -15,6 +15,7 @@ tm.define 'rpg.WindowMenu',
   ###
   init: (args={}) ->
     delete args[k] for k, v of args when not v?
+    @menuRects = []
     @menus = []
     # width と height はダミー すぐに resizeAuto する
     @superInit(args.x ? 0, args.y ? 0, 128, 128, args)
@@ -48,7 +49,7 @@ tm.define 'rpg.WindowMenu',
 
     # カーソル作成
     @cursorInstance = @createCursor(@cursor)
-    @addChild @cursorInstance
+    @cursorInstance.addChildTo(@contentShape)
 
     # リピート用ハンドラの設定
     @addRepeatHandler
@@ -157,23 +158,23 @@ tm.define 'rpg.WindowMenu',
   # メニュー再更新
   refreshMenu: ->
     @content.clear()
-    @menuRects = [] unless @menuRects?
     r.remove() for r in @menuRects
     @menuRects.clear()
     for m, i in @menus
       n = Math.floor(i / @maxPageItems)
       w = @menuWidth
-      h = rpg.system.lineHeight
+      h = @menuHeight
       x = (i % @cols) * (w + @colPadding) + n * @innerRect.width
-      y = Math.floor((i % @maxPageItems)/ @cols) * h
-      @menuRects.push(
-        tm.display.Shape(w, h)
-          .addChildTo(@contentShape)
-          .setPosition(x,y)
-          .addChild tm.display.Label(m.name)
-            .setAlign('left')
-            .setY(h/2)
-      )
+      y = Math.floor((i % @maxPageItems) / @cols) * h
+      s = tm.display.Shape(w, h)
+        .addChildTo(@contentShape)
+        .setPosition(x,y)
+      tm.display.Label(m.name)
+        .addChildTo(s)
+        .setAlign('left')
+        .setY(h/2)
+      @menuRects.push(s)
+    @cursorInstance.reset()
     return
 
   # メニューを１つ描画
@@ -317,7 +318,7 @@ tm.define 'rpg.WindowMenu',
   pointing_menu: (e) ->
     return unless @active
     base = (@currentPageNum - 1) * @maxPageItems
-    @cursorInstance.setPointing(e,base)
+    # @cursorInstance.setPointing(e,base)
     if @cursorInstance.index < @menus.length
       if @index == @cursorInstance.index
         @input_ok_up()

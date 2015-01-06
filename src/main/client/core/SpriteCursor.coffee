@@ -5,7 +5,7 @@ tm.define 'rpg.SpriteCursor',
   superClass: tm.display.Shape
 
   # 初期化
-  init: (@parent, args='sample.cursor') ->
+  init: (@menuWindow, args='sample.cursor') ->
     @superInit()
     args = tm.asset.AssetManager.get(args).data if typeof args == 'string'
     delete args[k] for k, v of args when not v?
@@ -31,61 +31,22 @@ tm.define 'rpg.SpriteCursor',
       fillStyle: @color
 
   # リサイズ
-  resize: (width, height) ->
-    @canvas.resize(@width = width, @height = height)
+  resize: (@width = @menuWindow.menuWidth, @height = @menuWindow.menuHeight) ->
+    @canvas.resize(@width, @height)
 
   # 再設定
-  reset: (args={}) ->
-    {
-      basex
-    } = {
-      basex: 0
-    }.$extend args
-    cols = @parent.cols
-    rows = @parent.rows
-    w = @parent.menuWidth
-    h = @parent.menuHeight
-    @resize(w + @padding, h + @padding)
+  reset: (args = {}) ->
+    @resize()
     @refresh()
-    # カーソル位置再計算
-    @_indexPositions = []
-    pw = (@parent.width - @parent.innerRect.width) / 2 - @padding / 2
-    ph = (@parent.height - @parent.titleHeight - @parent.innerRect.height)
-    ph = ph / 2 - @padding / 2 + @parent.titleHeight
-    max = @parent.maxPageNum
-    max = 1 unless @parent.maxPageNum?
-    for pi in [0..max]
-      for r in [0...rows]
-        for c in [0...cols]
-          @_indexPositions.push
-            x: pw + c * w + c * @parent.colPadding + basex
-            y: ph + r * h
     @setIndex()
 
   # カーソル位置設定
-  setIndex: (@index=@index) ->
+  setIndex: (@index = @index) ->
     # 範囲チェック
-    if 0 <= @index and @index < @_indexPositions.length
-      {@x, @y} = @_indexPositions[@index]
+    if 0 <= @index and @index < @menuWindow.menuRects.length
+      {@x, @y} = @menuWindow.menuRects[@index]
       @visible = true
     else
       # 範囲外の場合は、カーソルを消す
       @visible = false
     @
-
-  # カーソル位置設定（ポインティング時）
-  setPointing: (e,base=0) ->
-    pt = @parent.globalToLocal(e.pointing)
-    # pt = e.pointing
-    w = @parent.menuWidth
-    h = @parent.menuHeight
-    rect = tm.geom.Rect(0,0,w,h)
-    console.log e
-    console.log "e.pointing = #{e.pointing.x},#{e.pointing.y}"
-    console.log "pt = #{pt.x},#{pt.y}"
-    for ip, i in @_indexPositions[base ..]
-      rect.move ip.x, ip.y
-      if rect.left < pt.x and pt.x < rect.right and
-      rect.top < pt.y and pt.y < rect.bottom
-        @setIndex(i + base)
-        break
