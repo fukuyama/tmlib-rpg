@@ -62,7 +62,7 @@ describe 'rpg.Effect', ->
     effect = null
     user = {
       name: 'user1'
-      atk: 100
+      patk: 100
       matk: 50
       iff: -> false
       attackAttrs: -> []
@@ -71,6 +71,7 @@ describe 'rpg.Effect', ->
       {
         hp:50
         name:'user2'
+        pdef: 100
         iff: -> true
       }
     ]
@@ -82,11 +83,11 @@ describe 'rpg.Effect', ->
         }
         target:
           effects:[
-            {hp:['user.atk','*',2],attrs:['物理']}
+            {hp:[['user.patk','/',2],'-',['target.pdef','/',4]],attrs:['物理']}
           ]
       )
       atkcx = effect.effect(user,targets)
-      atkcx.target.hp.should.equal 200
+      atkcx.target.hp.should.equal 25
       atkcx.target.attrs[0].should.equal '物理'
 
     it '魔法攻撃', ->
