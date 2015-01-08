@@ -11,6 +11,15 @@ describe 'rpg.DataBase', ->
       dbd.baseUrl.should.equal 'http://localhost:3000/client/'
       dbd.idformat.should.equal '000'
 
+  describe '画像データ', ->
+    describe '画像のロード', ->
+      it 'アイテムを取得する場合は、取得した後に呼ぶ関数を指定する', (done) ->
+        db.preloadPicture(['test_001.png'],(images) ->
+          images[0].element.src.should.
+            equal 'http://localhost:3000/client/img/test_001.png'
+          done()
+        )
+
   describe 'アイテムデータ', ->
     describe 'アイテムのロード', ->
       it 'アイテムを取得する場合は、取得した後に呼ぶ関数を指定する', (done) ->

@@ -92,6 +92,7 @@ module.exports = (grunt) ->
       'event_command/Item'
       'event_command/Shop'
       'event_command/Cash'
+      'event_command/Picture'
       'core/EventGenerator'
       'scene/SceneBase'
       'scene/SceneLoading3'

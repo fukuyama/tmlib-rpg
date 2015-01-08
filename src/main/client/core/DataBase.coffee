@@ -41,6 +41,7 @@ tm.define 'rpg.DataBase',
         map:    'map/'
         state:  'state/'
         actor:  'actor/'
+        picture: 'img/'
     }.$extendAll args
 
     # メタ インタフェース
@@ -57,6 +58,8 @@ tm.define 'rpg.DataBase',
       actor:
         url: @_dataUrl.bind @, path.data + path.actor
         create: @_create.bind @, 'Actor'
+      picture:
+        url: @_dataUrl.bind @, path.picture
     }
 
     # preload 用 公開メソッド
@@ -96,6 +99,7 @@ tm.define 'rpg.DataBase',
     if typeof id is 'string'
       if id.match /^http:\/\//
         return id
+      return @baseUrl + path + id
     @baseUrl + path + @_filename(id) + '.json'
 
   _preload: (key,ids,func) ->
@@ -238,6 +242,25 @@ tm.define 'rpg.DataBase',
     @preloadWeapon weapons, _loadcheck if weapons.length != 0
     @preloadArmor  armors,  _loadcheck if armors.length != 0
 
+  ###* 画像のロード
+  * @memberof rpg.DataBase#
+  * @param {Object} args
+  * @param {rpg.DataBase~preloadpicturecallback} callback
+  ###
+  preloadPicture: (images, callback) ->
+    urls = []
+    for url in images
+      if url.indexOf('/') < 0
+        urls.push @_metaif['picture'].url(url)
+      else
+        urls.push @_dataUrl('',url)
+    onload = () ->
+      images = []
+      for url in urls
+        images.push tm.asset.Manager.get(url)
+      if callback?
+        callback(images)
+    rpg.system.loadAssets urls, onload.bind @
 
 ###* ステート読み込み時のコールバック関数
 * @callback rpg.DataBase~statecallback
@@ -252,4 +275,9 @@ tm.define 'rpg.DataBase',
 ###* アイテム読み込み時のコールバック関数
 * @callback rpg.DataBase~itemcallback
 * @param {Array} items 読み込んだアイテムデータ(json)
+###
+
+###* 画像読み込み時のコールバック関数
+* @callback rpg.DataBase~preloadpicturecallback
+* @param {Object} image 読み込んだ画像データ
 ###
