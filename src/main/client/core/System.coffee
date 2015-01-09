@@ -327,6 +327,7 @@ tm.define 'rpg.System',
 
     # パーティ編成
     game.party = new rpg.Party()
+    game.pictures = {}
     
     # TODO: アクターデータ
     # game.actors = []

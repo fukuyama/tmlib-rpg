@@ -250,16 +250,18 @@ tm.define 'rpg.DataBase',
   preloadPicture: (images, callback) ->
     urls = []
     for url in images
+      asset = {}
       if url.indexOf('/') < 0
-        urls.push @_metaif['picture'].url(url)
+        asset[url] = @_metaif['picture'].url(url)
       else
-        urls.push @_dataUrl('',url)
+        asset[url] = @_dataUrl('',url)
+      urls.push asset
     onload = () ->
-      images = []
-      for url in urls
-        images.push tm.asset.Manager.get(url)
+      list = []
+      for url in images
+        list.push tm.asset.Manager.get(url)
       if callback?
-        callback(images)
+        callback(list)
     rpg.system.loadAssets urls, onload.bind @
 
 ###* ステート読み込み時のコールバック関数
