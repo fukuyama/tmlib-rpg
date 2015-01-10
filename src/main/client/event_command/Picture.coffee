@@ -24,9 +24,12 @@ tm.define 'rpg.event_command.Picture',
     }.$extendAll param
     self = @
     @waitFlag = true
-    rpg.system.db.preloadPicture [src], (images) ->
-      self.waitFlag = false
-      rpg.game.pictures[key] = param
+    if src?
+      rpg.system.db.preloadPicture [src], (images) ->
+        self.waitFlag = false
+        rpg.game.pictures[key] = param
+    if rpg.game.pictures[key]?
+      rpg.game.pictures[key].$extend param
     false
 
 # ピクチャーイベント

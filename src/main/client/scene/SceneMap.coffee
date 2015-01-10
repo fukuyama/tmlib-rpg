@@ -53,8 +53,11 @@ tm.define 'SceneMap',
     plsc = rpg.SpriteCharacter(@player.character).addChildTo(@spriteMap)
     plsc.on 'enterframe', @playerEnterframe.bind(@)
 
+    @spritePicture = rpg.SpritesetPicture()
+
     @addChild(@player)
     @addChild(@spriteMap)
+    @addChild(@spritePicture)
 
     # メニューレイヤー
     menuLayer = tm.display.CanvasElement()

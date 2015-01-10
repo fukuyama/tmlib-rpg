@@ -47,6 +47,7 @@ module.exports = (grunt) ->
       'core/SpriteCharacter'
       'core/SpriteCursor'
       'core/SpriteMap'
+      'core/SpritesetPicture'
       'core/EventHandler'
       'core/WindowSkin'
       'core/Window'
