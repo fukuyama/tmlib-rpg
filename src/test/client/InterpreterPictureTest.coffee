@@ -3,7 +3,7 @@
 describe 'rpg.Interpreter(Picture)', () ->
   interpreter = null
   @timeout(10000)
-  describe 'ピクチャーの表示１', ->
+  describe 'ピクチャーの操作１', ->
     describe 'ピクチャーの表示', ->
       it 'wait', (done) ->
         setTimeout(done,1000)
@@ -24,5 +24,17 @@ describe 'rpg.Interpreter(Picture)', () ->
       it 'interpreter を開始する', (done)->
         interpreter.start [
           {type:'picture',params:[{key:'image1',x:200,y:100}]}
+        ]
+        checkWait done, -> interpreter.isEnd()
+    describe 'ピクチャーの削除', ->
+      it 'wait', (done) ->
+        setTimeout(done,1000)
+      it 'マップシーンへ移動', (done) ->
+        reloadTestMap(done)
+      it 'インタープリタ取得', ->
+        interpreter = rpg.system.scene.interpreter
+      it 'interpreter を開始する', (done)->
+        interpreter.start [
+          {type:'picture_remove',params:[{key:'image1'}]}
         ]
         checkWait done, -> interpreter.isEnd()
