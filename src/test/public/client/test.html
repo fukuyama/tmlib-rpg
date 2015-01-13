@@ -7,26 +7,26 @@
     <link rel="stylesheet" href="mocha.css" />
     <script src="lib/develop/tmlib.js"></script>
     <script src="tmlib-rpg.js"></script>
-  <script>
-    function checkKeyEvent (event) {
-      if (document.getElementById('scrollLock').checked) {
-      event.preventDefault();
+    <script>
+      function checkKeyEvent (event) {
+        if (document.getElementById('scrollLock').checked) {
+        event.preventDefault();
+        }
+        }
+    </script>
+    <style>
+      html {
+        overflow-y:scroll;
       }
+      #scrollLockLabel {
+        position: fixed;
+        margin:   0;
+        bottom:   0px;
+        right:    0px;
+        z-index:  10;
+        zoom:     0.8;
       }
-  </script>
-  <style>
-    html {
-      overflow-y:scroll;
-    }
-    #scrollLockLabel {
-      position: fixed;
-      margin:   0;
-      bottom:   0px;
-      right:    0px;
-      z-index:  10;
-      zoom:     0.8;
-    }
-  </style>
+    </style>
   </head>
   <body onkeydown="checkKeyEvent(event)">
     <a href="testIndex.html">Index</a>
