@@ -12,16 +12,14 @@ tm.define 'rpg.event_command.Picture',
   * @memberof rpg.event_command.Picture#
   * @return {boolean} true の場合、引き続きこのメソッドが実行される。false の場合は、次のイベントへ続ける。
   ###
-  apply_command: (param) ->
+  apply_command: (_param) ->
     {
-      key
       src
-      x
-      y
-    } = {
+      key
+    } = param = {
       x: 0
       y: 0
-    }.$extendAll param
+    }.$extendAll _param
     self = @
     @waitFlag = true
     if src?
@@ -44,12 +42,10 @@ tm.define 'rpg.event_command.PictureRemove',
   * @return {boolean} true の場合、引き続きこのメソッドが実行される。false の場合は、次のイベントへ続ける。
   ###
   apply_command: (param) ->
-    {
-      key
-    } = param
+    {key} = param
     if rpg.game.pictures[key]?
       delete rpg.game.pictures[key]
     false
 
-# ピクチャーイベント
+# ピクチャー削除イベント
 rpg.event_command.picture_remove = rpg.event_command.PictureRemove()
