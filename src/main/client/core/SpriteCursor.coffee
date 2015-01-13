@@ -2,33 +2,39 @@
 # スプライトカーソルクラス
 tm.define 'rpg.SpriteCursor',
 
-  superClass: tm.display.Shape
+  superClass: tm.display.RectangleShape
 
   # 初期化
   init: (@menuWindow, args='sample.cursor') ->
-    @superInit()
     args = tm.asset.AssetManager.get(args).data if typeof args == 'string'
-    delete args[k] for k, v of args when not v?
-    @origin.set(0, 0)
     {
       @index
       @padding
-      @color
-      @borderColor
+      fillStyle
+      strokeStyle
     } = {
       index: 0
       padding: 4
-      color: 'rgba(255,255,255,0.2)'
-      borderColor: 'rgba(255,255,255,1.0)'
+      fillStyle: 'rgba(255,255,255,0.2)'
+      strokeStyle: 'rgba(255,255,255,1.0)'
     }.$extend args
+    @superInit {
+      strokeStyle: strokeStyle
+      fillStyle: fillStyle
+    }
+    delete args[k] for k, v of args when not v?
+    @origin.set(0, 0)
 
     @reset()
+    return
 
   # 再更新
+  ###
   refresh: () ->
     @renderRectangle
       strokeStyle: @borderColor
       fillStyle: @color
+  ###
 
   # リサイズ
   resize: (@width = @menuWindow.menuWidth, @height = @menuWindow.menuHeight) ->
@@ -37,8 +43,10 @@ tm.define 'rpg.SpriteCursor',
   # 再設定
   reset: (args = {}) ->
     @resize()
-    @refresh()
+    # @refresh()
+    @render()
     @setIndex()
+    return
 
   # カーソル位置設定
   setIndex: (@index = @index) ->
