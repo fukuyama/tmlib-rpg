@@ -98,11 +98,9 @@ tm.define 'SceneTitle',
       image = background.image
       if typeof image is 'string'
         image = tm.asset.AssetManager.get(image)
-      bg = tm.display.Shape(width,height)
-      bg.origin.set(0,0)
-      bg.canvas.drawTexture(
-        image
-        0,0,image.width,image.width
-        x,y,width,height
-      )
+      bg = tm.display.Sprite(image)
+      bg.setOrigin(0,0)
+      bg.setPosition(x,y)
+      bg.width = width
+      bg.height = height
       @addChild bg

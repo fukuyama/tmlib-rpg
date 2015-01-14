@@ -166,7 +166,7 @@ tm.define 'rpg.WindowMenu',
       h = @menuHeight
       x = (i % @cols) * (w + @colPadding) + n * @innerRect.width
       y = Math.floor((i % @maxPageItems) / @cols) * h
-      s = tm.display.Shape(w, h)
+      s = tm.display.Shape(width:w, height:h)
         .addChildTo(@contentShape)
         .setPosition(x,y)
       tm.display.Label(m.name)

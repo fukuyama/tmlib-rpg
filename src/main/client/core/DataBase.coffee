@@ -99,7 +99,9 @@ tm.define 'rpg.DataBase',
     if typeof id is 'string'
       if id.match /^http:\/\//
         return id
-      return @baseUrl + path + id
+      if id.match /\.(json|png)$/
+        return @baseUrl + path + id
+      return @baseUrl + path + id + '.json'
     @baseUrl + path + @_filename(id) + '.json'
 
   _preload: (key,ids,func) ->

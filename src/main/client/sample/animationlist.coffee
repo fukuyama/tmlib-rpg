@@ -15,5 +15,6 @@ animation = (args) ->
 
 module.exports = [
   animation
-    name: ''
+    name: 'test001'
+    
 ]

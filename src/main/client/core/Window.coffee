@@ -57,12 +57,12 @@ tm.define 'rpg.Window',
     @addChild @_windowskin
 
     @innerRect = @_calcInnerRect()
-    @contentShape = tm.display.Shape(@innerRect.width,@innerRect.height)
+    @contentShape = tm.display.Shape(@innerRect)
     @contentShape.origin.set(0,0)
     @contentShape.x = 0
     @contentShape.y = 0
     @content = @contentShape.canvas
-    @_contentView = tm.display.Shape(@innerRect.width,@innerRect.height)
+    @_contentView = tm.display.Shape(@innerRect)
     @_contentView.origin.set(0,0)
     @_contentView.clipping = true
     @_contentView.x = @innerRect.x
@@ -75,12 +75,12 @@ tm.define 'rpg.Window',
     if title?
       # タイトルコンテンツ
       @titleRect = @_calcTitleRect()
-      @titleShape = tm.display.Shape(@titleRect.width,@titleRect.height)
+      @titleShape = tm.display.Shape(@titleRect)
       @titleShape.origin.set(0,0)
       @titleShape.x = 0
       @titleShape.y = 0
       @titleContent = @titleShape.canvas
-      @_titleView = tm.display.Shape(@titleRect.width,@titleRect.height)
+      @_titleView = tm.display.Shape(@titleRect)
       @_titleView.origin.set(0,0)
       @_titleView.clipping = true
       @_titleView.x = @titleRect.x
