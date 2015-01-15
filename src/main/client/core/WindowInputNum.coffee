@@ -16,7 +16,6 @@ tm.define 'rpg.WindowInputNum',
       @value
       step
       @cancel
-      @cursor
       @x
       @y
       @unit
@@ -29,7 +28,6 @@ tm.define 'rpg.WindowInputNum',
       value: 0
       cancel: -1 # キャンセルフラグ(数字の場合はキャンセル時値、falseの場合は、キャンセルOFF)
       step: 1
-      cursor: 'sample.cursor'
       x: 0
       y: 0
       unit: null # 単位
@@ -39,6 +37,7 @@ tm.define 'rpg.WindowInputNum',
     @cols = (@max+'').length
     @menuHeight = rpg.system.lineHeight
     @menuWidth = @measureTextWidth('9')
+    console.log @menuWidth
     @colPadding = 0
     # ステップ
     @steps = (parseInt(i) for i in (step + '').split(''))
@@ -59,9 +58,19 @@ tm.define 'rpg.WindowInputNum',
     @resizeWindow(w,h)
     @drawTitle(title) if title?
     # カーソル作成
-    @cursorInstance = rpg.SpriteCursor(@,@cursor)
-    @cursorInstance.reset basex:(@innerRect.width - @menuWidth * @cols - @unitWidth)
-    @addChild @cursorInstance
+    basex = (@innerRect.width - @menuWidth * @cols - @unitWidth)
+    positions = []
+    for i in [0 ... @cols]
+      positions.push {
+        x: basex + i * (@menuWidth + @colPadding)
+        y: 0
+      }
+    @cursorInstance = rpg.SpriteCursor {
+      width: @menuWidth
+      height: @menuHeight
+      positions: positions
+    }
+    @cursorInstance.addChildTo @contentShape
     @cursorInstance.setIndex(@cols - 1)
     while @steps[@cursorInstance.index] == 0
       @cursorInstance.setIndex(@cursorInstance.index - 1)
@@ -83,6 +92,7 @@ tm.define 'rpg.WindowInputNum',
     @content.clear()
     @drawText(@values.join(''),@content.width - @unitWidth,0,{align: 'right'})
     @drawText(@unit,@content.width,0,{align: 'right'})
+    @cursorInstance.reset()
     
   setValues: (v)->
     @values[@cursorInstance.index] = v

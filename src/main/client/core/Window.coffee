@@ -152,6 +152,7 @@ tm.define 'rpg.Window',
   * @param {string} op.align 行揃え(left|right)
   ###
   drawText: (text, x, y, op={}) ->
+    return unless text?
     {
       font
       baseline
@@ -172,6 +173,7 @@ tm.define 'rpg.Window',
     @content.strokeStyle = strokeStyle ? color
     @content.fillText(text, x, y + 3) # TODO: textBaseline ちょい下で良いかな？
     @content.context.restore()
+    return
 
   ###* タイトル描画処理
   * @memberof rpg.Window#

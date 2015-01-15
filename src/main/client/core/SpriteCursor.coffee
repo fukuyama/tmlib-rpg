@@ -5,11 +5,14 @@ tm.define 'rpg.SpriteCursor',
   superClass: tm.display.RectangleShape
 
   # 初期化
-  init: (@menuWindow, args='sample.cursor') ->
+  init: (args={}) ->
     args = tm.asset.AssetManager.get(args).data if typeof args == 'string'
     {
       @index
       @padding
+      @positions
+      width
+      height
       fillStyle
       strokeStyle
     } = {
@@ -19,31 +22,22 @@ tm.define 'rpg.SpriteCursor',
       strokeStyle: 'rgba(255,255,255,1.0)'
     }.$extend args
     @superInit {
+      width: width
+      height: height
       strokeStyle: strokeStyle
       fillStyle: fillStyle
     }
-    delete args[k] for k, v of args when not v?
     @origin.set(0, 0)
-
     @reset()
     return
 
-  # 再更新
-  ###
-  refresh: () ->
-    @renderRectangle
-      strokeStyle: @borderColor
-      fillStyle: @color
-  ###
-
   # リサイズ
-  resize: (@width = @menuWindow.menuWidth, @height = @menuWindow.menuHeight) ->
+  resize: (@width = @width, @height = @height) ->
     @canvas.resize(@width, @height)
 
   # 再設定
-  reset: (args = {}) ->
+  reset: ->
     @resize()
-    # @refresh()
     @render()
     @setIndex()
     return
@@ -51,8 +45,8 @@ tm.define 'rpg.SpriteCursor',
   # カーソル位置設定
   setIndex: (@index = @index) ->
     # 範囲チェック
-    if 0 <= @index and @index < @menuWindow.menuRects.length
-      {@x, @y} = @menuWindow.menuRects[@index]
+    if 0 <= @index and @index < @positions.length
+      {@x, @y} = @positions[@index]
       @visible = true
     else
       # 範囲外の場合は、カーソルを消す

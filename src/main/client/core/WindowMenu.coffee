@@ -3,8 +3,6 @@
 * ウィンドウメニュー
 ###
 
-DEFAULT_CURSOR_ASSET = 'sample.cursor'
-
 tm.define 'rpg.WindowMenu',
   superClass: rpg.Window
 
@@ -37,7 +35,6 @@ tm.define 'rpg.WindowMenu',
       cancelIndex: -1 # キャンセル時のインデックス
       cols: 1
       rows: 2
-      cursor: DEFAULT_CURSOR_ASSET
       colPadding: 4
       menuWidthFix: null
       menuHeightFix: null
@@ -48,7 +45,7 @@ tm.define 'rpg.WindowMenu',
     @index = index # インデックスの初期化関連でローカル変数も使う
 
     # カーソル作成
-    @cursorInstance = @createCursor(@cursor)
+    @cursorInstance = @createCursor()
     @cursorInstance.addChildTo(@contentShape)
 
     # リピート用ハンドラの設定
@@ -98,8 +95,12 @@ tm.define 'rpg.WindowMenu',
       @refreshTitle()
 
   # カーソルの作成
-  createCursor: (param = DEFAULT_CURSOR_ASSET) ->
-    rpg.SpriteCursor(@, param)
+  createCursor: ->
+    rpg.SpriteCursor {
+      width: @menuWidth
+      height: @menuHeight
+      positions: @menuRects
+    }
 
   # カーソルインデックス設定
   setIndex: (@index) ->
@@ -141,6 +142,7 @@ tm.define 'rpg.WindowMenu',
     width  = @menuWidth * @cols + (@cols - 1) * @colPadding
     height = @menuHeight * @rows + @titleHeight
     @resize(width + @borderWidth * 2, height + @borderHeight * 2)
+    @cursorInstance.resize(@menuWidth,@menuHeight)
     @cursorInstance.reset()
     return
 
@@ -174,6 +176,7 @@ tm.define 'rpg.WindowMenu',
         .setAlign('left')
         .setY(h/2)
       @menuRects.push(s)
+    @cursorInstance.positions = @menuRects
     @cursorInstance.reset()
     return
 

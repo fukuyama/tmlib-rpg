@@ -28,6 +28,7 @@ tm.define "SceneMy",
     #w.addCloseListener((-> console.log w.value))
     #@addChild(w)
 
+    ###
     w = rpg.WindowMenu(
       title: 'Menu?'
       active: true
@@ -49,10 +50,8 @@ tm.define "SceneMy",
       ]
     )
     @addChild(w)
-
+      unit: 'こ'
     ###
     rpg.WindowInputNum(
       title: 'TEST'
-      unit: 'こ'
     ).addChildTo(@).open()
-    ###
