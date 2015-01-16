@@ -17,13 +17,13 @@ tm.define 'rpg.SpriteCursor',
       strokeStyle
     } = {
       index: 0
-      padding: 4
+      padding: 2
       fillStyle: 'rgba(255,255,255,0.2)'
       strokeStyle: 'rgba(255,255,255,1.0)'
     }.$extend args
     @superInit {
-      width: width
-      height: height
+      width: width + @padding * 2
+      height: height + @padding * 2
       strokeStyle: strokeStyle
       fillStyle: fillStyle
     }
@@ -32,7 +32,11 @@ tm.define 'rpg.SpriteCursor',
     return
 
   # リサイズ
-  resize: (@width = @width, @height = @height) ->
+  resize: (width, height) ->
+    if width?
+      @width = width + @padding * 2
+    if height?
+      @height = height + @padding * 2
     @canvas.resize(@width, @height)
 
   # 再設定
@@ -47,6 +51,8 @@ tm.define 'rpg.SpriteCursor',
     # 範囲チェック
     if 0 <= @index and @index < @positions.length
       {@x, @y} = @positions[@index]
+      @x -= @padding
+      @y -= @padding
       @visible = true
     else
       # 範囲外の場合は、カーソルを消す

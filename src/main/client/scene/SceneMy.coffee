@@ -54,4 +54,6 @@ tm.define "SceneMy",
     ###
     rpg.WindowInputNum(
       title: 'TEST'
+      max: 9999
+      step: 10
     ).addChildTo(@).open()

@@ -62,15 +62,15 @@ tm.define 'rpg.WindowInputNum',
     positions = []
     for i in [0 ... @cols]
       positions.push {
-        x: basex + i * (@menuWidth + @colPadding)
-        y: 0
+        x: basex + i * (@menuWidth + @colPadding) + @innerRect.x
+        y: @innerRect.y
       }
     @cursorInstance = rpg.SpriteCursor {
       width: @menuWidth
       height: @menuHeight
       positions: positions
     }
-    @cursorInstance.addChildTo @contentShape
+    @cursorInstance.addChildTo @
     @cursorInstance.setIndex(@cols - 1)
     while @steps[@cursorInstance.index] == 0
       @cursorInstance.setIndex(@cursorInstance.index - 1)
