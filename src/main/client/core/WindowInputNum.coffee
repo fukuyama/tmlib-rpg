@@ -37,7 +37,6 @@ tm.define 'rpg.WindowInputNum',
     @cols = (@max+'').length
     @menuHeight = rpg.system.lineHeight
     @menuWidth = @measureTextWidth('9')
-    console.log @menuWidth
     @colPadding = 0
     # ステップ
     @steps = (parseInt(i) for i in (step + '').split(''))
@@ -95,7 +94,7 @@ tm.define 'rpg.WindowInputNum',
     @cursorInstance.reset()
     
   setValues: (v)->
-    @values[@cursorInstance.index] = v
+    @values[@cursorInstance.index] = v + ''
     @value = parseInt @values.join('')
     @refresh()
     @
@@ -124,11 +123,11 @@ tm.define 'rpg.WindowInputNum',
 
   input_up: ->
     i = @cursorInstance.index
-    @setValues((@values[@cursorInstance.index] + 10 + @steps[i]) % 10)
+    @setValues((parseInt(@values[i]) + 10 + @steps[i]) % 10)
 
   input_down: ->
     i = @cursorInstance.index
-    @setValues((@values[@cursorInstance.index] + 10 - @steps[i]) % 10)
+    @setValues((parseInt(@values[i]) + 10 - @steps[i]) % 10)
   
   input_ok_up: ->
     @close()

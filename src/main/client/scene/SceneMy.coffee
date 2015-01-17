@@ -50,10 +50,10 @@ tm.define "SceneMy",
       ]
     )
     @addChild(w)
-      unit: 'こ'
     ###
     rpg.WindowInputNum(
       title: 'TEST'
-      max: 9999
+      unit: 'こ'
+      max: 9990
       step: 10
     ).addChildTo(@).open()
