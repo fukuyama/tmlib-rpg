@@ -28,7 +28,6 @@ tm.define "SceneMy",
     #w.addCloseListener((-> console.log w.value))
     #@addChild(w)
 
-    ###
     w = rpg.WindowMenu(
       title: 'Menu?'
       active: true
@@ -57,3 +56,4 @@ tm.define "SceneMy",
       max: 9990
       step: 10
     ).addChildTo(@).open()
+    ###

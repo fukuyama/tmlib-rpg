@@ -24,7 +24,6 @@ tm.define 'rpg.WindowMenu',
       @cancelIndex
       @cols
       @rows
-      @cursor
       @colPadding
       @menuWidthFix
       @menuHeightFix
@@ -46,7 +45,7 @@ tm.define 'rpg.WindowMenu',
 
     # カーソル作成
     @cursorInstance = @createCursor()
-    @cursorInstance.addChildTo(@contentShape)
+    @cursorInstance.addChildTo(@)
 
     # リピート用ハンドラの設定
     @addRepeatHandler
@@ -99,8 +98,15 @@ tm.define 'rpg.WindowMenu',
     rpg.SpriteCursor {
       width: @menuWidth
       height: @menuHeight
-      positions: @menuRects
+      positions: @_cursorPosition()
     }
+
+  _cursorPosition: () ->
+    for o in @menuRects
+      {
+        x: (o.x + @innerRect.x) % @innerRect.width
+        y: o.y + @innerRect.y
+      }
 
   # カーソルインデックス設定
   setIndex: (@index) ->
@@ -176,7 +182,7 @@ tm.define 'rpg.WindowMenu',
         .setAlign('left')
         .setY(h/2)
       @menuRects.push(s)
-    @cursorInstance.positions = @menuRects
+    @cursorInstance.positions = @_cursorPosition()
     @cursorInstance.reset()
     return
 
