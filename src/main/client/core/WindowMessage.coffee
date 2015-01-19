@@ -96,7 +96,7 @@ tm.define 'rpg.WindowMessage',
   * @memberof rpg.WindowMessage#
   ###
   clearContent: ->
-    @contentShape.y = @_ay = @_dy = @_py = @_sy = 0 # 初期化
+    @oy = @_ay = @_dy = @_py = @_sy = 0 # 初期化
     @content.clear()
     return
 
@@ -370,18 +370,20 @@ tm.define 'rpg.WindowMessage',
     # スクロール処理
     if @_sy > 0
       n = Math.pow(2, @scrollSpeed) / 256.0 * rpg.system.lineHeight
-      @contentShape.y -= n
+      @oy += n
       @_sy -= n
       return true
     # ポーズしててページ位置までスクロールしてなかったらスクロールさせる
-    if @isPause() and @_py > (@contentShape.y * -1)
-      @_sy = @_py
+    if @isPause() and @_py > @oy
+      @_sy = @_py - @oy
+      console.log "スクロール量 #{@_sy}"
       return true
     # ポーズしてて表示がずれている場合は位置調整（@content初期化）
-    if @isPause() and @contentShape.y < 0
+    if @isPause() and @oy > 0
+      console.log "sy #{@_sy} ay #{@_ay} dy #{@_dy}"
       bmp = @content.getBitmap(0, @_py)
-      @_ay = @_dy -= @contentShape.y * -1 # 描画位置を、現在の表示位置分戻して
-      @contentShape.y = @_py = @_sy = 0 # 初期化
+      @_ay = @_dy -= @oy # 描画位置を、現在の表示位置分戻して
+      @oy = @_py = @_sy = 0 # 初期化
       @content.clear()
       @content.drawBitmap(bmp,0,0)
       return false

@@ -42,6 +42,8 @@ tm.define 'rpg.Window',
       alpha: 0.9
     }).$extend(rpg.system.windowDefault).$extend args
 
+    @ox = 0
+    @oy = 0
     @_openDuring = false
     @_closeDuring = false
 
@@ -58,7 +60,7 @@ tm.define 'rpg.Window',
 
     @innerRect = @_calcInnerRect()
     @contentShape = tm.display.Shape(@innerRect)
-    @contentShape.origin.set(0,0)
+    @contentShape.origin.set(@ox,@oy)
     @contentShape.x = 0
     @contentShape.y = 0
     @content = @contentShape.canvas
@@ -294,6 +296,8 @@ tm.define 'rpg.Window',
       @active = false
       @dispatchEvent rpg.Window.EVENT_CLOSE
     #@content.update()
+    @contentShape.origin.x = @ox
+    @contentShape.origin.y = @oy
 
   ###* 表示位置調整（中央に配置する）
   * @memberof rpg.Window#

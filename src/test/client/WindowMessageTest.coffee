@@ -106,18 +106,26 @@ describe 'rpg.WindowMessage', ->
       interpreter.start commands
     it 'メッセージ表示待ち1', (done) ->
       checkMessage(done,'TEST1\\nTEST1')
+    it 'ウェイト', (done) ->
+      setTimeout(done,1000)
     it '次のメッセージ表示1', (done) ->
       emulate_key('enter',done)
     it 'メッセージ表示待ち2', (done) ->
       checkMessage(done,'TEST2\\nほえほえ')
+    it 'ウェイト', (done) ->
+      setTimeout(done,1000)
     it '次のメッセージ表示2', (done) ->
       emulate_key('enter',done)
     it 'メッセージ表示待ち3', (done) ->
       checkMessage done, 'ほえほえあああ\\nあああああああ'
+    it 'ウェイト', (done) ->
+      setTimeout(done,1000)
     it '次のメッセージ表示3', (done) ->
       emulate_key('enter',done)
     it 'メッセージ表示待ち4', (done) ->
       checkMessage done, 'ふにふに\\nXXXX'
+    it 'ウェイト', (done) ->
+      setTimeout(done,1000)
     it '次のメッセージ表示4', (done) ->
       emulate_key('enter',done)
   describe '文章表示３行 x ４回', ->
