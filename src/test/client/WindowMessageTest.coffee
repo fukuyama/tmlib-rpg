@@ -100,7 +100,7 @@ describe 'rpg.WindowMessage', ->
     it 'マップシーンへ移動', (done) ->
       loadTestMap(done)
     it 'ウェイト', (done) ->
-      setTimeout(done,1000)
+      setTimeout(done,2000)
     it 'コマンド実行', ->
       interpreter = rpg.system.scene.interpreter
       interpreter.start commands

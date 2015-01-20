@@ -44,7 +44,6 @@ tm.define 'rpg.WindowMessage',
         input_num:
           position: MSG_OPT.NUMBER.RIGHT # 数値入力ウィンドウ位置
     }.$extend(args)
-
     # メッセージスピード 1-8
     if @messageSpeed >= 4
       @_waitCountMax = @messageSpeed - 3
@@ -75,6 +74,8 @@ tm.define 'rpg.WindowMessage',
     ).bind(@))
 
     @clear()
+
+    @on "enterframe", @updateMessage
 
   ###* 状態クリア
   * @memberof rpg.WindowMessage#
@@ -372,23 +373,25 @@ tm.define 'rpg.WindowMessage',
       n = Math.pow(2, @scrollSpeed) / 256.0 * rpg.system.lineHeight
       @oy += n
       @_sy -= n
+      #console.log @oy
       return true
     # ポーズしててページ位置までスクロールしてなかったらスクロールさせる
     if @isPause() and @_py > @oy
       @_sy = @_py - @oy
-      console.log "スクロール量 #{@_sy}"
+      #console.log "スクロール開始 #{@_sy} #{@_py} #{@oy}"
       return true
     # ポーズしてて表示がずれている場合は位置調整（@content初期化）
     if @isPause() and @oy > 0
-      console.log "sy #{@_sy} ay #{@_ay} dy #{@_dy}"
+      #console.log "スクロール終了 #{@_sy} #{@_py} #{@oy}"
       bmp = @content.getBitmap(0, @_py)
       @_ay = @_dy -= @oy # 描画位置を、現在の表示位置分戻して
       @oy = @_py = @_sy = 0 # 初期化
-      @content.clear()
+      #@content.clear()
       @content.drawBitmap(bmp,0,0)
       return false
     # 描画位置が範囲を超えたら
     if @_ay != @_dy and @_dy >= rpg.system.lineHeight * @maxLine
+      #console.log "最後の行 #{@_sy} #{@_py} #{@_dy} #{@_ay}"
       @_sy = rpg.system.lineHeight
       @_ay = @_dy
       return true
@@ -397,8 +400,7 @@ tm.define 'rpg.WindowMessage',
   ###* 更新処理
   * @memberof rpg.WindowMessage#
   ###
-  update: ->
-    rpg.Window.prototype.update.apply(@)
+  updateMessage: ->
     return if @scroll()
     @checkTempOption()
     @checkTempMessage()

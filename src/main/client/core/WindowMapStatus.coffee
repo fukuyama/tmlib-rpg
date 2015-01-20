@@ -31,7 +31,9 @@ tm.define 'rpg.WindowMapStatus',
     @fontSize = '24px'
     @drawStatus()
 
-  update: ->
+    @on "enterframe", @updateStatus
+
+  updateStatus: ->
     player = rpg.game.player
     pc = player.character
     if not player.active
@@ -47,7 +49,6 @@ tm.define 'rpg.WindowMapStatus',
       else
         @stopCount = 0
         @visible = false
-
 
   ###* ステータスの描画
   * @memberof rpg.WindowMapStatus#
