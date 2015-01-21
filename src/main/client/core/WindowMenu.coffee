@@ -104,8 +104,8 @@ tm.define 'rpg.WindowMenu',
   _cursorPosition: () ->
     for o in @menuRects
       {
-        x: (o.x + @innerRect.x) % @innerRect.width
-        y: o.y + @innerRect.y
+        x: @innerRect.x + o.x % @innerRect.width
+        y: @innerRect.y + o.y
       }
 
   # カーソルインデックス設定
@@ -295,7 +295,7 @@ tm.define 'rpg.WindowMenu',
     else
       @index -= 1
     @setIndex (@index + @menus.length) % @menus.length
-    @contentShape.x = (@currentPageNum - 1) * @innerRect.width * -1
+    @ox = (@currentPageNum - 1) * @innerRect.width * -1
     rpg.system.se.menuCursorMove()
 
   # 右
@@ -320,7 +320,7 @@ tm.define 'rpg.WindowMenu',
     else
       @index += 1
     @setIndex (@index + @menus.length) % @menus.length
-    @contentShape.x = (@currentPageNum - 1) * @innerRect.width * -1
+    @ox = (@currentPageNum - 1) * @innerRect.width * -1
     rpg.system.se.menuCursorMove()
 
   # メニュー選択

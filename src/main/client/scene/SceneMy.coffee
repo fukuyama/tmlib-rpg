@@ -49,6 +49,7 @@ tm.define "SceneMy",
       ]
     )
     @addChild(w)
+
     ###
     rpg.WindowInputNum(
       title: 'TEST'
@@ -56,4 +57,17 @@ tm.define "SceneMy",
       max: 9990
       step: 10
     ).addChildTo(@).open()
+    w = rpg.WindowMenu(
+      active: true
+      x: 50
+      y: 50
+      cols: 1
+      rows: 3
+      menus: [
+        {name:'TEST',fn: -> console.log 'a'}
+        {name:'B',fn: -> console.log 'b'}
+        {name:'C',fn: -> console.log 'c'}
+      ]
+    )
+    @addChild(w)
     ###

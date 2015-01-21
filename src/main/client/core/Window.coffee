@@ -268,6 +268,7 @@ tm.define 'rpg.Window',
   resizeContent: (w = @innerRect.width,h = @innerRect.height)->
     @contentShape.width = w
     @contentShape.height = h
+    @contentShape.canvas.resize w,h
     @content.resize(w,h)
 
   ###* タイトルコンテンツリサイズ
@@ -300,6 +301,8 @@ tm.define 'rpg.Window',
     @contentShape.canvas.clear()
     @contentShape.canvas.drawImage(@content.canvas,0,0)
     @contentShape.setPosition(@ox*-1,@oy*-1)
+    @contentShape.x = @ox
+    @contentShape.y = @oy*-1
 
   ###* 表示位置調整（中央に配置する）
   * @memberof rpg.Window#
