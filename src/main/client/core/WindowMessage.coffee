@@ -388,6 +388,7 @@ tm.define 'rpg.WindowMessage',
       @oy = @_py = @_sy = 0 # 初期化
       #@content.clear()
       @content.drawBitmap(bmp,0,0)
+      @contentShape.setPosition(@ox,-@oy) # ちらつきを抑えるために描画調整と同時に位置調整
       return false
     # 描画位置が範囲を超えたら
     if @_ay != @_dy and @_dy >= rpg.system.lineHeight * @maxLine
