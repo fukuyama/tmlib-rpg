@@ -64,7 +64,6 @@ tm.define 'rpg.Window',
     @contentShape.x = 0
     @contentShape.y = 0
     @content = @contentShape.canvas
-    #@content = tm.graphics.Canvas()
     @_contentView = tm.display.Shape(@innerRect)
     @_contentView.origin.set(0,0)
     @_contentView.clipping = true
@@ -297,9 +296,6 @@ tm.define 'rpg.Window',
       @visible = false
       @active = false
       @dispatchEvent rpg.Window.EVENT_CLOSE
-    #@content.update()
-    #@contentShape.canvas.clear()
-    #@contentShape.canvas.drawImage(@content.canvas,0,0)
     @contentShape.setPosition(@ox,-@oy)
 
   ###* 表示位置調整（中央に配置する）
