@@ -75,3 +75,16 @@ describe 'rpg.Interpreter(Picture)', () ->
           {type:'picture_remove',params:[{key:'image2'}]}
         ]
         checkWait done, -> interpreter.isEnd()
+  describe 'ピクチャーの操作３', ->
+    describe 'ピクチャーの表示 origin', ->
+      it 'wait', (done) ->
+        setTimeout(done,1000)
+      it 'マップシーンへ移動', (done) ->
+        reloadTestMap(done)
+      it 'インタープリタ取得', ->
+        interpreter = rpg.system.scene.interpreter
+      it 'interpreter を開始する', (done)->
+        interpreter.start [
+          {type:'picture',params:[{key:'image1',src:'test_001.png',x:0,y:0,origin:{x:0.5,y:0.5}}]}
+        ]
+        checkWait done, -> interpreter.isEnd()

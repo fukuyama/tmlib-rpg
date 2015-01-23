@@ -19,6 +19,9 @@ tm.define 'rpg.event_command.Picture',
     } = param = {
       x: 0
       y: 0
+      origin:
+        x: 0
+        y: 0
     }.$extendAll _param
     self = @
     @waitFlag = true

@@ -25,7 +25,9 @@ tm.define 'rpg.SpritesetPicture',
     # ゲームデータのピクチャーを表示
     for key,data of rpg.game.pictures
       unless @pictures[key]? # まだ表示してない場合スプライトを作成
-        @pictures[key] = tm.display.Sprite(data.src).addChildTo(@)
+        @pictures[key] = tm.display.Sprite(data.src)
+          .setOrigin(data.origin.x,data.origin.y)
+          .addChildTo(@)
       # ピクチャーの設定
       pict = @pictures[key]
       # 位置
