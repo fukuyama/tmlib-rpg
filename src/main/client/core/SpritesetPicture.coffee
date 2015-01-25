@@ -26,10 +26,13 @@ tm.define 'rpg.SpritesetPicture',
     for key,data of rpg.game.pictures
       unless @pictures[key]? # まだ表示してない場合スプライトを作成
         @pictures[key] = tm.display.Sprite(data.src)
-          .setOrigin(data.origin.x,data.origin.y)
           .addChildTo(@)
       # ピクチャーの設定
       pict = @pictures[key]
       # 位置
       pict.x = data.x
       pict.y = data.y
+      pict.origin.x = data.origin.x
+      pict.origin.y = data.origin.y
+      pict.scale.x = data.scale.x
+      pict.scale.y = data.scale.y
