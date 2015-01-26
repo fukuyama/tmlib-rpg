@@ -34,7 +34,7 @@ tm.define 'tm.display.TransitionShape',
       reverse: false           # 白黒階調を逆に使う場合 true
     }.$extend options
 
-    @superInit(width, height)
+    @superInit(width:width, height:height)
 
     @_threshold = 0               # 閾値
     @_increment = 256 / frame | 0 # 閾値増加量

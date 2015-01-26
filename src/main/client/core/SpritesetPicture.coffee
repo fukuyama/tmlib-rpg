@@ -30,9 +30,6 @@ tm.define 'rpg.SpritesetPicture',
       # ピクチャーの設定
       pict = @pictures[key]
       # 位置
-      pict.x = data.x
-      pict.y = data.y
-      pict.origin.x = data.origin.x
-      pict.origin.y = data.origin.y
-      pict.scale.x = data.scale.x
-      pict.scale.y = data.scale.y
+      pict.position.setObject data
+      pict.origin.setObject data.origin
+      pict.scale.setObject data.scale
