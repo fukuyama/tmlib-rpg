@@ -15,8 +15,19 @@ describe 'rpg.Interpreter(Animation)', () ->
       it 'interpreter を開始する', (done)->
         interpreter.start [
           {type:'animation',params:[{
-            sprite_1:
-              src: 'anime_001.png'
+            sprites:
+              sprite_1:
+                src: 'anime_001.png'
+                frame: [100,100]
+            timeline: [
+              {
+                sprite_1: {x:0,y:0}
+              }
+              {x: 10,y: 10}
+              {x: 10,y:-10}
+              {x:-10,y:-10}
+              {x:-10,y: 10}
+            ]
           }]}
         ]
         checkWait done, -> interpreter.isEnd()

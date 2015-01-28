@@ -2,6 +2,7 @@
 * @file SpritesetPicture.coffee
 * スプライトピクチャー
 * 画像表示用のスプライト
+* rpg.game.pictures のデータ(json)から画像を表示する
 ###
 
 tm.define 'rpg.SpritesetPicture',
