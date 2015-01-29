@@ -15,18 +15,28 @@ describe 'rpg.Interpreter(Animation)', () ->
       it 'interpreter を開始する', (done)->
         interpreter.start [
           {type:'animation',params:[{
-            sprites:
-              sprite_1:
-                src: 'anime_001.png'
-                frame: [100,100]
-            timeline: [
-              {
-                sprite_1: {x:0,y:0}
-              }
-              {x: 10,y: 10}
-              {x: 10,y:-10}
-              {x:-10,y:-10}
-              {x:-10,y: 10}
+            key: 'anime001'
+            src:
+              sprites:
+                sprite_1:
+                  src: 'anime_001.png'
+                  frame: [100,100]
+              timeline: [
+                {
+                  sprite_1: {x: 0,y: 0}
+                }
+                {
+                  sprite_1: {x: 10,y: 0}
+                }
+                {
+                  sprite_1: {x: 10,y: 10}
+                }
+                {
+                  sprite_1: {x: -10,y: 10}
+                }
+                {
+                  sprite_1: {x: -10,y: -10}
+                }
             ]
           }]}
         ]

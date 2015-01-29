@@ -26,9 +26,9 @@ tm.define 'rpg.event_command.Picture',
         x: 1.0
         y: 1.0
     }.$extendAll _param
-    self = @
-    @waitFlag = true
     if src?
+      self = @
+      self.waitFlag = true
       rpg.system.db.preloadPicture [src], (images) ->
         self.waitFlag = false
         rpg.game.pictures[key] = param
