@@ -26,11 +26,30 @@ tm.define 'rpg.SpritesetAnimation',
     # ゲームデータのアニメーションを表示
     for key,data of rpg.game.animations
       unless @animations[key]? # まだ表示してない場合アニメーションを作成
-        @animations[key] = rpg.Animation(data)
-          .addChildTo(@)
+        @animations[key] = @_createAnimation(data).addChildTo(@)
       # ピクチャーの設定
       anime = @animations[key]
       # 位置
       anime.position.setObject data
       anime.origin.setObject data.origin
       anime.scale.setObject data.scale
+
+  _createAnimation: (data) ->
+    element = tm.display.CanvasElement()
+    element.sprites = {}
+
+    if data.target?
+      element.x = data.target.x
+      element.y = data.target.y
+    for key,val of data.sprites
+      sprite = tm.display.Sprite(val.src).addChildTo(element)
+      element.sprites[key] = sprite
+    if data.timeline?
+      delay = 0
+      for tl in data.timeline
+        for key, val of tl
+          delay += val.delay if val.delay?
+          element.sprites[key].timeline.set delay, val
+        delay += 1
+
+    return element

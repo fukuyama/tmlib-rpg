@@ -21,8 +21,9 @@ tm.define 'rpg.event_command.Animation',
       # アニメーションに使用するスプライトをプリロード
       self = @
       self.waitFlag = true
-      sprites = for sprite in src.sprites then sprite.src
-      rpg.system.db.preloadPicture [sprites], (images) ->
+      sprites = for key,sprite of src.sprites then sprite.src
+      debugger
+      rpg.system.db.preloadPicture sprites, (images) ->
         self.waitFlag = false
         rpg.game.animations[key] = src
     if rpg.game.animations[key]?
