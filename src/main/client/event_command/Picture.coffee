@@ -14,8 +14,8 @@ tm.define 'rpg.event_command.Picture',
   ###
   apply_command: (_param) ->
     {
-      src
       key
+      src
     } = param = {
       x: 0
       y: 0

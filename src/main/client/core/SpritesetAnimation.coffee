@@ -37,12 +37,13 @@ tm.define 'rpg.SpritesetAnimation',
   _createAnimation: (data) ->
     element = tm.display.CanvasElement()
     element.sprites = {}
-
-    if data.target?
-      element.x = data.target.x
-      element.y = data.target.y
+    #debugger
     for key,val of data.sprites
       sprite = tm.display.Sprite(val.src).addChildTo(element)
+      if val.size?
+        sprite.setSize.apply sprite, val.size
+      if val.frameIndex?
+        sprite.setFrameIndex.apply sprite, val.frameIndex
       element.sprites[key] = sprite
     if data.timeline?
       delay = 0

@@ -45,19 +45,26 @@ tm.define 'SceneMap',
     @windowMapMenu.addCloseListener f
     @windowMessage.addCloseListener f
 
+    # プレイヤーの入力、決定かキャンセルどちらでも、メニューを表示する。
     f = @openMapMenu.bind @
     @player.setupEventListener input_ok: f, input_cancel: f
 
+    # マップ用スプライト
     @spriteMap = rpg.SpriteMap(@map)
 
+    # プレイヤーキャラクター用のスプライト
     plsc = rpg.SpriteCharacter(@player.character).addChildTo(@spriteMap)
     plsc.on 'enterframe', @playerEnterframe.bind(@)
 
+    # 画像表示用スプライト
     @spritePicture = rpg.SpritesetPicture()
+    # アニメーション表示用スプライト
+    @spriteAnimation = rpg.SpritesetAnimation()
 
     @addChild(@player)
     @addChild(@spriteMap)
     @addChild(@spritePicture)
+    @addChild(@spriteAnimation)
 
     # メニューレイヤー
     menuLayer = tm.display.CanvasElement()

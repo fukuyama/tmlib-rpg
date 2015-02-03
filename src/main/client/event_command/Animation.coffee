@@ -17,12 +17,21 @@ tm.define 'rpg.event_command.Animation',
       key
       src
     } = param
+    src = {
+      x: 0
+      y: 0
+      origin:
+        x: 0
+        y: 0
+      scale:
+        x: 1.0
+        y: 1.0
+    }.$extendAll src
     if src?.sprites?
       # アニメーションに使用するスプライトをプリロード
       self = @
       self.waitFlag = true
       sprites = for key,sprite of src.sprites then sprite.src
-      debugger
       rpg.system.db.preloadPicture sprites, (images) ->
         self.waitFlag = false
         rpg.game.animations[key] = src
@@ -30,5 +39,5 @@ tm.define 'rpg.event_command.Animation',
       rpg.game.animations[key].$extend src
     false
 
-# ピクチャーイベント
+# アニメーションイベント
 rpg.event_command.animation = rpg.event_command.Animation()

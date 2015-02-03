@@ -17,25 +17,28 @@ describe 'rpg.Interpreter(Animation)', () ->
           {type:'animation',params:[{
             key: 'anime001'
             src:
+              x: 100
+              y: 100
               sprites:
                 sprite_1:
-                  src: 'anime_001.png'
-                  frame: [100,100]
+                  src: 'hiyoco_nomal_full.png'
+                  frameIndex: [0,32,32]
+                  size: [32,32]
               timeline: [
                 {
-                  sprite_1: {x: 0,y: 0}
+                  sprite_1: {delay: 20, x: 0,y: 0}
                 }
                 {
-                  sprite_1: {x: 10,y: 0}
+                  sprite_1: {delay: 120, x: 10,y: 0}
                 }
                 {
-                  sprite_1: {x: 10,y: 10}
+                  sprite_1: {delay: 120, x: 10,y: 10}
                 }
                 {
-                  sprite_1: {x: -10,y: 10}
+                  sprite_1: {delay: 120, x: -10,y: 10}
                 }
                 {
-                  sprite_1: {x: -10,y: -10}
+                  sprite_1: {delay: 120, x: -10,y: -10}
                 }
             ]
           }]}
