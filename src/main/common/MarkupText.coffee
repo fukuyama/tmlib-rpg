@@ -201,7 +201,8 @@ rpg.MarkupText.REPLACE_LOG = {
   regexp: /\#\{(.+?)\}/g
   func: (reg, path) ->
     log = rpg.system.temp.log
-    log = log[k] for k in path.split /[\[\]\.]/ when log[k]?
+    for k in path.split(/[\[\]\.]/) when log[k]?
+      log = log[k]
     log
 }
 
@@ -212,7 +213,8 @@ rpg.MarkupText.REPLACE_WORD = {
   regexp: /\\W\[([^\\]+?)\]/g
   func: (reg, path) ->
     word = rpg.constants.WORDS
-    word = word[k] for k in path.split /[\[\]\.]/ when word[k]?
+    for k in path.split /[\[\]\.]/ when word[k]?
+      word = word[k]
     word
 }
 

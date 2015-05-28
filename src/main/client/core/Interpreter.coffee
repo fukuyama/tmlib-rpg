@@ -128,7 +128,8 @@ tm.define 'rpg.Interpreter',
         result = rpg.game.flag.normalizeValue val
       when 'log'
         result = rpg.system.temp.log
-        result = result[i] for i in val.split /[\[\]\.]/ when result[i]?
+        for i in val.split /[\[\]\.]/ when result[i]?
+          result = result[i]
     result
 
   normalizeEventBool: (type,val) ->
@@ -141,7 +142,8 @@ tm.define 'rpg.Interpreter',
         result = rpg.game.flag.normalizeBool val
       when 'log'
         log = rpg.system.temp.log
-        log = log[i] for i in log when log[i]?
+        for i in log when log[i]?
+          log = log[i]
         result = log
     result
 
