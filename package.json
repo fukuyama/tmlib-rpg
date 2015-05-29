@@ -23,7 +23,8 @@
     "jade": "~1.9.2",
     "morgan": "~1.5.1",
     "serve-favicon": "~2.2.0",
-    "connect-livereload": "~0.5.3"
+    "connect-livereload": "~0.5.3",
+    "glob": "~5.0.10"
   },
   "devDependencies": {
     "coffee-script": "latest",

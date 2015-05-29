@@ -17,4 +17,4 @@ rpg_compiler_callback = (param) ->
       rpgc.compile(op)
     return
 
-gulp.task 'build_rpg:sample', rpg_compiler_callback(config.rpg.sample)
+# gulp.task 'build_rpg:sample', rpg_compiler_callback(config.rpg.sample)
