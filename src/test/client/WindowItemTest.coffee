@@ -14,7 +14,7 @@ describe 'rpg.WindowItemTest', ->
         item = items[0]
         actor.backpack.addItem item
         item.url.should.
-          equal 'http://localhost:3000/client/data/item/003.json'
+          equal 'http://localhost:3000/client/sample/item/003.json'
         item.type.should.equal 'Item'
         done()
       )
@@ -114,7 +114,7 @@ describe 'rpg.WindowItemTest', ->
           item = items[0]
           actor.backpack.addItem item
           item.url.should.
-            equal 'http://localhost:3000/client/data/item/003.json'
+            equal 'http://localhost:3000/client/sample/item/003.json'
           item.type.should.equal 'Item'
           done()
         )
@@ -210,7 +210,7 @@ describe 'rpg.WindowItemTest', ->
             item = items[0]
             actor.backpack.addItem item
             item.url.should.
-              equal 'http://localhost:3000/client/data/item/004.json'
+              equal 'http://localhost:3000/client/sample/item/004.json'
             item.type.should.equal 'UsableItem'
             done()
           )
@@ -259,7 +259,7 @@ describe 'rpg.WindowItemTest', ->
             item = items[0]
             actor.backpack.addItem item
             item.url.should.
-              equal 'http://localhost:3000/client/data/item/004.json'
+              equal 'http://localhost:3000/client/sample/item/004.json'
             item.type.should.equal 'UsableItem'
             done()
           )
@@ -314,7 +314,7 @@ describe 'rpg.WindowItemTest', ->
             item = items[0]
             actor.backpack.addItem item
             item.url.should.
-              equal 'http://localhost:3000/client/data/item/005.json'
+              equal 'http://localhost:3000/client/sample/item/005.json'
             item.type.should.equal 'UsableItem'
             done()
           )
@@ -366,7 +366,7 @@ describe 'rpg.WindowItemTest', ->
             item = items[0]
             actor.backpack.addItem item
             item.url.should.
-              equal 'http://localhost:3000/client/data/item/005.json'
+              equal 'http://localhost:3000/client/sample/item/005.json'
             item.type.should.equal 'UsableItem'
             done()
           )
@@ -413,7 +413,7 @@ describe 'rpg.WindowItemTest', ->
             item = items[0]
             actor.backpack.addItem item
             item.url.should.
-              equal 'http://localhost:3000/client/data/weapon/001.json'
+              equal 'http://localhost:3000/client/sample/weapon/001.json'
             item.type.should.equal 'Weapon'
             done()
           )

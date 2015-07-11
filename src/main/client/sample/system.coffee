@@ -39,13 +39,13 @@ module.exports = {
       'windowskin.image': 'img/test_windowskin2.png'
       'sample.spritesheet':
         type:'tmss'
-        src: 'data/spritesheet/hiyoko.json'
+        src: 'sample/spritesheet/hiyoko.json'
       'spritesheet.hiyoko':
         type:'tmss'
-        src: 'data/spritesheet/hiyoko.json'
+        src: 'sample/spritesheet/hiyoko.json'
       'spritesheet.object001':
         type:'tmss'
-        src: 'data/spritesheet/object001.json'
+        src: 'sample/spritesheet/object001.json'
     }
   assets: {
     'i1': 'img/hiyoco_nomal_full.png'
@@ -59,4 +59,7 @@ module.exports = {
   windowDefault: {}
   start:
     actors: [1,2]
+  database:
+    path:
+      data: 'sample/'
 }

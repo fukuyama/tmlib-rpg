@@ -2,7 +2,7 @@
 root = window ? global ? @
 
 root.SYSTEM_ASSETS =
-  system: 'data/system.json'
+  system: 'sample/system.json'
 ###
 root.SYSTEM_ASSETS =
   system:

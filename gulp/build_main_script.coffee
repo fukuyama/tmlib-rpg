@@ -14,11 +14,23 @@ gulp.task 'build_main_script', ['coffeelint','test_console'], ->
   gulp.src files
     .pipe sourcemaps.init()
     .pipe coffee()
-    .pipe concat(outputFile)
-    .pipe uglify()
+    .pipe concat(outputFile + '.js')
     .pipe sourcemaps.write('.', {addComment: true})
     .pipe gulp.dest(distDir)
 
+gulp.task 'build_main_script:uglify', ['coffeelint','test_console'], ->
+  {
+    files
+    outputFile
+    distDir
+  } = config.main
+  gulp.src files
+    .pipe sourcemaps.init()
+    .pipe coffee()
+    .pipe concat(outputFile + '.min.js')
+    .pipe uglify()
+    .pipe sourcemaps.write('.', {addComment: true})
+    .pipe gulp.dest(distDir)
 
 gulp.task 'build_main_script:watch', ->
   {

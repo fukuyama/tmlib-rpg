@@ -37,7 +37,7 @@ tm.define 'tm.display.TransitionShape',
     @superInit(width:width, height:height)
 
     @_threshold = 0               # 閾値
-    @_increment = 256 / frame | 0 # 閾値増加量
+    @_increment = (256 / frame).round() | 0 # 閾値増加量
 
     # transition 素材用意
     if typeof transition is 'string'

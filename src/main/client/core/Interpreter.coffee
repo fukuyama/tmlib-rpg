@@ -81,7 +81,7 @@ tm.define 'rpg.Interpreter',
 
   # 終わりかどうか
   isEnd: ->
-    @index >= @commands.length and @blocks.length is 0
+    (@index >= @commands.length) and (@blocks.length is 0)
 
   # 次があるかどうか
   hasNext: ->

@@ -29,7 +29,7 @@ describe 'rpg.WindowItemShopTest', ->
           data.type.should.equal 'item'
           data.price.should.equal 10
           data.index.should.equal 0
-          data.url.should.equal 'http://localhost:3000/client/data/item/001.json'
+          data.url.should.equal 'http://localhost:3000/client/sample/item/001.json'
       describe '購入アイテム一覧表示２', ->
         commands = [
           {type:'shop_item_menu',params:[{
@@ -61,7 +61,7 @@ describe 'rpg.WindowItemShopTest', ->
           data.type.should.equal 'item'
           data.price.should.equal 10
           data.index.should.equal 3
-          data.url.should.equal 'http://localhost:3000/client/data/item/004.json'
+          data.url.should.equal 'http://localhost:3000/client/sample/item/004.json'
       describe '購入アイテム一覧表示３', ->
         commands = [
           {type:'shop_item_menu',params:[{
@@ -91,7 +91,7 @@ describe 'rpg.WindowItemShopTest', ->
           data.type.should.equal 'weapon'
           data.price.should.equal 500
           data.index.should.equal 1
-          data.url.should.equal 'http://localhost:3000/client/data/weapon/001.json'
+          data.url.should.equal 'http://localhost:3000/client/sample/weapon/001.json'
       describe '購入アイテム一覧表示４', ->
         commands = [
           {type:'shop_item_menu',params:[{
@@ -123,7 +123,7 @@ describe 'rpg.WindowItemShopTest', ->
           data.type.should.equal 'armor'
           data.price.should.equal 250
           data.index.should.equal 2
-          data.url.should.equal 'http://localhost:3000/client/data/armor/001.json'
+          data.url.should.equal 'http://localhost:3000/client/sample/armor/001.json'
       describe '購入アイテム一覧表示５初期位置', ->
         commands = [
           {type:'shop_item_menu',params:[{
@@ -150,4 +150,4 @@ describe 'rpg.WindowItemShopTest', ->
           data.type.should.equal 'item'
           data.price.should.equal 10
           data.index.should.equal 0
-          data.url.should.equal 'http://localhost:3000/client/data/item/001.json'
+          data.url.should.equal 'http://localhost:3000/client/sample/item/001.json'

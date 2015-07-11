@@ -20,13 +20,16 @@ gulp.task 'test', [
 
 gulp.task 'build', [
   'build_express'
+  'build_test_site'
   'build_main_script'
-  'build_data'
+  'build_main_script:uglify'
+  'build_test_script'
+  'build_rpg'
 ]
 
 gulp.task 'watch', [
   'test_console:watch'
   'build_express:watch'
   'build_main_script:watch'
-  'build_data:watch'
+  'build_test_script:watch'
 ]

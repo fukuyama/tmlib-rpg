@@ -6,28 +6,7 @@ testDir = './src/test/'
 demoDir = './src/demo/'
 distDir = './target/'
 
-mainScripts = [
-  'common/utils'
-  'common/constants'
-  'common/Character'
-  'common/Battler'
-  'common/Actor'
-  'common/Party'
-  'common/Map'
-  'common/Flag'
-  'common/Event'
-  'common/EventPage'
-  'common/ItemContainer'
-  'common/Item'
-  'common/UsableItem'
-  'common/Skill'
-  'common/EquipItem'
-  'common/Weapon'
-  'common/Armor'
-  'common/State'
-  'common/Effect'
-  'common/MarkupText'
-
+clientScripts = [
   'sample'
   'tmlib/CustomizeTexture'
   'tmlib/TransitionShape'
@@ -96,39 +75,58 @@ mainScripts = [
   'scene/SceneMenuTest2'
   'main'
 ]
-dataNames= [
+commonScripts = [
+  'common/utils'
+  'common/constants'
+  'common/Character'
+  'common/Battler'
+  'common/Actor'
+  'common/Party'
+  'common/Map'
+  'common/Flag'
+  'common/Event'
+  'common/EventPage'
+  'common/ItemContainer'
+  'common/Item'
+  'common/UsableItem'
+  'common/Skill'
+  'common/EquipItem'
+  'common/Weapon'
+  'common/Armor'
+  'common/State'
+  'common/Effect'
+  'common/MarkupText'
 ]
-aiScripts= [
-  'nz/ai/SampleAI'
-]
+mainScripts = commonScripts.concat('client/' + s for s in clientScripts)
 
 # ------------
 config =
   main:
-    files: (mainDir + 'public/' + s + '.coffee' for s in mainScripts)
-    outputFile: 'tmlib-rpg.min.js'
+    files: (mainDir + path + '.coffee' for path in mainScripts)
+    outputFile: 'tmlib-rpg'
     distDir: distDir + 'public/client/'
 
-  ai:
-    files: (mainDir + 'public/' + s + '.coffee' for s in aiScripts)
-    srcOption:
-      base: mainDir + 'public/'
-    distDir: distDir + 'public/'
+  rpg:
+    sample:
+      inputDir: mainDir + 'client/sample/'
+      outputDir: distDir + 'public/client/sample/'
+    demo001:
+      inputDir: demoDir + '001/'
+      outputDir: distDir + 'public/client/001/'
 
   express:
     files: mainDir + 'express/**'
     distDir: distDir
 
-  data:
-    dataNames: dataNames
-    srcDir: mainDir + 'data/'
-    distDir: distDir + 'public/data/'
-
   coffeelint:
     files: mainDir + '**/*.coffee'
 
   test:
-    files: testDir + 'common/**/*.coffee'
+    console:
+      files: testDir + 'common/**/*.coffee'
+    browser:
+      files: testDir + 'client/*.coffee'
+      distDir: distDir + 'public/client/test/'
 
   test_sites: [
     {
