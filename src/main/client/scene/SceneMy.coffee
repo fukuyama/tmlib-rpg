@@ -6,6 +6,33 @@ tm.define "SceneMy",
     # 親の初期化
     @superInit()
 
+    #@windowMenu()
+    @shapeMessageLine()
+    #@windowMessage()
+
+  windowMessage: ->
+    @windowMessage = rpg.WindowMessage
+      messageSpeed: rpg.system.setting.messageSpeed
+    @windowMessage.addChildTo @
+    return
+
+  shapeMessageLine: ->
+    @line = rpg.ShapeMessageLine
+      text: 'TEST TEST'
+      width: rpg.system.screen.width
+
+    @line.addChildTo @
+
+    @line.on 'start', ->
+      console.log 'start'
+    @line.on 'end', ->
+      console.log 'end'
+
+    @line.start()
+    return
+
+
+  windowMenu: ->
     ###
     @win = w = rpg.Window(50, 50, 100, 100)
     @addChild(w)
@@ -71,3 +98,4 @@ tm.define "SceneMy",
     )
     @addChild(w)
     ###
+    return

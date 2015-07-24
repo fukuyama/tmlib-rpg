@@ -12,6 +12,7 @@ clientScripts = [
   'tmlib/TransitionShape'
   'core/DataBase'
   'core/System'
+  'core/ShapeMessageLine'
   'core/SpriteCharacter'
   'core/SpriteCursor'
   'core/SpriteMap'
@@ -101,6 +102,9 @@ mainScripts = commonScripts.concat('client/' + s for s in clientScripts)
 
 # ------------
 config =
+  common:
+    files: (mainDir + path + '.coffee' for path in commonScripts)
+
   main:
     files: (mainDir + path + '.coffee' for path in mainScripts)
     outputFile: 'tmlib-rpg'

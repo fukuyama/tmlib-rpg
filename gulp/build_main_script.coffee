@@ -5,7 +5,7 @@ concat     = require 'gulp-concat'
 uglify     = require 'gulp-uglify'
 sourcemaps = require 'gulp-sourcemaps'
 
-gulp.task 'build_main_script', ['coffeelint','test_console'], ->
+gulp.task 'build_main_script', ['coffeelint'], ->
   {
     files
     outputFile
@@ -18,7 +18,7 @@ gulp.task 'build_main_script', ['coffeelint','test_console'], ->
     .pipe sourcemaps.write('.', {addComment: true})
     .pipe gulp.dest(distDir)
 
-gulp.task 'build_main_script:uglify', ['coffeelint','test_console'], ->
+gulp.task 'build_main_script:uglify', ['coffeelint'], ->
   {
     files
     outputFile
