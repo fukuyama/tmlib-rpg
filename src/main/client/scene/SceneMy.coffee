@@ -17,6 +17,14 @@ tm.define "SceneMy",
     return
 
   shapeMessageLine: ->
+    @bg = tm.display.RectangleShape(
+      x: rpg.system.screen.width / 2
+      y: rpg.system.screen.height / 2
+      width: rpg.system.screen.width
+      height: rpg.system.screen.height
+      fillStyle: 'rgb(128,128,128)'
+      strokeStyle: 'rgb(128,128,128)'
+    ).addChildTo @
     @line = rpg.ShapeMessageLine
       text: 'TEST TEST'
       width: rpg.system.screen.width

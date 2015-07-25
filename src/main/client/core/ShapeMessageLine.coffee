@@ -57,6 +57,7 @@ tm.define 'rpg.ShapeMessageLine',
       c.context.restore()
       return
     ).bind @
+    @_text.clipping = true
     @_text.render()
 
     boundary = @boundary
