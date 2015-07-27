@@ -13,6 +13,8 @@ module.exports = {
     moveSpeed: 6
   }
   main:
+    nextScene: 'SceneMy'
+  _main:
     nextScene: 'SceneTitle'
     param: ['scene.title']
     assets: {

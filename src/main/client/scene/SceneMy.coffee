@@ -18,15 +18,18 @@ tm.define "SceneMy",
 
   shapeMessageLine: ->
     @bg = tm.display.RectangleShape(
-      x: rpg.system.screen.width / 2
-      y: rpg.system.screen.height / 2
+      x: 0
+      y: 0
       width: rpg.system.screen.width
       height: rpg.system.screen.height
       fillStyle: 'rgb(128,128,128)'
       strokeStyle: 'rgb(128,128,128)'
     ).addChildTo @
+    @bg.setOrigin(0,0)
     @line = rpg.ShapeMessageLine
-      text: 'TEST TEST'
+      x: 10
+      y: 20
+      height: 24
       width: rpg.system.screen.width
 
     @line.addChildTo @
@@ -36,6 +39,7 @@ tm.define "SceneMy",
     @line.on 'end', ->
       console.log 'end'
 
+    @line.setText('ABSSSS')
     @line.start()
     return
 

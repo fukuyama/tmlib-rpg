@@ -19,7 +19,6 @@ tm.define 'rpg.ShapeMessageLine',
       @height
       @text
       @speed
-      @boundary
       @repeat
       @textColor
       @fontWeight
@@ -29,14 +28,14 @@ tm.define 'rpg.ShapeMessageLine',
       y: 0
       width: 100
       height: 24
-      text: 'test'
+      text: null
       speed: 4
-      boundary: 50
       repeat: false
       textColor: 'rgb(255,0,0)'
       fontWeight: ''
       fontFamily: "'HiraKakuProN-W3'"
     }.$extend param
+    @setOrigin(0,0)
 
     @fontSize = @height
     @font = "{fontWeight} {fontSize}px {fontFamily}".format(@)
@@ -44,7 +43,6 @@ tm.define 'rpg.ShapeMessageLine',
     @_text = tm.display.Shape
       width: @width
       height: @height
-      blendMode: 'source-in'
     @_text.setOrigin(0,0)
     @_text._render = (->
       c = @_text.canvas
@@ -57,49 +55,41 @@ tm.define 'rpg.ShapeMessageLine',
       c.context.restore()
       return
     ).bind @
-    @_text.clipping = true
-    @_text.render()
 
-    boundary = @boundary
-    bmp = tm.graphics.Bitmap(@width, @height)
-    bmp.width  = @width + @boundary
-    bmp.height = @height
-    bmp.filter
-      calc: (pixel,index,x,y,self) ->
-        n = self.width - x
-        if n < boundary
-          n = n / boundary * 255
-        else
-          n = 255
-        self.setPixel32Index(index,0,0,0,n)
-        return
+    @_text.render() if @text?
 
     @_mask = tm.display.Shape
-      width: bmp.width
+      width: @width
       height: @height
     @_mask.setOrigin(0,0)
-    @_mask.canvas.drawBitmap(bmp,0,0)
+
+    @_text.clipping = true
+    @_mask.clipping = true
 
     @_mask.addChildTo @
-    @_mask.addChild @_text
+    @_text.addChildTo @_mask
 
-    dummyCanvas = tm.graphics.Canvas() unless dummyCanvas?
-    dummyCanvas.font = @font
-    @textWidth = dummyCanvas.context.measureText(@text).width + @height / 2
-
-    @_start = {
-      mask: - @width
-      text: + @width
-    }
     @awake = false
     @hide()
 
-  start: ->
-    @_mask.x = @_start.mask
-    @_text.x = @_start.text
+  setText: (@text) ->
+    dummyCanvas = tm.graphics.Canvas() unless dummyCanvas?
+    dummyCanvas.font = @font
+    @textWidth = dummyCanvas.context.measureText(@text).width + @height / 2
+    @_text.render()
+
+  reset: ->
+    @_mask.width = 0
     @awake = true
     @show()
+
+  start: ->
+    @reset()
     @fire tm.event.Event("start")
+
+  restart: ->
+    @awake = true
+    @fire tm.event.Event("restart")
 
   stop: ->
     @awake = false
@@ -107,12 +97,11 @@ tm.define 'rpg.ShapeMessageLine',
 
   # 更新処理
   update: (app) ->
-    if @_mask.x - @boundary < @textWidth + @_start.mask
-      @_mask.x += @speed
-      @_text.x -= @speed
+    if @_mask.width <= @textWidth
+      @_mask.width += @speed
     else if @repeat
+      @reset()
       @fire tm.event.Event("repeat")
-      @start()
     else
       @stop()
       @fire tm.event.Event("end")
