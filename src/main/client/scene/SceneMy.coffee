@@ -26,21 +26,38 @@ tm.define "SceneMy",
       strokeStyle: 'rgb(128,128,128)'
     ).addChildTo @
     @bg.setOrigin(0,0)
-    @line = rpg.ShapeMessageLine
-      x: 10
-      y: 20
-      height: 24
-      width: rpg.system.screen.width
 
-    @line.addChildTo @
+    @lines = []
+    for i in [0 .. 5]
+      line = rpg.ShapeMessageLine
+        x: 0
+        y: i * 24
+        height: 24
+        width: 140
+      line.addChildTo @
+      @lines.push line
+    for line,i in @lines
+      next = @lines[i + 1]
+      unless next?
+        break
+      line.on 'start', ((i)->
+        console.log 'start ' + i
+        return
+      ).bind @, i
+      line.on 'end', ((next)->
+        next.start()
+        return
+      ).bind @, next
 
-    @line.on 'start', ->
-      console.log 'start'
-    @line.on 'end', ->
-      console.log 'end'
-
-    @line.setText('ABSSSS')
-    @line.start()
+    i = 0
+    l = 0
+    text = '01234\\n56789ABCDEFGHIJK'
+    while i < text.length
+      line = @lines[l++]
+      unless line?
+        break
+      i = line.drawMarkup(text,i:i)
+    @lines[0].start()
     return
 
 
