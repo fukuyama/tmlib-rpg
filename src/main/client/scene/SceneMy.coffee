@@ -30,10 +30,10 @@ tm.define "SceneMy",
     @lines = []
     for i in [0 .. 5]
       line = rpg.ShapeMessageLine
-        x: 0
-        y: i * 24
+        x:      0
+        y:      i * 24
         height: 24
-        width: 140
+        width:  140
       line.addChildTo @
       @lines.push line
     for line,i in @lines
@@ -43,11 +43,11 @@ tm.define "SceneMy",
       line.on 'start', ((i)->
         console.log 'start ' + i
         return
-      ).bind @, i
+      ).bind line, i
       line.on 'end', ((next)->
         next.start()
         return
-      ).bind @, next
+      ).bind line, next
 
     i = 0
     l = 0

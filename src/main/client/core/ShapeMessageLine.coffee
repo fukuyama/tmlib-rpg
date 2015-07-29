@@ -24,6 +24,7 @@ tm.define 'rpg.ShapeMessageLine',
       @fillStyle
       @fontWeight
       @fontFamily
+      @fontSize
       @lineWidth
       @shadowBlur
       @shadowColor
@@ -39,13 +40,15 @@ tm.define 'rpg.ShapeMessageLine',
       fillStyle: 'rgb(255,255,255)'
       fontWeight: ''
       fontFamily: "'HiraKakuProN-W3'"
+      fontSize: null
       lineWidth: 2
       shadowBlur: 0
       shadowColor: 'red'
     }.$extend param
     @setOrigin(0,0)
 
-    @fontSize = @height
+    @textWidth = 0
+    @fontSize = @height unless @fontSize?
 
     @_text = tm.display.Shape
       width: @width
@@ -62,8 +65,7 @@ tm.define 'rpg.ShapeMessageLine',
     @_clip.addChildTo @
     @_text.addChildTo @_clip
 
-    @awake = false
-    @hide()
+    @sleep().hide()
 
   measureTextWidth: (text,font) ->
     dummyCanvas = tm.graphics.Canvas() unless dummyCanvas?
@@ -83,22 +85,6 @@ tm.define 'rpg.ShapeMessageLine',
       i: 0
       markup: rpg.MarkupText.default
     }.$extend param
-    x = y = 0
-    w = 0
-    while i < text.length
-      [x,y,i] = markup.draw(@,x,y,text,i)
-      c = text[i]
-      cx = @measureTextWidth(c,@font)
-      if (@width <= x + cx) or (y != 0)
-        break
-      @drawText(c,x,y)
-      x += cx
-      w += cx
-      i += 1
-    @textWidth = w
-    return i
-
-  drawText: (text,x,y) ->
     c = @_text.canvas
     c.context.save()
     c.font         = @font
@@ -109,25 +95,36 @@ tm.define 'rpg.ShapeMessageLine',
     c.lineWidth    = @lineWidth
     c.shadowBlur   = @shadowBlur
     c.shadowColor  = @shadowColor
-    c.fillText(text, x, @fontSize / 2)
+    w = x = y = 0
+    while i < text.length
+      [x,y,i] = markup.draw(@,x,y,text,i)
+      ch = text[i]
+      cw = @measureTextWidth(ch,@font)
+      if (@width <= x + cw) or (y != 0)
+        break
+      c.fillText(ch, x, @fontSize / 2)
+      x += cw
+      w += cw
+      i += 1
+    @textWidth = w
     c.context.restore()
-    return
+    return i
 
   reset: ->
     @_clip.width = 0
-    @awake = true
-    @show()
+    return @
 
   start: ->
-    @reset()
+    return if @textWidth is 0
+    @reset().wakeUp().show()
     @fire tm.event.Event("start")
 
   restart: ->
-    @awake = true
+    @wakeUp()
     @fire tm.event.Event("restart")
 
   stop: ->
-    @awake = false
+    @sleep()
     @fire tm.event.Event("stop")
 
   # 更新処理
@@ -135,7 +132,7 @@ tm.define 'rpg.ShapeMessageLine',
     if @_clip.width <= @textWidth
       @_clip.width += @speed
     else if @repeat
-      @reset()
+      @reset().wakeUp()
       @fire tm.event.Event("repeat")
     else
       @stop()
