@@ -109,6 +109,15 @@ class rpg.MarkupText
     true while @_replaceIntarnal()
     return @message
 
+  getMarkupParam: (n) ->
+    s = n + @i
+    if @message[s] is '['
+      s += 1
+      e = @message[s .. ].indexOf(']') + s
+      @i = e + 1
+      return @message[s .. e - 1]
+    return null
+
 ###* 改行(\n)
 * @var {Object} rpg.MarkupText.MARKUP_NEW_LINE
 ###
@@ -140,13 +149,13 @@ rpg.MarkupText.MARKUP_COLOR = {
   mark: '\\'
   name: 'C'
   func: ->
-    if @obj instanceof rpg.Window
-      e = @message[@i .. ].indexOf(']') + @i
-      if e > 0
-        m = @message[@i .. e]
-        s = @i + m.indexOf('[') + 1
-        @obj.textColor = COLORS[@message[s .. e - 1]]
-        @i = e + 1
+    param = @getMarkupParam(2)
+    if param?
+      color = COLORS[param]
+      if @obj.textColor?
+        @obj.textColor = color
+      if @obj.fillStyle?
+        @obj.fillStyle = color
     false
 }
 
@@ -157,17 +166,15 @@ rpg.MarkupText.MARKUP_SKIP = {
   mark: '\\'
   name: 'skip'
   func: ->
-    if @obj instanceof rpg.WindowMessage
-      e = @message[@i .. ].indexOf(']')
-      if e > 0
-        e += @i
-        m = @message[@i .. e]
-        s = @i + m.indexOf('[') + 1
-        @obj.pauseSkip(@message[s .. e - 1])
-        @i = e + 1
+    param = @getMarkupParam(5)
+    unless param?
+      @i += 5
+    wm = rpg.system.app.currentScene.windowMessage
+    if wm instanceof rpg.WindowMessage
+      if param?
+        wm.pauseSkip(param)
       else
-        @obj.pauseSkip()
-        @i += 5
+        wm.pauseSkip()
     false
 }
 
@@ -182,6 +189,22 @@ rpg.MarkupText.MARKUP_CLEAR = {
       @obj.clearContent()
       @x = @y = 0
       @i += 6
+    false
+}
+
+###* ウェイト
+* @var {Object} rpg.MarkupText.MARKUP_WAIT
+###
+rpg.MarkupText.MARKUP_WAIT = {
+  mark: '\\'
+  name: 'wait'
+  func: ->
+    time = @getMarkupParam(5)
+    unless time?
+      time = 30
+      @i += 5
+    if @obj instanceof rpg.ShapeMessageLine
+      @obj.addWait(time,@x)
     false
 }
 
@@ -226,6 +249,7 @@ _default.addMarkup rpg.MarkupText.MARKUP_NEW_LINE
 _default.addMarkup rpg.MarkupText.MARKUP_COLOR
 _default.addMarkup rpg.MarkupText.MARKUP_SKIP
 _default.addMarkup rpg.MarkupText.MARKUP_CLEAR
+_default.addMarkup rpg.MarkupText.MARKUP_WAIT
 
 # 置き換え
 _default.addReplace rpg.MarkupText.REPLACE_FLAG

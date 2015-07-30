@@ -17,6 +17,7 @@ tm.define 'rpg.ShapeMessageLine',
       @y
       @width
       @height
+
       @speed
       @repeat
       @textBaseline
@@ -33,8 +34,9 @@ tm.define 'rpg.ShapeMessageLine',
       y: 0
       width: 100
       height: 24
-      speed: 4
       repeat: false
+
+      speed: 4
       textBaseline: 'middle'
       textAlign: 'left'
       fillStyle: 'rgb(255,255,255)'
@@ -49,6 +51,8 @@ tm.define 'rpg.ShapeMessageLine',
 
     @textWidth = 0
     @fontSize = @height unless @fontSize?
+
+    @_waits = []
 
     @_text = tm.display.Shape
       width: @width
@@ -65,7 +69,26 @@ tm.define 'rpg.ShapeMessageLine',
     @_clip.addChildTo @
     @_text.addChildTo @_clip
 
-    @sleep().hide()
+    @reset()
+    @sleep()
+    @hide()
+
+  getOptions: ->
+    return {
+      speed:        @speed
+      textBaseline: @textBaseline
+      textAlign:    @textAlign
+      fillStyle:    @fillStyle
+      fontWeight:   @fontWeight
+      fontFamily:   @fontFamily
+      fontSize:     @fontSize
+      lineWidth:    @lineWidth
+      shadowBlur:   @shadowBlur
+      shadowColor:  @shadowColor
+    }
+
+  setOptions: (op) ->
+    @$extend op
 
   measureTextWidth: (text,font) ->
     dummyCanvas = tm.graphics.Canvas() unless dummyCanvas?
@@ -87,21 +110,23 @@ tm.define 'rpg.ShapeMessageLine',
     }.$extend param
     c = @_text.canvas
     c.context.save()
-    c.font         = @font
-    c.textBaseline = @textBaseline
-    c.textAlign    = @textAlign
-    c.fillStyle    = @fillStyle
-    c.strokeStyle  = @strokeStyle ? @fillStyle
-    c.lineWidth    = @lineWidth
-    c.shadowBlur   = @shadowBlur
-    c.shadowColor  = @shadowColor
     w = x = y = 0
     while i < text.length
       [x,y,i] = markup.draw(@,x,y,text,i)
       ch = text[i]
+      unless ch?
+        break
       cw = @measureTextWidth(ch,@font)
       if (@width <= x + cw) or (y != 0)
         break
+      c.font         = @font
+      c.textBaseline = @textBaseline
+      c.textAlign    = @textAlign
+      c.fillStyle    = @fillStyle
+      c.strokeStyle  = @strokeStyle ? @fillStyle
+      c.lineWidth    = @lineWidth
+      c.shadowBlur   = @shadowBlur
+      c.shadowColor  = @shadowColor
       c.fillText(ch, x, @fontSize / 2)
       x += cw
       w += cw
@@ -110,13 +135,21 @@ tm.define 'rpg.ShapeMessageLine',
     c.context.restore()
     return i
 
+  addWait: (time,width) ->
+    @_waits.push
+      time: time
+      width: width
+      count: 0
+
   reset: ->
     @_clip.width = 0
     return @
 
   start: ->
     return if @textWidth is 0
-    @reset().wakeUp().show()
+    @reset()
+    @wakeUp()
+    @show()
     @fire tm.event.Event("start")
 
   restart: ->
@@ -129,10 +162,22 @@ tm.define 'rpg.ShapeMessageLine',
 
   # 更新処理
   update: (app) ->
-    if @_clip.width <= @textWidth
-      @_clip.width += @speed
+    if @_wait?
+      if @_wait.count < @_wait.time
+        @_wait.count += 1
+        return
+      else
+        @_wait = undefined
+    else if @_waits.length > 0
+      if @_clip.width + @speed > @_waits[0].width
+        @_wait = @_waits.shift()
+        @_clip.width = @_wait.width
+        return
+    if @_clip.width < @textWidth
+      @_clip.width = Math.min(@_clip.width + @speed,@textWidth)
     else if @repeat
-      @reset().wakeUp()
+      @reset()
+      @wakeUp()
       @fire tm.event.Event("repeat")
     else
       @stop()

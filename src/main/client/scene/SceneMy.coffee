@@ -51,12 +51,14 @@ tm.define "SceneMy",
 
     i = 0
     l = 0
-    text = '01234\\n56789ABCDEFGHIJK'
+    text = '012\\wait[30]345\\C[1]6789\\nABCDEFGHIJK\\skip'
     while i < text.length
       line = @lines[l++]
       unless line?
         break
       i = line.drawMarkup(text,i:i)
+      if @lines[l]?
+        @lines[l].setOptions line.getOptions()
     @lines[0].start()
     return
 
