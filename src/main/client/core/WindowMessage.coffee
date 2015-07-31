@@ -31,10 +31,10 @@ tm.define 'rpg.WindowMessage',
     } = {
       visible: false
       active: false
-      messageSpeed: 4 # メッセージスピード
-      scrollSpeed: 6 # スクロールスピード
-      autoSpeed: 0 # 自動送りスピード
-      maxLine: 3
+      messageSpeed: 8 # メッセージスピード
+      scrollSpeed:  6 # スクロールスピード
+      autoSpeed:    0 # 自動送りスピード
+      maxLine:      3 # 表示ライン数
       options:
         message:
           position: MSG_OPT.MESSAGE.BOTTOM # メッセージウィンドウ位置
@@ -44,13 +44,6 @@ tm.define 'rpg.WindowMessage',
         input_num:
           position: MSG_OPT.NUMBER.RIGHT # 数値入力ウィンドウ位置
     }.$extend(args)
-    # メッセージスピード 1-8
-    if @messageSpeed >= 4
-      @_waitCountMax = @messageSpeed - 3
-      @_drawCount = 0
-    else
-      @_waitCountMax = 1
-      @_drawCount = @messageSpeed - 4
 
     # リサイズ
     @resize(
@@ -59,6 +52,19 @@ tm.define 'rpg.WindowMessage',
     @resizeContent(
       @innerRect.width
       @innerRect.height * 2)
+
+    @_lineIndex = 0
+    @_lines = []
+    for n in [0 .. @maxLine * 2]
+      line = rpg.ShapeMessageLine(
+        x: 0
+        y: n * rpg.system.lineHeight
+        width: @innerRect.width
+        height: rpg.system.lineHeight
+        speed: @messageSpeed
+      ).addChildTo @contentShape
+      line.on 'end', @_lineEndCallback.bind @
+      @_lines.push line
 
     @markup = rpg.MarkupText.default
     
@@ -77,13 +83,19 @@ tm.define 'rpg.WindowMessage',
 
     @on "enterframe", @updateMessage
 
+  _lineEndCallback:  ->
+    i = ++@_lineIndex
+    if @_lines[i].isReady()
+      @_lines[i].start()
+    @_dy += rpg.system.lineHeight
+    return
+
   ###* 状態クリア
   * @memberof rpg.WindowMessage#
   ###
   clear: ->
+    @currentMessage = ''
     @_messages = []
-    @_message = ''
-    @_messageIndex = 0
     @_dx = @_dy = 0 # 描画座標
     @_sy = 0 # スクロール用
     @_py = 0 # ポーズ時座標
@@ -91,6 +103,9 @@ tm.define 'rpg.WindowMessage',
     @_waitCount = 0 # 描画時のウェイトカウント
     @_autoCount = 0 # 自動ページ送りのカウント
     @content.clear()
+    @_lineIndex = 0
+    for line in @_lines
+      line.clear()
     return
 
   ###* コンテンツクリア
@@ -127,15 +142,23 @@ tm.define 'rpg.WindowMessage',
   * @private
   ###
   _nextMessage: ->
-    if @_dx != 0
-      @_dx = 0
-      @_dy += rpg.system.lineHeight
-    @_py = @_dy
     @_waitCount = 0
     @_autoCount = 0
-    @_message = @markup.replace(@_messages.shift().replace /\n/g, '\\n')
-    @_messageIndex = 0
-    @_autoCountMax = @_message.length * @autoSpeed
+
+    text = @markup.replace(@_messages.shift().replace /\n/g, '\\n')
+    @currentMessage = ''
+    i = 0
+    l = @_lineIndex
+    while i < text.length
+      line = @_lines[l++]
+      unless line?
+        break
+      i = line.drawMarkup(text,i:i)
+      @currentMessage += line.currentText
+      if @_lines[l]?
+        @_lines[l].setOptions line.getOptions()
+    @_py = @_dy + rpg.system.lineHeight
+    @_lines[@_lineIndex].start()
     return
 
   ###* 自動ページ送りモードの設定。
@@ -223,12 +246,11 @@ tm.define 'rpg.WindowMessage',
     return
 
   ###* ポーズ状態確認。
-  * メッセージの表示位置が、メッセージの長さ以上の場合、ポーズする。
   * @memberof rpg.WindowMessage#
   * @return {boolean} ポーズが必要な場合 true
   ###
-  isPause: -> @_messageIndex >= @_message.length
-  
+  isPause: -> @_lines[@_lineIndex].isEmpty()
+
   ###* 残りの表示メッセージ確認。
   * メッセージのリストが空の場合。残りメッセージが無い状態。
   * @memberof rpg.WindowMessage#
@@ -378,14 +400,20 @@ tm.define 'rpg.WindowMessage',
     if @isPause() and @_py > @oy
       @_sy = @_py - @oy
       return true
-    # ポーズしてて表示がずれている場合は位置調整（@content初期化）
+    # ポーズしてて表示がずれている場合は位置調整（@_lines並べ替え）
     if @isPause() and @oy > 0
-      bmp = @content.getBitmap(0, @_py)
       @_ay = @_dy -= @oy # 描画位置を、現在の表示位置分戻して
       @oy = @_py = @_sy = 0 # 初期化
-      @content.clear()
-      @content.drawBitmap(bmp,0,0)
       @contentShape.setPosition(@ox,-@oy) # ちらつきを抑えるために描画調整と同時に位置調整
+      lines1 = @_lines[0 ... @_lineIndex]
+      lines2 = @_lines[@_lineIndex .. ]
+      for l in lines1
+        l.clear()
+        lines2.push l
+      @_lines = lines2
+      for l,i in @_lines
+        l.y = i * rpg.system.lineHeight
+      @_lineIndex = 0
       return false
     # 描画位置が範囲を超えたら
     if @_ay != @_dy and @_dy >= rpg.system.lineHeight * @maxLine
@@ -414,27 +442,7 @@ tm.define 'rpg.WindowMessage',
         @pauseCancel()
       else
         return
-    return if @countDrawTiming()
-    @drawMessage() for num in [0 .. @_drawCount]
-    @refresh()
-
-  ###* メッセージを描画する
-  * @memberof rpg.WindowMessage#
-  ###
-  drawMessage: ->
-    return if @processMarkup()
-    msg = @_message[@_messageIndex++]
-    return unless msg?
-    @drawText(msg, @_dx, @_dy)
-    @_dx += @measureTextWidth(msg)
-
-  ###* マークアップ処理
-  * @memberof rpg.WindowMessage#
-  ###
-  processMarkup: ->
-    [@_dx, @_dy, @_messageIndex] =
-      @markup.draw(@, @_dx, @_dy, @_message, @_messageIndex)
-    @markup.matched
+    return
 
   ###* ポーズ解除
   * @memberof rpg.WindowMessage#
@@ -452,8 +460,5 @@ tm.define 'rpg.WindowMessage',
     if @isPause() and not @isSelect()
       @pauseCancel()
     rpg.system.app.keyboard.clear()
-
-Object.defineProperty rpg.WindowMessage.prototype, 'currentMessage',
-  enumerable: true, get: -> @_message ? ''
 
 rpg.WindowMessage.EVENT_TERMINATE = tm.event.Event 'terminate'

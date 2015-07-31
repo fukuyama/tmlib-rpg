@@ -71,6 +71,11 @@ _g.checkMessage = (callback,msg) ->
     w = rpg.system.scene?.windowMessage
     return w? and w.currentMessage == msg and w.isPause()
 
+_g.checkMessageClose = (callback) ->
+  checkWait callback, ->
+    w = rpg.system.scene?.windowMessage
+    return w? and w.isClose()
+
 _g.getMenu = () ->
   w = rpg.system.scene.windowMapMenu
   if w?

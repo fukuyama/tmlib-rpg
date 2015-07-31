@@ -2,7 +2,24 @@
 describe 'rpg.WindowMessage', ->
   interpreter = null
   @timeout(10000)
-  describe '文章表示', ->
+  describe '文章表示（基本）', ->
+    commands = [
+      {type:'message',params:['TEST1']}
+    ]
+    it 'マップシーンへ移動', (done) ->
+      loadTestMap(done)
+    it 'ウェイト', (done) ->
+      setTimeout(done,1000)
+    it 'コマンド実行', ->
+      interpreter = rpg.system.scene.interpreter
+      interpreter.start commands
+    it 'メッセージ表示待ち1', (done) ->
+      checkMessage(done,'TEST1')
+    it '次のメッセージ表示1', (done) ->
+      emulate_key('enter',done)
+    it 'おわり', (done) ->
+      checkMessageClose(done)
+  describe '文章表示１行ｘ３', ->
     commands = [
       {type:'message',params:['TEST1']}
       {type:'message',params:['TEST2','TEST3']}
@@ -27,7 +44,7 @@ describe 'rpg.WindowMessage', ->
     it '次のメッセージ表示3', (done) ->
       emulate_key('enter',done)
     it 'おわり', (done) ->
-      checkMessage(done,'')
+      checkMessageClose(done)
   describe '文章表示クリア', ->
     commands = [
       {type:'message',params:['TEST2\\nTEST3']}

@@ -49,7 +49,6 @@ tm.define 'rpg.ShapeMessageLine',
     }.$extend param
     @setOrigin(0,0)
 
-    @textWidth = 0
     @fontSize = @height unless @fontSize?
 
     @_waits = []
@@ -69,6 +68,7 @@ tm.define 'rpg.ShapeMessageLine',
     @_clip.addChildTo @
     @_text.addChildTo @_clip
 
+    @clear()
     @reset()
     @sleep()
     @hide()
@@ -108,6 +108,8 @@ tm.define 'rpg.ShapeMessageLine',
       i: 0
       markup: rpg.MarkupText.default
     }.$extend param
+    @textWidth = 0
+    @currentText = ''
     c = @_text.canvas
     c.context.save()
     w = x = y = 0
@@ -128,6 +130,7 @@ tm.define 'rpg.ShapeMessageLine',
       c.shadowBlur   = @shadowBlur
       c.shadowColor  = @shadowColor
       c.fillText(ch, x, @fontSize / 2)
+      @currentText += ch
       x += cw
       w += cw
       i += 1
@@ -141,12 +144,25 @@ tm.define 'rpg.ShapeMessageLine',
       width: width
       count: 0
 
+  isEmpty: -> @textWidth is 0
+  isReady: -> @textWidth isnt 0 and @_clip.width < @textWidth
+  isEnd: -> @textWidth isnt 0 and @_clip.width >= @textWidth
+
   reset: ->
     @_clip.width = 0
     return @
 
+  clear: ->
+    @textWidth = 0
+    @currentText = ''
+    c = @_text.canvas
+    c.context.save()
+    c.clearColor(@_text.bgColor)
+    c.context.restore()
+    return @
+
   start: ->
-    return if @textWidth is 0
+    return if @isEmpty()
     @reset()
     @wakeUp()
     @show()
