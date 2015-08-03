@@ -41,6 +41,8 @@ describe 'rpg.WindowMessage', ->
       emulate_key('enter',done)
     it 'メッセージ表示待ち3', (done) ->
       checkMessage(done,'TEST3')
+    it 'ウェイト', (done) ->
+      setTimeout(done,1000)
     it '次のメッセージ表示3', (done) ->
       emulate_key('enter',done)
     it 'おわり', (done) ->
@@ -58,14 +60,16 @@ describe 'rpg.WindowMessage', ->
       interpreter = rpg.system.scene.interpreter
       interpreter.start commands
     it 'メッセージ表示待ち1', (done) ->
-      checkMessage(done,'TEST2\\nTEST3')
+      checkMessage(done,'TEST2TEST3')
     it '次のメッセージ表示1', (done) ->
       emulate_key('enter',done)
     it 'メッセージ表示待ち2', (done) ->
-      checkMessage(done,'\\clearTEST1')
+      checkMessage(done,'TEST1')
+    it 'ウェイト', (done) ->
+      setTimeout(done,1000)
     it '次のメッセージ表示2', (done) ->
       emulate_key('enter',done)
-  describe '文章表示２行', ->
+  describe '文章表示２行x２', ->
     commands = [
       {type:'message',params:['TEST1\\nTEST2']}
       {type:'message',params:['TEST3\\nほえほえ']}
@@ -78,16 +82,18 @@ describe 'rpg.WindowMessage', ->
       interpreter = rpg.system.scene.interpreter
       interpreter.start commands
     it 'メッセージ表示待ち1', (done) ->
-      checkMessage(done,'TEST1\\nTEST2')
+      checkMessage(done,'TEST1TEST2')
     it '次のメッセージ表示1', (done) ->
       emulate_key('enter',done)
     it 'メッセージ表示待ち2', (done) ->
-      checkMessage(done,'TEST3\\nほえほえ')
+      checkMessage(done,'TEST3ほえほえ')
+    it 'ウェイト', (done) ->
+      setTimeout(done,1000)
     it '次のメッセージ表示2', (done) ->
       emulate_key('enter',done)
     it 'おわり', (done) ->
       checkMessage(done,'')
-  describe '文章表示３行', ->
+  describe '文章表示３行x２', ->
     commands = [
       {type:'message',params:['TEST1\\nTEST1\\nTEST1']}
       {type:'message',params:['TEST2\\nほえほえ\\nTEST2']}
@@ -100,11 +106,11 @@ describe 'rpg.WindowMessage', ->
       interpreter = rpg.system.scene.interpreter
       interpreter.start commands
     it 'メッセージ表示待ち1', (done) ->
-      checkMessage(done,'TEST1\\nTEST1\\nTEST1')
+      checkMessage(done,'TEST1TEST1TEST1')
     it '次のメッセージ表示1', (done) ->
       emulate_key('enter',done)
     it 'メッセージ表示待ち2', (done) ->
-      checkMessage(done,'TEST2\\nほえほえ\\nTEST2')
+      checkMessage(done,'TEST2ほえほえTEST2')
     it '次のメッセージ表示2', (done) ->
       emulate_key('enter',done)
   describe '文章表示２行 x ４回', ->
@@ -122,27 +128,27 @@ describe 'rpg.WindowMessage', ->
       interpreter = rpg.system.scene.interpreter
       interpreter.start commands
     it 'メッセージ表示待ち1', (done) ->
-      checkMessage(done,'TEST1\\nTEST1')
+      checkMessage(done,'TEST1TEST1')
     it 'ウェイト', (done) ->
       setTimeout(done,1000)
     it '次のメッセージ表示1', (done) ->
       emulate_key('enter',done)
     it 'メッセージ表示待ち2', (done) ->
-      checkMessage(done,'TEST2\\nほえほえ')
+      checkMessage(done,'TEST2ほえほえ')
     it 'ウェイト', (done) ->
       setTimeout(done,1000)
     it '次のメッセージ表示2', (done) ->
       emulate_key('enter',done)
     it 'メッセージ表示待ち3', (done) ->
-      checkMessage done, 'ほえほえあああ\\nあああああああ'
+      checkMessage done, 'ほえほえああああああああああ'
     it 'ウェイト', (done) ->
-      setTimeout(done,1000)
+      setTimeout(done,2000)
     it '次のメッセージ表示3', (done) ->
       emulate_key('enter',done)
     it 'メッセージ表示待ち4', (done) ->
-      checkMessage done, 'ふにふに\\nXXXX'
+      checkMessage done, 'ふにふにXXXX'
     it 'ウェイト', (done) ->
-      setTimeout(done,1000)
+      setTimeout(done,2000)
     it '次のメッセージ表示4', (done) ->
       emulate_key('enter',done)
   describe '文章表示３行 x ４回', ->

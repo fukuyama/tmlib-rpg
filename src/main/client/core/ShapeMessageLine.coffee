@@ -156,9 +156,10 @@ tm.define 'rpg.ShapeMessageLine',
     @textWidth = 0
     @currentText = ''
     c = @_text.canvas
-    c.context.save()
-    c.clearColor(@_text.bgColor)
-    c.context.restore()
+    c.clear()
+    #c.context.save()
+    #c.clearColor(@_text.bgColor)
+    #c.context.restore()
     return @
 
   start: ->

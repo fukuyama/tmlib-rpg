@@ -185,8 +185,9 @@ rpg.MarkupText.MARKUP_CLEAR = {
   mark: '\\'
   name: 'clear'
   func: ->
-    if @obj instanceof rpg.WindowMessage
-      @obj.clearContent()
+    wm = rpg.system.app.currentScene.windowMessage
+    if wm instanceof rpg.WindowMessage
+      wm.clearContent()
       @x = @y = 0
       @i += 6
     false

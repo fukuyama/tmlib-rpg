@@ -88,6 +88,7 @@ tm.define 'rpg.WindowMessage',
     if @_lines[i].isReady()
       @_lines[i].start()
     @_dy += rpg.system.lineHeight
+    console.log "end #{@_lineIndex} #{@_lines[i].currentText}"
     return
 
   ###* 状態クリア
@@ -114,6 +115,16 @@ tm.define 'rpg.WindowMessage',
   clearContent: ->
     @oy = @_ay = @_dy = @_py = @_sy = 0 # 初期化
     @content.clear()
+    newIndex = @_lineIndex
+    lines1 = @_lines[0 ... newIndex]
+    lines2 = @_lines[newIndex .. ]
+    for l in lines1
+      l.clear()
+      lines2.push l
+    @_lines = lines2
+    for l,i in @_lines
+      l.y = i * rpg.system.lineHeight
+    @_lineIndex = 0
     return
 
   ###* 終了処理。最後のメッセージを表示してプレイヤーが読み終わったときに呼ばれる。
@@ -157,7 +168,7 @@ tm.define 'rpg.WindowMessage',
       @currentMessage += line.currentText
       if @_lines[l]?
         @_lines[l].setOptions line.getOptions()
-    @_py = @_dy + rpg.system.lineHeight
+    @_py = @_dy
     @_lines[@_lineIndex].start()
     return
 
@@ -283,9 +294,7 @@ tm.define 'rpg.WindowMessage',
   * @return {boolean} 自動ページ送りする場合 false
   ###
   countAutoTiming: ->
-    return true if @_autoCountMax == 0
-    @_autoCount = ++@_autoCount % @_autoCountMax
-    return @_autoCount != 0
+    return true
 
   ###* 選択肢ウィンドウの作成
   * @memberof rpg.WindowMessage#
@@ -395,28 +404,33 @@ tm.define 'rpg.WindowMessage',
       n = Math.pow(2, @scrollSpeed) / 256.0 * rpg.system.lineHeight
       @oy += n
       @_sy -= n
+      #console.log 'sy = ' + @_sy
       return true
     # ポーズしててページ位置までスクロールしてなかったらスクロールさせる
     if @isPause() and @_py > @oy
+      console.log 'pause scroll'
       @_sy = @_py - @oy
       return true
     # ポーズしてて表示がずれている場合は位置調整（@_lines並べ替え）
     if @isPause() and @oy > 0
+      console.log "init #{@_sy} #{@_py} #{@_dy} #{@_ay} #{@_lineIndex}"
       @_ay = @_dy -= @oy # 描画位置を、現在の表示位置分戻して
       @oy = @_py = @_sy = 0 # 初期化
-      @contentShape.setPosition(@ox,-@oy) # ちらつきを抑えるために描画調整と同時に位置調整
-      lines1 = @_lines[0 ... @_lineIndex]
-      lines2 = @_lines[@_lineIndex .. ]
+      @contentShape.setPosition(@ox,@oy) # ちらつきを抑えるために描画調整と同時に位置調整
+      newIndex = @_lineIndex - (@_dy / rpg.system.lineHeight)
+      lines1 = @_lines[0 ... newIndex]
+      lines2 = @_lines[newIndex .. ]
       for l in lines1
         l.clear()
         lines2.push l
       @_lines = lines2
       for l,i in @_lines
         l.y = i * rpg.system.lineHeight
-      @_lineIndex = 0
+      @_lineIndex = newIndex
       return false
-    # 描画位置が範囲を超えたら
-    if @_ay != @_dy and @_dy >= rpg.system.lineHeight * @maxLine
+    # ポーズじゃなくて、描画位置が範囲を超えたら
+    if not @isPause() and @_ay != @_dy and @_dy >= rpg.system.lineHeight * @maxLine
+      console.log "over #{@_sy} #{@_py} #{@_dy} #{@_ay} #{@_lineIndex}"
       @_sy = rpg.system.lineHeight
       @_ay = @_dy
       return true
