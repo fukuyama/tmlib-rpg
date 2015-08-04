@@ -53,6 +53,7 @@ tm.define 'rpg.WindowMessage',
       @innerRect.width
       @innerRect.height * 2)
 
+    @_lineIndexStart = 0
     @_lineIndex = 0
     @_lines = []
     for n in [0 .. @maxLine * 2]
@@ -65,6 +66,7 @@ tm.define 'rpg.WindowMessage',
       ).addChildTo @contentShape
       line.on 'end', @_lineEndCallback.bind @
       @_lines.push line
+    #console.log '@_lines.lenth = ' + @_lines.length
 
     @markup = rpg.MarkupText.default
     
@@ -84,11 +86,11 @@ tm.define 'rpg.WindowMessage',
     @on "enterframe", @updateMessage
 
   _lineEndCallback:  ->
+    console.log "end " + @_debug_string() + " #{@_lines[@_lineIndex].currentText}"
     i = ++@_lineIndex
     if @_lines[i].isReady()
       @_lines[i].start()
     @_dy += rpg.system.lineHeight
-    console.log "end #{@_lineIndex} #{@_lines[i].currentText}"
     return
 
   ###* 状態クリア
@@ -165,11 +167,15 @@ tm.define 'rpg.WindowMessage',
       unless line?
         break
       i = line.drawMarkup(text,i:i)
+      line.reset()
       @currentMessage += line.currentText
       if @_lines[l]?
         @_lines[l].setOptions line.getOptions()
+    @_autoCountMax = @currentMessage.length * @autoSpeed
     @_py = @_dy
+    @_lineIndexStart = @_lineIndex
     @_lines[@_lineIndex].start()
+    console.log 'next ' + @_debug_string()
     return
 
   ###* 自動ページ送りモードの設定。
@@ -185,7 +191,7 @@ tm.define 'rpg.WindowMessage',
         @autoSpeed = 0
     if typeof args is 'number'
       @autoSpeed = args
-    @_autoCountMax = @_message.length * @autoSpeed
+    @_autoCountMax = @currentMessage.length * @autoSpeed
 
   ###* ポーズスキップ。
   * @memberof rpg.WindowMessage#
@@ -294,7 +300,9 @@ tm.define 'rpg.WindowMessage',
   * @return {boolean} 自動ページ送りする場合 false
   ###
   countAutoTiming: ->
-    return true
+    return true if @_autoCountMax == 0
+    @_autoCount = ++@_autoCount % @_autoCountMax
+    return @_autoCount != 0
 
   ###* 選択肢ウィンドウの作成
   * @memberof rpg.WindowMessage#
@@ -395,6 +403,8 @@ tm.define 'rpg.WindowMessage',
       @terminate()
     return
 
+  _debug_string: -> "s#{@_sy} p#{@_py} d#{@_dy} a#{@_ay} o#{@oy} i#{@_lineIndex}"
+
   ###* スクロール処理
   * @memberof rpg.WindowMessage#
   ###
@@ -404,33 +414,32 @@ tm.define 'rpg.WindowMessage',
       n = Math.pow(2, @scrollSpeed) / 256.0 * rpg.system.lineHeight
       @oy += n
       @_sy -= n
-      #console.log 'sy = ' + @_sy
       return true
     # ポーズしててページ位置までスクロールしてなかったらスクロールさせる
     if @isPause() and @_py > @oy
-      console.log 'pause scroll'
+      console.log 'scroll ' + @_debug_string()
       @_sy = @_py - @oy
       return true
     # ポーズしてて表示がずれている場合は位置調整（@_lines並べ替え）
     if @isPause() and @oy > 0
-      console.log "init #{@_sy} #{@_py} #{@_dy} #{@_ay} #{@_lineIndex}"
+      console.log 'init ' + @_debug_string()
       @_ay = @_dy -= @oy # 描画位置を、現在の表示位置分戻して
       @oy = @_py = @_sy = 0 # 初期化
       @contentShape.setPosition(@ox,@oy) # ちらつきを抑えるために描画調整と同時に位置調整
-      newIndex = @_lineIndex - (@_dy / rpg.system.lineHeight)
-      lines1 = @_lines[0 ... newIndex]
-      lines2 = @_lines[newIndex .. ]
+      lines1 = @_lines[0 ... @_lineIndexStart]
+      lines2 = @_lines[@_lineIndexStart .. ]
+      @_lineIndex -= @_lineIndexStart
       for l in lines1
         l.clear()
         lines2.push l
       @_lines = lines2
       for l,i in @_lines
         l.y = i * rpg.system.lineHeight
-      @_lineIndex = newIndex
       return false
     # ポーズじゃなくて、描画位置が範囲を超えたら
-    if not @isPause() and @_ay != @_dy and @_dy >= rpg.system.lineHeight * @maxLine
-      console.log "over #{@_sy} #{@_py} #{@_dy} #{@_ay} #{@_lineIndex}"
+    if not @isPause() and @_dy >= rpg.system.lineHeight * @maxLine + @oy
+      #if not @isPause() and @_ay != @_dy and @_dy >= rpg.system.lineHeight * @maxLine
+      console.log 'over ' + @_debug_string()
       @_sy = rpg.system.lineHeight
       @_ay = @_dy
       return true
@@ -454,8 +463,6 @@ tm.define 'rpg.WindowMessage',
       # 自動送り
       unless @countAutoTiming()
         @pauseCancel()
-      else
-        return
     return
 
   ###* ポーズ解除

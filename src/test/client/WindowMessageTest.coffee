@@ -113,7 +113,7 @@ describe 'rpg.WindowMessage', ->
       checkMessage(done,'TEST2ほえほえTEST2')
     it '次のメッセージ表示2', (done) ->
       emulate_key('enter',done)
-  describe '文章表示２行 x ４回', ->
+  describe '文章表示２行x４', ->
     commands = [
       {type:'message',params:['TEST1\\nTEST1']}
       {type:'message',params:['TEST2\\nほえほえ']}
@@ -169,19 +169,19 @@ describe 'rpg.WindowMessage', ->
       interpreter = rpg.system.scene.interpreter
       interpreter.start commands
     it 'メッセージ表示待ち1', (done) ->
-      checkMessage done, '0123456789\\n01\\C[1]234\\C[0]56789\\n0123456789'
+      checkMessage done, '012345678901234567890123456789'
     it '次のメッセージ表示1', (done) ->
       emulate_key('enter',done)
     it 'メッセージ表示待ち2', (done) ->
-      checkMessage done, 'AAAAAAAAAA\\nBBBBBBBBBB\\nCCCCCCCCCC'
+      checkMessage done, 'AAAAAAAAAABBBBBBBBBBCCCCCCCCCC'
     it '次のメッセージ表示2', (done) ->
       emulate_key('enter',done)
     it 'メッセージ表示待ち3', (done) ->
-      checkMessage done, 'DDDDDDDDDD\\nEEEEEEEEEE\\nFFFFFFFFFF'
+      checkMessage done, 'DDDDDDDDDDEEEEEEEEEEFFFFFFFFFF'
     it '次のメッセージ表示3', (done) ->
       emulate_key('enter',done)
     it 'メッセージ表示待ち4', (done) ->
-      checkMessage done, 'GGGGGGGGGG\\nHHHHHHHHHH\\nIIIIIIIIII'
+      checkMessage done, 'GGGGGGGGGGHHHHHHHHHHIIIIIIIIII'
     it '次のメッセージ表示4', (done) ->
       emulate_key('enter',done)
   describe '表示位置変更', ->
@@ -283,8 +283,7 @@ describe 'rpg.WindowMessage', ->
       interpreter = rpg.system.scene.interpreter
       interpreter.start commands
     it 'メッセージ表示待ち1', (done) ->
-      checkMessage done,
-        'A\\C[1]A\\C[2]A\\C[3]A\\C[4]A\\C[5]A\\C[6]A\\C[7]A\\C[0]'
+      checkMessage done,'AAAAAAAA'
     it '次のメッセージ表示1', (done) ->
       emulate_key('enter',done)
 

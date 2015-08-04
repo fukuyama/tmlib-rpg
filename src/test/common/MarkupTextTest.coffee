@@ -104,6 +104,7 @@ describe 'rpg.MarkupText', ->
         msg = 'test\\C[5]test'
         class rpg.Window # dummy
         dummy = new rpg.Window()
+        dummy.textColor = 'dummy'
         m = ''
         while i < msg.length
           [x,y,i] = mt.draw(dummy,x,y,msg,i)
@@ -116,6 +117,7 @@ describe 'rpg.MarkupText', ->
         msg = 'test\\C[1]test\\C[0]test'
         class rpg.Window # dummy
         dummy = new rpg.Window()
+        dummy.textColor = 'dummy'
         m = ''
         while i < msg.length
           [x,y,i] = mt.draw(dummy,x,y,msg,i)

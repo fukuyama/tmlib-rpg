@@ -154,6 +154,7 @@ tm.define 'rpg.ShapeMessageLine',
 
   clear: ->
     @textWidth = 0
+    @_clip.width = 0
     @currentText = ''
     c = @_text.canvas
     c.clear()
