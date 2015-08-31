@@ -86,7 +86,7 @@ tm.define 'rpg.WindowMessage',
     @on "enterframe", @updateMessage
 
   _lineEndCallback:  ->
-    console.log "end " + @_debug_string() + " #{@_lines[@_lineIndex].currentText}"
+    #console.log "end " + @_debug_string() + " #{@_lines[@_lineIndex].currentText}"
     i = ++@_lineIndex
     if @_lines[i].isReady()
       @_lines[i].start()
@@ -107,6 +107,7 @@ tm.define 'rpg.WindowMessage',
     @_autoCount = 0 # 自動ページ送りのカウント
     @content.clear()
     @_lineIndex = 0
+    @_autoSkipCount = 0
     for line in @_lines
       line.clear()
     return
@@ -172,10 +173,11 @@ tm.define 'rpg.WindowMessage',
       if @_lines[l]?
         @_lines[l].setOptions line.getOptions()
     @_autoCountMax = @currentMessage.length * @autoSpeed
+    #console.log '_nextMessage _autoCountMax = ' + @_autoCountMax
     @_py = @_dy
     @_lineIndexStart = @_lineIndex
     @_lines[@_lineIndex].start()
-    console.log 'next ' + @_debug_string()
+    #console.log 'next ' + @_debug_string()
     return
 
   ###* 自動ページ送りモードの設定。
@@ -192,12 +194,14 @@ tm.define 'rpg.WindowMessage',
     if typeof args is 'number'
       @autoSpeed = args
     @_autoCountMax = @currentMessage.length * @autoSpeed
+    #console.log 'setAutoMode _autoCountMax = ' + @_autoCountMax
 
   ###* ポーズスキップ。
   * @memberof rpg.WindowMessage#
   ###
   pauseSkip: (n=1) ->
-    @_autoCountMax = n
+    @_autoSkipCount = n
+    #console.log 'pauseSkip _autoCountMax = ' + @_autoCountMax
 
   ###* 表示位置設定。
   * @memberof rpg.WindowMessage#
@@ -300,9 +304,12 @@ tm.define 'rpg.WindowMessage',
   * @return {boolean} 自動ページ送りする場合 false
   ###
   countAutoTiming: ->
-    return true if @_autoCountMax == 0
-    @_autoCount = ++@_autoCount % @_autoCountMax
-    return @_autoCount != 0
+    if @_autoCountMax > 0
+      @_autoCount = ++@_autoCount % @_autoCountMax
+      return @_autoCount > 0
+    if @_autoSkipCount > 0
+      return --@_autoSkipCount > 0
+    return true
 
   ###* 選択肢ウィンドウの作成
   * @memberof rpg.WindowMessage#
@@ -417,12 +424,12 @@ tm.define 'rpg.WindowMessage',
       return true
     # ポーズしててページ位置までスクロールしてなかったらスクロールさせる
     if @isPause() and @_py > @oy
-      console.log 'scroll ' + @_debug_string()
+      #console.log 'scroll ' + @_debug_string()
       @_sy = @_py - @oy
       return true
     # ポーズしてて表示がずれている場合は位置調整（@_lines並べ替え）
     if @isPause() and @oy > 0
-      console.log 'init ' + @_debug_string()
+      #console.log 'init ' + @_debug_string()
       @_ay = @_dy -= @oy # 描画位置を、現在の表示位置分戻して
       @oy = @_py = @_sy = 0 # 初期化
       @contentShape.setPosition(@ox,@oy) # ちらつきを抑えるために描画調整と同時に位置調整
@@ -439,7 +446,7 @@ tm.define 'rpg.WindowMessage',
     # ポーズじゃなくて、描画位置が範囲を超えたら
     if not @isPause() and @_dy >= rpg.system.lineHeight * @maxLine + @oy
       #if not @isPause() and @_ay != @_dy and @_dy >= rpg.system.lineHeight * @maxLine
-      console.log 'over ' + @_debug_string()
+      #console.log 'over ' + @_debug_string()
       @_sy = rpg.system.lineHeight
       @_ay = @_dy
       return true
@@ -469,6 +476,7 @@ tm.define 'rpg.WindowMessage',
   * @memberof rpg.WindowMessage#
   ###
   pauseCancel: ->
+    #console.log 'call pauseCancel()'
     if @isEmpty()
       @terminate()
     else
