@@ -1,5 +1,5 @@
 
-# タイトルシーン
+# マップシーンクラス
 tm.define 'SceneMap',
 
   superClass: rpg.SceneBase
@@ -95,10 +95,15 @@ tm.define 'SceneMap',
         return
     unless @interpreter.isRunning()
       # 接触イベント判定
-      @player.checkTouched() if @player.character.isMoved()
-    # @player.awake = not @interpreter.isRunning()
-    # インタプリター更新
-    @interpreter.update() if @interpreter.isRunning() and @interpreterUpdate
+      if @player.character.isMoved()
+        @player.checkTouched()
+    if @interpreter.isRunning()
+      # インタプリター更新
+      if @interpreterUpdate
+        @interpreter.update()
+    else
+      # TODO:エンカウント判定
+      # エンカウント歩数以上歩いたら、エンカウント率で戦闘
     @player.awake = not @interpreter.isRunning()
     return
 

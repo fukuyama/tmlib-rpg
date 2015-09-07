@@ -62,7 +62,7 @@ tm.define 'rpg.System',
       textColor: 'rgb(255,255,255)'
       lineHeight: 32
       mapChipSize: 32
-      'screen':
+      screen:
         width: 640
         height: 480
         background: 'rgb(0,0,0)'
