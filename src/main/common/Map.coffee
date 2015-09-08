@@ -12,6 +12,12 @@ class rpg.Map
     @autoEvents = []
     @events = {}
 
+    # TODO:マップの場所によるエンカウントを…
+    @encount = {
+      step: 10
+
+    }.$extend args.encount
+
   #　マップ範囲内かどうか
   isValid: (x, y) ->
     0 <= x and x < @width and 0 <= y and y < @height

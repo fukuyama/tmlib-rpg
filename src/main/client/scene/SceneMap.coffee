@@ -104,6 +104,13 @@ tm.define 'SceneMap',
     else
       # TODO:エンカウント判定
       # エンカウント歩数以上歩いたら、エンカウント率で戦闘
+      if @player.character.isMoved()
+        @encount += 1
+        if @map.encount.step < @encount
+          encount = @map.encount
+          @pushScene SceneBattle()
+          @encount = 0
+          return
     @player.awake = not @interpreter.isRunning()
     return
 
