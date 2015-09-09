@@ -24,6 +24,7 @@ tm.define 'SceneMap',
     }.$extendAll(args)
 
     @_refreshEvent = true # イベント更新フラグ
+    @_encount = 0
 
     setting = rpg.system.setting
 
@@ -105,11 +106,15 @@ tm.define 'SceneMap',
       # TODO:エンカウント判定
       # エンカウント歩数以上歩いたら、エンカウント率で戦闘
       if @player.character.isMoved()
-        @encount += 1
-        if @map.encount.step < @encount
-          encount = @map.encount
-          @pushScene SceneBattle()
-          @encount = 0
+        @_encount += 1
+        if @map.encount.step < @_encount
+          if Math.rand(0,100) < @map.encount.rate
+            @player.active = false
+            scene = SceneBattle
+              encount: @map.encount
+            scene.on 'exit', @playerActive.bind @
+            @app.pushScene scene
+            @_encount = 0
           return
     @player.awake = not @interpreter.isRunning()
     return

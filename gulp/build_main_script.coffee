@@ -36,4 +36,4 @@ gulp.task 'build_main_script:watch', ->
   {
     files
   } = config.main
-  gulp.watch files, ['build_main_script']
+  gulp.watch files, ['build_main_script','build_main_script:uglify']

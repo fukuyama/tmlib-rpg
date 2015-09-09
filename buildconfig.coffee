@@ -71,6 +71,7 @@ clientScripts = [
   'scene/SceneMain'
   'scene/SceneTitle'
   'scene/SceneMap'
+  'scene/SceneBattle'
   'scene/SceneMy'
   'scene/SceneMenuTest1'
   'scene/SceneMenuTest2'

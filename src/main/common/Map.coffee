@@ -13,10 +13,9 @@ class rpg.Map
     @events = {}
 
     # TODO:マップの場所によるエンカウントを…
-    @encount = {
-      step: 10
-
-    }.$extend args.encount
+    #@_encount = {
+    #  step: 10
+    #}. args.encount
 
   #　マップ範囲内かどうか
   isValid: (x, y) ->
@@ -105,3 +104,10 @@ Object.defineProperty rpg.Map.prototype, 'height',
 Object.defineProperty rpg.Map.prototype, 'name',
   enumerable: true
   get: -> @mapSheet.name
+# エンカウント情報
+Object.defineProperty rpg.Map.prototype, 'encount',
+  enumerable: true
+  get: -> {
+    step: 10
+    rate: 50
+  }
