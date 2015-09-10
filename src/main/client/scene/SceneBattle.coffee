@@ -12,6 +12,9 @@ tm.define 'SceneBattle',
   *                  事前に読み込む物があるのでStringでは無理
   ###
   init: (args={}) ->
+    {
+      @encount
+    } = args
     # 親の初期化
     @superInit(name:'SceneBattle')
 
@@ -46,5 +49,7 @@ tm.define 'SceneBattle',
   update: ->
     if @interpreter.isRunning()
       @interpreter.update()
-    else
-      @app.popScene()
+      return
+    if @phase?
+      @phase()
+    return

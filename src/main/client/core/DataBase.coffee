@@ -34,39 +34,37 @@ tm.define 'rpg.DataBase',
       baseUrl: href.substr(0,i) + '/'
       idformat: '000'
       path:
-        data:   'data/'
-        item:   'item/'
-        weapon: 'weapon/'
-        armor:  'armor/'
-        map:    'map/'
-        state:  'state/'
-        actor:  'actor/'
+        data:    'data/'
+        map:     'map/'
+        state:   'state/'
         picture: 'img/'
+        item:    'item/'
+        weapon:  'weapon/'
+        armor:   'armor/'
+        actor:   'actor/'
+        enemy:   'enemy/'
     }.$extendAll args
 
     # メタ インタフェース
     @_metaif = {
-      item:
-        url: @_dataUrl.bind @, path.data + path.item
-        create: @_create.bind @, 'Item'
-      weapon:
-        url: @_dataUrl.bind @, path.data + path.weapon
-        create: @_create.bind @, 'Weapon'
-      armor:
-        url: @_dataUrl.bind @, path.data + path.armor
-        create: @_create.bind @, 'Armor'
-      actor:
-        url: @_dataUrl.bind @, path.data + path.actor
-        create: @_create.bind @, 'Actor'
       picture:
         url: @_dataUrl.bind @, path.picture
     }
 
     # preload 用 公開メソッド
-    @preloadItem   = @_preload.bind @, 'item'
-    @preloadWeapon = @_preload.bind @, 'weapon'
-    @preloadArmor  = @_preload.bind @, 'armor'
-    @preloadActor  = @_preload.bind @, 'actor'
+    for k in [
+      'item'
+      'weapon'
+      'armor'
+      'actor'
+      'enemy'
+    ]
+      c = k[0].toUpperCase() + k.slice(1)
+      @_metaif[k] = {
+        url: @_dataUrl.bind @, path.data + path[k]
+        create: @_create.bind @, c
+      }
+      @['preload' + c] = @_preload.bind @, k
 
     @mapUrl   = @_dataUrl.bind @, path.data + path.map
     @stateUrl = @_dataUrl.bind @, path.data + path.state

@@ -33,14 +33,14 @@ tm.define 'rpg.WindowMapStatus',
 
     @on "enterframe", @updateStatus
 
+  hide: ->
+    @visible = false
+    @stopCount = 0
+
   updateStatus: ->
     player = rpg.game.player
-    pc = player.character
-    if not player.active
-      @visible = true
-      @stopCount = 0
-    else
-      if player.awake and player.active and pc.isStopping()
+    if player.active
+      if player.awake and player.active and player.character.isStopping()
         if @stopCount > 90
           @visible = true
         else

@@ -109,13 +109,9 @@ tm.define 'SceneMap',
         @_encount += 1
         if @map.encount.step < @_encount
           if Math.rand(0,100) < @map.encount.rate
-            @player.active = false
-            scene = SceneBattle
-              encount: @map.encount
-            scene.on 'exit', @playerActive.bind @
-            @app.pushScene scene
             @_encount = 0
-          return
+            @startBattle()
+            return
     @player.awake = not @interpreter.isRunning()
     return
 
@@ -126,6 +122,7 @@ tm.define 'SceneMap',
     wa = @windowMapMenu.findWindowTree (w) -> w.visible
     if (not @windowMessage.visible) and (not wa?) and not @interpreter.isRunning()
       @player.active = false
+      @windowMapStatus.show()
       @windowMapMenu.open()
     rpg.system.app.keyboard.clear()
 
@@ -133,7 +130,14 @@ tm.define 'SceneMap',
     wa = @windowMapMenu.findWindowTree (w) -> w.visible
     if (not @windowMessage.visible) and (not wa?)
       @player.active = true
+      @windowMapStatus.hide()
     rpg.system.app.keyboard.clear()
 
   playerEnterframe: ->
     @spriteMap.updatePosition()
+
+  startBattle: ->
+    @player.active = false
+    scene = SceneBattle encount: @map.encount
+    scene.on 'exit', @playerActive.bind @
+    @app.pushScene scene
