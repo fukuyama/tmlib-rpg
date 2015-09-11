@@ -39,12 +39,28 @@ tm.define 'SceneBattle',
     messageLayer.addChild(@windowMessage)
     @addChild(messageLayer)
 
-    @on 'enter', @setup
+    @next @phaseStartBattle
 
-  setup: ->
+  next: (@phase) ->
+
+  phaseStartBattle: ->
+    console.count 'startPhase'
     @interpreter.start [
-      {type:'message',params:['TEST1']}
+      {type:'message',params:['battle start']}
     ]
+    @next @phaseEndBattle
+    return
+
+  phaseEndBattle: ->
+    console.count 'endPhase'
+    @app.popScene()
+    return
+
+  phaseInputCommand: ->
+    return
+
+  phaseMain: ->
+    return
 
   update: ->
     if @interpreter.isRunning()

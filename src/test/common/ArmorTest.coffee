@@ -26,6 +26,6 @@ describe 'rpg.Armor', ->
     n.should.equal 10
   it '攻撃力設定', ->
     item = new rpg.Armor
-      name: 'Weapon001'
+      name: 'Armor001'
       patk: 50
     item.patk.should.equal 50

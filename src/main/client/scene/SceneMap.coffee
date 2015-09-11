@@ -139,5 +139,9 @@ tm.define 'SceneMap',
   startBattle: ->
     @player.active = false
     scene = SceneBattle encount: @map.encount
-    scene.on 'exit', @playerActive.bind @
+    scene.on 'exit', @endBattle.bind @
     @app.pushScene scene
+
+  endBattle: ->
+    @playerActive()
+    return

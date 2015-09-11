@@ -19,5 +19,5 @@ class rpg.Weapon extends rpg.EquipItem
   ###
   constructor: (args={}) ->
     super {
-    equips: ['right_hand']
+      equips: ['right_hand']
     }.$extendAll args
