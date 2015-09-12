@@ -47,7 +47,7 @@ clientScripts = [
   'event_command/Script'
   'event_command/Return'
   'event_command/Delete'
-  'event_command/Character'
+  'event_command/CharacterProprties'
   'event_command/Transition'
   'event_command/Wait'
   'event_command/Move'

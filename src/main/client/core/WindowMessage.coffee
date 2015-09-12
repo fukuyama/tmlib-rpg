@@ -62,6 +62,7 @@ tm.define 'rpg.WindowMessage',
         y: n * rpg.system.lineHeight
         width: @innerRect.width
         height: rpg.system.lineHeight
+        fontSize: 24
         speed: @messageSpeed
       ).addChildTo @contentShape
       line.on 'end', @_lineEndCallback.bind @
@@ -289,7 +290,7 @@ tm.define 'rpg.WindowMessage',
   * @memberof rpg.WindowMessage#
   * @return {boolean} 数値入力ウィンドウ表示中の場合 true
   ###
-  isInput: -> @windowInputNum?
+  isInputNum: -> @windowInputNum?
 
   ###* 描画タイミングの計算。
   * @memberof rpg.WindowMessage#
@@ -463,7 +464,7 @@ tm.define 'rpg.WindowMessage',
     @checkTempInputNum()
     return if @isClose()
     return if @isSelect()
-    return if @isInput()
+    return if @isInputNum()
     # ポーズ中
     if @isPause()
       @active = true
@@ -482,10 +483,18 @@ tm.define 'rpg.WindowMessage',
     else
       @_nextMessage()
 
-  ###* イベントハンドラ
+  ###* イベントハンドラ（決定ボタン）
   * @memberof rpg.WindowMessage#
   ###
   input_ok_up: ->
+    if @isPause() and not @isSelect()
+      @pauseCancel()
+    rpg.system.app.keyboard.clear()
+
+  ###* イベントハンドラ（キャンセルボタン）
+  * @memberof rpg.WindowMessage#
+  ###
+  input_cancel_up: ->
     if @isPause() and not @isSelect()
       @pauseCancel()
     rpg.system.app.keyboard.clear()

@@ -177,7 +177,7 @@ tm.define 'rpg.WindowMenu',
       s = tm.display.Shape(width:w, height:h)
         .addChildTo(@contentShape)
         .setPosition(x,y)
-      tm.display.Label(m.name)
+      l = tm.display.Label(m.name)
         .addChildTo(s)
         .setAlign('left')
         .setY(h/2)

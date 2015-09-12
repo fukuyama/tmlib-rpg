@@ -475,14 +475,15 @@ class rpg.Character
     [nx,ny] = @frontPosition(x, y, d)
     # マップの取得
     map = rpg.system.scene.map
+    return false unless map?
     # マップ範囲チェック
-    return false if not map.isValid(nx, ny)
+    return false unless map.isValid(nx, ny)
     # すり抜けチェック
-    return true if @transparent
+    return true  if @transparent
     # 自分位置の移動可能チェック
-    return false if not map.isPassable(x, y, d, @)
+    return false unless map.isPassable(x, y, d, @)
     # 向きを逆に、移動先の可能チェック
-    return false if not map.isPassable(nx, ny, @reverseDirection(d))
+    return false unless map.isPassable(nx, ny, @reverseDirection(d))
     true
 
   ###* 目の前のキャラクターを取得

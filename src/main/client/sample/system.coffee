@@ -9,7 +9,7 @@ module.exports = {
   setting: {
     se: false
     bgm: false
-    messageSpeed: 8
+    messageSpeed: 16
     moveSpeed: 6
   }
   main:

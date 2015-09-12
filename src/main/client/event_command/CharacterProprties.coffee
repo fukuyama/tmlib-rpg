@@ -1,5 +1,5 @@
 ###*
-* @file Character.coffee
+* @file CharacterProprties.coffee
 * キャラクタープロパティ変更
 ###
 
