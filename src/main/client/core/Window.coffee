@@ -100,10 +100,9 @@ tm.define 'rpg.Window',
 
     # イベントハンドラ用メソッド
     @eventHandler = rpg.EventHandler({active:true,name:name})
-    @setupHandler = -> @eventHandler.setupHandler(@) # bind は、まずい気がする。
     @addInputHandler = @eventHandler.addInputHandler # まるまる delegate するならこう？
     @addRepeatHandler = @eventHandler.addRepeatHandler
-    @setupHandler()
+    @eventHandler.setupHandler(@)
 
   ###* ウィンドウスキンの作成
   * @memberof rpg.Window#
