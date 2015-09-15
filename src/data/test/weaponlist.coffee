@@ -1,7 +1,6 @@
 # 武器リスト
 
-require('../../common/utils')
-require('../../common/constants')
+require './requires.coffee'
 
 IDF = '000'
 id = 0

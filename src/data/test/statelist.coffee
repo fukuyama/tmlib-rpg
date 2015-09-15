@@ -1,7 +1,6 @@
 # ステートリスト
 
-require('../../common/utils')
-require('../../common/constants')
+require './requires.coffee'
 
 ITEM_SCOPE = rpg.constants.ITEM_SCOPE
 

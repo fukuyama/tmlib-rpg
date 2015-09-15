@@ -1,4 +1,8 @@
 
+unless window?.SYSTEM_ASSETS?
+  window.SYSTEM_ASSETS =
+    system: 'rpg/test/system.json'
+
 # メイン処理(ページ読み込み後に実行される)
 tm.main ->
   loader = tm.asset.Loader()

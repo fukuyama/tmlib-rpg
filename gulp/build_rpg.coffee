@@ -2,6 +2,7 @@ config = require '../buildconfig.coffee'
 gulp   = require 'gulp'
 glob   = require 'glob'
 fs     = require 'fs'
+mkdirp = require 'mkdirp'
 rpgc   = require '../src/main/tools/RPGCompiler'
 
 rpg_compiler_callback = (param) ->
@@ -11,7 +12,7 @@ rpg_compiler_callback = (param) ->
       outputDir
     } = param
     op.src = []
-    fs.mkdir op.outputDir, (err) ->
+    mkdirp op.outputDir, (err) ->
       if err? and err.code isnt 'EEXIST'
         cb(err)
         return
@@ -23,6 +24,10 @@ rpg_compiler_callback = (param) ->
       cb()
     return
 
-gulp.task 'build_rpg:sample', ['build_express'], rpg_compiler_callback(config.rpg.sample)
-gulp.task 'build_rpg:demo001', ['build_express'], rpg_compiler_callback(config.rpg.demo001)
-gulp.task 'build_rpg', ['build_rpg:sample','build_rpg:demo001']
+tasks = []
+for k,v of config.rpg
+  taskname = 'build_rpg:' + k
+  tasks.push taskname
+  gulp.task taskname, ['build_express'], rpg_compiler_callback(v)
+
+gulp.task 'build_rpg', tasks

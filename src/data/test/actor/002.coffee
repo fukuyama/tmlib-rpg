@@ -1,5 +1,4 @@
-require('../../../common/utils')
-require('../../../common/constants')
+require '../requires.coffee'
 
 module.exports = {
   name: 'あくたー２'

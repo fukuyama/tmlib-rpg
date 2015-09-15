@@ -3,13 +3,14 @@ gulp       = require 'gulp'
 coffee     = require 'gulp-coffee'
 sourcemaps = require 'gulp-sourcemaps'
 fs         = require 'fs'
+mkdirp     = require 'mkdirp'
 
 gulp.task 'build_test_script', ['build_test_site'], (cb) ->
   {
     files
     distDir
   } = config.test.browser
-  fs.mkdir distDir, (err) ->
+  mkdirp distDir, (err) ->
     if err? and err.code isnt 'EEXIST'
       cb(err)
       return

@@ -92,6 +92,8 @@ tm.define 'rpg.WindowMessage',
     if @_lines[i].isReady()
       @_lines[i].start()
     @_dy += rpg.system.lineHeight
+    if @isPause()
+      @active = true
     return
 
   ###* 状態クリア
@@ -428,6 +430,13 @@ tm.define 'rpg.WindowMessage',
       #console.log 'scroll ' + @_debug_string()
       @_sy = @_py - @oy
       return true
+    # ポーズじゃなくて、描画位置が範囲を超えたら
+    if not @isPause() and @_dy >= rpg.system.lineHeight * @maxLine + @oy
+      #if not @isPause() and @_ay != @_dy and @_dy >= rpg.system.lineHeight * @maxLine
+      #console.log 'over ' + @_debug_string()
+      @_sy = rpg.system.lineHeight
+      @_ay = @_dy
+      return true
     # ポーズしてて表示がずれている場合は位置調整（@_lines並べ替え）
     if @isPause() and @oy > 0
       #console.log 'init ' + @_debug_string()
@@ -444,13 +453,6 @@ tm.define 'rpg.WindowMessage',
       for l,i in @_lines
         l.y = i * rpg.system.lineHeight
       return false
-    # ポーズじゃなくて、描画位置が範囲を超えたら
-    if not @isPause() and @_dy >= rpg.system.lineHeight * @maxLine + @oy
-      #if not @isPause() and @_ay != @_dy and @_dy >= rpg.system.lineHeight * @maxLine
-      #console.log 'over ' + @_debug_string()
-      @_sy = rpg.system.lineHeight
-      @_ay = @_dy
-      return true
     return false
 
   ###* 更新処理
@@ -467,7 +469,6 @@ tm.define 'rpg.WindowMessage',
     return if @isInputNum()
     # ポーズ中
     if @isPause()
-      @active = true
       # 自動送り
       unless @countAutoTiming()
         @pauseCancel()

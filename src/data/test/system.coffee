@@ -1,5 +1,4 @@
-require('../../common/utils')
-require('../../common/constants')
+require './requires.coffee'
 
 module.exports = {
   'screen':
@@ -28,8 +27,6 @@ module.exports = {
             }
             {
               name:'Test'
-              next:
-                nextScene: 'SceneMy'
             }
           ]
       'scene.title.background.image': 'img/test_001.png'
@@ -39,13 +36,13 @@ module.exports = {
       'windowskin.image': 'img/test_windowskin2.png'
       'sample.spritesheet':
         type:'tmss'
-        src: 'sample/spritesheet/hiyoko.json'
+        src: 'rpg/test/spritesheet/hiyoko.json'
       'spritesheet.hiyoko':
         type:'tmss'
-        src: 'sample/spritesheet/hiyoko.json'
+        src: 'rpg/test/spritesheet/hiyoko.json'
       'spritesheet.object001':
         type:'tmss'
-        src: 'sample/spritesheet/object001.json'
+        src: 'rpg/test/spritesheet/object001.json'
     }
   assets: {
     'i1': 'img/hiyoco_nomal_full.png'
@@ -59,7 +56,12 @@ module.exports = {
   windowDefault: {}
   start:
     actors: [1,2]
+    map:
+      id: 1
+      x: 0
+      y: 0
+      d: 2
   database:
     path:
-      data: 'sample/'
+      data: 'rpg/test/'
 }

@@ -1,13 +1,11 @@
-
 # ------------
 
 mainDir = './src/main/'
 testDir = './src/test/'
-demoDir = './src/demo/'
+dataDir = './src/data/'
 distDir = './target/'
 
 clientScripts = [
-  'sample'
   'tmlib/CustomizeTexture'
   'tmlib/TransitionShape'
   'core/DataBase'
@@ -72,9 +70,11 @@ clientScripts = [
   'scene/SceneTitle'
   'scene/SceneMap'
   'scene/SceneBattle'
-  'scene/SceneMy'
-  'scene/SceneMenuTest1'
-  'scene/SceneMenuTest2'
+
+  #'scene/SceneMy'
+  #'scene/SceneMenuTest1'
+  #'scene/SceneMenuTest2'
+
   'main'
 ]
 commonScripts = [
@@ -112,12 +112,12 @@ config =
     distDir: distDir + 'public/client/'
 
   rpg:
-    sample:
-      inputDir: mainDir + 'client/sample/'
-      outputDir: distDir + 'public/client/sample/'
+    test:
+      inputDir: dataDir + 'test/'
+      outputDir: distDir + 'public/client/rpg/test/'
     demo001:
-      inputDir: demoDir + '001/'
-      outputDir: distDir + 'public/client/001/'
+      inputDir: dataDir + '001/'
+      outputDir: distDir + 'public/client/rpg/001/'
 
   express:
     files: mainDir + 'express/**'
@@ -139,7 +139,7 @@ config =
       distDir: distDir + 'public/'
     }
     {
-      files: demoDir + '001/img/**'
+      files: dataDir + '001/img/**'
       distDir: distDir + 'public/client/img/'
     }
   ]

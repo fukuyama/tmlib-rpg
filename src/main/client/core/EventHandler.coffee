@@ -64,7 +64,7 @@ tm.define 'rpg.EventHandler',
 
   # ハンドラーメソッドの作成
   create: (name) ->
-    dispatcher = @['_dispatcher_' + name] = tm.event.EventDispatcher()
+    dispatcher = tm.event.EventDispatcher()
     @["add#{name}Handler"] = @addHandler.bind(@, dispatcher)
     @["call#{name}Handler"] = @callHandler.bind(@, dispatcher)
     @["remove#{name}Handler"] = @removeHandler.bind(@, dispatcher)
@@ -80,7 +80,7 @@ tm.define 'rpg.EventHandler',
   # ハンドラ呼び出し
   callHandler: (dispatcher, key) ->
     if dispatcher.hasEventListener key
-      console.log "callHandler #{key}"
+      # console.log "callHandler #{key}"
       dispatcher.dispatchEvent(tm.event.Event key)
 
   # ハンドラ削除
@@ -98,7 +98,7 @@ tm.define 'rpg.EventHandler',
   # receiver のメソッド名から、自動的にハンドラを設定する
   # ex) input_up() repeat_down() など
   setupHandler: (receiver) ->
-    console.log 'setupHandler'
+    # console.log 'setupHandler'
     _setupHandler = ((rec,addHandler,prefix) ->
       _isFunc = (k) -> typeof rec[prefix + k] is 'function'
       for key in @eventKeys when _isFunc key
@@ -110,7 +110,7 @@ tm.define 'rpg.EventHandler',
         addHandler key + '_up', rec[prefix + key + '_up'].bind(rec)
       for a in @aliasUpKeys when _isFunc(a.name + '_up')
         for key in a.keys
-          console.log "key = #{key + '_up'}, func = #{prefix + a.name + '_up'}"
+          # console.log "key = #{key + '_up'}, func = #{prefix + a.name + '_up'}"
           addHandler key + '_up', rec[prefix + a.name + '_up'].bind(rec)
       ).bind(@, receiver)
     _setupHandler @addInputHandler, 'input_'
