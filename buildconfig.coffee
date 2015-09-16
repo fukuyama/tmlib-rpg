@@ -39,6 +39,7 @@ clientScripts = [
   'core/WindowItemTargetActorList'
   'core/WindowItemShop'
   'core/WindowCash'
+  'core/WindowBattleMenu'
   'core/GamePlayer'
   'core/Interpreter'
   'event_command/Function'

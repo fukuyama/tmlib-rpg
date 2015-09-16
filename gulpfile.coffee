@@ -32,4 +32,5 @@ gulp.task 'watch', [
   'build_express:watch'
   'build_main_script:watch'
   'build_test_script:watch'
+  'build_rpg:watch'
 ]

@@ -48,6 +48,9 @@ class rpg.Party
   each: (f) ->
     f.call(null,a) for a in @_members
 
+  # メンバーリストクローン
+  getMembers: -> @_members.slice()
+
   # パーティへアイテム追加
   addItem: (item) ->
     # パーティの誰かにアイテムを追加

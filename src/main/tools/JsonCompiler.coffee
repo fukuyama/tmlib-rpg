@@ -9,8 +9,17 @@ class JsonCompiler
   compile: (obj) ->
     JSON.stringify(obj)
 
+  _load: (name) ->
+    file = path.join(@base,name)
+    res = require file
+    delete require.cache[file]
+    return res
+
   compileFile: (output, input) ->
-    @compileJson(output, require path.join(@base,input))
+    @compileJson output, @_load(input)
+
+  compileFileArray: (outputDir, input, key) ->
+    @compileJsonArray outputDir, @_load(input), key
 
   compileJson: (output, obj) ->
     fs.writeFile output, @compile(obj), (err) -> throw err if err?

@@ -10,6 +10,7 @@ tm.define 'rpg.WindowBattleMenu',
   # 初期化
   init: (args={}) ->
     args.$extend {
+      title:'actor name'
       name:'BattleMenu'
       active: false
       visible: false
@@ -26,6 +27,10 @@ tm.define 'rpg.WindowBattleMenu',
       ]
     }
     @superInit(args)
+
+  setActor: (@actor) ->
+    @drawTitle(@actor.name)
+    return @
 
   menuAttack: ->
     return

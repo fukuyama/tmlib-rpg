@@ -25,9 +25,16 @@ rpg_compiler_callback = (param) ->
     return
 
 tasks = []
+watchs = []
 for k,v of config.rpg
   taskname = 'build_rpg:' + k
+  watchname = taskname + ':watch'
   tasks.push taskname
-  gulp.task taskname, ['build_express'], rpg_compiler_callback(v)
+  watchs.push watchname
+  gulp.task taskname, rpg_compiler_callback(v)
+  gulp.task watchname, ((path,task) ->
+    -> gulp.watch path + '**/*.coffee', [task]
+  )(v.inputDir,taskname)
 
 gulp.task 'build_rpg', tasks
+gulp.task 'build_rpg:watch', watchs

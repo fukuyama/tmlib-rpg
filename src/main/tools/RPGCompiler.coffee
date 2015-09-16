@@ -42,9 +42,9 @@ class RPGCompiler
 
   compile_source_list: (key) ->
     o = path.join(@outputDir, key)
-    i = path.join(@inputDir, key + 'list')
-    if fs.existsSync i + '.coffee'
-      jc.compileJsonArray o, require(i), key
+    i = path.join(@inputDir, key + 'list.coffee')
+    if fs.existsSync i
+      jc.compileFileArray o, i, key
 
 
   compile: ->

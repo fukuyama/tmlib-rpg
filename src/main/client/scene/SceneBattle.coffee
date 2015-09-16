@@ -20,6 +20,9 @@ tm.define 'SceneBattle',
 
     setting = rpg.system.setting
 
+    @enemies = []
+    @actors = rpg.game.party.getMembers()
+
     # バトルインタープリター
     @interpreter = rpg.system.mapInterpreter
 
@@ -28,11 +31,12 @@ tm.define 'SceneBattle',
       messageSpeed: setting.messageSpeed
     )
 
+    @windowBattleMenu = rpg.WindowBattleMenu()
     # メニューレイヤー
-    #menuLayer = tm.display.CanvasElement()
+    menuLayer = tm.display.CanvasElement()
     #menuLayer.addChild(@windowBattleStatus)
-    #menuLayer.addChild(@windowBattleMenu)
-    #@addChild(menuLayer)
+    menuLayer.addChild(@windowBattleMenu)
+    @addChild(menuLayer)
 
     # メッセージレイヤー
     messageLayer = tm.display.CanvasElement()
@@ -48,12 +52,19 @@ tm.define 'SceneBattle',
     @interpreter.start [
       {type:'message',params:['battle start']}
     ]
-    @next @phaseEndBattle
+    # @next @phaseEndBattle
+    @next (-> @startInputCommand @actors[0]).bind @
     return
 
   phaseEndBattle: ->
     console.count 'endPhase'
     @app.popScene()
+    return
+
+  startInputCommand: (@actor)->
+    @windowBattleMenu.setActor @actor
+    @windowBattleMenu.open()
+    @next @phaseInputCommand
     return
 
   phaseInputCommand: ->
