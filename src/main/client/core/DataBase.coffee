@@ -43,6 +43,7 @@ tm.define 'rpg.DataBase',
         armor:   'armor/'
         actor:   'actor/'
         enemy:   'enemy/'
+        troop:   'troop/'
     }.$extendAll args
 
     # メタ インタフェース
@@ -58,6 +59,7 @@ tm.define 'rpg.DataBase',
       'armor'
       'actor'
       'enemy'
+      'troop'
     ]
       c = k[0].toUpperCase() + k.slice(1)
       @_metaif[k] = {

@@ -85,6 +85,8 @@ commonScripts = [
   'common/Battler'
   'common/Actor'
   'common/Party'
+  'common/Enemy'
+  'common/Troop'
   'common/Map'
   'common/Flag'
   'common/Event'

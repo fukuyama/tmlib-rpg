@@ -32,6 +32,8 @@ tm.define 'SceneLoading',
     @_assets = []
     @addAssets param.assets
 
+    # console.log @_assets
+
     @fromJSON
       children:
         stage:

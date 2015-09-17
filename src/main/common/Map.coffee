@@ -110,4 +110,6 @@ Object.defineProperty rpg.Map.prototype, 'encount',
   get: -> {
     step: 10
     rate: 50
+    troop: 1
   }
+  #　TODO: Map で、Troop のリストを管理して、エンカウント情報に、エンカウントした場合のTroop情報を入れて返す

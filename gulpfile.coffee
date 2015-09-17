@@ -8,9 +8,8 @@ gulp.task 'default', [
   'build'
 ]
 
-gulp.task 'dev', [
-  'watch'
-  'server'
+gulp.task 'serve', [
+  'server:start'
 ]
 
 gulp.task 'test', [
@@ -33,4 +32,5 @@ gulp.task 'watch', [
   'build_main_script:watch'
   'build_test_script:watch'
   'build_rpg:watch'
+  'server:watch'
 ]

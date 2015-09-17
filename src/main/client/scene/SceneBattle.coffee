@@ -8,22 +8,17 @@ tm.define 'SceneBattle',
   * @classdesc 戦闘シーンクラス
   * @constructor rpg.SceneBattle
   * @param {Object} args
-  * @param {rpg.Map} args.map マップオブジェクト
-  *                  事前に読み込む物があるのでStringでは無理
   ###
   init: (args={}) ->
     {
-      @encount
+      @troop
     } = args
     # 親の初期化
     @superInit(name:'SceneBattle')
 
     setting = rpg.system.setting
 
-    @enemies = []
-    @actors = rpg.game.party.getMembers()
-
-    # バトルインタープリター
+    # 戦闘用インタープリター
     @interpreter = rpg.system.mapInterpreter
 
     # メッセージウィンドウ
@@ -31,7 +26,9 @@ tm.define 'SceneBattle',
       messageSpeed: setting.messageSpeed
     )
 
+    # 戦闘コマンドメニュー
     @windowBattleMenu = rpg.WindowBattleMenu()
+    @windowBattleMenu.addCloseListener @_endInputPhase.bind @
     # メニューレイヤー
     menuLayer = tm.display.CanvasElement()
     #menuLayer.addChild(@windowBattleStatus)
@@ -43,31 +40,60 @@ tm.define 'SceneBattle',
     messageLayer.addChild(@windowMessage)
     @addChild(messageLayer)
 
-    @next @phaseStartBattle
+    @on 'enter', @_load
+    return
 
-  next: (@phase) ->
+  _load: ->
+    _loaded_enemies = (enemies) ->
+      @enemies = enemies
+      @_start()
+      return
+    _loaded_troop = (troops) ->
+      @troop = troops[0]
+      rpg.system.db.preloadEnemy @troop.enemies, _loaded_enemies.bind @
+      return
+    rpg.system.db.preloadTroop [@troop], _loaded_troop.bind @
+    return
 
-  phaseStartBattle: ->
-    console.count 'startPhase'
+  _start: () ->
+    @actors = rpg.game.party.getMembers()
+    @battlers = [].concat @actors
+    @battlers = @battlers.concat @enemies
     @interpreter.start [
       {type:'message',params:['battle start']}
     ]
-    # @next @phaseEndBattle
-    @next (-> @startInputCommand @actors[0]).bind @
+    @_startTurn()
     return
 
-  phaseEndBattle: ->
-    console.count 'endPhase'
+  _end: ->
     @app.popScene()
     return
 
-  startInputCommand: (@actor)->
-    @windowBattleMenu.setActor @actor
-    @windowBattleMenu.open()
-    @next @phaseInputCommand
+  _startTurn: ->
+    @battlers = @battlers.shuffle().sort (a,b) -> b.age - a.age
+    @index = 0
+    @_startCommandPhase()
     return
 
-  phaseInputCommand: ->
+  _startCommandPhase: ->
+    @battler = @battlers[@index]
+    if @battler instanceof rpg.Actor
+      @_startInputPhase(@battler)
+    else if @battler instanceof rpg.Enemy
+      a
+    return
+
+  _startInputPhase: ->
+    @windowBattleMenu.setActor @battler
+    @phase = ->
+      @phase = null
+      @windowBattleMenu.open()
+      return
+    return
+
+  _endInputPhase: ->
+    @_end()
+    # @_startMainPhase()
     return
 
   phaseMain: ->

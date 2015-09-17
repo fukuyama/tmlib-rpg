@@ -6,13 +6,14 @@ jc   = require './JsonCompiler'
 
 SUBDIRS = [
   'map'
-  'item'
-  'state'
   'spritesheet'
-  'actor'
-  'enemy'
+  'state'
+  'item'
   'weapon'
   'armor'
+  'actor'
+  'enemy'
+  'troop'
 ]
 
 class RPGCompiler
