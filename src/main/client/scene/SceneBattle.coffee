@@ -1,3 +1,19 @@
+###*
+* @file SceneBattle.coffee
+* 戦闘シーン
+###
+
+###
+戦闘関連まとめ
+
+キャラクター情報
+Battler
+ +> Actor
+ +> Enemy
+
+
+
+###
 
 # 戦闘シーン
 tm.define 'SceneBattle',
@@ -72,7 +88,7 @@ tm.define 'SceneBattle',
   _startTurn: ->
     @battlers = @battlers.shuffle().sort (a,b) -> b.age - a.age
     @index = 0
-    @_startCommandPhase()
+    @_startCommandPhase
     return
 
   _startCommandPhase: ->
@@ -80,7 +96,7 @@ tm.define 'SceneBattle',
     if @battler instanceof rpg.Actor
       @_startInputPhase(@battler)
     else if @battler instanceof rpg.Enemy
-      a
+      @_startAIPhase(@battler)
     return
 
   _startInputPhase: ->
@@ -89,6 +105,14 @@ tm.define 'SceneBattle',
       @phase = null
       @windowBattleMenu.open()
       return
+    return
+
+  _startAIPhase: ->
+    @action = {
+      type: 'attack'
+      target: target
+      onwer: @battler
+    }
     return
 
   _endInputPhase: ->

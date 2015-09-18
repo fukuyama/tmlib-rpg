@@ -43,8 +43,10 @@ describe 'rpg.UsableItem', ->
   describe '使った回数で使えなくなるアイテム', ->
     describe '１回使用するとなくなるアイテム', ->
       it '作成', ->
-        item = new rpg.UsableItem(lost:{max:1})
-        item.effect = () -> true
+        item = new rpg.UsableItem(
+          lost:{max:1}
+        )
+        item.effectApply = () -> true
         item.isLost().should.equal false
       it 'アイテムを使用する', ->
         user = new rpg.Actor()
@@ -56,7 +58,7 @@ describe 'rpg.UsableItem', ->
     describe '２回使用するとなくなるアイテム', ->
       it '作成', ->
         item = new rpg.UsableItem(lost:{max:2})
-        item.effect = () -> true
+        item.effectApply = () -> true
         item.isLost().should.equal false
       it 'アイテムを使用する１回目', ->
         user = new rpg.Actor()
@@ -80,7 +82,7 @@ describe 'rpg.UsableItem', ->
     describe '使用終了したアイテムを復活させる', ->
       it '作成', ->
         item = new rpg.UsableItem(lost:{max:1})
-        item.effect = () -> true
+        item.effectApply = () -> true
         item.isLost().should.equal false
       it 'アイテムを使用する', ->
         user = new rpg.Actor()

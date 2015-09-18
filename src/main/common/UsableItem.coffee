@@ -37,10 +37,18 @@ class rpg.UsableItem extends rpg.Item
   ###* 効果メソッド
   * @param {rpg.Battler} user 使用者
   * @param {Array} target 対象者(rpg.Battler配列)
+  * @return {Object} 効果コンテキスト
+  ###
+  effect: (user,targets = []) ->
+    @_effect.effect(user,targets)
+
+  ###* 効果メソッド
+  * @param {rpg.Battler} user 使用者
+  * @param {Array} target 対象者(rpg.Battler配列)
   * @param {Object} log 効果ログ情報
   * @return {boolean} 効果ある場合 true
   ###
-  effect: (user,targets = [],log = {}) ->
+  effectApply: (user,targets = [],log = {}) ->
     @_effect.effectApply(user,targets,log)
 
   # 使う
@@ -48,7 +56,7 @@ class rpg.UsableItem extends rpg.Item
   # target: rpg.Actor or Array<rpg.Actor>
   use: (user, target, log = {}) ->
     return false if @isLost()
-    r = @effect(user, [].concat(target), log)
+    r = @effectApply(user, [].concat(target), log)
     log.item = {name:@name}
     if r then @ok_count += 1 else @miss_count += 1
     @count += 1

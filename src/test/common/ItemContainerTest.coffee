@@ -232,7 +232,7 @@ describe 'rpg.ItemContainer', ->
                 maxStack:5
                 lost:{max:2}
               )
-              item.effect = -> true
+              item.effectApply = -> true
               c.add item
             c.itemCount.should.equal 3
             c.itemlistCount.should.equal 1

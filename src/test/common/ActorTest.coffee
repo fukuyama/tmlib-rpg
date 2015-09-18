@@ -146,7 +146,7 @@ describe 'rpg.Actor', () ->
       it '１つ入れる', ->
         actor = new rpg.Actor(backpack:{max:12})
         item = new rpg.UsableItem(name:'Item01',lost:{max:1})
-        item.effect = () -> true
+        item.effectApply = () -> true
         actor.backpack.addItem item
         actor.backpack.itemCount.should.equal 1
       it 'アイテムを使うとなくなる', ->
@@ -158,7 +158,7 @@ describe 'rpg.Actor', () ->
       it '１つ入れる', ->
         actor = new rpg.Actor(backpack:{max:12})
         item = new rpg.UsableItem(name:'Item01',lost:{max:2})
-        item.effect = () -> true
+        item.effectApply = () -> true
         actor.backpack.addItem item
         actor.backpack.itemCount.should.equal 1
       it '１回目は使用しても減らない', ->
@@ -175,23 +175,23 @@ describe 'rpg.Actor', () ->
       it '２つ入れる', ->
         actor = new rpg.Actor(backpack:{max:12})
         item = new rpg.UsableItem(name:'Item01',lost:{max:2},stack:true)
-        item.effect = () -> true
+        item.effectApply = () -> true
         actor.backpack.addItem item
         actor.backpack.itemCount.should.equal 1
         actor.backpack.itemlistCount.should.equal 1
         item = new rpg.UsableItem(name:'Item01',lost:{max:2},stack:true)
-        item.effect = () -> true
+        item.effectApply = () -> true
         actor.backpack.addItem item
         actor.backpack.itemCount.should.equal 2
         actor.backpack.itemlistCount.should.equal 1
       it '効果が無い場合は減らない', ->
         target = new rpg.Actor()
         item = actor.backpack.getItem 'Item01'
-        item.effect = () -> false # デバックのため一時的に効果なし
+        item.effectApply = () -> false # デバックのため一時的に効果なし
         actor.useItem item, [target]
         actor.backpack.itemCount.should.equal 2
         actor.backpack.itemlistCount.should.equal 1
-        item.effect = () -> true # もどし
+        item.effectApply = () -> true # もどし
       it '１回目は使用しても減らない', ->
         target = new rpg.Actor()
         item = actor.backpack.getItem 'Item01'

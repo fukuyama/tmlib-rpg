@@ -100,15 +100,15 @@ class rpg.Effect
         cx.target = cxt
     return cx
 
-  effectApply: (user,targets = [],log = {}) ->
+  effectApply: (user,targets = [],log = {},cx = null) ->
     r = false
     log.user = {
       name: user.name # 使った人
     }
     log.targets = [] # 誰がどれくらいの効果だったか
     # TODO: effect と target の組み合わせのリザルトをどうするか…悩み中
-    cx = @effect(user,targets)
     return r unless @_checkScopeRange(user, targets)
+    cx = @effect(user,targets) unless cx?
     i = 0
     for t in targets when @_checkScopeType(user, t)
       atkcx = cx.targets[i]
