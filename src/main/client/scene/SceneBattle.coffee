@@ -11,7 +11,16 @@ Battler
  +> Actor
  +> Enemy
 
+Effect
 
+Item
+ +> UsableItem
+
+Skill
+
+State
+
+攻撃とかのアクション効果は、全部Effectで行う。
 
 ###
 
