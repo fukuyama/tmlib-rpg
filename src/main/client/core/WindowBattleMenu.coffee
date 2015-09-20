@@ -29,6 +29,7 @@ tm.define 'rpg.WindowBattleMenu',
     @superInit(args)
 
   setActor: (@actor) ->
+    @clearTitle()
     @drawTitle(@actor.name)
     return @
 

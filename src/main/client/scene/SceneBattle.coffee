@@ -95,9 +95,11 @@ tm.define 'SceneBattle',
     return
 
   _startTurn: ->
-    @battlers = @battlers.shuffle().sort (a,b) -> b.age - a.age
-    @index = 0
-    @_startCommandPhase
+    @battler = @actors[0]
+    @_startInputPhase()
+    # @battlers = @battlers.shuffle().sort (a,b) -> b.age - a.age
+    # @index = 0
+    # @_startCommandPhase
     return
 
   _startCommandPhase: ->

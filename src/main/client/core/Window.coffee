@@ -226,10 +226,15 @@ tm.define 'rpg.Window',
     @content.context.restore()
     width
   
+  ###* タイトルクリア
+  * @memberof rpg.Window#
+  ###
+  clearTitle: ->
+    @titleContent?.clear()
+    return
+
   ###* リサイズ
   * @memberof rpg.Window#
-  * @param {number} width 幅
-  * @param {number} height 高さ
   ###
   resize: (width, height) ->
     @resizeWindow(width, height)
