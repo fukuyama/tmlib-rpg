@@ -9,6 +9,7 @@ SUBDIRS = [
   'spritesheet'
   'state'
   'item'
+  'skill'
   'weapon'
   'armor'
   'actor'

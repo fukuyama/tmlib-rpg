@@ -39,6 +39,7 @@ tm.define 'rpg.DataBase',
         state:   'state/'
         picture: 'img/'
         item:    'item/'
+        skill:   'skill/'
         weapon:  'weapon/'
         armor:   'armor/'
         actor:   'actor/'
@@ -55,6 +56,7 @@ tm.define 'rpg.DataBase',
     # preload 用 公開メソッド
     for k in [
       'item'
+      'skill'
       'weapon'
       'armor'
       'actor'

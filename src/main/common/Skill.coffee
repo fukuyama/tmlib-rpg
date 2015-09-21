@@ -18,6 +18,11 @@ class rpg.Skill
   * @param {Object} args
   ###
   constructor: (args={}) ->
+    {
+      @name
+    } = {
+      name: '(skill)'
+    }.$extendAll args
     @_effect = new rpg.Effect args
 
   ###* 効果メソッド
