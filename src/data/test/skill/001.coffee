@@ -7,7 +7,7 @@ module.exports = {
   help: '攻撃'
   scope:
     type: ITEM_SCOPE.TYPE.ENEMY
-   range: ITEM_SCOPE.RANGE.ONE
+    range: ITEM_SCOPE.RANGE.ONE
   target:
     effects:[
       hp:    [['user.patk','/',2],'-',['target.pdef','/',4]]
