@@ -62,6 +62,8 @@ module.exports = {
       y: 0
       d: 2
   database:
+    preload:
+      skill: [1 .. 2]
     path:
       data: 'rpg/test/'
 }

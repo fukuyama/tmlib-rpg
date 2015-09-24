@@ -2,7 +2,7 @@
 
 require './requires.coffee'
 
-ITEM_SCOPE = rpg.constants.ITEM_SCOPE
+SKILL_SCOPE = rpg.constants.SKILL_SCOPE
 
 IDF = '000'
 id = 1
@@ -18,8 +18,8 @@ module.exports = [
     name: '回復'
     help: '回復'
     scope:
-      type: ITEM_SCOPE.TYPE.FRIEND
-      range: ITEM_SCOPE.RANGE.ONE
+      type: SKILL_SCOPE.TYPE.FRIEND
+      range: SKILL_SCOPE.RANGE.ONE
     target:
       effects:[
         hp:    -10

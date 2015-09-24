@@ -5,3 +5,5 @@ TODO:
  * メッセージウィンドウの作り直し…
    ラインごとにスムーズに表示させたい。
    http://t.co/l4B8tro1tI
+
+ * tmlib.js CDN https://cdnjs.com/libraries/tmlib.js

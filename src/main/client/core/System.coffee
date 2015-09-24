@@ -347,9 +347,14 @@ tm.define 'rpg.System',
       @start.actors
       _load.bind @
     )
+    @preloadData()
     # Map
     @loadMap @start.map
     return
+
+  preloadData: ->
+    if @database.preload?
+      @db.preloadSkill @database.preload.skill if @database.preload.skill?
 
   # マップのロード
   loadMap: (args) ->
