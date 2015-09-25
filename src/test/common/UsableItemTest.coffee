@@ -100,7 +100,7 @@ describe 'rpg.UsableItem', ->
         lost:{max:1}
         target:
           effects:[
-            {hp: -10}
+            {hp: 10}
           ]
       )
       item.isLost().should.equal false
@@ -121,7 +121,7 @@ describe 'rpg.UsableItem', ->
         lost:{max:1}
         target:
           effects:[
-            {hp: -10}
+            {hp: 10}
           ]
       )
       item.isLost().should.equal false
@@ -149,7 +149,7 @@ describe 'rpg.UsableItem', ->
         lost:{max:1}
         target:
           effects:[
-            {hp: -10}
+            {hp: 10}
           ]
       )
       item.isLost().should.equal false
@@ -177,7 +177,7 @@ describe 'rpg.UsableItem', ->
         lost:{max:1} # type: 'ok_count' (default)
         target:
           effects:[
-            {hp: -10}
+            {hp: 10}
           ]
       )
       item.isLost().should.equal false
@@ -199,7 +199,7 @@ describe 'rpg.UsableItem', ->
         lost:{type:'count',max:1}
         target:
           effects:[
-            {hp: -10}
+            {hp: 10}
           ]
       )
       item.isLost().should.equal false
@@ -222,7 +222,7 @@ describe 'rpg.UsableItem', ->
         lost:{max:1}
         target:
           effects:[
-            {mp: -10}
+            {mp: 10}
           ]
       )
       item.isLost().should.equal false
@@ -254,7 +254,7 @@ describe 'rpg.UsableItem', ->
           }
           target:
             effects:[
-              {hp: -10}
+              {hp: 10}
             ]
         )
         item.isLost().should.equal false
@@ -284,7 +284,7 @@ describe 'rpg.UsableItem', ->
           }
           target:
             effects:[
-              {hp: -10}
+              {hp: 10}
             ]
         )
         item.isLost().should.equal false
@@ -311,7 +311,7 @@ describe 'rpg.UsableItem', ->
           }
           target:
             effects:[
-              {hp: -10}
+              {hp: 10}
             ]
         )
         item.isLost().should.equal false
@@ -343,7 +343,7 @@ describe 'rpg.UsableItem', ->
           }
           target:
             effects:[
-              {hp: -10}
+              {hp: 10}
             ]
         )
         item.isLost().should.equal false
@@ -380,7 +380,7 @@ describe 'rpg.UsableItem', ->
           }
           target:
             effects:[
-              {hp: -10}
+              {hp: 10}
             ]
         )
         item.isLost().should.equal false
@@ -431,7 +431,7 @@ describe 'rpg.UsableItem', ->
           }
           target:
             effects:[
-              {hp: -10}
+              {hp: 10}
             ]
         )
         item.isLost().should.equal false

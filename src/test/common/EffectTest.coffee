@@ -42,12 +42,12 @@ describe 'rpg.Effect', ->
           ]
         target:
           effects:[
-            {hp:-10,attrs:['魔法','回復']}
+            {hp:10,attrs:['魔法','回復']}
           ]
       )
     it 'エフェクトの取得', ->
       cx = effect.effect(user,targets)
-      cx.targets[0].hp.should.equal -10
+      cx.targets[0].hp.should.equal 10
       (cx.user isnt null).should.equal true
     it 'エフェクトの反映', ->
       targets[0].hp.should.equal 50
@@ -83,11 +83,11 @@ describe 'rpg.Effect', ->
         }
         target:
           effects:[
-            {hp:[['user.patk','/',2],'-',['target.pdef','/',4]],attrs:['物理']}
+            {hpdamage:[['user.patk','/',2],'-',['target.pdef','/',4]],attrs:['物理']}
           ]
       )
       atkcx = effect.effect(user,targets)
-      atkcx.target.hp.should.equal 25
+      atkcx.target.hpdamage.should.equal 25
       atkcx.target.attrs[0].should.equal '物理'
 
     it '魔法攻撃', ->
@@ -99,11 +99,11 @@ describe 'rpg.Effect', ->
         }
         target:
           effects:[
-            {hp:['user.matk','*',1.5],attrs:['魔法','炎']}
+            {hpdamage:['user.matk','*',1.5],attrs:['魔法','炎']}
           ]
       )
       atkcx = effect.effect(user,targets)
-      atkcx.target.hp.should.equal 75
+      atkcx.target.hpdamage.should.equal 75
       atkcx.target.attrs[0].should.equal '魔法'
       atkcx.target.attrs[1].should.equal '炎'
 

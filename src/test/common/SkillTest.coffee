@@ -37,7 +37,7 @@ describe 'rpg.Skill', ->
         range: SKILL_SCOPE.RANGE.ONE
       target:
         effects: [
-          {hp:[['user.patk','/',2],'-',['target.pdef','/',4]],attrs:['物理','武器']}
+          {hpdamage:[['user.patk','/',2],'-',['target.pdef','/',4]],attrs:['物理','武器']}
         ]
   skill = null
 
@@ -52,7 +52,7 @@ describe 'rpg.Skill', ->
         atkcx = skill.effect user,targets
         user.patk.should.equal 15
         targets[0].pdef.should.equal 15
-        atkcx.targets[0].hp.should.equal 3.75
+        atkcx.targets[0].hpdamage.should.equal 3.75
         atkcx.targets[0].attrs[0].should.equal '物理'
       it '武器装備時', ->
         user = new rpg.Actor(name:'user',team:'a')
@@ -66,7 +66,7 @@ describe 'rpg.Skill', ->
         atkcx = skill.effect user,targets
         user.patk.should.equal 25
         targets[0].pdef.should.equal 15
-        atkcx.targets[0].hp.should.equal 8.75
+        atkcx.targets[0].hpdamage.should.equal 8.75
         atkcx.targets[0].attrs[0].should.equal '物理'
       it '武器防具装備時', ->
         user = new rpg.Actor(name:'user',team:'a')
@@ -84,7 +84,7 @@ describe 'rpg.Skill', ->
         atkcx = skill.effect user,targets
         user.patk.should.equal 25
         targets[0].pdef.should.equal 25
-        atkcx.targets[0].hp.should.equal 6.25
+        atkcx.targets[0].hpdamage.should.equal 6.25
         atkcx.targets[0].attrs[0].should.equal '物理'
     describe '属性攻撃', ->
       it '武器防具装備時(炎属性武器)', ->
@@ -105,7 +105,7 @@ describe 'rpg.Skill', ->
         atkcx = skill.effect user,targets
         user.patk.should.equal 25
         targets[0].pdef.should.equal 25
-        atkcx.targets[0].hp.should.equal 6.25
+        atkcx.targets[0].hpdamage.should.equal 6.25
         atkcx.targets[0].attrs.length.should.equal 3
         atkcx.targets[0].attrs[0].should.equal '物理'
         atkcx.targets[0].attrs[1].should.equal '武器'
@@ -120,11 +120,11 @@ describe 'rpg.Skill', ->
             range: SKILL_SCOPE.RANGE.ONE
           user:
             effects:[
-              {map: 2}
+              {mp: -5}
             ]
           target:
             effects:[
-              {hp: -10}
+              {hp: 10}
             ]
       it '１１ダメージを受けてるので１０回復する', ->
         user = new rpg.Actor(name:'user')
@@ -135,6 +135,7 @@ describe 'rpg.Skill', ->
         log = {}
         r = skill.effectApply user, [target], log
         r.should.equal true
+        user.mp.should.equal user.maxmp - 5
         target.hp.should.equal target.maxhp - 1
     describe '全体回復', ->
       it '回復量１０の全体回復スキル', ->
@@ -144,11 +145,11 @@ describe 'rpg.Skill', ->
             range: SKILL_SCOPE.RANGE.MULTI
           user:
             effects:[
-              {map: 2}
+              {mp: -2}
             ]
           target:
             effects:[
-              {hp: -10}
+              {hp: 10}
             ]
       it '１１ダメージを受けてるので１０回復する', ->
         user = new rpg.Actor(name:'user')
@@ -159,5 +160,6 @@ describe 'rpg.Skill', ->
         log = {}
         r = skill.effectApply user, [target1,target2], log
         r.should.equal true
+        user.mp.should.equal user.maxmp - 2
         target1.hp.should.equal target1.maxhp - 1
         target2.hp.should.equal target2.maxhp - 2

@@ -111,40 +111,55 @@ class rpg.Effect
     cx = @effect(user,targets) unless cx?
     i = 0
     for t in targets when @_checkScopeType(user, t)
-      atkcx = cx.targets[i]
-      defcx = {attrs:t.attrs}
-      # TODO: 属性効果の適用
-      for type, val of atkcx when type isnt 'attrs'
-        if type is 'states'
-          for op in val
-            # TODO: 確率(rate)をつける？
-            if op.type == 'add'
-              state = rpg.system.db.state(op.name)
-              t.addState(state)
-              log.targets.push {
-                name: t.name
-                state:
-                  type: 'add'
-                  name: op.name
-              }
-              r = true
-            if op.type == 'remove'
-              t.removeState(name:op.name)
-              log.targets.push {
-                name: t.name
-                state:
-                  type: 'remove'
-                  name: op.name
-              }
-              r = true
-        else
-          v1 = t[type]
-          t[type] -= val
-          val = t[type] - v1
-          lt = log.targets[i] ? {name:t.name}
-          if val != 0
-            lt[type] = if lt[type]? then lt[type] - val else val
-            r = true
-          log.targets[i] = lt if r
+      r = @contextApply(t, cx.targets[i], log) or r
       i++
+    @contextApply(user, cx.user) if r
+    r
+
+  contextApply: (target,atkcx,log={user:{},targets:[]}) ->
+    r = false
+    defcx = {attrs:target.attrs}
+    # TODO: 属性効果の適用
+    for type, val of atkcx when type isnt 'attrs'
+      if type is 'states'
+        for op in val
+          # TODO: 確率(rate)をつける？
+          if op.type == 'add'
+            state = rpg.system.db.state(op.name)
+            target.addState(state)
+            log.targets.push {
+              name: target.name
+              state:
+                type: 'add'
+                name: op.name
+            }
+            r = true
+          if op.type == 'remove'
+            target.removeState(name:op.name)
+            log.targets.push {
+              name: target.name
+              state:
+                type: 'remove'
+                name: op.name
+            }
+            r = true
+      else
+        m = type.match /(.*)damage/
+        if m?
+          type = m[1]
+          val *= -1
+        v1 = target[type]
+        target[type] += val
+        val = target[type] - v1
+        if val != 0
+          lt = {name:target.name}
+          if log.targets.length == 0
+            log.targets.push lt
+          t = log.targets[log.targets.length - 1]
+          if lt.name is t.name
+            lt = t
+          else
+            log.targets.push lt
+          lt[type] = if lt[type]? then lt[type] - val else val
+          r = true
     r
