@@ -124,6 +124,7 @@ tm.define 'SceneBattle',
       target: target
       onwer: @battler
     }
+    # TODO: モンスターの行動を決定する。
     return
 
   _endInputPhase: ->
