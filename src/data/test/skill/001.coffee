@@ -10,7 +10,11 @@ module.exports = {
     range: ITEM_SCOPE.RANGE.ONE
   target:
     effects:[
-      hp:    [['user.patk','/',2],'-',['target.pdef','/',4]]
+      hpdamage: [
+        [['user.patk','/',2],'-',['target.pdef','/',4]]
+        '*'
+        [[[0,'random',15],'/',100.0],'+',1.0]
+      ]
       attrs: ['物理']
     ]
 }

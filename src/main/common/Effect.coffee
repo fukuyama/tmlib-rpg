@@ -8,6 +8,8 @@ rpg = _g.rpg = _g.rpg ? {}
 ITEM_SCOPE = rpg.constants.ITEM_SCOPE
 
 # ゲーム内の効果をまとめたクラス
+# user/target の Battler オブジェクトに対しての
+# rpg.utils.jsonExpression のリストを反映する
 class rpg.Effect
 
   # コンストラクタ
@@ -22,6 +24,7 @@ class rpg.Effect
         hp0: false
       }
     }.$extendAll args
+    # rpg.utils.jsonExpression に使用する式の集合
     @_effect = {}
     for n in ['user','target','users','targets'] when args[n]?
       @_effect[n] = args[n]
@@ -144,6 +147,7 @@ class rpg.Effect
             }
             r = true
       else
+        val = Math.round val
         m = type.match /(.*)damage/
         if m?
           type = m[1]

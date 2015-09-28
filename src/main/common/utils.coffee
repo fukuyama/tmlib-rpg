@@ -30,7 +30,10 @@ _expression = {
   '==': (l,r) -> l == r
   '!=': (l,r) -> l != r
   'and': (l,r) -> l and r
+  '&&': (l,r) -> l and r
   'or': (l,r) -> l or r
+  '||': (l,r) -> l or r
+  'random': (min,max) -> Math.round(Math.floor( Math.random() * (max - min + 1) ) + min)
 }
 # Utils
 rpg.utils = {
@@ -59,7 +62,7 @@ rpg.utils = {
       r = @jsonExpression json.r, op
       path = json.l
       obj = op
-      ret = null
+      ret = obj
       for k in path.split /[\[\]\.]/ when obj[k]?
         ret = obj
         obj = obj[k]

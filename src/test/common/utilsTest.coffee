@@ -255,12 +255,26 @@ describe 'utils', ->
       n.should.equal false
       n = rpg.utils.jsonExpression l: false,e: 'and',r: false
       n.should.equal false
+    it '&&', ->
+      n = rpg.utils.jsonExpression l: true,e: '&&',r: true
+      n.should.equal true
+      n = rpg.utils.jsonExpression l: true,e: '&&',r: false
+      n.should.equal false
+      n = rpg.utils.jsonExpression l: false,e: '&&',r: false
+      n.should.equal false
     it 'or', ->
       n = rpg.utils.jsonExpression l: true,e: 'or',r: true
       n.should.equal true
       n = rpg.utils.jsonExpression l: true,e: 'or',r: false
       n.should.equal true
       n = rpg.utils.jsonExpression l: false,e: 'or',r: false
+      n.should.equal false
+    it '||', ->
+      n = rpg.utils.jsonExpression l: true,e: '||',r: true
+      n.should.equal true
+      n = rpg.utils.jsonExpression l: true,e: '||',r: false
+      n.should.equal true
+      n = rpg.utils.jsonExpression l: false,e: '||',r: false
       n.should.equal false
 
     it 'オブジェクト参照', ->
@@ -331,3 +345,15 @@ describe 'utils', ->
       r = []
       r = r.concat rpg.utils.jsonExpression 'abc', op:op
       r[0].should.equal 'abc'
+
+
+    it '乱数生成', ->
+      op = {
+        test: 100
+      }
+      rpg.utils.jsonExpression ['tmp','=',['test','*',[[0,'random',15],'/',100]]], op
+      (0 <= op.tmp and op.tmp <= 15).should.equal true
+      n = rpg.utils.jsonExpression ['test','+','tmp'], op
+      (100 <= n and n <= 115).should.equal true
+      n = rpg.utils.jsonExpression ['test','*',[[[0,'random',15],'/',100],'+',1]], op
+      (100 <= n and n <= 115).should.equal true

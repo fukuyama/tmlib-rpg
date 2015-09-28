@@ -22,8 +22,12 @@ class rpg.Enemy extends rpg.Battler
     super(args)
     {
       @exp
+      @actions
     } = {
       exp: 0
+      actions: [
+        {skill:1}
+      ]
     }.$extendAll(@properties).$extendAll(args)
 
    # TODO:落とすアイテムとかの処理が必要
