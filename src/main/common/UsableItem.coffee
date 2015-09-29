@@ -5,8 +5,6 @@
 _g = window ? global ? @
 rpg = _g.rpg = _g.rpg ? {}
 
-ITEM_SCOPE = rpg.constants.ITEM_SCOPE
-
 # 使用可能アイテムクラス
 class rpg.UsableItem extends rpg.Item
 
@@ -21,7 +19,6 @@ class rpg.UsableItem extends rpg.Item
     } = {
       lost: {type:'ok_count',max: 1}
     }.$extendAll args
-    @_effect = new rpg.Effect args
     # 消費確認メソッド
     @isLost = @['lost_'+@lost.type].bind @, @lost
     # 再利用メソッド（lostを打ち消す）

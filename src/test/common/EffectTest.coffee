@@ -7,7 +7,7 @@ require('../../main/common/Actor.coffee')
 require('../../main/common/Effect.coffee')
 require('../../main/common/State.coffee')
 
-ITEM_SCOPE = rpg.constants.ITEM_SCOPE
+SCOPE = rpg.constants.SCOPE
 
 # 価値は何か，誰にとっての価値か，実際の機能は何か
 describe 'rpg.Effect', ->
@@ -18,8 +18,58 @@ describe 'rpg.Effect', ->
   states = {
     'State1': new rpg.State({name:'State1'})
   }
+  rpg.system.temp.battle = false
 
   rpg.system.db.state = (key) -> states[key]
+
+  describe 'ヘルプテキスト', ->
+    effect = null
+    it 'default', ->
+      effect = new rpg.Effect(url:'test01')
+      effect.help.should.equal ''
+    it 'set/get', ->
+      effect = new rpg.Effect(url:'test01')
+      effect.help.should.equal ''
+      effect.help = 'help'
+      effect.help.should.equal 'help'
+      effect.help = 'help1'
+      effect.help.should.equal 'help'
+    it 'cache', ->
+      effect = new rpg.Effect(url:'test01')
+      effect.help.should.equal 'help'
+
+  describe 'メッセージテンプレート', ->
+    effect = null
+    it 'default', ->
+      effect = new rpg.Effect(url:'test02')
+      effect.message.should.equal ''
+    it 'set/get', ->
+      effect = new rpg.Effect(url:'test02',message:{ok:[{type:'message',params:['test']}],ng:[]})
+      effect.message.should.have.property 'ok'
+      effect.message.ok.should.have.length 1
+    it 'cache', ->
+      effect = new rpg.Effect(url:'test02')
+      effect.message.should.have.property 'ok'
+      effect.message.ok.should.have.length 1
+      effect = new rpg.Effect(url:'test03')
+      effect.message.should.equal ''
+
+  describe 'useableフラグ', ->
+    effect = null
+    it 'default', ->
+      effect = new rpg.Effect()
+      effect.usable.should.equal false
+    it '戦闘時のみ使える効果のためにフラグ battle が設定できる', ->
+      effect = new rpg.Effect(usable:true)
+      rpg.system.temp.battle = false
+      effect.usable.should.equal true, '戦闘じゃない時も使える'
+      rpg.system.temp.battle = true
+      effect.usable.should.equal true, '戦闘時も使える'
+      effect = new rpg.Effect(usable:'battle')
+      rpg.system.temp.battle = false
+      effect.usable.should.equal false, '戦闘以外では使えない'
+      rpg.system.temp.battle = true
+      effect.usable.should.equal true, '戦闘時なので使える'
 
   describe '回復エフェクト', ->
     effect = null
@@ -78,8 +128,8 @@ describe 'rpg.Effect', ->
     it '通常攻撃（物理）', ->
       effect = new rpg.Effect(
         scope: {
-          type: ITEM_SCOPE.TYPE.ENEMY
-          range: ITEM_SCOPE.RANGE.ONE
+          type: SCOPE.TYPE.ENEMY
+          range: SCOPE.RANGE.ONE
         }
         target:
           effects:[
@@ -94,8 +144,8 @@ describe 'rpg.Effect', ->
       effect = new rpg.Effect(
         name: '炎の矢'
         scope: {
-          type: ITEM_SCOPE.TYPE.ENEMY
-          range: ITEM_SCOPE.RANGE.ONE
+          type: SCOPE.TYPE.ENEMY
+          range: SCOPE.RANGE.ONE
         }
         target:
           effects:[
@@ -127,8 +177,8 @@ describe 'rpg.Effect', ->
     it 'ステート追加', ->
       effect = new rpg.Effect(
         scope: {
-          type: ITEM_SCOPE.TYPE.ENEMY
-          range: ITEM_SCOPE.RANGE.ONE
+          type: SCOPE.TYPE.ENEMY
+          range: SCOPE.RANGE.ONE
         }
         target:
           effects:[
@@ -149,8 +199,8 @@ describe 'rpg.Effect', ->
     it 'ステート削除する', ->
       effect = new rpg.Effect(
         scope: {
-          type: ITEM_SCOPE.TYPE.ENEMY
-          range: ITEM_SCOPE.RANGE.ONE
+          type: SCOPE.TYPE.ENEMY
+          range: SCOPE.RANGE.ONE
         }
         target:
           effects:[

@@ -5,6 +5,7 @@ require('../../main/common/utils.coffee')
 require('../../main/common/constants.coffee')
 require('../../main/common/Item.coffee')
 require('../../main/common/ItemContainer.coffee')
+require('../../main/common/Effect.coffee')
 
 describe 'rpg.Item', ->
   item = null

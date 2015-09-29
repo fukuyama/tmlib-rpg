@@ -15,9 +15,6 @@ class rpg.Item
       @type
       @name
       @price
-      @help
-      @message
-      usable
       equip
       stack
       maxStack
@@ -27,15 +24,14 @@ class rpg.Item
       url: ''       # ID(URL)
       name: ''      # 名前
       price: 1      # 価格
-      help: null    # ヘルプテキスト
-      message: null # ログメッセージテンプレート
-      usable: false # 使えるかどうか
       equip: false  # 装備できるかどうか
       stack: false  # スタック可能かどうか
       maxStack: 99  # スタック可能な場合のスタック数
       container: null
       _container: null
     }.$extendAll args
+    # FIXME:Effectもurlでキャッシュできるか？
+    @_effect = new rpg.Effect args
     # コンテナがある場合設定
     if container? and not @_container?
       if container.constructor.name == 'Object'
@@ -50,14 +46,6 @@ class rpg.Item
           set: (n) -> @_container.restriction.max = n
           get: -> @_container.restriction.max
 
-    if typeof usable is 'string'
-      Object.defineProperty @, 'usable',
-        enumerable: true
-        get: -> @['usable_'+usable].call(@)
-    else
-      Object.defineProperty @, 'usable',
-        enumerable: true
-        get: -> usable
     Object.defineProperty @, 'equip',
       enumerable: true
       get: -> equip
@@ -67,9 +55,6 @@ class rpg.Item
     Object.defineProperty @, 'maxStack',
       enumerable: true
       get: -> maxStack
-
-  # 戦闘中のみ使えるかどうか。戦闘中だと true
-  usable_battle: -> rpg.system.temp.battle
 
   addItem: (item) ->
     return false unless @_container?
@@ -99,25 +84,16 @@ class rpg.Item
     return false unless @_container?
     @_container.clear()
 
-  # ヘルプテキストのキャッシュ
-  @_helpCache = {}
-  # メッセージテンプレートのキャッシュ
-  @_messageCache = {}
-
 Object.defineProperty rpg.Item.prototype, 'help',
   enumerable: true
-  get: ->
-    rpg.Item._helpCache[@url] ? ''
-  set: (h) ->
-    return if rpg.Item._helpCache[@url]?
-    return unless h?
-    rpg.Item._helpCache[@url] = h
+  get: -> @_effect.help
+  set: (h) -> @_effect.help = h
 
 Object.defineProperty rpg.Item.prototype, 'message',
   enumerable: true
-  get: ->
-    rpg.Item._messageCache[@url] ? ''
-  set: (msg) ->
-    return if rpg.Item._messageCache[@url]?
-    return unless msg?
-    rpg.Item._messageCache[@url] = msg
+  get: -> @_effect.message
+  set: (m) -> @_effect.message = m
+
+Object.defineProperty rpg.Item.prototype, 'usable',
+  enumerable: true
+  get: -> @_effect.usable

@@ -5,29 +5,55 @@
 _g = window ? global ? @
 rpg = _g.rpg = _g.rpg ? {}
 
-ITEM_SCOPE = rpg.constants.ITEM_SCOPE
+SCOPE = rpg.constants.SCOPE
 
-# ゲーム内の効果をまとめたクラス
-# user/target の Battler オブジェクトに対しての
-# rpg.utils.jsonExpression のリストを反映する
+### ゲーム内の効果をまとめたクラス
+user/target の Battler オブジェクトに対しての
+rpg.utils.jsonExpression のリストを反映する
+
+message は、イベントコマンドのリスト
+message:
+  ok: [] # 効果があった場合のイベントコマンド
+  ng: [] # 効果が無かった場合のイベントコマンド
+TODO: 基本的に戦闘時とフィールド時で同じイベントで良いか？
+
+###
 class rpg.Effect
 
   # コンストラクタ
   constructor: (args={}) ->
     {
-      @name
+      @url
+      @help
+      @message
+      usable
       @scope
     } = {
+      url: 'url'    # ID(URL)
+      help: null    # ヘルプテキスト
+      message: null # ログメッセージテンプレート
+      usable: false # 使えるかどうか (true=戦闘でもフィールドでも使用可|false=使用不可|'battle'=戦闘のみ使用可)
       scope: {
-        type: ITEM_SCOPE.TYPE.FRIEND
-        range: ITEM_SCOPE.RANGE.ONE
+        type: SCOPE.TYPE.FRIEND
+        range: SCOPE.RANGE.ONE
         hp0: false
       }
     }.$extendAll args
+    if typeof usable is 'string'
+      Object.defineProperty @, 'usable',
+        enumerable: true
+        get: -> @['_usable_'+usable].call(@)
+    else
+      Object.defineProperty @, 'usable',
+        enumerable: true
+        get: -> usable
     # rpg.utils.jsonExpression に使用する式の集合
     @_effect = {}
     for n in ['user','target','users','targets'] when args[n]?
       @_effect[n] = args[n]
+
+  # 戦闘中のみ使えるかどうか。戦闘中だと true
+  _usable_battle: -> rpg.system.temp.battle
 
   ###* スコープ range の確認
   * @param {rpg.Battler} user 使用者
@@ -36,8 +62,8 @@ class rpg.Effect
   * @private
   ###
   _checkScopeRange: (user, targets) ->
-    (@scope.range == ITEM_SCOPE.RANGE.ONE and targets.length == 1) or
-    (@scope.range == ITEM_SCOPE.RANGE.MULTI)
+    (@scope.range == SCOPE.RANGE.ONE and targets.length == 1) or
+    (@scope.range == SCOPE.RANGE.MULTI)
 
   ###* スコープ type の確認
   * @param {rpg.Battler} user 使用者
@@ -46,9 +72,9 @@ class rpg.Effect
   * @private
   ###
   _checkScopeType: (user, target) ->
-    if @scope.type == ITEM_SCOPE.TYPE.FRIEND
+    if @scope.type == SCOPE.TYPE.FRIEND
       return user.iff(target)
-    if @scope.type == ITEM_SCOPE.TYPE.ENEMY
+    if @scope.type == SCOPE.TYPE.ENEMY
       return ! user.iff(target)
     true
 
@@ -167,3 +193,28 @@ class rpg.Effect
           lt[type] = if lt[type]? then lt[type] - val else val
           r = true
     r
+
+
+
+# ヘルプテキストのキャッシュ
+rpg.Effect._helpCache = {}
+# メッセージテンプレートのキャッシュ
+rpg.Effect._messageCache = {}
+
+Object.defineProperty rpg.Effect.prototype, 'help',
+  enumerable: true
+  get: ->
+    rpg.Effect._helpCache[@url] ? ''
+  set: (h) ->
+    return if rpg.Effect._helpCache[@url]?
+    return unless h?
+    rpg.Effect._helpCache[@url] = h
+
+Object.defineProperty rpg.Effect.prototype, 'message',
+  enumerable: true
+  get: ->
+    rpg.Effect._messageCache[@url] ? ''
+  set: (msg) ->
+    return if rpg.Effect._messageCache[@url]?
+    return unless msg?
+    rpg.Effect._messageCache[@url] = msg

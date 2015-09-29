@@ -28,7 +28,7 @@ c.MOVE_RESTRICTION = {
 }
 
 # [味方、敵][単体、複数]
-c.ITEM_SCOPE = {
+c.SCOPE = {
   TYPE:
     ALL: 0
     FRIEND: 1
@@ -37,7 +37,6 @@ c.ITEM_SCOPE = {
     ONE: 1
     MULTI: 2
 }
-c.SKILL_SCOPE = c.ITEM_SCOPE
 
 # メッセージウィンドウの位置
 c.MESSAGE_OPTION = {

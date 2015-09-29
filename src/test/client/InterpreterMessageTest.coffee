@@ -5,6 +5,8 @@ describe 'rpg.Interpreter(Message)', () ->
   describe '文章表示', ->
     it 'マップシーンへ移動', (done) ->
       reloadTestMap(done)
+    it 'wait', (done) ->
+      checkWait done, -> rpg.system.scene.name is 'SceneMap'
     it 'インタープリタ取得', ->
       rpg.system.scene.name.should.equal 'SceneMap'
       interpreter = rpg.system.scene.interpreter

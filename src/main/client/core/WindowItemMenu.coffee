@@ -3,7 +3,7 @@
 * アイテムメニュー
 ###
 
-ITEM_SCOPE = rpg.constants.ITEM_SCOPE
+SCOPE = rpg.constants.SCOPE
 
 tm.define 'rpg.WindowItemMenu',
 
@@ -80,18 +80,18 @@ tm.define 'rpg.WindowItemMenu',
 
     @active = false
     if item.usable and
-    item.scope.type == ITEM_SCOPE.TYPE.FRIEND and
-    item.scope.range == ITEM_SCOPE.RANGE.ONE
+    item.scope.type == SCOPE.TYPE.FRIEND and
+    item.scope.range == SCOPE.RANGE.ONE
       # 単体なので相手を選択
       @addWindow rpg.WindowItemTargetActorList parent: @
       return
 
     eg = rpg.EventGenerator()
     if item.usable
-      if item.scope.type == ITEM_SCOPE.TYPE.ENEMY
+      if item.scope.type == SCOPE.TYPE.ENEMY
         eg.itemUseError actor, item
-      if item.scope.type == ITEM_SCOPE.TYPE.FRIEND and
-      item.scope.range == ITEM_SCOPE.RANGE.MULTI
+      if item.scope.type == SCOPE.TYPE.FRIEND and
+      item.scope.range == SCOPE.RANGE.MULTI
         # 複数対象なのでこの場で使う
         targets = []
         rpg.game.party.each (a) -> targets.push a

@@ -11,7 +11,7 @@ require('../../main/common/ItemContainer.coffee')
 require('../../main/common/UsableItem.coffee')
 require('../../main/common/Effect.coffee')
 
-ITEM_SCOPE = rpg.constants.ITEM_SCOPE
+SCOPE = rpg.constants.SCOPE
 
 TEST_STATES = {
   'State1': new rpg.State({name:'State1'})
@@ -242,15 +242,15 @@ describe 'rpg.UsableItem', ->
       it '初期化', ->
         item = new rpg.UsableItem()
       it '確認', ->
-        item.scope.type.should.equal ITEM_SCOPE.TYPE.FRIEND
-        item.scope.range.should.equal ITEM_SCOPE.RANGE.ONE
+        item.scope.type.should.equal SCOPE.TYPE.FRIEND
+        item.scope.range.should.equal SCOPE.RANGE.ONE
     describe '誰にでも使えるけど単体', ->
       it 'HPを１０回復する１度使えるアイテム', ->
         item = new rpg.UsableItem(
           lost:{max:1}
           scope:{
-            type: ITEM_SCOPE.TYPE.ALL
-            range: ITEM_SCOPE.RANGE.ONE
+            type: SCOPE.TYPE.ALL
+            range: SCOPE.RANGE.ONE
           }
           target:
             effects:[
@@ -279,8 +279,8 @@ describe 'rpg.UsableItem', ->
         item = new rpg.UsableItem(
           lost:{max:1}
           scope:{
-            type: ITEM_SCOPE.TYPE.ALL
-            range: ITEM_SCOPE.RANGE.ONE
+            type: SCOPE.TYPE.ALL
+            range: SCOPE.RANGE.ONE
           }
           target:
             effects:[
@@ -306,8 +306,8 @@ describe 'rpg.UsableItem', ->
         item = new rpg.UsableItem(
           lost:{max:1}
           scope:{
-            type: ITEM_SCOPE.TYPE.FRIEND
-            range: ITEM_SCOPE.RANGE.ONE
+            type: SCOPE.TYPE.FRIEND
+            range: SCOPE.RANGE.ONE
           }
           target:
             effects:[
@@ -338,8 +338,8 @@ describe 'rpg.UsableItem', ->
         item = new rpg.UsableItem(
           lost:{max:1}
           scope:{
-            type: ITEM_SCOPE.TYPE.ALL
-            range: ITEM_SCOPE.RANGE.MULTI
+            type: SCOPE.TYPE.ALL
+            range: SCOPE.RANGE.MULTI
           }
           target:
             effects:[
@@ -375,8 +375,8 @@ describe 'rpg.UsableItem', ->
         item = new rpg.UsableItem(
           lost:{max:1}
           scope:{
-            type: ITEM_SCOPE.TYPE.FRIEND
-            range: ITEM_SCOPE.RANGE.MULTI
+            type: SCOPE.TYPE.FRIEND
+            range: SCOPE.RANGE.MULTI
           }
           target:
             effects:[
@@ -426,8 +426,8 @@ describe 'rpg.UsableItem', ->
         item = new rpg.UsableItem(
           lost:{max:1}
           scope:{
-            type: ITEM_SCOPE.TYPE.FRIEND
-            range: ITEM_SCOPE.RANGE.MULTI
+            type: SCOPE.TYPE.FRIEND
+            range: SCOPE.RANGE.MULTI
           }
           target:
             effects:[

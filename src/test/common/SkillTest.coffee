@@ -14,7 +14,7 @@ require('../../main/common/Weapon.coffee')
 require('../../main/common/Armor.coffee')
 require('../../main/common/Effect.coffee')
 
-SKILL_SCOPE = rpg.constants.SKILL_SCOPE
+SCOPE = rpg.constants.SCOPE
 
 TEST_STATES = {
   '武器攻撃時炎': new rpg.State {
@@ -33,8 +33,8 @@ describe 'rpg.Skill', ->
     attack: new rpg.Skill
       name: '攻撃'
       scope:
-        type: SKILL_SCOPE.TYPE.ENEMY
-        range: SKILL_SCOPE.RANGE.ONE
+        type: SCOPE.TYPE.ENEMY
+        range: SCOPE.RANGE.ONE
       target:
         effects: [
           {hpdamage:[['user.patk','/',2],'-',['target.pdef','/',4]],attrs:['物理','武器']}
@@ -116,8 +116,8 @@ describe 'rpg.Skill', ->
       it '回復量１０の単体回復スキル', ->
         skill = new rpg.Skill
           scope:
-            type: SKILL_SCOPE.TYPE.FRIEND
-            range: SKILL_SCOPE.RANGE.ONE
+            type: SCOPE.TYPE.FRIEND
+            range: SCOPE.RANGE.ONE
           user:
             effects:[
               {mp: -5}
@@ -141,8 +141,8 @@ describe 'rpg.Skill', ->
       it '回復量１０の全体回復スキル', ->
         skill = new rpg.Skill
           scope:
-            type: SKILL_SCOPE.TYPE.FRIEND
-            range: SKILL_SCOPE.RANGE.MULTI
+            type: SCOPE.TYPE.FRIEND
+            range: SCOPE.RANGE.MULTI
           user:
             effects:[
               {mp: -2}

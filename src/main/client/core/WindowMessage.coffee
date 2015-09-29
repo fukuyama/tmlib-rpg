@@ -172,6 +172,8 @@ tm.define 'rpg.WindowMessage',
         break
       i = line.drawMarkup(text,i:i)
       line.reset()
+      if @currentMessage != ''
+        @currentMessage += '\\n'
       @currentMessage += line.currentText
       if @_lines[l]?
         @_lines[l].setOptions line.getOptions()

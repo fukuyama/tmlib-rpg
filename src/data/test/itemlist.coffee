@@ -1,6 +1,6 @@
 require './requires.coffee'
 
-ITEM_SCOPE = rpg.constants.ITEM_SCOPE
+SCOPE = rpg.constants.SCOPE
 
 EVENT_TEMPLATE = {
   CURE: [
@@ -49,23 +49,23 @@ EVENT_TEMPLATE = {
 
 # scope 定義
 FRIEND_ONE =
-  type: ITEM_SCOPE.TYPE.FRIEND
-  range: ITEM_SCOPE.RANGE.ONE
+  type: SCOPE.TYPE.FRIEND
+  range: SCOPE.RANGE.ONE
   hp0: false
 
 FRIEND_ALL =
-  type: ITEM_SCOPE.TYPE.FRIEND
-  range: ITEM_SCOPE.RANGE.MULTI
+  type: SCOPE.TYPE.FRIEND
+  range: SCOPE.RANGE.MULTI
   hp0: false
 
 ENEMY_ONE =
-  type: ITEM_SCOPE.TYPE.ENEMY
-  range: ITEM_SCOPE.RANGE.ONE
+  type: SCOPE.TYPE.ENEMY
+  range: SCOPE.RANGE.ONE
   hp0: false
 
 ENEMY_ALL =
-  type: ITEM_SCOPE.TYPE.ENEMY
-  range: ITEM_SCOPE.RANGE.MULTI
+  type: SCOPE.TYPE.ENEMY
+  range: SCOPE.RANGE.MULTI
   hp0: false
 
 effect = {
@@ -105,7 +105,7 @@ module.exports = [
     maxStack: 99
     scope: FRIEND_ONE
     target:
-      effects: [effect.hp -10]
+      effects: [effect.hp 10]
     message:
       ok: EVENT_TEMPLATE.CURE
       ng: EVENT_TEMPLATE.ITEM_NG
@@ -119,7 +119,7 @@ module.exports = [
     help: '仲間全員を少し回復する'
     scope: FRIEND_ALL
     target:
-      effects: [effect.hp -10]
+      effects: [effect.hp 10]
     message:
       ok: EVENT_TEMPLATE.CURE_ALL
       ng: EVENT_TEMPLATE.ITEM_NG
@@ -135,7 +135,7 @@ module.exports = [
     maxStack: 99
     scope: FRIEND_ONE
     target:
-      effects: [effect.hp -30]
+      effects: [effect.hp 30]
     message:
       ok: EVENT_TEMPLATE.CURE
       ng: EVENT_TEMPLATE.ITEM_NG
@@ -149,7 +149,7 @@ module.exports = [
     help: '仲間全員を回復する'
     scope: FRIEND_ALL
     target:
-      effects: [effect.hp -30]
+      effects: [effect.hp 30]
     message:
       ok: EVENT_TEMPLATE.CURE_ALL
       ng: EVENT_TEMPLATE.ITEM_NG
@@ -165,7 +165,7 @@ module.exports = [
     maxStack: 99
     scope: FRIEND_ONE
     target:
-      effects: [effect.hp -70]
+      effects: [effect.hp 70]
     message:
       ok: EVENT_TEMPLATE.CURE
       ng: EVENT_TEMPLATE.ITEM_NG
@@ -179,7 +179,7 @@ module.exports = [
     help: '仲間全員を回復する'
     scope: FRIEND_ALL
     target:
-      effects: [effect.hp -70]
+      effects: [effect.hp 70]
     message:
       ok: EVENT_TEMPLATE.CURE_ALL
       ng: EVENT_TEMPLATE.ITEM_NG

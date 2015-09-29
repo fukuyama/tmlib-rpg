@@ -1,13 +1,13 @@
 require '../requires.coffee'
 
-ITEM_SCOPE = rpg.constants.ITEM_SCOPE
+SCOPE = rpg.constants.SCOPE
 
 module.exports = {
   name: '攻撃'
   help: '攻撃'
   scope:
-    type: ITEM_SCOPE.TYPE.ENEMY
-    range: ITEM_SCOPE.RANGE.ONE
+    type: SCOPE.TYPE.ENEMY
+    range: SCOPE.RANGE.ONE
   target:
     effects:[
       hpdamage: [
@@ -17,4 +17,7 @@ module.exports = {
       ]
       attrs: ['物理']
     ]
+  message:
+    ok: []
+    ng: []
 }
