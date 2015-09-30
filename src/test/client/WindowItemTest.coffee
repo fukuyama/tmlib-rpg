@@ -211,7 +211,6 @@ describe 'rpg.WindowItemTest', ->
             actor.backpack.addItem item
             item.url.should.
               equal 'http://localhost:3000/client/rpg/test/item/004.json'
-            item.type.should.equal 'UsableItem'
             done()
           )
         it 'メニュー表示', (done) ->
@@ -260,7 +259,6 @@ describe 'rpg.WindowItemTest', ->
             actor.backpack.addItem item
             item.url.should.
               equal 'http://localhost:3000/client/rpg/test/item/004.json'
-            item.type.should.equal 'UsableItem'
             done()
           )
         it 'メニュー表示', (done) ->
@@ -315,7 +313,6 @@ describe 'rpg.WindowItemTest', ->
             actor.backpack.addItem item
             item.url.should.
               equal 'http://localhost:3000/client/rpg/test/item/005.json'
-            item.type.should.equal 'UsableItem'
             done()
           )
         it 'メニュー表示', (done) ->
@@ -367,7 +364,6 @@ describe 'rpg.WindowItemTest', ->
             actor.backpack.addItem item
             item.url.should.
               equal 'http://localhost:3000/client/rpg/test/item/005.json'
-            item.type.should.equal 'UsableItem'
             done()
           )
         it 'メニュー表示', (done) ->

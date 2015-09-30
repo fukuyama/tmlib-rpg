@@ -7,7 +7,7 @@ require('../../main/common/Battler.coffee')
 require('../../main/common/State.coffee')
 require('../../main/common/Item.coffee')
 require('../../main/common/ItemContainer.coffee')
-require('../../main/common/UsableItem.coffee')
+require('../../main/common/UsableCounter.coffee')
 require('../../main/common/EquipItem.coffee')
 require('../../main/common/Weapon.coffee')
 require('../../main/common/Armor.coffee')
@@ -223,8 +223,9 @@ describe 'rpg.Battler', () ->
         battler.hp.should.equal 28
       it 'アイテムで解毒', ->
         battler.states.length.should.equal 1
-        item = new rpg.UsableItem(
+        item = new rpg.Item(
           name:'どくけし'
+          usable:true
           target:
             effects:[
               {state:{type:'remove',name:'毒'}}

@@ -15,11 +15,8 @@ tm.define 'rpg.WindowOperation',
       rows: 5
       menus: [
         {name:'まんたん',fn:@menuCuraAll.bind(@)}
-        {name:'TEST',fn:@menuTest001.bind(@)}
-        {name:'TEST',fn:@menuTest001.bind(@)}
-        {name:'TEST',fn:@menuTest001.bind(@)}
-        {name:'TEST',fn:@menuTest001.bind(@)}
-        {name:'TEST',fn:@menuTest001.bind(@)}
+        {name:'セーブ',fn:@menuSave.bind(@)}
+        {name:'ロード',fn:@menuLoad.bind(@)}
       ]
     }
     @superInit(args)
@@ -28,10 +25,13 @@ tm.define 'rpg.WindowOperation',
     console.log 'menuCuraAll'
     w = @findTopWindow()
     console.log w
-  menuTest001: ->
-    console.log 'menuTest001'
-    ###
-    rpg.system.db.preloadItem(['001','002'],(items)->
-      console.log items
-    )
-    ###
+
+  menuSave: ->
+    console.log 'save'
+    localStorage.setItem 'data01', JSON.stringify(rpg.game)
+
+  menuLoad: ->
+    console.log 'load'
+    data = JSON.parse(localStorage.getItem 'data01')
+    console.log data
+    

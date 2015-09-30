@@ -8,7 +8,7 @@ require('../../main/common/Actor.coffee')
 require('../../main/common/State.coffee')
 require('../../main/common/Item.coffee')
 require('../../main/common/ItemContainer.coffee')
-require('../../main/common/UsableItem.coffee')
+require('../../main/common/UsableCounter.coffee')
 require('../../main/common/Effect.coffee')
 
 SCOPE = rpg.constants.SCOPE
@@ -17,7 +17,7 @@ TEST_STATES = {
   'State1': new rpg.State({name:'State1'})
   'State2': new rpg.State({name:'State2'})
 }
-describe 'rpg.UsableItem', ->
+describe 'rpg.UsableCounter', ->
   item = null
   log = null
   rpg.system = rpg.system ? {}
@@ -26,7 +26,7 @@ describe 'rpg.UsableItem', ->
   
   describe '基本属性', ->
     it 'アイテムの初期化', ->
-      item = new rpg.UsableItem()
+      item = new rpg.Item()
     it '名前がある', ->
       (item.name is null).should.equal false
       item.name.should.equal ''
@@ -43,8 +43,9 @@ describe 'rpg.UsableItem', ->
   describe '使った回数で使えなくなるアイテム', ->
     describe '１回使用するとなくなるアイテム', ->
       it '作成', ->
-        item = new rpg.UsableItem(
+        item = new rpg.Item(
           lost:{max:1}
+          usable: true
         )
         item.effectApply = () -> true
         item.isLost().should.equal false
@@ -57,7 +58,10 @@ describe 'rpg.UsableItem', ->
         item.isLost().should.equal true
     describe '２回使用するとなくなるアイテム', ->
       it '作成', ->
-        item = new rpg.UsableItem(lost:{max:2})
+        item = new rpg.Item(
+          lost:{max:2}
+          usable: true
+        )
         item.effectApply = () -> true
         item.isLost().should.equal false
       it 'アイテムを使用する１回目', ->
@@ -81,7 +85,10 @@ describe 'rpg.UsableItem', ->
         r.should.equal false
     describe '使用終了したアイテムを復活させる', ->
       it '作成', ->
-        item = new rpg.UsableItem(lost:{max:1})
+        item = new rpg.Item(
+          lost:{max:1}
+          usable: true
+        )
         item.effectApply = () -> true
         item.isLost().should.equal false
       it 'アイテムを使用する', ->
@@ -96,8 +103,9 @@ describe 'rpg.UsableItem', ->
         item.isLost().should.equal false
   describe '回復アイテムを使う（足りない場合）', ->
     it 'HPを１０回復する１度使えるアイテム', ->
-      item = new rpg.UsableItem(
+      item = new rpg.Item(
         lost:{max:1}
+        usable: true
         target:
           effects:[
             {hp: 10}
@@ -117,8 +125,9 @@ describe 'rpg.UsableItem', ->
       item.isLost().should.equal true
   describe '回復アイテムを使う（あふれる場合）', ->
     it 'HPを１０回復する１度使えるアイテム', ->
-      item = new rpg.UsableItem(
+      item = new rpg.Item(
         lost:{max:1}
+        usable: true
         target:
           effects:[
             {hp: 10}
@@ -144,9 +153,10 @@ describe 'rpg.UsableItem', ->
       item.isLost().should.equal true
   describe '回復アイテムを使う（ぴったりの場合）', ->
     it 'HPを１０回復する１度使えるアイテム', ->
-      item = new rpg.UsableItem(
+      item = new rpg.Item(
         name: '10up'
         lost:{max:1}
+        usable: true
         target:
           effects:[
             {hp: 10}
@@ -173,8 +183,9 @@ describe 'rpg.UsableItem', ->
       item.isLost().should.equal true
   describe '回復アイテムを使う（ダメージなしの場合）', ->
     it 'HPを１０回復する１度使えるアイテム', ->
-      item = new rpg.UsableItem(
+      item = new rpg.Item(
         lost:{max:1} # type: 'ok_count' (default)
+        usable: true
         target:
           effects:[
             {hp: 10}
@@ -195,8 +206,9 @@ describe 'rpg.UsableItem', ->
     it 'アイテムはロストしない', ->
       item.isLost().should.equal false
     it 'HPを１０回復する１度使えるアイテム（回復しなくてもロスト）', ->
-      item = new rpg.UsableItem(
+      item = new rpg.Item(
         lost:{type:'count',max:1}
+        usable: true
         target:
           effects:[
             {hp: 10}
@@ -218,8 +230,9 @@ describe 'rpg.UsableItem', ->
       item.isLost().should.equal true
   describe 'MP回復アイテムを使う（足りない場合）', ->
     it 'MPを１０回復する１度使えるアイテム', ->
-      item = new rpg.UsableItem(
+      item = new rpg.Item(
         lost:{max:1}
+        usable: true
         target:
           effects:[
             {mp: 10}
@@ -240,14 +253,15 @@ describe 'rpg.UsableItem', ->
   describe 'アイテムのスコープ', ->
     describe 'デフォルトは味方単体', ->
       it '初期化', ->
-        item = new rpg.UsableItem()
+        item = new rpg.Item()
       it '確認', ->
         item.scope.type.should.equal SCOPE.TYPE.FRIEND
         item.scope.range.should.equal SCOPE.RANGE.ONE
     describe '誰にでも使えるけど単体', ->
       it 'HPを１０回復する１度使えるアイテム', ->
-        item = new rpg.UsableItem(
+        item = new rpg.Item(
           lost:{max:1}
+          usable: true
           scope:{
             type: SCOPE.TYPE.ALL
             range: SCOPE.RANGE.ONE
@@ -276,8 +290,9 @@ describe 'rpg.UsableItem', ->
       it 'アイテムはロスト', ->
         item.isLost().should.equal true
       it 'HPを１０回復する１度使えるアイテム', ->
-        item = new rpg.UsableItem(
+        item = new rpg.Item(
           lost:{max:1}
+          usable: true
           scope:{
             type: SCOPE.TYPE.ALL
             range: SCOPE.RANGE.ONE
@@ -303,8 +318,9 @@ describe 'rpg.UsableItem', ->
         targets[1].hp.should.equal target.maxhp - 10
     describe '味方にしか使えない単体アイテム', ->
       it 'HPを１０回復する１度使えるアイテム', ->
-        item = new rpg.UsableItem(
+        item = new rpg.Item(
           lost:{max:1}
+          usable: true
           scope:{
             type: SCOPE.TYPE.FRIEND
             range: SCOPE.RANGE.ONE
@@ -335,8 +351,9 @@ describe 'rpg.UsableItem', ->
         target.hp.should.equal target.maxhp
     describe '誰にでも複数人に使えるアイテム', ->
       it 'HPを１０回復する１度使えるアイテム', ->
-        item = new rpg.UsableItem(
+        item = new rpg.Item(
           lost:{max:1}
+          usable: true
           scope:{
             type: SCOPE.TYPE.ALL
             range: SCOPE.RANGE.MULTI
@@ -372,8 +389,9 @@ describe 'rpg.UsableItem', ->
         item.isLost().should.equal true
     describe '味方の複数人に使えるアイテム', ->
       it 'HPを１０回復する１度使えるアイテム', ->
-        item = new rpg.UsableItem(
+        item = new rpg.Item(
           lost:{max:1}
+          usable: true
           scope:{
             type: SCOPE.TYPE.FRIEND
             range: SCOPE.RANGE.MULTI
@@ -423,8 +441,9 @@ describe 'rpg.UsableItem', ->
       it 'アイテムはロスト', ->
         item.isLost().should.equal true
       it 'HPを１０回復する１度使えるアイテム', ->
-        item = new rpg.UsableItem(
+        item = new rpg.Item(
           lost:{max:1}
+          usable: true
           scope:{
             type: SCOPE.TYPE.FRIEND
             range: SCOPE.RANGE.MULTI
@@ -464,11 +483,11 @@ describe 'rpg.UsableItem', ->
         log.targets[2].hp.should.equal 9
       it 'アイテムはロスト', ->
         item.isLost().should.equal true
-
   describe 'ステート変化', ->
     describe 'ステート付加アイテム', ->
       it '作成', ->
-        item = new rpg.UsableItem(
+        item = new rpg.Item(
+          usable: true
           target:
             effects:[
               {state: {type:'add',name:'State1'}}
@@ -493,7 +512,8 @@ describe 'rpg.UsableItem', ->
 
     describe 'ステート解除アイテム', ->
       it '作成', ->
-        item = new rpg.UsableItem(
+        item = new rpg.Item(
+          usable: true
           target:
             effects:[
               {state: {type:'remove',name:'State1'}}
@@ -517,7 +537,8 @@ describe 'rpg.UsableItem', ->
         log.targets[0].state.name.should.equal 'State1'
     describe 'ステート解除アイテム（複数のステートから１つ解除）', ->
       it '作成', ->
-        item = new rpg.UsableItem(
+        item = new rpg.Item(
+          usable: true
           target:
             effects:[
               {state: {type:'remove',name:'State2'}}

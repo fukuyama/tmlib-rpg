@@ -5,7 +5,7 @@ require('../../main/common/constants.coffee')
 require('../../main/common/Battler.coffee')
 require('../../main/common/Enemy.coffee')
 require('../../main/common/Item.coffee')
-require('../../main/common/UsableItem.coffee')
+require('../../main/common/UsableCounter.coffee')
 require('../../main/common/ItemContainer.coffee')
 
 # 価値は何か，誰にとっての価値か，実際の機能は何か

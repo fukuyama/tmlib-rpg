@@ -14,7 +14,6 @@ Battler
 Effect
 
 Item
- +> UsableItem
 
 Skill
 

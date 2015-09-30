@@ -5,10 +5,11 @@ require('../../main/common/utils.coffee')
 require('../../main/common/constants.coffee')
 require('../../main/common/Item.coffee')
 require('../../main/common/ItemContainer.coffee')
-require('../../main/common/UsableItem.coffee')
+require('../../main/common/UsableCounter.coffee')
 
 require('../../main/common/Battler.coffee')
 require('../../main/common/Actor.coffee')
+require('../../main/common/Effect.coffee')
 
 describe 'rpg.ItemContainer', ->
   rpg.system = rpg.system ? {}
@@ -226,11 +227,12 @@ describe 'rpg.ItemContainer', ->
             c.itemCount.should.equal 0
           it '同名のスタック５アイテムを３個追加する', ->
             for i in [0 ... 3]
-              item = new rpg.UsableItem(
+              item = new rpg.Item(
                 name:'Item01'
                 stack:true
                 maxStack:5
                 lost:{max:2}
+                usable: true
               )
               item.effectApply = -> true
               c.add item

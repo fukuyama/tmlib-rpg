@@ -46,7 +46,7 @@ describe 'rpg.DataBase', ->
           item = items[0]
           item.url.should.
             equal db.baseUrl + system_path + 'item/004.json'
-          item.type.should.equal 'UsableItem'
+          item.usable.should.equal true
           done()
         )
       it '文字列指定でロード', (done) ->

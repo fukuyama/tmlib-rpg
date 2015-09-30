@@ -96,7 +96,8 @@ module.exports = [
   }
 
   {
-    type: 'UsableItem'
+    type: 'Item'
+    usable: true
    　item: '004'
     name: 'cure I'
     price: 10
@@ -112,7 +113,8 @@ module.exports = [
   }
 
   {
-    type: 'UsableItem'
+    type: 'Item'
+    usable: true
     item: '005'
     name: 'heal I'
     price: 40
@@ -126,7 +128,8 @@ module.exports = [
   }
 
   {
-    type: 'UsableItem'
+    type: 'Item'
+    usable: true
    　item: '006'
     name: 'cure II'
     price: 10
@@ -142,7 +145,8 @@ module.exports = [
   }
 
   {
-    type: 'UsableItem'
+    type: 'Item'
+    usable: true
     item: '007'
     name: 'heal II'
     price: 40
@@ -156,7 +160,8 @@ module.exports = [
   }
 
   {
-    type: 'UsableItem'
+    type: 'Item'
+    usable: true
    　item: '008'
     name: 'cure III'
     price: 10
@@ -172,7 +177,8 @@ module.exports = [
   }
 
   {
-    type: 'UsableItem'
+    type: 'Item'
+    usable: true
     item: '009'
     name: 'heal III'
     price: 52

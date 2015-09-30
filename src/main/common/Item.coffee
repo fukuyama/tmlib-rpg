@@ -1,5 +1,8 @@
+###*
+* @file Item.coffee
+* アイテムクラス
+###
 
-# アイテムクラス
 
 # node.js と ブラウザでの this.rpg を同じインスタンスにする
 _g = window ? global ? @
@@ -32,6 +35,8 @@ class rpg.Item
     }.$extendAll args
     # FIXME:Effectもurlでキャッシュできるか？
     @_effect = new rpg.Effect args
+    # usable でインスタンス化するかしないか判断できるか？
+    @_counter = new rpg.UsableCounter args
     # コンテナがある場合設定
     if container? and not @_container?
       if container.constructor.name == 'Object'
@@ -84,6 +89,35 @@ class rpg.Item
     return false unless @_container?
     @_container.clear()
 
+  ###* 効果メソッド
+  * @param {rpg.Battler} user 使用者
+  * @param {Array} target 対象者(rpg.Battler配列)
+  * @return {Object} 効果コンテキスト
+  ###
+  effect: (user,targets = []) -> @_effect.effect(user,targets)
+
+  ###* 効果メソッド
+  * @param {rpg.Battler} user 使用者
+  * @param {Array} target 対象者(rpg.Battler配列)
+  * @param {Object} log 効果ログ情報
+  * @return {boolean} 効果ある場合 true
+  ###
+  effectApply: (user,targets = [],log = {}) -> @_effect.effectApply(user,targets,log)
+
+  # 使う
+  # user: rpg.Actor
+  # target: rpg.Actor or Array<rpg.Actor>
+  use: (user, target, log = {}) ->
+    return false if @isLost() or not @usable
+    r = @effectApply(user, [].concat(target), log)
+    log.item = {name:@name}
+    @_counter.used r
+    r
+
+  isLost: -> @_counter.isLost()
+
+  reuse: -> @_counter.reuse()
+
 Object.defineProperty rpg.Item.prototype, 'help',
   enumerable: true
   get: -> @_effect.help
@@ -97,3 +131,7 @@ Object.defineProperty rpg.Item.prototype, 'message',
 Object.defineProperty rpg.Item.prototype, 'usable',
   enumerable: true
   get: -> @_effect.usable
+
+Object.defineProperty rpg.Item.prototype, 'scope',
+  enumerable: true
+  get: -> @_effect.scope

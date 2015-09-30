@@ -93,7 +93,7 @@ commonScripts = [
   'common/EventPage'
   'common/ItemContainer'
   'common/Item'
-  'common/UsableItem'
+  'common/UsableCounter'
   'common/Skill'
   'common/EquipItem'
   'common/Weapon'

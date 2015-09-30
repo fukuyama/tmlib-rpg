@@ -27,7 +27,7 @@ tm.define 'rpg.SpritesetAnimation',
     for key,data of rpg.game.animations
       unless @animations[key]? # まだ表示してない場合アニメーションを作成
         @animations[key] = @_createAnimation(data).addChildTo(@)
-      # ピクチャーの設定
+      # アニメーションの設定
       anime = @animations[key]
       # 位置
       anime.position.setObject data

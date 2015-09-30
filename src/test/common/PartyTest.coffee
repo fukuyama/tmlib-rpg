@@ -7,7 +7,7 @@ require('../../main/common/Actor.coffee')
 require('../../main/common/Battler.coffee')
 require('../../main/common/Actor.coffee')
 require('../../main/common/Item.coffee')
-require('../../main/common/UsableItem.coffee')
+require('../../main/common/UsableCounter.coffee')
 require('../../main/common/ItemContainer.coffee')
 require('../../main/common/Party.coffee')
 
