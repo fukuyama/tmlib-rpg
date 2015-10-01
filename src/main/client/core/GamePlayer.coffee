@@ -13,7 +13,7 @@ tm.define 'rpg.GamePlayer',
   ###
   init: () ->
     @superInit()
-    @character = null
+    @character = new rpg.Character()
 
     @eventHandler = rpg.EventHandler(active:true,repeatDelay:0)
     @eventHandler.setupHandler(@)

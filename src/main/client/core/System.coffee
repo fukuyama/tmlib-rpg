@@ -334,12 +334,10 @@ tm.define 'rpg.System',
     # game.actors = []
 
     _load = (actors) ->
-      for a in actors
-        rpg.game.party.add(a)
-      op = {}
-      op.spriteSheet = actors[0].character if actors[0].character?
-      op.moveSpeed = @setting.moveSpeed if @setting.moveSpeed?
-      game.player.character = new rpg.Character op
+      rpg.game.party.add(a) for a in actors
+      c = rpg.game.player.character
+      c.spriteSheet = actors[0].character if actors[0].character?
+      c.moveSpeed = @setting.moveSpeed if @setting.moveSpeed?
       return
 
     # Actors
@@ -347,7 +345,10 @@ tm.define 'rpg.System',
       @start.actors
       _load.bind @
     )
+
+    # etc data
     @preloadData()
+
     # Map
     @loadMap @start.map
     return
