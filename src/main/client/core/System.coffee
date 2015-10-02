@@ -317,13 +317,18 @@ tm.define 'rpg.System',
       screenBitmap: null
     }
 
+  loadData: ->
+    if @database.preload?
+      @db.preloadSkill @database.preload.skill if @database.preload.skill?
+
   # 新しいゲームを開始
   newGame: () ->
     @clearTemp()
+    @mapInterpreter = rpg.Interpreter()
+
     game = rpg.game = {}
     game.flag = new rpg.Flag()
     game.player = rpg.GamePlayer()
-    @mapInterpreter = rpg.Interpreter()
 
     # パーティ編成
     game.party = new rpg.Party()
@@ -347,15 +352,22 @@ tm.define 'rpg.System',
     )
 
     # etc data
-    @preloadData()
+    @loadData()
 
     # Map
     @loadMap @start.map
     return
 
-  preloadData: ->
-    if @database.preload?
-      @db.preloadSkill @database.preload.skill if @database.preload.skill?
+  loadGame: (game) ->
+    @clearTemp()
+    @mapInterpreter = rpg.Interpreter()
+
+    rpg.game = game
+    game.flag = new rpg.Flag().load(game.flag)
+    game.player = rpg.GamePlayer()
+
+    return
+
 
   # マップのロード
   loadMap: (args) ->
