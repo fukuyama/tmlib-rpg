@@ -41,6 +41,7 @@ tm.define 'SceneMap',
     @windowMapStatus = rpg.WindowMapStatus(windowMapMenu:@windowMapMenu)
     # プレイヤー
     @player = rpg.game.player
+    @player.map = map.name
 
     f = @playerActive.bind @
     @windowMapMenu.addCloseListener f

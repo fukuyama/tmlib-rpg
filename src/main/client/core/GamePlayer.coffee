@@ -13,6 +13,7 @@ tm.define 'rpg.GamePlayer',
   ###
   init: () ->
     @superInit()
+    @map = '' # マップ名
     @character = new rpg.Character()
 
     @eventHandler = rpg.EventHandler(active:true,repeatDelay:0)
