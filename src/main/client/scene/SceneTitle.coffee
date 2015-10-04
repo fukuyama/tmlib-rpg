@@ -57,6 +57,12 @@ tm.define 'SceneTitle',
   actionNewGame: ->
     rpg.system.newGame()
 
+  ###* ロードゲームアクション
+  * @memberof SceneTitle#
+  ###
+  actionLoadGame: ->
+    rpg.system.loadGame()
+
   ###* メニュー選択時の処理
   * @memberof SceneTitle#
   ###

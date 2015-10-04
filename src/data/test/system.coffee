@@ -22,8 +22,12 @@ module.exports = {
             image: 'scene.title.background.image'
           menus: [
             {
-              name:'NewGame'
+              name:'New Game'
               action: 'NewGame'
+            }
+            {
+              name:'Load Game'
+              action: 'LoadGame'
             }
             {
               name:'Test'
