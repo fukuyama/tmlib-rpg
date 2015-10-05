@@ -10,6 +10,7 @@ require('../../main/common/Item.coffee')
 require('../../main/common/UsableCounter.coffee')
 require('../../main/common/ItemContainer.coffee')
 require('../../main/common/Party.coffee')
+require('../../main/common/Effect.coffee')
 
 # 価値は何か，誰にとっての価値か，実際の機能は何か
 describe 'rpg.Party', () ->

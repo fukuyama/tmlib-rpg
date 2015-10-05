@@ -5,6 +5,7 @@ require('../../main/common/utils.coffee')
 require('../../main/common/constants.coffee')
 require('../../main/common/Item.coffee')
 require('../../main/common/ItemContainer.coffee')
+require('../../main/common/UsableCounter.coffee')
 require('../../main/common/Effect.coffee')
 
 describe 'rpg.Item', ->
@@ -62,12 +63,12 @@ describe 'rpg.Item', ->
   describe 'ログメッセージテキスト', ->
     it 'アイテムの初期化', ->
       item = new rpg.Item(
-        url: '001'
+        url: 'log_msg_001'
         help: 'help001'
         message: 'message001'
       )
       item2 = new rpg.Item(
-        url: '002'
+        url: 'log_msg_002'
         help: 'help002'
         message: 'message002'
       )
@@ -78,11 +79,11 @@ describe 'rpg.Item', ->
     it 'セーブロード', ->
       json = rpg.utils.createJsonData(item)
       obj = JSON.parse(json)
-      obj.d.url.should.equal '001'
+      obj.d.url.should.equal 'log_msg_001'
       (obj.d.message?).should.equal false
       item = rpg.utils.createRpgObject(json)
       (item instanceof rpg.Item).should.equal true
-      item.url.should.equal '001'
+      item.url.should.equal 'log_msg_001'
       item.message.should.equal 'message001'
   describe '使えるかどうか調べる', ->
     it 'アイテムの初期化', ->

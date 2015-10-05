@@ -22,6 +22,8 @@ class rpg.Item
       stack
       maxStack
       container
+      @_effect
+      @_counter
       @_container
     } = {
       url: ''       # ID(URL)
@@ -31,12 +33,16 @@ class rpg.Item
       stack: false  # スタック可能かどうか
       maxStack: 99  # スタック可能な場合のスタック数
       container: null
+      _effect: null
+      _counter: null
       _container: null
     }.$extendAll args
     # FIXME:Effectもurlでキャッシュできるか？
-    @_effect = new rpg.Effect args
+    if not @_effect?
+      @_effect = new rpg.Effect args
     # usable でインスタンス化するかしないか判断できるか？
-    @_counter = new rpg.UsableCounter args
+    if not @_counter?
+      @_counter = new rpg.UsableCounter args
     # コンテナがある場合設定
     if container? and not @_container?
       if container.constructor.name == 'Object'

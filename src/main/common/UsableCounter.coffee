@@ -1,27 +1,30 @@
 
-# 使用可能アイテムクラス
 
 # node.js と ブラウザでの this.rpg を同じインスタンスにする
 _g = window ? global ? @
 rpg = _g.rpg = _g.rpg ? {}
 
-# 使用可能アイテムクラス
+# アイテムの使用回数を決めるクラス
 class rpg.UsableCounter
 
   # コンストラクタ
   constructor: (args={}) ->
     {
       @lost
+      @count
+      @ok_count
+      @ng_count
     } = {
-      lost: {type:'ok_count',max: 1}
+      lost:     {type:'ok_count',max: 1}
+      count:    0 # 使用回数
+      ok_count: 0 # 使用成功回数
+      ng_count: 0 # 使用失敗回数
     }.$extendAll args
     # 消費確認メソッド
     @isLost = @['_lost_' + @lost.type].bind @, @lost
     # 再利用メソッド（lostを打ち消す）
     @reuse = @['_reuse_' + @lost.type].bind @, @lost
     
-    @_reset()
-
   # 使う
   # r: 使用結果
   used: (r) ->
@@ -30,7 +33,7 @@ class rpg.UsableCounter
     r
 
   _reset: ->
-    @count = 0 # 使用回数
+    @count    = 0 # 使用回数
     @ok_count = 0 # 使用成功回数
     @ng_count = 0 # 使用失敗回数
 

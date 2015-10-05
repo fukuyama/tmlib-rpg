@@ -365,6 +365,14 @@ tm.define 'rpg.System',
     rpg.game = game
     game.flag = new rpg.Flag().load(game.flag)
     game.player = rpg.GamePlayer()
+    # パーティ編成
+    game.party = new rpg.Party(game.party)
+
+    # etc data
+    @loadData()
+
+    # Map
+    @loadMap game.player.map
 
     return
 

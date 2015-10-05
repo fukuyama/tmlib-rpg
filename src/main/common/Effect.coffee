@@ -28,6 +28,7 @@ class rpg.Effect
       @message
       usable
       @scope
+      @_effect
     } = {
       url: 'url'    # ID(URL)
       help: null    # ヘルプテキスト
@@ -38,6 +39,7 @@ class rpg.Effect
         range: SCOPE.RANGE.ONE
         hp0: false
       }
+      _effect: null
     }.$extendAll args
     if typeof usable is 'string'
       Object.defineProperty @, 'usable',
@@ -48,9 +50,10 @@ class rpg.Effect
         enumerable: true
         get: -> usable
     # rpg.utils.jsonExpression に使用する式の集合
-    @_effect = {}
-    for n in ['user','target','users','targets'] when args[n]?
-      @_effect[n] = args[n]
+    unless @_effect?
+      @_effect = {}
+      for n in ['user','target','users','targets'] when args[n]?
+        @_effect[n] = args[n]
 
   # 戦闘中のみ使えるかどうか。戦闘中だと true
   _usable_battle: -> rpg.system.temp.battle

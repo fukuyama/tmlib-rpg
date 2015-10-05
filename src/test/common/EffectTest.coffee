@@ -37,7 +37,6 @@ describe 'rpg.Effect', ->
     it 'cache', ->
       effect = new rpg.Effect(url:'test01')
       effect.help.should.equal 'help'
-
   describe 'メッセージテンプレート', ->
     effect = null
     it 'default', ->
@@ -53,7 +52,6 @@ describe 'rpg.Effect', ->
       effect.message.ok.should.have.length 1
       effect = new rpg.Effect(url:'test03')
       effect.message.should.equal ''
-
   describe 'useableフラグ', ->
     effect = null
     it 'default', ->
@@ -70,7 +68,6 @@ describe 'rpg.Effect', ->
       effect.usable.should.equal false, '戦闘以外では使えない'
       rpg.system.temp.battle = true
       effect.usable.should.equal true, '戦闘時なので使える'
-
   describe '回復エフェクト', ->
     effect = null
     user = {
@@ -107,7 +104,6 @@ describe 'rpg.Effect', ->
       log.targets[0].name.should.equal 'user2'
       log.targets[0].hp.should.equal 10
       targets[0].hp.should.equal 60
-
   describe '攻撃コンテキスト', ->
     effect = null
     user = {
@@ -156,7 +152,6 @@ describe 'rpg.Effect', ->
       atkcx.target.hpdamage.should.equal 75
       atkcx.target.attrs[0].should.equal '魔法'
       atkcx.target.attrs[1].should.equal '炎'
-
   describe 'ステートエフェクト', ->
     effect = null
     user = {
@@ -219,7 +214,6 @@ describe 'rpg.Effect', ->
       log.targets[0].name.should.equal 'user2'
       log.targets[0].state.name.should.equal 'State1'
       log.targets[0].state.type.should.equal 'remove'
-
   describe '効果なしエフェクト', ->
     effect = new rpg.Effect(
       user:
@@ -250,3 +244,82 @@ describe 'rpg.Effect', ->
       log = {}
       r = effect.effectApply(user,targets,log)
       r.should.equal false
+  describe 'セーブロード', ->
+    effect = null
+    user = {
+      name: 'user1'
+      patk: 100
+      matk: 50
+      iff: -> false
+      attackAttrs: -> []
+    }
+    it '基本', ->
+      effect = new rpg.Effect(
+        url: 'test01_save_load'
+        help: 'help01'
+        message:
+          ok: [{type:'message',params:['TEST01']}]
+          ng: []
+      )
+      json = rpg.utils.createJsonData(effect)
+      effect = rpg.utils.createRpgObject(json)
+      effect.url.should.equal 'test01_save_load'
+      effect.help.should.equal 'help01'
+      effect.message.should.have.property 'ok'
+      effect.message.ok[0].type.should.equal 'message'
+    it '通常攻撃（物理）', ->
+      targets = [
+        {
+          hp:50
+          name:'user2'
+          pdef: 100
+          iff: -> true
+        }
+      ]
+      effect = new rpg.Effect(
+        scope: {
+          type: SCOPE.TYPE.ENEMY
+          range: SCOPE.RANGE.ONE
+        }
+        target:
+          effects:[
+            {hpdamage:[['user.patk','/',2],'-',['target.pdef','/',4]],attrs:['物理']}
+          ]
+      )
+      json = rpg.utils.createJsonData(effect)
+      effect = rpg.utils.createRpgObject(json)
+      atkcx = effect.effect(user,targets)
+      atkcx.target.hpdamage.should.equal 25
+      atkcx.target.attrs[0].should.equal '物理'
+    it 'ステート追加', ->
+      targets = [
+        {
+          hp:50
+          name:'user2'
+          iff: -> true
+          states: []
+        }
+      ]
+      effect = new rpg.Effect(
+        scope: {
+          type: SCOPE.TYPE.ENEMY
+          range: SCOPE.RANGE.ONE
+        }
+        target:
+          effects:[
+            {state: {type:'add',name:'State1'}}
+          ]
+      )
+      target = targets[0]
+      unless target.addState?
+        target.addState = (state) ->
+          target.states.push state
+      log = {}
+      json = rpg.utils.createJsonData(effect)
+      effect = rpg.utils.createRpgObject(json)
+      effect.effectApply(user,targets,log)
+      target.states[0].name.should.equal 'State1'
+      log.user.name.should.equal 'user1'
+      log.targets[0].name.should.equal 'user2'
+      log.targets[0].state.name.should.equal 'State1'
+      log.targets[0].state.type.should.equal 'add'

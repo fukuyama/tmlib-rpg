@@ -1,4 +1,3 @@
-
 # パーティクラス
 #
 # パーティメンバーを管理する。
@@ -15,22 +14,30 @@ class rpg.Party
   constructor: (args={}) ->
     {
       cash
+      _members
+      backpack
     } = {
       cash: 0
     }.$extendAll args
     @_cash = cash
+
+    # メンバーリスト（プライベートぽくしたいけれど…）
+    @_members = []
+    if _members?
+      for a in _members
+        @add rpg.Actor(a)
+
+    # パーティ用バックパック作成
+    if backpack?
+      @backpack = new rpg.Item(backpack)
+    else
+      @backpack = new rpg.Item(name:'バックパック',container:{stack:on})
 
     # 所持金
     Object.defineProperty @, 'cash',
       enumerable: true
       get: -> @_cash
       set: (n)-> @_cash = if n >= 0 then n else 0
-
-    # メンバーリスト（プライベートぽくしたいけれど…）
-    @_members = []
-
-    # パーティ用バックパック作成
-    @backpack = new rpg.Item(name:'バックパック',container:{stack:on})
 
   # メンバー追加
   add: (actor) ->
