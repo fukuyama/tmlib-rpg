@@ -291,6 +291,8 @@ describe 'rpg.Effect', ->
       atkcx = effect.effect(user,targets)
       atkcx.target.hpdamage.should.equal 25
       atkcx.target.attrs[0].should.equal '物理'
+      jsontest = rpg.utils.createJsonData(effect)
+      jsontest.should.equal json
     it 'ステート追加', ->
       targets = [
         {

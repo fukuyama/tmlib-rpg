@@ -37,7 +37,7 @@ _expression = {
 }
 # Utils
 rpg.utils = {
-  createJsonData: (obj) -> JSON.stringify(obj,_stringifyFunc)
+  createJsonData: (obj,op) -> JSON.stringify(obj,_stringifyFunc,op)
   createRpgObject: (json) -> JSON.parse(json,_parseFunc)
   jsonExpression: (json,op={}) ->
     switch typeof json

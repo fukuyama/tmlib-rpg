@@ -39,7 +39,7 @@ class rpg.Actor extends rpg.Battler
       @job
       @subjob
       @sex
-      backpack
+      @backpack
     } = {
       backpack: {
         max: 20
@@ -47,7 +47,8 @@ class rpg.Actor extends rpg.Battler
       }
     }.$extendAll(@properties).$extendAll(args)
     # バックパック作成
-    @backpack = new rpg.Item(name:'バックパック',container:backpack)
+    unless @backpack instanceof rpg.Item
+      @backpack = new rpg.Item(name:'バックパック',container:@backpack)
 
   ###* アイテムを使う
   * @method rpg.Actor#useItem

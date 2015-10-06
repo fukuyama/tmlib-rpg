@@ -49,11 +49,14 @@ class rpg.Item
         @_container = new rpg.ItemContainer(container)
     if @_container?
       Object.defineProperty @, 'itemCount',
+        enumerable: false
         get: -> @_container.itemCount
       Object.defineProperty @, 'itemlistCount',
+        enumerable: false
         get: -> @_container.itemlistCount
       if @_container.restriction?.max?
         Object.defineProperty @, 'itemMax',
+          enumerable: false
           set: (n) -> @_container.restriction.max = n
           get: -> @_container.restriction.max
 

@@ -131,7 +131,7 @@ config =
 
   test:
     console:
-      files: testDir + 'common/**/EffectTest.coffee'
+      files: testDir + 'common/**/*.coffee'
     browser:
       files: testDir + 'client/*.coffee'
       distDir: distDir + 'public/client/test/'

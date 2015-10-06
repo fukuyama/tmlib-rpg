@@ -191,6 +191,8 @@ describe 'rpg.Item', ->
         r = item._container.addCheck(new rpg.Item({name:'Item02'}))
         r.should.equal false
         item.itemCount.should.equal 2
+        jsontest = rpg.utils.createJsonData(item)
+        jsontest.should.equal json
       it 'アイテムクリア', ->
         item.itemCount.should.equal 2
         item.clearItem()
@@ -224,7 +226,11 @@ describe 'rpg.Item', ->
         c._container.items[0].constructor.name.should.equal 'Item'
         c.getItem('Item01').name.should.equal 'Item01'
       it 'セーブロード', ->
+        (c._container instanceof rpg.ItemContainer).should.equal true
         json = rpg.utils.createJsonData(c)
         t = rpg.utils.createRpgObject(json)
         t.itemCount.should.equal 6
         t.itemlistCount.should.equal 2
+        (t._container instanceof rpg.ItemContainer).should.equal true
+        jsontest = rpg.utils.createJsonData(t)
+        jsontest.should.equal json

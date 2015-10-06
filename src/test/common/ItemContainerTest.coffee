@@ -51,9 +51,11 @@ describe 'rpg.ItemContainer', ->
       c.contains(new rpg.Item(name:'Item01')).should.equal true
       c.contains(new rpg.Item(name:'Item02')).should.equal true
     it 'セーブロード', ->
-      json = rpg.utils.createJsonData(c)
+      json = rpg.utils.createJsonData(c,' ')
       t = rpg.utils.createRpgObject(json)
       t.itemlistCount.should.equal 2
+      item = c.getAt 1
+      (item instanceof rpg.Item).should.equal true
     it '名前で取得', ->
       item = c.find 'Item02'
       item.name.should.equal 'Item02'

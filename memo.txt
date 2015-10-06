@@ -1,5 +1,12 @@
 
 TODO:
+ * セーブ＆ロードをそろそろ
+  * Item
+   * Weapon
+   * Armor
+  * Skill
+  * Actor
+  * Party
  * アイテムとスキルの実装を改造する！
   * ItemとSkillは、基本的に同じ基底クラスにしたい
    * Effect が基底クラス

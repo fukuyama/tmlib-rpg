@@ -7,9 +7,11 @@ require('../../main/common/Actor.coffee')
 require('../../main/common/Item.coffee')
 require('../../main/common/UsableCounter.coffee')
 require('../../main/common/ItemContainer.coffee')
+require('../../main/common/Effect.coffee')
 
 # 価値は何か，誰にとっての価値か，実際の機能は何か
 describe 'rpg.Actor', () ->
+  json = null
   actor = null
   item = null
   describe 'アクター生成', ->
@@ -97,6 +99,14 @@ describe 'rpg.Actor', () ->
         item = new rpg.Item(name:'Item01')
         actor.backpack.addItem item
         actor.backpack.itemCount.should.equal 1
+      it 'セーブロード', ->
+        json = rpg.utils.createJsonData(actor)
+        a = rpg.utils.createRpgObject(json)
+        (a.backpack instanceof rpg.Item).should.equal true, 'backpack Item check'
+        (a.backpack._container instanceof rpg.ItemContainer).should.equal true, 'ItemContainer check'
+        a.backpack.itemCount.should.equal 1
+        jsontest = rpg.utils.createJsonData(a)
+        jsontest.should.equal json
       it '１つ捨てる', ->
         actor.backpack.removeItem item
         actor.backpack.itemCount.should.equal 0
