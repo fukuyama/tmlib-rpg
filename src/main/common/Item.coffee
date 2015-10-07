@@ -37,28 +37,16 @@ class rpg.Item
       _counter: null
       _container: null
     }.$extendAll args
-    # FIXME:Effectもurlでキャッシュできるか？
-    if not @_effect?
+
+    unless @_effect?
       @_effect = new rpg.Effect args
-    # usable でインスタンス化するかしないか判断できるか？
-    if not @_counter?
+
+    unless @_counter?
       @_counter = new rpg.UsableCounter args
-    # コンテナがある場合設定
-    if container? and not @_container?
-      if container.constructor.name == 'Object'
-        @_container = new rpg.ItemContainer(container)
-    if @_container?
-      Object.defineProperty @, 'itemCount',
-        enumerable: false
-        get: -> @_container.itemCount
-      Object.defineProperty @, 'itemlistCount',
-        enumerable: false
-        get: -> @_container.itemlistCount
-      if @_container.restriction?.max?
-        Object.defineProperty @, 'itemMax',
-          enumerable: false
-          set: (n) -> @_container.restriction.max = n
-          get: -> @_container.restriction.max
+
+    unless @_container?
+      if container?
+        @_container = new rpg.ItemContainer container
 
     Object.defineProperty @, 'equip',
       enumerable: true
@@ -127,6 +115,8 @@ class rpg.Item
 
   reuse: -> @_counter.reuse()
 
+  isContainer: -> @_container?
+
 Object.defineProperty rpg.Item.prototype, 'help',
   enumerable: true
   get: -> @_effect.help
@@ -144,3 +134,14 @@ Object.defineProperty rpg.Item.prototype, 'usable',
 Object.defineProperty rpg.Item.prototype, 'scope',
   enumerable: true
   get: -> @_effect.scope
+
+Object.defineProperty rpg.Item.prototype, 'itemCount',
+  enumerable: false
+  get: -> @_container.itemCount
+Object.defineProperty rpg.Item.prototype, 'itemlistCount',
+  enumerable: false
+  get: -> @_container.itemlistCount
+Object.defineProperty rpg.Item.prototype, 'itemMax',
+  enumerable: false
+  set: (n) -> @_container.restriction.max = n
+  get: -> @_container.restriction.max

@@ -17,39 +17,30 @@ class rpg.ItemContainer
       @containerType
       @stack
       @restriction
-      @items
-      @stack_items
       @itemCount
+      @_listItems
+      @_stackItems
     } = {
       containerType: 'maxCount'
       stack: false
       restriction: null
-      items: []
-      stack_items: {}
       itemCount: 0
+      _listItems: []
+      _stackItems: {}
     }.$extendAll args
 
     unless @restriction?
       @restriction = ITEM_RESTRICTION[@containerType](args)
 
-    Object.defineProperty @, 'itemlistCount',
-      enumerable: false
-      get: -> @items.length
-  
   # クリア
   clear: () ->
-    @items = []
-    @stack_items = {}
+    @_listItems = []
+    @_stackItems = {}
     @itemCount = 0
     true
 
   # 入ってるかどうか
-  contains: (item) ->
-    res = false
-    for i in @items when i.name is item.name
-      res = true
-      break
-    res
+  contains: (item) -> @_listItems.some (o) -> o.name is item.name
 
   # 追加確認
   # return: 追加可能なら true
@@ -61,20 +52,26 @@ class rpg.ItemContainer
     # スタック可能かどうか
     if @stack and item.stack
       # スタックを用意
-      @stack_items[item.name] = 0 unless @stack_items[item.name]?
+      @_stackItems[item.name] = 0 unless @_stackItems[item.name]?
       # アイテムをスタック
-      @stack_items[item.name] += 1
+      @_stackItems[item.name] += 1
       # まだ入ってなければ、追加
-      @items.push item unless @contains(item)
+      @_listItems.push item unless @contains(item)
       # スタック数確認
       if item.maxStack > 0
-        n1 = Math.ceil(@stack_items[item.name] / item.maxStack)
-        n2 = (i for i in @items when i.name is item.name).length
+        n1 = Math.ceil(@_stackItems[item.name] / item.maxStack)
+        n2 = @_listItems.reduce (
+          (n,o) ->
+            if o.name is item.name
+              return n + 1
+            else
+              return n
+        ), 0
         if n1 > n2
-          @items.push item
+          @_listItems.push item
     else
       # スタックできない場合は追加するだけ
-      @items.push item
+      @_listItems.push item
     @itemCount += 1
     true
 
@@ -90,34 +87,34 @@ class rpg.ItemContainer
     return false unless @contains(item)
     if @stack and item.stack
       # インスタンスが無かったら削除しない
-      if @items.indexOf(item) < 0
+      if @_listItems.indexOf(item) < 0
         return false
       # スタックから削除
-      @stack_items[item.name] -= 1
+      @_stackItems[item.name] -= 1
       # スタックが無かったら
-      if @stack_items[item.name] == 0
+      if @_stackItems[item.name] == 0
         # スタックも削除
-        delete @stack_items[item.name]
+        delete @_stackItems[item.name]
         # アイテムからも削除
-        i = @items.indexOf(item)
-        @items.splice(i,1) if i >= 0
+        i = @_listItems.indexOf(item)
+        @_listItems.splice(i,1) if i >= 0
       # スタック数確認
-      if item.maxStack > 0 and @stack_items[item.name]?
-        n1 = Math.ceil(@stack_items[item.name] / item.maxStack)
-        l = (ii for i,ii in @items when i.name is item.name)
+      if item.maxStack > 0 and @_stackItems[item.name]?
+        n1 = Math.ceil(@_stackItems[item.name] / item.maxStack)
+        l = (ii for i,ii in @_listItems when i.name is item.name)
         n2 = l.length
         if n1 < n2
           # アイテムから削除
           i = l[l.length - 1]
-          @items.splice(i,1) if i >= 0
+          @_listItems.splice(i,1) if i >= 0
       # 再使用メソッドがあったら再利用化
       if item.reuse?
         item.reuse()
     else
       # アイテムから削除
-      i = @items.indexOf(item)
+      i = @_listItems.indexOf(item)
       if i >= 0
-        @items.splice(i,1)
+        @_listItems.splice(i,1)
       else
         return false # インスタンスがなかったら削除失敗
     @itemCount -= 1
@@ -125,18 +122,22 @@ class rpg.ItemContainer
 
   # リスト処理
   each: (f) ->
-    f.call(null,i) for i in @items
+    f.call(null,i) for i in @_listItems
 
   # 名前で取得
   find: (name) ->
-    for v,i in @items when v.name is name
+    for v,i in @_listItems when v.name is name
       return v
     return
 
   # インデックスで取得
   # 無い場合は、undefined
   getAt: (index) ->
-    return @items[index]
+    return @_listItems[index]
+
+Object.defineProperty rpg.ItemContainer.prototype, 'itemlistCount',
+  enumerable: false
+  get: -> @_listItems.length
 
 # コンテナ制約クラス（個数バージョン）
 class rpg.MaxCountItemContainer
@@ -161,11 +162,11 @@ class rpg.MaxCountItemContainer
       # アイテム自体がスタック可能かどうか
       if item.stack
         # アイテムが既にスタックされてるかどうか
-        if c.stack_items[item.name]?
+        if c._stackItems[item.name]?
           n = 0
           if item.maxStack > 0
             # スタック時、１つ増えた場合のアイテム欄増加数
-            n = Math.ceil((c.stack_items[item.name] + 1) / item.maxStack)
+            n = Math.ceil((c._stackItems[item.name] + 1) / item.maxStack)
             n -= 1
           return c.itemlistCount + n <= @max
         else

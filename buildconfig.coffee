@@ -1,3 +1,5 @@
+argv = require('yargs').argv
+
 # ------------
 
 mainDir = './src/main/'
@@ -104,6 +106,10 @@ commonScripts = [
 ]
 mainScripts = commonScripts.concat('client/' + s for s in clientScripts)
 
+testFiles = testDir + 'common/**/*.coffee'
+if argv.testFile?
+  testFiles = testDir + "common/**/#{argv.testFile}.coffee"
+
 # ------------
 config =
   common:
@@ -131,7 +137,7 @@ config =
 
   test:
     console:
-      files: testDir + 'common/**/*.coffee'
+      files: testFiles
     browser:
       files: testDir + 'client/*.coffee'
       distDir: distDir + 'public/client/test/'

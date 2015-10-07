@@ -9,6 +9,10 @@ require('../../main/common/UsableCounter.coffee')
 require('../../main/common/ItemContainer.coffee')
 require('../../main/common/Effect.coffee')
 
+{
+  USABLE
+} = rpg.constants
+
 # 価値は何か，誰にとっての価値か，実際の機能は何か
 describe 'rpg.Actor', () ->
   json = null
@@ -155,7 +159,7 @@ describe 'rpg.Actor', () ->
     describe '消費型アイテムを使用するとアイテムがなくなる', ->
       it '１つ入れる', ->
         actor = new rpg.Actor(backpack:{max:12})
-        item = new rpg.Item(name:'Item01',lost:{max:1},usable:true)
+        item = new rpg.Item(name:'Item01',lost:{max:1},usable: USABLE.ALL)
         item.effectApply = () -> true
         actor.backpack.addItem item
         actor.backpack.itemCount.should.equal 1
@@ -167,7 +171,7 @@ describe 'rpg.Actor', () ->
     describe '２回で消費するアイテムを２回使用するとアイテムがなくなる', ->
       it '１つ入れる', ->
         actor = new rpg.Actor(backpack:{max:12})
-        item = new rpg.Item(name:'Item01',lost:{max:2},usable:true)
+        item = new rpg.Item(name:'Item01',lost:{max:2},usable: USABLE.ALL)
         item.effectApply = () -> true
         actor.backpack.addItem item
         actor.backpack.itemCount.should.equal 1
@@ -184,12 +188,12 @@ describe 'rpg.Actor', () ->
     describe '２回で消費するアイテムでスタック可能だと問題がある', ->
       it '２つ入れる', ->
         actor = new rpg.Actor(backpack:{max:12})
-        item = new rpg.Item(name:'Item01',lost:{max:2},stack:true,usable:true)
+        item = new rpg.Item(name:'Item01',lost:{max:2},stack:true,usable: USABLE.ALL)
         item.effectApply = () -> true
         actor.backpack.addItem item
         actor.backpack.itemCount.should.equal 1
         actor.backpack.itemlistCount.should.equal 1
-        item = new rpg.Item(name:'Item01',lost:{max:2},stack:true,usable:true)
+        item = new rpg.Item(name:'Item01',lost:{max:2},stack:true,usable: USABLE.ALL)
         item.effectApply = () -> true
         actor.backpack.addItem item
         actor.backpack.itemCount.should.equal 2

@@ -12,6 +12,10 @@ require('../../main/common/EquipItem.coffee')
 require('../../main/common/Weapon.coffee')
 require('../../main/common/Armor.coffee')
 
+{
+  USABLE
+} = rpg.constants
+
 # 価値は何か，誰にとっての価値か，実際の機能は何か
 describe 'rpg.Battler', () ->
   battler = null
@@ -225,7 +229,7 @@ describe 'rpg.Battler', () ->
         battler.states.length.should.equal 1
         item = new rpg.Item(
           name:'どくけし'
-          usable:true
+          usable: USABLE.ALL
           target:
             effects:[
               {state:{type:'remove',name:'毒'}}

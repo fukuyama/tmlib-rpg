@@ -27,6 +27,13 @@ c.MOVE_RESTRICTION = {
   RIGHTNG:  [true ,true ,false,true ]
 }
 
+c.USABLE = {
+  NONE:   0
+  ALL:    1
+  MAP:    2
+  BATTLE: 3
+}
+
 # [味方、敵][単体、複数]
 c.SCOPE = {
   TYPE:

@@ -11,6 +11,10 @@ require('../../main/common/Battler.coffee')
 require('../../main/common/Actor.coffee')
 require('../../main/common/Effect.coffee')
 
+{
+  USABLE
+} = rpg.constants
+
 describe 'rpg.ItemContainer', ->
   rpg.system = rpg.system ? {}
   rpg.system.temp = rpg.system.temp ? {}
@@ -229,12 +233,13 @@ describe 'rpg.ItemContainer', ->
             c.itemCount.should.equal 0
           it '同名のスタック５アイテムを３個追加する', ->
             for i in [0 ... 3]
+              # 本当は、やらない方がいい。スタック＆使用回数
               item = new rpg.Item(
                 name:'Item01'
                 stack:true
                 maxStack:5
                 lost:{max:2}
-                usable: true
+                usable: USABLE.ALL
               )
               item.effectApply = -> true
               c.add item
@@ -331,7 +336,7 @@ describe 'rpg.ItemContainer', ->
     describe '通常コンテナ', ->
       describe 'スタック可能アイテム', ->
         describe '同名', ->
-          it '追加してもスタックされない', ->
+          it 'スタックされない', ->
             c = new rpg.ItemContainer()
             c.itemCount.should.equal 0
             c.itemlistCount.should.equal 0
@@ -339,7 +344,6 @@ describe 'rpg.ItemContainer', ->
             c.itemCount.should.equal 1
             c.itemlistCount.should.equal 1
             c.add new rpg.Item(name:'Item01',stack:true)
-            c.itemCount.should.equal 2
             c.itemCount.should.equal 2
             c.itemlistCount.should.equal 2
           it 'セーブロード', ->

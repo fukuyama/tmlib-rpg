@@ -11,7 +11,10 @@ require('../../main/common/ItemContainer.coffee')
 require('../../main/common/UsableCounter.coffee')
 require('../../main/common/Effect.coffee')
 
-SCOPE = rpg.constants.SCOPE
+{
+  SCOPE
+  USABLE
+} = rpg.constants
 
 TEST_STATES = {
   'State1': new rpg.State({name:'State1'})
@@ -45,7 +48,7 @@ describe 'rpg.UsableCounter', ->
       it '作成', ->
         item = new rpg.Item(
           lost:{max:1}
-          usable: true
+          usable: USABLE.ALL
         )
         item.effectApply = () -> true
         item.isLost().should.equal false
@@ -60,7 +63,7 @@ describe 'rpg.UsableCounter', ->
       it '作成', ->
         item = new rpg.Item(
           lost:{max:2}
-          usable: true
+          usable: USABLE.ALL
         )
         item.effectApply = () -> true
         item.isLost().should.equal false
@@ -87,7 +90,7 @@ describe 'rpg.UsableCounter', ->
       it '作成', ->
         item = new rpg.Item(
           lost:{max:1}
-          usable: true
+          usable: USABLE.ALL
         )
         item.effectApply = () -> true
         item.isLost().should.equal false
@@ -105,7 +108,7 @@ describe 'rpg.UsableCounter', ->
     it 'HPを１０回復する１度使えるアイテム', ->
       item = new rpg.Item(
         lost:{max:1}
-        usable: true
+        usable: USABLE.ALL
         target:
           effects:[
             {hp: 10}
@@ -127,7 +130,7 @@ describe 'rpg.UsableCounter', ->
     it 'HPを１０回復する１度使えるアイテム', ->
       item = new rpg.Item(
         lost:{max:1}
-        usable: true
+        usable: USABLE.ALL
         target:
           effects:[
             {hp: 10}
@@ -156,7 +159,7 @@ describe 'rpg.UsableCounter', ->
       item = new rpg.Item(
         name: '10up'
         lost:{max:1}
-        usable: true
+        usable: USABLE.ALL
         target:
           effects:[
             {hp: 10}
@@ -185,7 +188,7 @@ describe 'rpg.UsableCounter', ->
     it 'HPを１０回復する１度使えるアイテム', ->
       item = new rpg.Item(
         lost:{max:1} # type: 'ok_count' (default)
-        usable: true
+        usable: USABLE.ALL
         target:
           effects:[
             {hp: 10}
@@ -208,7 +211,7 @@ describe 'rpg.UsableCounter', ->
     it 'HPを１０回復する１度使えるアイテム（回復しなくてもロスト）', ->
       item = new rpg.Item(
         lost:{type:'count',max:1}
-        usable: true
+        usable: USABLE.ALL
         target:
           effects:[
             {hp: 10}
@@ -232,7 +235,7 @@ describe 'rpg.UsableCounter', ->
     it 'MPを１０回復する１度使えるアイテム', ->
       item = new rpg.Item(
         lost:{max:1}
-        usable: true
+        usable: USABLE.ALL
         target:
           effects:[
             {mp: 10}
@@ -261,7 +264,7 @@ describe 'rpg.UsableCounter', ->
       it 'HPを１０回復する１度使えるアイテム', ->
         item = new rpg.Item(
           lost:{max:1}
-          usable: true
+          usable: USABLE.ALL
           scope:{
             type: SCOPE.TYPE.ALL
             range: SCOPE.RANGE.ONE
@@ -292,7 +295,7 @@ describe 'rpg.UsableCounter', ->
       it 'HPを１０回復する１度使えるアイテム', ->
         item = new rpg.Item(
           lost:{max:1}
-          usable: true
+          usable: USABLE.ALL
           scope:{
             type: SCOPE.TYPE.ALL
             range: SCOPE.RANGE.ONE
@@ -320,7 +323,7 @@ describe 'rpg.UsableCounter', ->
       it 'HPを１０回復する１度使えるアイテム', ->
         item = new rpg.Item(
           lost:{max:1}
-          usable: true
+          usable: USABLE.ALL
           scope:{
             type: SCOPE.TYPE.FRIEND
             range: SCOPE.RANGE.ONE
@@ -353,7 +356,7 @@ describe 'rpg.UsableCounter', ->
       it 'HPを１０回復する１度使えるアイテム', ->
         item = new rpg.Item(
           lost:{max:1}
-          usable: true
+          usable: USABLE.ALL
           scope:{
             type: SCOPE.TYPE.ALL
             range: SCOPE.RANGE.MULTI
@@ -391,7 +394,7 @@ describe 'rpg.UsableCounter', ->
       it 'HPを１０回復する１度使えるアイテム', ->
         item = new rpg.Item(
           lost:{max:1}
-          usable: true
+          usable: USABLE.ALL
           scope:{
             type: SCOPE.TYPE.FRIEND
             range: SCOPE.RANGE.MULTI
@@ -443,7 +446,7 @@ describe 'rpg.UsableCounter', ->
       it 'HPを１０回復する１度使えるアイテム', ->
         item = new rpg.Item(
           lost:{max:1}
-          usable: true
+          usable: USABLE.ALL
           scope:{
             type: SCOPE.TYPE.FRIEND
             range: SCOPE.RANGE.MULTI
@@ -487,7 +490,7 @@ describe 'rpg.UsableCounter', ->
     describe 'ステート付加アイテム', ->
       it '作成', ->
         item = new rpg.Item(
-          usable: true
+          usable: USABLE.ALL
           target:
             effects:[
               {state: {type:'add',name:'State1'}}
@@ -513,7 +516,7 @@ describe 'rpg.UsableCounter', ->
     describe 'ステート解除アイテム', ->
       it '作成', ->
         item = new rpg.Item(
-          usable: true
+          usable: USABLE.ALL
           target:
             effects:[
               {state: {type:'remove',name:'State1'}}
@@ -538,7 +541,7 @@ describe 'rpg.UsableCounter', ->
     describe 'ステート解除アイテム（複数のステートから１つ解除）', ->
       it '作成', ->
         item = new rpg.Item(
-          usable: true
+          usable: USABLE.ALL
           target:
             effects:[
               {state: {type:'remove',name:'State2'}}

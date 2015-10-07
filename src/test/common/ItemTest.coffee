@@ -8,6 +8,10 @@ require('../../main/common/ItemContainer.coffee')
 require('../../main/common/UsableCounter.coffee')
 require('../../main/common/Effect.coffee')
 
+{
+  USABLE
+} = rpg.constants
+
 describe 'rpg.Item', ->
   item = null
   item1 = null
@@ -87,11 +91,11 @@ describe 'rpg.Item', ->
       item.message.should.equal 'message001'
   describe '使えるかどうか調べる', ->
     it 'アイテムの初期化', ->
-      item = new rpg.Item({usable: true})
+      item = new rpg.Item({usable: USABLE.ALL})
     it '使える場合 true', ->
       item.usable.should.equal true
     it 'アイテムの初期化', ->
-      item = new rpg.Item({usable: false})
+      item = new rpg.Item({usable: USABLE.NONE})
     it '使えない場合 false', ->
       item.usable.should.equal false
     it '設定できない', ->
@@ -101,7 +105,7 @@ describe 'rpg.Item', ->
       item.usable.should.equal false
     it '戦闘中に使えるかどうか？', ->
       # 文字列を設定すると判定時にそのメソッドを使う
-      item = new rpg.Item({usable: 'battle'})
+      item = new rpg.Item({usable: USABLE.BATTLE})
     it '戦闘中は、true', ->
       rpg.system.temp.battle = true
       item.usable.should.equal true
@@ -223,8 +227,9 @@ describe 'rpg.Item', ->
         c.addItem new rpg.Item(name:'Item01',stack:true,maxStack:5)
         c.itemlistCount.should.equal 2
       it '中身チェック', ->
-        c._container.items[0].constructor.name.should.equal 'Item'
-        c.getItem('Item01').name.should.equal 'Item01'
+        item = c.getItem('Item01')
+        (item instanceof rpg.Item).should.equal true
+        item.name.should.equal 'Item01'
       it 'セーブロード', ->
         (c._container instanceof rpg.ItemContainer).should.equal true
         json = rpg.utils.createJsonData(c)

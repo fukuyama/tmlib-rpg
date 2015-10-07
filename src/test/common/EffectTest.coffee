@@ -7,7 +7,10 @@ require('../../main/common/Actor.coffee')
 require('../../main/common/Effect.coffee')
 require('../../main/common/State.coffee')
 
-SCOPE = rpg.constants.SCOPE
+{
+  SCOPE
+  USABLE
+} = rpg.constants
 
 # 価値は何か，誰にとっての価値か，実際の機能は何か
 describe 'rpg.Effect', ->
@@ -56,18 +59,44 @@ describe 'rpg.Effect', ->
     effect = null
     it 'default', ->
       effect = new rpg.Effect()
+      rpg.system.temp.battle = false
       effect.usable.should.equal false
-    it '戦闘時のみ使える効果のためにフラグ battle が設定できる', ->
-      effect = new rpg.Effect(usable:true)
+    it '使用できない', ->
+      effect = new rpg.Effect(usable:USABLE.NONE)
       rpg.system.temp.battle = false
-      effect.usable.should.equal true, '戦闘じゃない時も使える'
+      effect.usable.should.equal false, 'マップ上'
       rpg.system.temp.battle = true
-      effect.usable.should.equal true, '戦闘時も使える'
-      effect = new rpg.Effect(usable:'battle')
+      effect.usable.should.equal false, '戦闘時'
+    it 'いつでも使用できる', ->
+      effect = new rpg.Effect(usable:USABLE.ALL)
       rpg.system.temp.battle = false
-      effect.usable.should.equal false, '戦闘以外では使えない'
+      effect.usable.should.equal true, 'マップ上'
       rpg.system.temp.battle = true
-      effect.usable.should.equal true, '戦闘時なので使える'
+      effect.usable.should.equal true, '戦闘時'
+    it 'マップのみ（戦闘時以外）使用できる', ->
+      effect = new rpg.Effect(usable:USABLE.MAP)
+      rpg.system.temp.battle = false
+      effect.usable.should.equal true, 'マップ上'
+      rpg.system.temp.battle = true
+      effect.usable.should.equal false, '戦闘時'
+      json = rpg.utils.createJsonData(effect)
+      effect = rpg.utils.createRpgObject(json)
+      rpg.system.temp.battle = false
+      effect.usable.should.equal true, 'マップ上'
+      rpg.system.temp.battle = true
+      effect.usable.should.equal false, '戦闘時'
+    it '戦闘時のみ使用できる', ->
+      effect = new rpg.Effect(usable:USABLE.BATTLE)
+      rpg.system.temp.battle = false
+      effect.usable.should.equal false, 'マップ上'
+      rpg.system.temp.battle = true
+      effect.usable.should.equal true, '戦闘時'
+      json = rpg.utils.createJsonData(effect)
+      effect = rpg.utils.createRpgObject(json)
+      rpg.system.temp.battle = false
+      effect.usable.should.equal false, 'マップ上'
+      rpg.system.temp.battle = true
+      effect.usable.should.equal true, '戦闘時'
   describe '回復エフェクト', ->
     effect = null
     user = {
@@ -267,6 +296,8 @@ describe 'rpg.Effect', ->
       effect.help.should.equal 'help01'
       effect.message.should.have.property 'ok'
       effect.message.ok[0].type.should.equal 'message'
+      jsontest = rpg.utils.createJsonData(effect)
+      jsontest.should.equal json
     it '通常攻撃（物理）', ->
       targets = [
         {

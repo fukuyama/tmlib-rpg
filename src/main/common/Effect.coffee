@@ -5,7 +5,10 @@
 _g = window ? global ? @
 rpg = _g.rpg = _g.rpg ? {}
 
-SCOPE = rpg.constants.SCOPE
+{
+  SCOPE
+  USABLE
+} = rpg.constants
 
 ### ゲーム内の効果をまとめたクラス
 user/target の Battler オブジェクトに対しての
@@ -28,35 +31,29 @@ class rpg.Effect
       @message
       usable
       @scope
+      @_usable
       @_effect
     } = {
-      url: 'url'    # ID(URL)
-      help: null    # ヘルプテキスト
-      message: null # ログメッセージテンプレート
-      usable: false # 使えるかどうか (true=戦闘でもフィールドでも使用可|false=使用不可|'battle'=戦闘のみ使用可)
-      scope: {
+      url:     'url' # ID(URL)
+      help:    null  # ヘルプテキスト
+      message: null  # ログメッセージテンプレート
+      usable: USABLE.NONE # 戦闘中かマップ上で使えるかどうか
+      scope:
         type: SCOPE.TYPE.FRIEND
         range: SCOPE.RANGE.ONE
         hp0: false
-      }
+      _usable: null
       _effect: null
     }.$extendAll args
-    if typeof usable is 'string'
-      Object.defineProperty @, 'usable',
-        enumerable: true
-        get: -> @['_usable_'+usable].call(@)
-    else
-      Object.defineProperty @, 'usable',
-        enumerable: true
-        get: -> usable
+
+    unless @_usable?
+      @_usable = usable
+
     # rpg.utils.jsonExpression に使用する式の集合
     unless @_effect?
       @_effect = {}
       for n in ['user','target','users','targets'] when args[n]?
         @_effect[n] = args[n]
-
-  # 戦闘中のみ使えるかどうか。戦闘中だと true
-  _usable_battle: -> rpg.system.temp.battle
 
   ###* スコープ range の確認
   * @param {rpg.Battler} user 使用者
@@ -198,26 +195,33 @@ class rpg.Effect
     r
 
 
+_uf = []
+_uf[USABLE.NONE]    = -> false
+_uf[USABLE.ALL]     = -> true
+_uf[USABLE.MAP]     = -> not rpg.system.temp.battle
+_uf[USABLE.BATTLE]  = -> rpg.system.temp.battle
+Object.defineProperty rpg.Effect.prototype, 'usable',
+  enumerable: false
+  get: -> _uf[@_usable].call @
 
 # ヘルプテキストのキャッシュ
-rpg.Effect._helpCache = {}
-# メッセージテンプレートのキャッシュ
-rpg.Effect._messageCache = {}
-
+_helpCache = {}
 Object.defineProperty rpg.Effect.prototype, 'help',
   enumerable: true
   get: ->
-    rpg.Effect._helpCache[@url] ? ''
+    _helpCache[@url] ? ''
   set: (h) ->
-    return if rpg.Effect._helpCache[@url]?
+    return if _helpCache[@url]?
     return unless h?
-    rpg.Effect._helpCache[@url] = h
+    _helpCache[@url] = h
 
+# メッセージテンプレートのキャッシュ
+_messageCache = {}
 Object.defineProperty rpg.Effect.prototype, 'message',
   enumerable: true
   get: ->
-    rpg.Effect._messageCache[@url] ? ''
+    _messageCache[@url] ? ''
   set: (msg) ->
-    return if rpg.Effect._messageCache[@url]?
+    return if _messageCache[@url]?
     return unless msg?
-    rpg.Effect._messageCache[@url] = msg
+    _messageCache[@url] = msg
