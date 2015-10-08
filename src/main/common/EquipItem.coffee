@@ -46,21 +46,26 @@ class rpg.EquipItem extends rpg.Item
       @equipOff
       @states
       price
+      @_ability_state
     } = {
-      abilities: []
-      equips: [] # 装備場所
-      required: [] # 装備条件
-      equipOff: true # 装備解除フラグ
-      states: [] # 装備時ステート
+      abilities:      []   # Stateオブジェクト初期化用パラメータ
+      equips:         []   # 装備場所
+      required:       []   # 装備条件
+      equipOff:       true # 装備解除フラグ
+      states:         []   # 装備時ステート
+      _ability_state: null # Stateオブジェクト
     }.$extendAll args
     for k in ABILITY_KEYS
       if args[k]?
         a = {}
         a[k] = args[k]
         abilities.push a
-    @_ability_state = new rpg.State abilities:abilities
+    unless @_ability_state?
+      @_ability_state = new rpg.State abilities:abilities
     # 価格が設定されてなかったら自動計算
-    unless price?
+    if price?
+      @price = price
+    else
       price = 0
       # TODO: とりあえず版。あとで、計算方法を検討～
       for k in ABILITY_KEYS

@@ -22,11 +22,11 @@ class rpg.ItemContainer
       @_stackItems
     } = {
       containerType: 'maxCount'
-      stack: false
-      restriction: null
-      itemCount: 0
-      _listItems: []
-      _stackItems: {}
+      stack:         false
+      restriction:   null
+      itemCount:     0
+      _listItems:    []
+      _stackItems:   {}
     }.$extendAll args
 
     unless @restriction?
@@ -70,7 +70,6 @@ class rpg.ItemContainer
         if n1 > n2
           @_listItems.push item
     else
-      # スタックできない場合は追加するだけ
       @_listItems.push item
     @itemCount += 1
     true
@@ -81,48 +80,37 @@ class rpg.ItemContainer
 
   # 削除
   remove: (item) ->
-    # 削除確認
     return false unless @removeCheck(item)
-    # なかったら消さない(名前で確認)
     return false unless @contains(item)
     if @stack and item.stack
-      # インスタンスが無かったら削除しない
-      if @_listItems.indexOf(item) < 0
+      i = @_listItems.indexOf(item)
+      if i < 0
         return false
-      # スタックから削除
       @_stackItems[item.name] -= 1
-      # スタックが無かったら
       if @_stackItems[item.name] == 0
-        # スタックも削除
         delete @_stackItems[item.name]
-        # アイテムからも削除
         i = @_listItems.indexOf(item)
         @_listItems.splice(i,1) if i >= 0
-      # スタック数確認
       if item.maxStack > 0 and @_stackItems[item.name]?
         n1 = Math.ceil(@_stackItems[item.name] / item.maxStack)
         l = (ii for i,ii in @_listItems when i.name is item.name)
         n2 = l.length
         if n1 < n2
-          # アイテムから削除
           i = l[l.length - 1]
           @_listItems.splice(i,1) if i >= 0
-      # 再使用メソッドがあったら再利用化
       if item.reuse?
         item.reuse()
     else
-      # アイテムから削除
       i = @_listItems.indexOf(item)
       if i >= 0
         @_listItems.splice(i,1)
       else
-        return false # インスタンスがなかったら削除失敗
+        return false
     @itemCount -= 1
     true
 
   # リスト処理
-  each: (f) ->
-    f.call(null,i) for i in @_listItems
+  each: (f) -> @_listItems.map f
 
   # 名前で取得
   find: (name) ->

@@ -28,6 +28,8 @@ describe 'rpg.State', () ->
       json = rpg.utils.createJsonData(state)
       s = rpg.utils.createRpgObject(json)
       s.name.should.equal 'State01'
+      jsontest = rpg.utils.createJsonData(s)
+      jsontest.should.equal json
 
   describe '能力変化形', ->
     describe '固定値増減', ->
@@ -73,6 +75,11 @@ describe 'rpg.State', () ->
       it '能力が違う場合は 0', ->
         r = state.ability base:10, ability:'vit'
         r.should.equal 0
+      it 'セーブロード', ->
+        json = rpg.utils.createJsonData(state)
+        s = rpg.utils.createRpgObject(json)
+        jsontest = rpg.utils.createJsonData(s)
+        jsontest.should.equal json
 
   describe 'ステート追加確認', ->
     describe 'ステートリストなし', ->
@@ -204,6 +211,11 @@ describe 'rpg.State', () ->
         it '水属性の場合増加量は0', ->
           defcx = {attrs:['水']}
           state.attackDamage(atkcx,defcx).should.equal 0
+        it 'セーブロード', ->
+          json = rpg.utils.createJsonData(state)
+          s = rpg.utils.createRpgObject(json)
+          jsontest = rpg.utils.createJsonData(s)
+          jsontest.should.equal json
       describe '物理ダメージを倍化するステート', ->
         it '通常攻撃ダメージ100を、炎属性の相手にあたえる', ->
           atkcx = {hp:100,attrs:['物理']}
@@ -311,6 +323,11 @@ describe 'rpg.State', () ->
         it 'ダメージ量に関係なくカット10', ->
           atkcx = {hp:5,attrs:[]}
           state.defenceDamage(atkcx,defcx).should.equal 10
+        it 'セーブロード', ->
+          json = rpg.utils.createJsonData(state)
+          s = rpg.utils.createRpgObject(json)
+          jsontest = rpg.utils.createJsonData(s)
+          jsontest.should.equal json
       describe '炎属性の攻撃を半減させるステート', ->
         it '炎属性半減ステート', ->
           state = new rpg.State(name:'State1',damages:[
@@ -431,6 +448,11 @@ describe 'rpg.State', () ->
       it 'カード率を取得', ->
         r = state.stateGuard(name:'毒')
         r.should.equal 10
+      it 'セーブロード', ->
+        json = rpg.utils.createJsonData(state)
+        s = rpg.utils.createRpgObject(json)
+        jsontest = rpg.utils.createJsonData(s)
+        jsontest.should.equal json
 
   describe '定期実行系', ->
     describe '状態異常ステート毒', ->
@@ -443,6 +465,11 @@ describe 'rpg.State', () ->
         data = {hp:100}
         state.apply(target:data)
         data.hp.should.equal 90
+      it 'セーブロード', ->
+        json = rpg.utils.createJsonData(state)
+        s = rpg.utils.createRpgObject(json)
+        jsontest = rpg.utils.createJsonData(s)
+        jsontest.should.equal json
 
   describe '解除条件', ->
     describe '10ターンで消えるステート', ->
@@ -529,4 +556,4 @@ describe 'rpg.State', () ->
         n = 0
         for i in [0 ... 200] when state.checkAction()
           n += 1
-        (30 < n and n < 50).should.equal true
+        (n < 50).should.equal true

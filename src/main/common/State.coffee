@@ -33,20 +33,20 @@ class rpg.State
       @remove
       @cancel
     } = {
-      url: ''       # ID(URL)
-      name: ''      # 名前
-      action: {}    # 行動可否
-      think: true   # 行動を考える事が出来るかどうか（コマンドインプット）
-      valid: true   # 有効無効フラグ
-      applyCount: 0 # 更新回数
-      overlap: 1    # 重複数
-      abilities: [] # 能力変化
-      guards: []    # ステートガード
-      damages: []   # ダメージ変化
-      attrs: []     # 属性ステート
-      applies: []   # 定期実行系
-      remove: {}    # 削除条件
-      cancel: {}    # 相殺するステート情報
+      url:        ''   # ID(URL)
+      name:       ''   # 名前
+      action:     {}   # 行動可否
+      think:      true # 行動を考える事が出来るかどうか（コマンドインプット）
+      valid:      true # 有効無効フラグ
+      applyCount: 0    # 更新回数
+      overlap:    1    # 重複数
+      abilities:  []   # 能力変化
+      guards:     []   # ステートガード
+      damages:    []   # ダメージ変化
+      attrs:      []   # 属性ステート
+      applies:    []   # 定期実行系
+      remove:     {}   # 削除条件
+      cancel:     {}   # 相殺するステート情報
     }.$extendAll args
   
   ###* キャンセルステートがあるかどうか

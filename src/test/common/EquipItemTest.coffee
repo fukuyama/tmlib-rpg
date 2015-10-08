@@ -7,6 +7,8 @@ require('../../main/common/Actor.coffee')
 require('../../main/common/State.coffee')
 require('../../main/common/Item.coffee')
 require('../../main/common/ItemContainer.coffee')
+require('../../main/common/UsableCounter.coffee')
+require('../../main/common/Effect.coffee')
 require('../../main/common/EquipItem.coffee')
 
 describe 'rpg.EquipItem', ->
@@ -38,6 +40,11 @@ describe 'rpg.EquipItem', ->
         str: 10
       item.patk.should.equal 50
       item.str.should.equal 10
+    it 'セーブロード', ->
+      json = rpg.utils.createJsonData(item)
+      o = rpg.utils.createRpgObject(json)
+      jsontest = rpg.utils.createJsonData(o)
+      jsontest.should.equal json
   describe '装備可能判定', ->
     describe '１か所', ->
       it '装備場所チェック', ->

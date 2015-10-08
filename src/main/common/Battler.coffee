@@ -49,7 +49,7 @@ class rpg.Battler
       _base
       base
       @properties
-      states
+      @states
       @equips
       @equipsFix
     } = {
@@ -90,11 +90,6 @@ class rpg.Battler
       @team
       @character
     } = {}.$extendAll(@properties).$extendAll(args)
-
-    Object.defineProperty @, 'states',
-      enumerable: true
-      get: -> states
-      set: (s) -> states = s
 
     @_currenthp = @maxhp
     @_currentmp = @maxmp

@@ -22,7 +22,9 @@ gulp.task 'build_data', ['build_express'], (cb) ->
       cb(err)
       return
     for name in dataNames
-      obj = require '../' + srcDir + name + '.coffee'
+      file = '../' + srcDir + name + '.coffee'
+      obj = require file
+      delete require.cache[file]
       out = distDir + name + '.json'
       fs.writeFile out, JSON.stringify(obj), onEnd
 

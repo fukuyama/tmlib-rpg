@@ -8,6 +8,10 @@
 _g = window ? global ? @
 rpg = _g.rpg = _g.rpg ? {}
 
+{
+  USABLE
+} = rpg.constants
+
 # アイテムクラス
 class rpg.Item
 
@@ -25,6 +29,9 @@ class rpg.Item
       @_effect
       @_counter
       @_container
+      @_equip
+      @_stack
+      @_maxStack
     } = {
       url: ''       # ID(URL)
       name: ''      # 名前
@@ -41,22 +48,17 @@ class rpg.Item
     unless @_effect?
       @_effect = new rpg.Effect args
 
-    unless @_counter?
-      @_counter = new rpg.UsableCounter args
+    unless @_effect._usable is USABLE.NONE
+      unless @_counter?
+        @_counter = new rpg.UsableCounter args
 
     unless @_container?
       if container?
         @_container = new rpg.ItemContainer container
 
-    Object.defineProperty @, 'equip',
-      enumerable: true
-      get: -> equip
-    Object.defineProperty @, 'stack',
-      enumerable: true
-      get: -> stack
-    Object.defineProperty @, 'maxStack',
-      enumerable: true
-      get: -> maxStack
+    @_equip    = equip    unless @_equip?
+    @_stack    = stack    unless @_stack?
+    @_maxStack = maxStack unless @_maxStack?
 
   addItem: (item) ->
     return false unless @_container?
@@ -108,12 +110,12 @@ class rpg.Item
     return false if @isLost() or not @usable
     r = @effectApply(user, [].concat(target), log)
     log.item = {name:@name}
-    @_counter.used r
+    @_counter?.used r
     r
 
-  isLost: -> @_counter.isLost()
+  isLost: -> @_counter?.isLost()
 
-  reuse: -> @_counter.reuse()
+  reuse: -> @_counter?.reuse()
 
   isContainer: -> @_container?
 
@@ -145,3 +147,13 @@ Object.defineProperty rpg.Item.prototype, 'itemMax',
   enumerable: false
   set: (n) -> @_container.restriction.max = n
   get: -> @_container.restriction.max
+
+Object.defineProperty rpg.Item.prototype, 'equip',
+  enumerable: true
+  get: -> @_equip
+Object.defineProperty rpg.Item.prototype, 'stack',
+  enumerable: true
+  get: -> @_stack
+Object.defineProperty rpg.Item.prototype, 'maxStack',
+  enumerable: true
+  get: -> @_maxStack

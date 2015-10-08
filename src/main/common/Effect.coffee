@@ -204,24 +204,30 @@ Object.defineProperty rpg.Effect.prototype, 'usable',
   enumerable: false
   get: -> _uf[@_usable].call @
 
-# ヘルプテキストのキャッシュ
+### ヘルプテキストのキャッシュ
+Effectインスタンスの url をキーに、help をキャッシュする（上書きなし）
+###
 _helpCache = {}
 Object.defineProperty rpg.Effect.prototype, 'help',
   enumerable: true
   get: ->
     _helpCache[@url] ? ''
   set: (h) ->
-    return if _helpCache[@url]?
-    return unless h?
-    _helpCache[@url] = h
+    unless h?
+      return
+    unless _helpCache[@url]?
+      _helpCache[@url] = h
 
-# メッセージテンプレートのキャッシュ
+### メッセージテンプレートのキャッシュ
+Effectインスタンスの url をキーに、message をキャッシュする（上書きなし）
+###
 _messageCache = {}
 Object.defineProperty rpg.Effect.prototype, 'message',
   enumerable: true
   get: ->
     _messageCache[@url] ? ''
   set: (msg) ->
-    return if _messageCache[@url]?
-    return unless msg?
-    _messageCache[@url] = msg
+    unless msg?
+      return
+    unless _messageCache[@url]?
+      _messageCache[@url] = msg

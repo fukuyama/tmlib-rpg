@@ -48,6 +48,8 @@ describe 'rpg.Battler', () ->
       b.cha.should.equal 10
       b.basehp.should.equal 10
       b.basemp.should.equal 10
+      jsontest = rpg.utils.createJsonData(b)
+      jsontest.should.equal json
   describe 'バトラー初期化', ->
     it '初期値を指定', ->
       battler = new rpg.Battler(
@@ -90,6 +92,8 @@ describe 'rpg.Battler', () ->
       b.cha.should.equal 18
       b.basehp.should.equal 19
       b.basemp.should.equal 20
+      jsontest = rpg.utils.createJsonData(b)
+      jsontest.should.equal json
   describe '各パラメータを取得する', ->
     it '初期化', ->
       battler = new rpg.Battler(
@@ -309,6 +313,12 @@ describe 'rpg.Battler', () ->
         battler = new rpg.Battler
         battler.weapon = weapon
         battler.patk.should.equal 115
+
+        json = rpg.utils.createJsonData(battler)
+        b = rpg.utils.createRpgObject(json)
+        b.patk.should.equal 115
+        jsontest = rpg.utils.createJsonData(b)
+        jsontest.should.equal json
       it '力が上がる武器', ->
         weapon = new rpg.Weapon
           name: 'weapon001'
