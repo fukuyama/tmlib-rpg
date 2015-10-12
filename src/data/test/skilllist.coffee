@@ -58,4 +58,19 @@ module.exports = [
         hp:    [[270,'+',[1,'random',20]],'+',['user.mcur','/',10]]
         attrs: ['魔法','回復']
       ]
+  skill
+    name: 'ヒールI'
+    help: '複数対象のＨＰを小回復'
+    scope:
+      type: SCOPE.TYPE.ALL
+      range: SCOPE.RANGE.MULTI
+    user:
+      effects:[
+        mp: -8
+      ]
+    target:
+      effects:[
+        hp:    [[50,'+',[1,'random',5]],'+',['user.mcur','/',10]]
+        attrs: ['魔法','回復']
+      ]
 ]
