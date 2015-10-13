@@ -25,10 +25,6 @@ tm.define 'rpg.GamePlayer',
       left: @input_left.bind(@)
       right: @input_right.bind(@)
     }
-    Object.defineProperty @, 'active',
-      enumerable: true
-      get: -> @eventHandler.active
-      set: (b) -> @eventHandler.active = b if typeof b is 'boolean'
 
   ###* イベントリスナーセットアップ
   * @memberof rpg.GamePlayer#
@@ -112,3 +108,8 @@ tm.define 'rpg.GamePlayer',
 
 rpg.GamePlayer.EVENT_INPUT_OK = tm.event.Event "input_ok"
 rpg.GamePlayer.EVENT_INPUT_CANCEL = tm.event.Event "input_cancel"
+
+Object.defineProperty rpg.GamePlayer.prototype, 'active',
+  enumerable: true
+  get: -> @eventHandler.active
+  set: (b) -> @eventHandler.active = b if typeof b is 'boolean'

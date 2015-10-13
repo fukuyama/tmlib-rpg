@@ -40,6 +40,8 @@ describe 'rpg.Skill', ->
           {hpdamage:[['user.patk','/',2],'-',['target.pdef','/',4]],attrs:['物理','武器']}
         ]
   skill = null
+  user = null
+  targets = null
 
   describe '攻撃', ->
     describe '通常攻撃', ->
@@ -54,6 +56,17 @@ describe 'rpg.Skill', ->
         targets[0].pdef.should.equal 15
         atkcx.targets[0].hpdamage.should.equal 3.75
         atkcx.targets[0].attrs[0].should.equal '物理'
+      it 'セーブロード', ->
+        json = rpg.utils.createJsonData(skill)
+        skill = rpg.utils.createRpgObject(json)
+        skill = skills['attack']
+        atkcx = skill.effect user,targets
+        user.patk.should.equal 15
+        targets[0].pdef.should.equal 15
+        atkcx.targets[0].hpdamage.should.equal 3.75
+        atkcx.targets[0].attrs[0].should.equal '物理'
+        jsontest = rpg.utils.createJsonData(skill)
+        jsontest.should.equal json
       it '武器装備時', ->
         user = new rpg.Actor(name:'user',team:'a')
         user.weapon = new rpg.Weapon
@@ -68,6 +81,17 @@ describe 'rpg.Skill', ->
         targets[0].pdef.should.equal 15
         atkcx.targets[0].hpdamage.should.equal 8.75
         atkcx.targets[0].attrs[0].should.equal '物理'
+      it 'セーブロード', ->
+        json = rpg.utils.createJsonData(skill)
+        skill = rpg.utils.createRpgObject(json)
+        skill = skills['attack']
+        atkcx = skill.effect user,targets
+        user.patk.should.equal 25
+        targets[0].pdef.should.equal 15
+        atkcx.targets[0].hpdamage.should.equal 8.75
+        atkcx.targets[0].attrs[0].should.equal '物理'
+        jsontest = rpg.utils.createJsonData(skill)
+        jsontest.should.equal json
       it '武器防具装備時', ->
         user = new rpg.Actor(name:'user',team:'a')
         user.weapon = new rpg.Weapon

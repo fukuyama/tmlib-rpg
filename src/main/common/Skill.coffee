@@ -20,18 +20,20 @@ class rpg.Skill
   constructor: (args={}) ->
     {
       @name
+      @_effect
     } = {
       name: '(skill)'
+      _effect: null
     }.$extendAll args
-    @_effect = new rpg.Effect args
+    unless @_effect?
+      @_effect = new rpg.Effect args
 
   ###* 効果メソッド
   * @param {rpg.Battler} user 使用者
   * @param {Array} target 対象者(rpg.Battler配列)
   * @return {Object} 効果コンテキスト
   ###
-  effect: (user,targets = []) ->
-    @_effect.effect(user,targets)
+  effect: (user,targets = []) -> @_effect.effect(user,targets)
 
   ###* 効果反映メソッド
   * @param {rpg.Battler} user 使用者
@@ -39,5 +41,4 @@ class rpg.Skill
   * @param {Object} log 効果ログ情報
   * @return {boolean} 効果ある場合 true
   ###
-  effectApply: (user,targets = [],log = {}) ->
-    @_effect.effectApply(user,targets,log)
+  effectApply: (user,targets = [],log = {}) -> @_effect.effectApply(user,targets,log)
