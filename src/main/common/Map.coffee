@@ -12,11 +12,6 @@ class rpg.Map
     @autoEvents = []
     @events = {}
 
-    # TODO:マップの場所によるエンカウントを…
-    #@_encount = {
-    #  step: 10
-    #}. args.encount
-
   #　マップ範囲内かどうか
   isValid: (x, y) ->
     0 <= x and x < @width and 0 <= y and y < @height
@@ -42,14 +37,10 @@ class rpg.Map
     MOVE_RESTRICTION.ALLOK
 
   _restrictionTileset: (x, y) ->
-    i = @mapSheet.layers.length - 1
-    while i >= 0
-      layer = @mapSheet.layers[i--]
-      if layer.type == 'layer'
-        tileid = layer.data[x + y * @width]
-        if tileid >= 0
-          return @mapSheet.tilesets[0].restriction[tileid]
-    null
+    id = @_tileId x,y
+    if id?
+      return @mapSheet.tilesets[0].restriction[id]
+    return null
 
   _restrictionEvent: (x, y, character = null) ->
     event = @findCharacter(x, y, character)
@@ -62,6 +53,16 @@ class rpg.Map
     # 通れないタイルの上のイベントを透過にしても通れない（ALLOK にはしない）
     return null if pc?.transparent
     if pc isnt null then MOVE_RESTRICTION.ALLNG else null
+
+  _tileId: (x, y) ->
+    i = @mapSheet.layers.length - 1
+    while i >= 0
+      layer = @mapSheet.layers[i--]
+      if layer.type == 'layer'
+        id = layer.data[x + y * @width]
+        if id >= 0
+          return id
+    return null
 
   # 座標位置のプレイヤーを検索
   # character: 検索を行ったキャラクター
@@ -92,6 +93,29 @@ class rpg.Map
       if event.triggerAuto()
         @autoEvents.push event
 
+  getEncount: (args) ->
+    unless @mapSheet.encounts?
+      return null
+    {
+      mapX
+      mapY
+    } = args
+    tileid = @_tileId mapX, mapY
+    for e in @mapSheet.encounts
+      r = e.rect
+      if r?
+        if r.left <= mapX and mapX <= r.right and r.top <= mapY and mapY <= r.bottom
+          if e.tileid?
+            if e.tileid is tileid
+              return e
+          else
+            return e
+      else
+        if e.tileid?
+          if e.tileid is tileid
+            return e
+    return null
+
 # マップ幅
 Object.defineProperty rpg.Map.prototype, 'width',
   enumerable: true
@@ -104,12 +128,15 @@ Object.defineProperty rpg.Map.prototype, 'height',
 Object.defineProperty rpg.Map.prototype, 'name',
   enumerable: true
   get: -> @mapSheet.name
-# エンカウント情報
+
+###* エンカウント情報
+* encount = {
+*   step: 10
+*   rate: 50
+*   troop: 1
+* }
+###
 Object.defineProperty rpg.Map.prototype, 'encount',
   enumerable: true
-  get: -> {
-    step: 10
-    rate: 50
-    troop: 1
-  }
+  get: -> @getEncount rpg.game.player.character
   #　TODO: Map で、Troop のリストを管理して、エンカウント情報に、エンカウントした場合のTroop情報を入れて返す

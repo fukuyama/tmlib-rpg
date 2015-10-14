@@ -108,11 +108,13 @@ tm.define 'SceneMap',
       # エンカウント歩数以上歩いたら、エンカウント率で戦闘
       if @player.character.isMoved()
         @_encount += 1
-        if @map.encount.step < @_encount
-          if Math.rand(0,100) < @map.encount.rate
-            @_encount = 0
-            @startBattle()
-            return
+        encount = @map.encount
+        if encount?
+          if encount.step < @_encount
+            if Math.rand(0,100) < encount.rate
+              @_encount = 0
+              @startBattle(encount)
+              return
     @player.awake = not @interpreter.isRunning()
     return
 
@@ -137,9 +139,9 @@ tm.define 'SceneMap',
   playerEnterframe: ->
     @spriteMap.updatePosition()
 
-  startBattle: ->
+  startBattle: (encount) ->
     @player.active = false
-    scene = SceneBattle @map.encount
+    scene = SceneBattle encount
     scene.on 'exit', @endBattle.bind @
     @app.pushScene scene
 

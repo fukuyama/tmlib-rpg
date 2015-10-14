@@ -39,6 +39,18 @@ module.exports = {
   height: 30
   tilewidth: 32
   tileheight: 32
+  encounts: [
+    {
+      rect:
+        left: 0
+        top: 0
+        right: 10
+        bottom: 10
+      troop: 1
+      step: 30
+      rate: 50
+    }
+  ]
   autotilesets: [
     {
       image: 'sample.autotile'

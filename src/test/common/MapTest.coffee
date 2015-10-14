@@ -136,3 +136,15 @@ describe 'rpg.Mapの仕様', () ->
         event = m.events.Event006
         page = event.currentPage
         page.name.should.equal 'page1'
+
+  describe 'エンカウント情報', ->
+    it 'エンカウント取得', ->
+      m = debug new rpg.Map()
+      e = m.getEncount(mapX:0,mapY:0)
+      e.step.should.equal 30
+      e = m.getEncount(mapX:10,mapY:10)
+      e.step.should.equal 30
+    it 'エンカウントなし', ->
+      m = debug new rpg.Map()
+      e = m.getEncount(mapX:0,mapY:11)
+      (e is null).should.equal true
