@@ -131,9 +131,9 @@ Object.defineProperty rpg.Map.prototype, 'name',
 
 ###* エンカウント情報
 * encount = {
-*   step: 10
-*   rate: 50
-*   troop: 1
+*   step: 10　エンカウント判定の歩数
+*   rate: 50 エンカウント発生率
+*   troops: [1] エンカウント時のトループ配列
 * }
 ###
 Object.defineProperty rpg.Map.prototype, 'encount',

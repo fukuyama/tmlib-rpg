@@ -1,6 +1,6 @@
 require '../requires.coffee'
 
 module.exports = {
-  name: 'トループ１'
+  name: 'troop001'
   enemies: [1]
 }

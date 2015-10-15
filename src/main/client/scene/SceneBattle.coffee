@@ -46,9 +46,7 @@ tm.define 'SceneBattle',
     @interpreter = rpg.system.mapInterpreter
 
     # メッセージウィンドウ
-    @windowMessage = rpg.WindowMessage(
-      messageSpeed: setting.messageSpeed
-    )
+    @windowMessage = rpg.WindowMessage(messageSpeed:setting.messageSpeed)
 
     # 戦闘コマンドメニュー
     @windowBattleMenu = rpg.WindowBattleMenu()
@@ -79,7 +77,7 @@ tm.define 'SceneBattle',
     rpg.system.db.preloadTroop [@troop], _loaded_troop.bind @
     return
 
-  _start: () ->
+  _start: ->
     @actors = rpg.game.party.getMembers()
     @battlers = [].concat @actors
     @battlers = @battlers.concat @enemies
@@ -118,12 +116,10 @@ tm.define 'SceneBattle',
     return
 
   _startAIPhase: ->
-    @action = {
-      type: 'attack'
-      target: target
-      onwer: @battler
-    }
     # TODO: モンスターの行動を決定する。
+    #@targets
+    #@action
+    #@battler.makeAction
     return
 
   _endInputPhase: ->

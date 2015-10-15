@@ -39,14 +39,14 @@ module.exports = {
   height: 30
   tilewidth: 32
   tileheight: 32
-  encounts: [
+  encounts: [ # エンカウントレイヤーを用意するやり方でも良いかも
     {
       rect:
         left: 0
         top: 0
         right: 10
         bottom: 10
-      troop: 1
+      troops: [1]
       step: 30
       rate: 50
     }
@@ -54,7 +54,7 @@ module.exports = {
   autotilesets: [
     {
       image: 'sample.autotile'
-      autoid: 1 # オートタイルにするタイルID
+      autoid: 1       # オートタイルにするタイルID
       tileid: [10,11] # オートタイルの隣接対象になるタイルID
     }
   ]

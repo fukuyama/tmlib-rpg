@@ -56,6 +56,18 @@ module.exports = {
       tileid: [10,11] # オートタイルの隣接対象になるタイルID
     }
   ]
+  encounts: [
+    {
+      rect:
+        left: 0
+        top: 0
+        right: 10
+        bottom: 3
+      troops: [1]
+      step: 10
+      rate: 50
+    }
+  ]
   tilesets: [
     {
       image: 'img/test_tileset.png'

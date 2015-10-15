@@ -41,7 +41,7 @@ tm.define 'SceneMap',
     @windowMapStatus = rpg.WindowMapStatus(windowMapMenu:@windowMapMenu)
     # プレイヤー
     @player = rpg.game.player
-    @player.map = map.name
+    @player.map = @map.name
 
     f = @playerActive.bind @
     @windowMapMenu.addCloseListener f
@@ -140,8 +140,10 @@ tm.define 'SceneMap',
     @spriteMap.updatePosition()
 
   startBattle: (encount) ->
+    console.log 'encount!'
     @player.active = false
-    scene = SceneBattle encount
+    troop = encount.troops.random()
+    scene = SceneBattle troop:troop
     scene.on 'exit', @endBattle.bind @
     @app.pushScene scene
 
