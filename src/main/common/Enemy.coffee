@@ -30,4 +30,19 @@ class rpg.Enemy extends rpg.Battler
       ]
     }.$extendAll(@properties).$extendAll(args)
 
+    @makeAction = @_simpleAction
+
    # TODO:落とすアイテムとかの処理が必要
+
+   _simpleAction: (args) ->
+    {
+      battler
+      friends
+      targets
+      turn
+    } = args
+    action = {
+      effect: null
+      battler: battler
+    }
+    return action

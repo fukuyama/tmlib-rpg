@@ -84,6 +84,7 @@ tm.define 'SceneBattle',
     @interpreter.start [
       {type:'message',params:['battle start']}
     ]
+    @turn = 0
     @_startTurn()
     return
 
@@ -96,14 +97,15 @@ tm.define 'SceneBattle',
     # @_startInputPhase()
     @battlers = @battlers.shuffle().sort (a,b) -> b.age - a.age
     @index = 0
+    @turn += 1
     @_startCommandPhase
     return
 
   _startCommandPhase: ->
     @battler = @battlers[@index]
-    if @battler instanceof rpg.Actor
+    if @battler.canActionInput()
       @_startInputPhase(@battler)
-    else if @battler instanceof rpg.Enemy
+    else if @battler.makeAction?
       @_startAIPhase(@battler)
     return
 
@@ -116,10 +118,20 @@ tm.define 'SceneBattle',
     return
 
   _startAIPhase: ->
-    # TODO: モンスターの行動を決定する。
-    #@targets
-    #@action
-    #@battler.makeAction
+    if @battler instanceof rpg.Actor
+      @action = @battler.makeAction {
+        battler: @battler
+        friends: @actors
+        targets: @enemies
+        turn: @turn
+      }
+    else @battler instanceof rpg.Enemy
+      @action = @battler.makeAction {
+        battler: @battler
+        friends: @enemies
+        targets: @actors
+        turn: @turn
+      }
     return
 
   _endInputPhase: ->
