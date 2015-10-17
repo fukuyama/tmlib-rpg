@@ -32,6 +32,11 @@ class rpg.Enemy extends rpg.Battler
 
     @makeAction = @_simpleAction
 
+    list = (a.skill for a in @actions)
+    rpg.system.db.preloadSkill list, (skills) ->
+      for skill,i in skills
+        @actions[i].skill = skill
+
    # TODO:落とすアイテムとかの処理が必要
 
    _simpleAction: (args) ->
