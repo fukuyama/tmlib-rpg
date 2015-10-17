@@ -22,6 +22,20 @@ class rpg.Enemy extends rpg.Battler
     super(args)
     {
       @exp
+    } = {
+      exp: 0
+    }.$extendAll(@properties).$extendAll(args)
+
+    @ai = new rpg.SimpleAI(args.ai)
+    @makeAction = @ai.makeAction
+
+   # TODO:落とすアイテムとかの処理が必要
+
+class SimpleAI
+  constructor: (args={}) ->
+    super(args)
+    {
+      @exp
       @actions
     } = {
       exp: 0
@@ -30,22 +44,20 @@ class rpg.Enemy extends rpg.Battler
       ]
     }.$extendAll(@properties).$extendAll(args)
 
-    @makeAction = @_simpleAction
-
+    # BUG: ロードはここじゃないな…
     list = (a.skill for a in @actions)
     rpg.system.db.preloadSkill list, (skills) ->
       for skill,i in skills
         @actions[i].skill = skill
 
-   # TODO:落とすアイテムとかの処理が必要
-
-   _simpleAction: (args) ->
+  makeAction: (args) ->
     {
-      battler
-      friends
-      targets
-      turn
+      @battler
+      @friends
+      @targets
+      @turn
     } = args
+    skills = (a.skill for a in @actions when @_isEffective a)
     action = {
       effect: null
       battler: battler
