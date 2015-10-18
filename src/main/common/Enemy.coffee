@@ -45,10 +45,10 @@ class SimpleAI
     }.$extendAll(@properties).$extendAll(args)
 
     # BUG: ロードはここじゃないな…
-    list = (a.skill for a in @actions)
-    rpg.system.db.preloadSkill list, (skills) ->
-      for skill,i in skills
-        @actions[i].skill = skill
+    #list = (a.skill for a in @actions)
+    #rpg.system.db.preloadSkill list, (skills) ->
+    #  for skill,i in skills
+    #    @actions[i].skill = skill
 
   makeAction: (args) ->
     {
