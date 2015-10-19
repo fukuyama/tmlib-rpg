@@ -66,8 +66,15 @@ tm.define 'SceneBattle',
     return
 
   _load: ->
+    _loaded_skills = (skills) ->
+      for skill,i in skills
+        @actions[i].skill = skill
+      return
+
     _loaded_enemies = (enemies) ->
       @enemies = enemies
+      for e in @enemies
+        rpg.system.db.preloadSkill e.skills, _loaded_skills
       @_start()
       return
     _loaded_troop = (troops) ->
