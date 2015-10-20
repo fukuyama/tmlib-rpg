@@ -50,6 +50,7 @@ class rpg.Battler
       base
       @properties
       @states
+      skills
       @equips
       @equipsFix
     } = {
@@ -68,6 +69,7 @@ class rpg.Battler
       }
       properties: {}
       states: []
+      skills: []
       equips: {
         left_hand: null # 左手
         right_hand: null # 右手
@@ -93,6 +95,20 @@ class rpg.Battler
 
     @_currenthp = @maxhp
     @_currentmp = @maxmp
+
+    @skills = []
+    load_skills = []
+    for skill,i in skills
+      if skill instanceof rpg.Skill
+        @skills.push skill
+      else
+        load_skills.push skill
+
+    if load_skills.length != 0
+      rpg.system?.db?.preloadSkill load_skills, (skills) ->
+        for skill in skills
+          @skills.push skill
+        return
     return
 
   ###* 能力計算

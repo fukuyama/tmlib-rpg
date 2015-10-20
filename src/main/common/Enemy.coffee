@@ -31,24 +31,15 @@ class rpg.Enemy extends rpg.Battler
 
    # TODO:落とすアイテムとかの処理が必要
 
-class SimpleAI
+class rpg.SimpleAI
   constructor: (args={}) ->
-    super(args)
     {
-      @exp
       @actions
     } = {
-      exp: 0
       actions: [
         {skill:1}
       ]
-    }.$extendAll(@properties).$extendAll(args)
-
-    # BUG: ロードはここじゃないな…
-    #list = (a.skill for a in @actions)
-    #rpg.system.db.preloadSkill list, (skills) ->
-    #  for skill,i in skills
-    #    @actions[i].skill = skill
+    }.$extendAll(args)
 
   makeAction: (args) ->
     {
