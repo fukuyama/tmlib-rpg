@@ -54,3 +54,7 @@ class rpg.SimpleAI
       battler: battler
     }
     return action
+
+  _isEffective: (action) ->
+
+    return true
