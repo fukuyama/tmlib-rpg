@@ -11,6 +11,8 @@ require('../../main/common/ItemContainer.coffee')
 require('../../main/common/UsableCounter.coffee')
 require('../../main/common/Effect.coffee')
 
+require('../../test/common/System.coffee')
+
 {
   SCOPE
   USABLE
@@ -23,7 +25,6 @@ TEST_STATES = {
 describe 'rpg.UsableCounter', ->
   item = null
   log = null
-  rpg.system = rpg.system ? {}
   rpg.system.temp = rpg.system.temp ? {}
   rpg.system.db = rpg.system.db ? {}
   

@@ -5,9 +5,10 @@ require('../../main/common/utils.coffee')
 require('../../main/common/MarkupText.coffee')
 require('../../main/common/Flag.coffee')
 
+require('../../test/common/System.coffee')
+
 describe 'rpg.MarkupText', ->
   rpg.game = rpg.game ? {}
-  rpg.system = rpg.system ? {}
   rpg.system.lineHeight = 32
   rpg.system.temp = {} unless rpg.system.temp?
   describe '初期化', ->

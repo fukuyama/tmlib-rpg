@@ -103,12 +103,16 @@ class rpg.Battler
         @skills.push skill
       else
         load_skills.push skill
-
+    loaded = args.loaded
     if load_skills.length != 0
-      rpg.system?.db?.preloadSkill load_skills, (skills) ->
+      rpg.system?.db?.preloadSkill load_skills, ((skills) ->
         for skill in skills
           @skills.push skill
+        loaded() if loaded?
         return
+      ).bind @
+    else
+      loaded() if loaded?
     return
 
   ###* 能力計算

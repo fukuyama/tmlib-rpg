@@ -12,6 +12,11 @@ require('../../main/common/EquipItem.coffee')
 require('../../main/common/Weapon.coffee')
 require('../../main/common/Armor.coffee')
 
+require('../../main/common/Skill.coffee')
+require('../../main/common/Effect.coffee')
+
+require('../../test/common/System.coffee')
+
 {
   USABLE
 } = rpg.constants
@@ -153,6 +158,12 @@ describe 'rpg.Battler', () ->
       (b1.iff b2).should.equal false
       (b2.iff b1).should.equal false
 
+  describe 'スキル', ->
+    it 'スキルあり作成', (done) ->
+      battler = new rpg.Battler(team:'a',skills:[1],loaded:done)
+    it 'スキルありチェック', ->
+      (battler.skills[0] instanceof rpg.Skill).should.equal true,'preload rpg.Skill'
+
   describe 'ステート', ->
     describe '基本', ->
       it '追加', ->
@@ -163,8 +174,6 @@ describe 'rpg.Battler', () ->
       it '追加(文字列指定)', ->
         battler = new rpg.Battler()
         battler.states.length.should.equal 0
-        rpg.system = rpg.system ? {}
-        rpg.system.db = rpg.system.db ? {}
         rpg.system.db.state = (name) -> new rpg.State(name:name)
         battler.addState 'State1'
         battler.states.length.should.equal 1

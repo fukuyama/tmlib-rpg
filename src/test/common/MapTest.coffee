@@ -9,6 +9,8 @@ require('../../main/common/Flag.coffee')
 require('../../main/common/EventPage.coffee')
 require('../../main/common/Event.coffee')
 
+require('../../test/common/System.coffee')
+
 mapSheet = require('./MapTestData.coffee')
 
 describe 'rpg.Mapの仕様', () ->
@@ -20,7 +22,6 @@ describe 'rpg.Mapの仕様', () ->
         params = JSON.parse(obj.properties.init)[0]
         m.events[obj.name] = new rpg.Event(params)
     m
-  rpg.system = rpg.system ? {}
   rpg.game = {}
   rpg.game.player = {}
   rpg.game.player.character = new rpg.Character({

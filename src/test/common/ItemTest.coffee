@@ -8,6 +8,8 @@ require('../../main/common/ItemContainer.coffee')
 require('../../main/common/UsableCounter.coffee')
 require('../../main/common/Effect.coffee')
 
+require('../../test/common/System.coffee')
+
 {
   USABLE
 } = rpg.constants
@@ -16,12 +18,11 @@ describe 'rpg.Item', ->
   item = null
   item1 = null
   item2 = null
-  rpg.system = rpg.system ? {}
   rpg.system.temp = rpg.system.temp ? {}
 
   describe '基本属性', ->
     it 'アイテムの初期化', ->
-      item = new rpg.Item()
+      item = new rpg.Item(url:'item001')
     it '名前がある', ->
       (item.name is null).should.equal false
       item.name.should.equal ''

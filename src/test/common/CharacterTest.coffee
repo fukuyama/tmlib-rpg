@@ -6,6 +6,8 @@ require('../../main/common/constants.coffee')
 require('../../main/common/Character.coffee')
 require('../../main/common/Map.coffee')
 
+require('../../test/common/System.coffee')
+
 mapSheet = require('./MapTestData.coffee')
 
 describe 'rpg.Character', () ->
@@ -15,7 +17,6 @@ describe 'rpg.Character', () ->
   for l in map.mapSheet.layers when l.type is 'objectgroup'
     for obj in l.objects
       map.events.push JSON.parse(obj.properties.init)[0]
-  rpg.system = rpg.system ? {}
   rpg.system.scene = {
     map: map
   }

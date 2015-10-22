@@ -14,6 +14,8 @@ require('../../main/common/Weapon.coffee')
 require('../../main/common/Armor.coffee')
 require('../../main/common/Effect.coffee')
 
+require('../../test/common/System.coffee')
+
 SCOPE = rpg.constants.SCOPE
 
 TEST_STATES = {
@@ -27,8 +29,7 @@ TEST_STATES = {
 
 # 価値は何か，誰にとっての価値か，実際の機能は何か
 describe 'rpg.Skill', ->
-  rpg.system = rpg.system ? {}
-  rpg.system.db = {}
+
   skills =
     attack: new rpg.Skill
       name: '攻撃'

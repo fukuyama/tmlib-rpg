@@ -7,6 +7,8 @@ require('../../main/common/Actor.coffee')
 require('../../main/common/Effect.coffee')
 require('../../main/common/State.coffee')
 
+require('../../test/common/System.coffee')
+
 {
   SCOPE
   USABLE
@@ -15,9 +17,7 @@ require('../../main/common/State.coffee')
 # 価値は何か，誰にとっての価値か，実際の機能は何か
 describe 'rpg.Effect', ->
 
-  rpg.system = rpg.system ? {}
   rpg.system.temp = rpg.system.temp ? {}
-  rpg.system.db = rpg.system.db ? {}
   states = {
     'State1': new rpg.State({name:'State1'})
   }

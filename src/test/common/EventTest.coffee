@@ -7,8 +7,9 @@ require('../../main/common/Flag.coffee')
 require('../../main/common/EventPage.coffee')
 require('../../main/common/Event.coffee')
 
+require('../../test/common/System.coffee')
+
 describe 'rpg.Event', () ->
-  rpg.system = rpg.system ? {}
   rpg.game = {}
   rpg.game.flag = new rpg.Flag()
 

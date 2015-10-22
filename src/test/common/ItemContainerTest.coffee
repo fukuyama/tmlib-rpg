@@ -11,12 +11,14 @@ require('../../main/common/Battler.coffee')
 require('../../main/common/Actor.coffee')
 require('../../main/common/Effect.coffee')
 
+require('../../test/common/System.coffee')
+
 {
   USABLE
 } = rpg.constants
 
 describe 'rpg.ItemContainer', ->
-  rpg.system = rpg.system ? {}
+
   rpg.system.temp = rpg.system.temp ? {}
 
   describe '基本操作', ->
