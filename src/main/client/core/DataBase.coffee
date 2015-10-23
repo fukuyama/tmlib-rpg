@@ -69,6 +69,7 @@ tm.define 'rpg.DataBase',
         create: @_create.bind @, c
       }
       @['preload' + c] = @_preload.bind @, k
+      @['get' + c] = @_get.bind @, k
 
     @mapUrl   = @_dataUrl.bind @, path.data + path.map
     @stateUrl = @_dataUrl.bind @, path.data + path.state
@@ -104,7 +105,14 @@ tm.define 'rpg.DataBase',
       if id.match /\.(json|png)$/
         return @baseUrl + path + id
       return @baseUrl + path + id + '.json'
-    @baseUrl + path + @_filename(id) + '.json'
+    return @baseUrl + path + @_filename(id) + '.json'
+
+  _get: (key,id) ->
+    mgr = tm.asset.Manager
+    url = @_metaif[key].url id
+    if mgr.get(url)?
+      return @_metaif[key].create mgr.get(url).data
+    return null
 
   _preload: (key,ids,func) ->
     mgr = tm.asset.Manager

@@ -13,4 +13,5 @@ module.exports = {
     cha: 10 # みりょく
     basehp: 10 # HP
     basemp: 10 # MP
+  skills: [1]
 }

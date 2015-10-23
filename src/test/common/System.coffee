@@ -38,7 +38,7 @@ class rpg.DataBase
     else
       fs.readdir @basedir + 'skill', ((err, files) ->
         if err?
-          console.log err
+          throw err
           return
         @_skillist = []
         for file in files
