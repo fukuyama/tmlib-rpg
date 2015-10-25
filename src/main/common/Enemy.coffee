@@ -44,8 +44,11 @@ class rpg.SimpleAI
       ]
     }.$extendAll(args)
 
-    #for a in @actions
-    #  rpg.system.db.preloadSkill , (skills) ->
+    for a in @actions
+      if a.skill?
+        unless a.skill instanceof rpg.skill
+          a.skill = rpg.system.db.getSkill a.skill
+    return
 
   makeAction: (args) ->
     {
