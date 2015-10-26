@@ -58,6 +58,9 @@ class rpg.DataBase
       for id in ids
         ret.push skills[id]
       cb ret
+
+  getSkill: (id) ->
+    return @_skillist[id]
     
 rpg.system = new rpg.System()
 

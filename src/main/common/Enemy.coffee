@@ -26,44 +26,7 @@ class rpg.Enemy extends rpg.Battler
       exp: 0
     }.$extendAll(@properties).$extendAll(args)
 
-    @ai = new rpg.SimpleAI(args.ai)
+    @ai = new rpg.ai.Simple(args.ai)
     @makeAction = @ai.makeAction
 
    # TODO:落とすアイテムとかの処理が必要
-
-class rpg.SimpleAI
-  ###*
-  * シンプルＡＩ
-  ###
-  constructor: (args={}) ->
-    {
-      @actions
-    } = {
-      actions: [
-        {skill:1}
-      ]
-    }.$extendAll(args)
-
-    for a in @actions
-      if a.skill?
-        unless a.skill instanceof rpg.skill
-          a.skill = rpg.system.db.getSkill a.skill
-    return
-
-  makeAction: (args) ->
-    {
-      @battler
-      @friends
-      @targets
-      @turn
-    } = args
-    skills = (a.skill for a in @actions when @_isEffective a)
-    action = {
-      effect: null
-      battler: battler
-    }
-    return action
-
-  _isEffective: (action) ->
-
-    return true

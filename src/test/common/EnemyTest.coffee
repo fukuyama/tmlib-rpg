@@ -8,10 +8,21 @@ require('../../main/common/Item.coffee')
 require('../../main/common/UsableCounter.coffee')
 require('../../main/common/ItemContainer.coffee')
 
+require('../../main/common/Skill.coffee')
+require('../../main/common/Effect.coffee')
+
+require('../../test/common/System.coffee')
+
+require('../../main/common/ai/Simple.coffee')
+
 # 価値は何か，誰にとっての価値か，実際の機能は何か
 describe 'rpg.EnemyTest', () ->
   enemy = null
   item = null
+  describe 'ＤＢ初期化', ->
+    it 'load', (done) ->
+      rpg.system.db.preloadSkill [0,1], (skills) -> done()
+
   describe 'エネミーー生成', ->
     it '生成するとデフォルト値で初期化される', ->
       enemy = new rpg.Enemy()
