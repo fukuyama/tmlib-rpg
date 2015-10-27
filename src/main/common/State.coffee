@@ -191,13 +191,13 @@ class rpg.State
   * @param {rpg.State} state 相殺されるかどうか調べるステート
   * @return {boolean} 相殺されるステートの場合 true
   ###
-  checkCancel: (state) ->
+  checkCancel: (state, stack = false) ->
     if @hasCancel()
       for cs in @cancel.states
         if cs == state.name
           return true
     if state.hasCancel()
-      return state.checkCancel @
+      return state.checkCancel @, true unless stack
     false
 
   ###* 追加確認

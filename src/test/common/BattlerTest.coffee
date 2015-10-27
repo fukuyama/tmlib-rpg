@@ -259,6 +259,7 @@ describe 'rpg.Battler', () ->
         battler.states.length.should.equal 0
         state = new rpg.State {
           name:'力アップ'
+          overlap: 2
           abilities:[
             {str:5}
           ]
@@ -269,20 +270,30 @@ describe 'rpg.Battler', () ->
         battler.addState state
         battler.str.should.equal 15
         battler.states.length.should.equal 1
+        battler.addState state
+        battler.str.should.equal 20
+        battler.states.length.should.equal 2
       it '力ダウンステート追加で相殺する', ->
-        battler.states.length.should.equal 1
+        battler.states.length.should.equal 2
         state = new rpg.State {
           name:'力ダウン'
+          overlap: 2
           abilities:[
-            {str:{type:'fix',val:-4}}
+            {str:-4}
           ]
           cancel:{
             states:['力アップ']
           }
         }
         battler.addState state
+        battler.str.should.equal 15
+        battler.states.length.should.equal 1
+        battler.addState state
         battler.str.should.equal 10
         battler.states.length.should.equal 0
+        battler.addState state
+        battler.str.should.equal 6
+        battler.states.length.should.equal 1
     describe '攻撃ステート', ->
       it '攻撃属性', ->
         battler = new rpg.Battler()

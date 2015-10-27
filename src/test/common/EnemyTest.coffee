@@ -13,7 +13,7 @@ require('../../main/common/Effect.coffee')
 
 require('../../test/common/System.coffee')
 
-require('../../main/common/ai/Simple.coffee')
+require('../../main/common/ai/RandomAI.coffee')
 
 # 価値は何か，誰にとっての価値か，実際の機能は何か
 describe 'rpg.EnemyTest', () ->

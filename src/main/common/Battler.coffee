@@ -132,6 +132,11 @@ class rpg.Battler
       r += s.ability(base:base, ability:nm)
     r
 
+  getStates: (state) ->
+    if typeof state is 'string'
+      state = rpg.system.db.state state
+    return (s for s in @states when s.name is state.name)
+
   ###* ステート追加
   * @method rpg.Battler#addState
   * @param {rpg.State} args
@@ -147,7 +152,7 @@ class rpg.Battler
       # 相殺確認
       r = state.findCancels @states
       if r.length > 0
-        @removeState r
+        @removeState r[0]
     @
 
   ###* ステート削除
@@ -159,7 +164,15 @@ class rpg.Battler
     name = args if typeof args is 'string'
     name = args.name if typeof args is 'object'
     if name?
-      @states = (s for s in @states when s.name != name)
+      states1 = []
+      states2 = []
+      for s in @states
+        if s.name is name
+          states1.push s
+        else
+          states2.push s
+      states1.pop()
+      @states = states2.concat states1
     else if args instanceof Array
       @removeState a for a in args
     @

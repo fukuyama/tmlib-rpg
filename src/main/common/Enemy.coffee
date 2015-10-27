@@ -26,7 +26,7 @@ class rpg.Enemy extends rpg.Battler
       exp: 0
     }.$extendAll(@properties).$extendAll(args)
 
-    @ai = new rpg.ai.Simple(args.ai)
+    @ai = new rpg.ai.RandomAI(args.ai)
     @makeAction = @ai.makeAction
 
    # TODO:落とすアイテムとかの処理が必要
