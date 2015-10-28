@@ -40,8 +40,8 @@ actions = [
     cond:
       op: '<'
       status:
-        code: 1
-        target: 2
+        value: 1
+        targets: 2
   }
 ]
 ###
@@ -102,9 +102,13 @@ class rpg.ai.RandomAI
     return false
 
   _checkCondStatus: (cond) ->
+    if cond.status.targets?
+      list = @targets
+      value = cond.status.targets
+    if cond.status.friends?
+      list = @friends
+      value = cond.status.friends
     count = 0
-    if cond.status.target?
-      @targets
-    if cond.status.friend?
-      @friends
-    return false
+    for o in list
+      count += o.getStates(cond.status.value).length
+    return rpg.utils.jsonExpression count,cond.op,value
