@@ -5,6 +5,8 @@ fs = require 'fs'
 _g = global ? @
 rpg = _g.rpg = _g.rpg ? {}
 
+Math.rand = (min, max) -> Math.floor( Math.random()*(max-min+1) ) + min
+
 top_dir = '../../../'
 
 class rpg.System
@@ -63,4 +65,3 @@ class rpg.DataBase
     return @_skillist[id]
     
 rpg.system = new rpg.System()
-

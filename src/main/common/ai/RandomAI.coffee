@@ -73,6 +73,8 @@ class rpg.ai.RandomAI
     return actions[ Math.rand(0, actions.length - 1) ]
 
   _isEffective: (action) ->
+    return true unless action.cond?
+
     conds_type = action.conds_type ? 'and'
     conds = action.conds ? [action.cond]
     ret = true
