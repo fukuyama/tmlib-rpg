@@ -2,20 +2,25 @@
 # node.js と ブラウザでの this.rpg を同じインスタンスにする
 _g = window ? global ? @
 rpg = _g.rpg = _g.rpg ? {}
+rpg.ai = rpg.ai ? {}
 
 _stringifyFunc = (k,v) ->
   return undefined unless v?
-  if k != 'd' and rpg[v.constructor.name]?
-    return {
-      t: v.constructor.name
-      d: v
-    }
+  if k != 'd'
+    if rpg[v.constructor.name]? or rpg.ai[v.constructor.name]?
+      return {
+        t: v.constructor.name
+        d: v
+      }
   v
 
 _parseFunc = (k,v) ->
   return undefined unless v?
-  if k != 't' and rpg[v.t]?
-    return new rpg[v.t](v.d)
+  if k != 't'
+    if rpg[v.t]?
+      return new rpg[v.t](v.d)
+    if rpg.ai[v.t]?
+      return new rpg.ai[v.t](v.d)
   v
 
 _expression = {

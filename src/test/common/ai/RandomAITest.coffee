@@ -32,3 +32,13 @@ describe 'rpg.ai.RandomAI', () ->
         turn: 1
       )
       action.skill.name.should.equals '攻撃'
+    it 'セーブロード', ->
+      json = rpg.utils.createJsonData(ai)
+      ai = rpg.utils.createRpgObject(json)
+      action = ai.makeAction(
+        battler: null
+        targets: []
+        friends: []
+        turn: 1
+      )
+      action.skill.name.should.equals '攻撃'
