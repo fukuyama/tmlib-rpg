@@ -16,8 +16,4 @@ TODO:
   * 行動順は、すばやさ順
    * コマンド入力は、ターン前じゃなくて、順番がきてから。
   * 
- * メッセージウィンドウの作り直し…
-   ラインごとにスムーズに表示させたい。
-   http://t.co/l4B8tro1tI
-
  * tmlib.js CDN https://cdnjs.com/libraries/tmlib.js
