@@ -15,10 +15,11 @@ describe 'rpg.ai.RandomAI', () ->
   ai = null
   describe 'ＤＢ初期化', ->
     it 'load', (done) ->
-      rpg.system.db.preloadSkill [0,1], (skills) -> done()
+      rpg.system.db.preloadSkill [0,1,2], (skills) -> done()
   describe '初期化', ->
     it '引数無し', ->
       ai = new rpg.ai.RandomAI()
+  describe '条件のテスト', ->
     it 'スキル１つ', ->
       ai = new rpg.ai.RandomAI(
         actions: [
@@ -42,3 +43,23 @@ describe 'rpg.ai.RandomAI', () ->
         turn: 1
       )
       action.skill.name.should.equals '攻撃'
+    it 'ターン', ->
+      ai = new rpg.ai.RandomAI(
+        actions: [
+          {
+            cond:
+              turn: 2
+            skill:1
+          }
+          {
+            skill:2
+          }
+        ]
+      )
+      action = ai.makeAction(
+        battler: null
+        targets: []
+        friends: []
+        turn: 1
+      )
+      action.skill.name.should.equals 'キュアI'
