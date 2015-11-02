@@ -48,6 +48,7 @@ describe 'rpg.ai.RandomAI', () ->
         actions: [
           {
             cond:
+              op: '>='
               turn: 2
             skill:1
           }
@@ -63,3 +64,13 @@ describe 'rpg.ai.RandomAI', () ->
         turn: 1
       )
       action.skill.name.should.equals 'キュアI'
+      actions = []
+      for i in [0..10]
+        action = ai.makeAction(
+          battler: null
+          targets: []
+          friends: []
+          turn: 2
+        )
+        actions.push action if 0 > actions.indexOf action
+      actions.length.should.equals 2

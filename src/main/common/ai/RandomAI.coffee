@@ -94,11 +94,11 @@ class rpg.ai.RandomAI
 
   _checkCond: (cond) ->
     if cond.turn?
-      return rpg.utils.jsonExpression @turn,cond.op,cond.turn
+      return rpg.utils.jsonExpression [@turn,cond.op,cond.turn]
     if cond.targets?
-      return rpg.utils.jsonExpression @targets.length,cond.op,cond.targets
+      return rpg.utils.jsonExpression [@targets.length,cond.op,cond.targets]
     if cond.friends?
-      return rpg.utils.jsonExpression @friends.length,cond.op,cond.friends
+      return rpg.utils.jsonExpression [@friends.length,cond.op,cond.friends]
     if cond.status?
       return @_checkCondStatus cond
     return false

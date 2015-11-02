@@ -231,6 +231,12 @@ describe 'utils', ->
       n.should.equal true
       n = rpg.utils.jsonExpression l: 2,e: '>=',r: 4
       n.should.equal false
+      n = rpg.utils.jsonExpression [2,'>=',2]
+      n.should.equal true
+      n = rpg.utils.jsonExpression [2,'>=',1]
+      n.should.equal true
+      n = rpg.utils.jsonExpression [2,'>=',4]
+      n.should.equal false
     it '以上', ->
       n = rpg.utils.jsonExpression l: 2,e: '<=',r: 2
       n.should.equal true
