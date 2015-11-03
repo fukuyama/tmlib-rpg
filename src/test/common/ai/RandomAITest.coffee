@@ -43,17 +43,17 @@ describe 'rpg.ai.RandomAI', () ->
         turn: 1
       )
       action.skill.name.should.equals '攻撃'
-    it 'ターン', ->
+    it '１ターン目は攻撃', ->
       ai = new rpg.ai.RandomAI(
         actions: [
           {
             cond:
               op: '>='
               turn: 2
-            skill:1
+            skill:2
           }
           {
-            skill:2
+            skill:1
           }
         ]
       )
@@ -63,7 +63,8 @@ describe 'rpg.ai.RandomAI', () ->
         friends: []
         turn: 1
       )
-      action.skill.name.should.equals 'キュアI'
+      action.skill.name.should.equals '攻撃'
+    it '２ターン以降に回復を使用スキルが候補に入る', ->
       actions = []
       for i in [0..10]
         action = ai.makeAction(
