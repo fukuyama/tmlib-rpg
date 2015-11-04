@@ -29,4 +29,4 @@ class rpg.Enemy extends rpg.Battler
     @ai = new rpg.ai.RandomAI(args.ai)
     @makeAction = @ai.makeAction
 
-   # TODO:落とすアイテムとかの処理が必要
+    # TODO:落とすアイテムとかの処理が必要

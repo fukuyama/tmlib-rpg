@@ -14,4 +14,8 @@ module.exports = {
     basehp: 10 # HP
     basemp: 10 # MP
   skills: [1]
+  ai:
+    actions: [
+      {skill:1}
+    ]
 }
