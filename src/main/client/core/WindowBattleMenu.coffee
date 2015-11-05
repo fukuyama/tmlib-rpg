@@ -27,6 +27,8 @@ tm.define 'rpg.WindowBattleMenu',
       ]
     }
     @superInit(args)
+    @friends = []
+    @targets = []
 
   setActor: (@actor) ->
     @clearTitle()
@@ -34,6 +36,12 @@ tm.define 'rpg.WindowBattleMenu',
     return @
 
   menuAttack: ->
+    @addWindow rpg.WindowBattleTarget
+      parent: @
+      targets: @targets
+      friends: @friends
+    @active = false
+    @visible = false
     return
   menuSkill: ->
     return
@@ -43,3 +51,5 @@ tm.define 'rpg.WindowBattleMenu',
     return
   menuOperation: ->
     return
+
+rpg.WindowBattleMenu.prototype.setter 'battler', (actor) -> @setActor actor

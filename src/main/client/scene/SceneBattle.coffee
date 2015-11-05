@@ -110,7 +110,9 @@ tm.define 'SceneBattle',
     return
 
   _startInputPhase: ->
-    @windowBattleMenu.setActor @battler
+    @windowBattleMenu.battler = @battler
+    @windowBattleMenu.friends = @actors
+    @windowBattleMenu.targets = @enemies
     @phase = ->
       @phase = null
       @windowBattleMenu.open()

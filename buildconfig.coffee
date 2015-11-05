@@ -42,6 +42,7 @@ clientScripts = [
   'core/WindowItemShop'
   'core/WindowCash'
   'core/WindowBattleMenu'
+  'core/WindowBattleTarget'
   'core/GamePlayer'
   'core/Interpreter'
   'event_command/Function'
@@ -103,6 +104,7 @@ commonScripts = [
   'common/State'
   'common/Effect'
   'common/MarkupText'
+  'common/ai/RandomAI'
 ]
 mainScripts = commonScripts.concat('client/' + s for s in clientScripts)
 
