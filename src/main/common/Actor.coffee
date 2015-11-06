@@ -60,3 +60,12 @@ class rpg.Actor extends rpg.Battler
     if item.isLost()
       @backpack.removeItem item
     r
+
+  ###* アクターの自動戦闘
+  * 行動不能でステートによるＡＩがある場合（混乱や魅了など）
+  * 作戦で、自動設定されている場合
+  * このメソッドでアクションを作成して返す。
+  ###
+  makeAction: (args) ->
+    action = {}
+    return action
