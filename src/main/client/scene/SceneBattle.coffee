@@ -85,21 +85,28 @@ tm.define 'SceneBattle',
       {type:'message',params:['battle start']}
     ]
     @turn = 0
-    @_startTurn()
+    @_nextTurn()
     return
 
   _end: ->
     @app.popScene()
     return
 
-  _startTurn: ->
-    # @battler = @actors[0]
-    # @_startInputPhase()
+  _nextTurn: ->
     @battlers = @battlers.shuffle().sort (a,b) -> b.age - a.age
     @index = 0
     @turn += 1
-    @_startCommandPhase
+    console.log 'turn ' + @turn
+    @_startCommandPhase()
     return
+
+  _nextBattler: ->
+    if @index < @battlers.length
+      console.log 'battler ' + @index
+      @index += 1
+      @_startCommandPhase()
+    else
+      @_nextTurn()
 
   _startCommandPhase: ->
     @battler = @battlers[@index]
@@ -134,14 +141,16 @@ tm.define 'SceneBattle',
         targets: @actors
         turn: @turn
       }
+    @phase = @phaseAction
     return
 
   _endInputPhase: ->
     @_end()
-    # @_startMainPhase()
     return
 
-  phaseMain: ->
+  # アクションを実行する
+  phaseAction: ->
+    @_nextBattler()
     return
 
   update: ->
