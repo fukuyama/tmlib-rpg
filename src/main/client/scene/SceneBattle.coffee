@@ -110,7 +110,7 @@ tm.define 'SceneBattle',
 
   _startCommandPhase: ->
     @battler = @battlers[@index]
-    if @battler.canActionInput()
+    if @battler.isActionInput()
       @_startInputPhase(@battler)
     else if @battler.makeAction?
       @_startAIPhase(@battler)

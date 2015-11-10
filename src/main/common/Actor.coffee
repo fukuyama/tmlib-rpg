@@ -69,3 +69,10 @@ class rpg.Actor extends rpg.Battler
   makeAction: (args) ->
     action = {}
     return action
+
+  ###* 戦闘コマンドが入力可能か？
+  * @method rpg.Actor#isActionInput
+  * @return {boolean} 入力可能ならtrue
+  ###
+  isActionInput: ->
+    return true

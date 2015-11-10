@@ -132,6 +132,14 @@ class rpg.Battler
       r += s.ability(base:base, ability:nm)
     r
 
+  ###* 戦闘コマンドが入力可能か？
+  * アクターかエネミーのクラスで上書きされる
+  * @method rpg.Battler#isActionInput
+  * @return {boolean} 入力可能ならtrue
+  ###
+  isActionInput: ->
+    return true
+
   getStates: (state) ->
     if typeof state is 'string'
       state = rpg.system.db.state state

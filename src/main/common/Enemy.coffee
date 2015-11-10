@@ -30,3 +30,6 @@ class rpg.Enemy extends rpg.Battler
     @makeAction = @ai.makeAction
 
     # TODO:落とすアイテムとかの処理が必要
+
+  isActionInput: ->
+    return false
