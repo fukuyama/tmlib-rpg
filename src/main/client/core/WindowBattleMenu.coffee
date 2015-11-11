@@ -36,12 +36,14 @@ tm.define 'rpg.WindowBattleMenu',
     return @
 
   menuAttack: ->
-    @addWindow rpg.WindowBattleTarget
+    windowBattleTarget = rpg.WindowBattleTarget
       parent: @
       targets: @targets
       friends: @friends
     @active = false
     @visible = false
+    @addWindow windowBattleTarget
+    windowBattleTarget.open()
     return
   menuSkill: ->
     return
