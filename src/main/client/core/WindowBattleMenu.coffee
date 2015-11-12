@@ -36,10 +36,14 @@ tm.define 'rpg.WindowBattleMenu',
     return @
 
   menuAttack: ->
+    @action = {
+      skill: rpg.system.db.getSkill rpg.system.actions.attack # 攻撃アクション
+    }
     windowBattleTarget = rpg.WindowBattleTarget
       parent: @
       targets: @targets
       friends: @friends
+      action: @action
     @active = false
     @visible = false
     @addWindow windowBattleTarget
