@@ -44,6 +44,10 @@ tm.define 'rpg.System',
       }
       title: 'tmlib-rpg'
       assets: {}
+      actions: {
+        attack: 1
+        guard: 2
+      }
       main:
         scene: 'SceneTitle'
         key: 'scene.title'
