@@ -47,6 +47,7 @@ tm.define 'rpg.System',
       actions: {
         attack: 1
         guard: 2
+        escape: 3
       }
       main:
         scene: 'SceneTitle'
