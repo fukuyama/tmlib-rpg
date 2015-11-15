@@ -17,7 +17,7 @@ tm.define 'rpg.WindowBattleTarget',
       for t in targets
         {
           name: t.name
-          fn: @_menu
+          fn: @_selectTarget
         }
     )
     args.$extend {
@@ -32,6 +32,6 @@ tm.define 'rpg.WindowBattleTarget',
     }
     @superInit(args)
 
-  _menu: ->
+  _selectTarget: ->
     console.log 'test...'
     return
