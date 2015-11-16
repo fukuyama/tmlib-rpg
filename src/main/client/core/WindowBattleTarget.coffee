@@ -11,7 +11,7 @@ tm.define 'rpg.WindowBattleTarget',
   init: (args={}) ->
     {
       parent
-      targets
+      @targets
     } = args
     menus = (
       for t in targets
@@ -33,5 +33,5 @@ tm.define 'rpg.WindowBattleTarget',
     @superInit(args)
 
   _selectTarget: ->
-    console.log 'test...'
+    @action.target = @targets[@index]
     return
