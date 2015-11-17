@@ -34,4 +34,5 @@ tm.define 'rpg.WindowBattleTarget',
 
   _selectTarget: ->
     @action.target = @targets[@index]
+    @close()
     return
