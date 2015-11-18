@@ -14,7 +14,7 @@ tm.define 'rpg.WindowBattleTarget',
       @targets
     } = args
     menus = (
-      for t in targets
+      for t in @targets
         {
           name: t.name
           fn: @_selectTarget

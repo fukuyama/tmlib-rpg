@@ -22,6 +22,7 @@ tm.define 'rpg.System',
     {
       @title
       @assets
+      @actions
       @main
       @canvasId
       @loadingSceneDefault
