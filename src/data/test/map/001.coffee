@@ -63,7 +63,7 @@ module.exports = {
         top: 0
         right: 10
         bottom: 3
-      troops: [2]
+      troops: [1,2]
       step: 10
       rate: 50
     }
