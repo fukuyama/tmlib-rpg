@@ -32,6 +32,18 @@ tm.define 'rpg.WindowBattleTarget',
     }
     @superInit(args)
 
+  _changeEnemyName: (list) ->
+    map = new Map()
+    for name,i in list
+      if map.has(name)
+        n = map.get(name) + 1
+        map.set(name,n)
+        list[i] = name + n
+      else
+        map.set(name,1)
+        list[i] = name + 1
+    return
+
   _selectTarget: ->
     @action.target = @targets[@index]
     @close()
