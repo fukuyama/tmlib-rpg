@@ -13,10 +13,12 @@ tm.define 'rpg.WindowBattleTarget',
       parent
       @targets
     } = args
+    names = (t.name for t in @targets)
+    @_changeEnemyName names
     menus = (
-      for t in @targets
+      for t,i in @targets
         {
-          name: t.name
+          name: names[i]
           fn: @_selectTarget
         }
     )
