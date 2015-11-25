@@ -1,7 +1,8 @@
 require '../requires.coffee'
 
 module.exports = {
-  name: 'えねみー１'
+  name: 'えねみー'
+  image: 'img/enemy_02.png'
   base:
     str: 10 # ちから
     vit: 10 # たいりょく
