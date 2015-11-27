@@ -45,18 +45,21 @@ tm.define 'SceneBattle',
     # 戦闘用インタープリター
     @interpreter = rpg.system.mapInterpreter
 
-    # メッセージウィンドウ
-    @windowMessage = rpg.WindowMessage(messageSpeed:setting.messageSpeed)
+    # 戦闘シーンテンプレートをここに
+    # @battleField
 
     # 戦闘コマンドメニュー
     @windowBattleMenu = rpg.WindowBattleMenu()
     @windowBattleMenu.addCloseListener @_endInputPhase.bind @
+
     # メニューレイヤー
     menuLayer = tm.display.CanvasElement()
     #menuLayer.addChild(@windowBattleStatus)
     menuLayer.addChild(@windowBattleMenu)
     @addChild(menuLayer)
 
+    # メッセージウィンドウ
+    @windowMessage = rpg.WindowMessage(messageSpeed:setting.messageSpeed)
     # メッセージレイヤー
     messageLayer = tm.display.CanvasElement()
     messageLayer.addChild(@windowMessage)
