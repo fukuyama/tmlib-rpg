@@ -46,7 +46,8 @@ tm.define 'SceneBattle',
     @interpreter = rpg.system.mapInterpreter
 
     # 戦闘シーンテンプレートをここに
-    # @battleField
+    if rpg.system.scene_battle_module()
+      @battleField = rpg.SpritesetBattle()
 
     # 戦闘コマンドメニュー
     @windowBattleMenu = rpg.WindowBattleMenu()

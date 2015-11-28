@@ -16,6 +16,8 @@ SE_METHOD =
 # rpg.system がインスタンス
 tm.define 'rpg.System',
 
+  scene_battle_module: -> false
+
   # 初期化
   init: (args = 'system') ->
     args = tm.asset.Manager.get(args).data if typeof args == 'string'
