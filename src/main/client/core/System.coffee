@@ -16,7 +16,7 @@ SE_METHOD =
 # rpg.system がインスタンス
 tm.define 'rpg.System',
 
-  scene_battle_module: -> false
+  scene_battle_module: -> rpg.system.query.battle eq 1
 
   # 初期化
   init: (args = 'system') ->
@@ -86,6 +86,7 @@ tm.define 'rpg.System',
     }.$extendAll(args)
     @clearTemp()
     @db = rpg.DataBase(@database)
+    @query = tm.util.QueryString.parse(location.search.substring 1)
 
     # Audio 関連のメソッド作成
     # menu_decision -> rpg.system.se.menuDecision()
